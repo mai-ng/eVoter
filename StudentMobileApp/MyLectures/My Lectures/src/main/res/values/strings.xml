@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">eVoter</string>
+    <string name="splash_text_view">Welcome to eVoter</string>
+    <string name="action_settings">Exit</string>
+
+</resources>

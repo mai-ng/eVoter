@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout
+	android:id="@+id/widget0"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+<TextView
+	android:id="@+id/widget32"
+	android:layout_width="241dp"
+	android:layout_height="56dp"
+	android:text="eVoter for presenter"
+	android:textSize="24sp"
+	android:layout_x="56dp"
+	android:layout_y="44dp" />
+<TextView
+	android:id="@+id/widget33"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:text="User name"
+	android:layout_x="30dp"
+	android:layout_y="136dp" />
+<TextView
+	android:id="@+id/widget33_copy"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:text="Password"
+	android:layout_x="30dp"
+	android:layout_y="177dp" />
+<AutoCompleteTextView
+	android:id="@+id/widget35"
+	android:layout_width="193dp"
+	android:layout_height="wrap_content"
+	android:text="user name"
+	android:textSize="18sp"
+	android:layout_x="112dp"
+	android:layout_y="130dp" />
+<AutoCompleteTextView
+	android:id="@+id/widget36"
+	android:layout_width="192dp"
+	android:layout_height="wrap_content"
+	android:text="password"
+	android:textSize="18sp"
+	android:password="true"
+	android:layout_x="111dp"
+	android:layout_y="174dp" />
+<Button
+	android:id="@+id/widget37"
+	android:layout_width="194dp"
+	android:layout_height="wrap_content"
+	android:text="Login"
+	android:layout_x="70dp"
+	android:layout_y="247dp" />
+<Button
+	android:id="@+id/widget37_copy"
+	android:layout_width="194dp"
+	android:layout_height="wrap_content"
+	android:text="Forgot password"
+	android:layout_x="69dp"
+	android:layout_y="314dp" />
+</AbsoluteLayout>

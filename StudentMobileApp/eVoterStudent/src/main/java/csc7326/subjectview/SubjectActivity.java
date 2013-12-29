@@ -34,11 +34,12 @@ public class SubjectActivity extends Activity {
     SubjectBaseAdapter subjectBaseAdapter;
     Context context;
     String subjectsURL;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.student_list_subjects);
         context = this;
-        subjectsURL="https://gdata.youtube.com/feeds/api/users/chatonaudiobooks/playlists?v=2&alt=jsonc";
+        subjectsURL = "https://gdata.youtube.com/feeds/api/users/chatonaudiobooks/playlists?v=2&alt=jsonc";
         listSubView = (ListView) findViewById(R.id.lvSubjects);
         subjectBaseAdapter = new SubjectBaseAdapter(listSubjects, SubjectActivity.this);
         listSubView.setAdapter(subjectBaseAdapter);
@@ -56,14 +57,14 @@ public class SubjectActivity extends Activity {
     /**
      * Load subjects from data
      */
-    private void loadSubjects(){
+    private void loadSubjects() {
         //Delete old data
         listSubjects.clear();
-        if(!InternetChecking.isConnected(this)){
+        if (!InternetChecking.isConnected(this)) {
             Dialog error = new Dialog(this);
             error.setTitle("Cannot connect to network!!!");
             error.show();
-        }else{
+        } else {
 
 //        if(content!=null){
 
@@ -110,7 +111,7 @@ public class SubjectActivity extends Activity {
         return false;
     }
 
-    private class LoadListSubject extends AsyncTask<Void,Void,Void>{
+    private class LoadListSubject extends AsyncTask<Void, Void, Void> {
         ProgressDialog dialog;
 
         /**
@@ -164,18 +165,18 @@ public class SubjectActivity extends Activity {
 //            if(content!=null){
 //                dialog.setTitle("Content not null!");
 //            }
-            try{
+            try {
                 JSONObject jsonObject = new JSONObject(content);
                 JSONObject jsonObject1 = jsonObject.getJSONObject("data");
                 JSONArray array = jsonObject1.getJSONArray("items");
-                for(int i=0;i<array.length();i++){
+                for (int i = 0; i < array.length(); i++) {
                     JSONObject items = array.getJSONObject(i);
-                    listSubjects.add(new SubjectData(items.getString("id"),items.getString("title"),items.getString("updated"),new ArrayList<SessionData>()));
+                    listSubjects.add(new SubjectData(items.getString("id"), items.getString("title"), items.getString("updated"), new ArrayList<SessionData>()));
 
                 }
 
                 subjectBaseAdapter.notifyDataSetChanged();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;

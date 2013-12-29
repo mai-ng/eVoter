@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/My Lectures/My Lectures.iml" filepath="$PROJECT_DIR$/My Lectures/My Lectures.iml" />
-      <module fileurl="file://$PROJECT_DIR$/MyLectures.iml" filepath="$PROJECT_DIR$/MyLectures.iml" />
       <module fileurl="file://$PROJECT_DIR$/StudentMobileApp.iml" filepath="$PROJECT_DIR$/StudentMobileApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/eVoter.iml" filepath="$PROJECT_DIR$/eVoter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/eVoterStudent/eVoterStudent.iml" filepath="$PROJECT_DIR$/eVoterStudent/eVoterStudent.iml" />
     </modules>
   </component>
 </project>

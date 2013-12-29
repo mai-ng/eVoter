@@ -17,15 +17,15 @@ import java.net.URI;
  * Created by luongnv89 on 29/12/13.
  */
 public class InternetChecking {
-    public static boolean isConnected(Context context){
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static boolean isConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork!=null&&activeNetwork.isConnectedOrConnecting();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    public static String getData(String url){
+    public static String getData(String url) {
         BufferedReader bf = null;
-        try{
+        try {
             HttpClient client = new DefaultHttpClient();
             URI website = new URI(url);
             HttpGet request = new HttpGet();
@@ -34,13 +34,15 @@ public class InternetChecking {
             bf = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             String line = bf.readLine();
             StringBuffer stringBuffer = new StringBuffer();
-            while(line!=null){
-                stringBuffer.append(line+"\n");
+            while (line != null) {
+                stringBuffer.append(line + "\n");
                 line = bf.readLine();
             }
             return stringBuffer.toString();
 
-        }catch (Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

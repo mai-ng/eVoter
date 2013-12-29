@@ -128,7 +128,7 @@ public class SessionBaseActivity extends BaseAdapter {
         TextView sessionStatus;
         TextView sessionDate;
         Button btAction;
-       // Button btDelete;
+        // Button btDelete;
 
     }
 }

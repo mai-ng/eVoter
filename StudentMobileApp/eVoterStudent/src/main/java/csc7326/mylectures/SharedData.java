@@ -1,8 +1,5 @@
 package csc7326.mylectures;
 
-import java.util.ArrayList;
-
-import csc7326.sessionview.SessionData;
 import csc7326.subjectview.SubjectData;
 
 /**

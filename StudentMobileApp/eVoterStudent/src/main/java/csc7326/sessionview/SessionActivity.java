@@ -16,9 +16,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import csc7326.mylectures.InternetChecking;
-import csc7326.mylectures.SharedData;
 import csc7326.mylectures.R;
-import csc7326.subjectview.SubjectData;
+import csc7326.mylectures.SharedData;
 
 /**
  * Created by luongnv89 on 06/12/13.
@@ -35,7 +34,7 @@ public class SessionActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.student_list_sessions);
         context = this;
-        sessionURL =sessionURL+ SharedData.getSubjectData().getId()+"?alt=jsonc&v=2";
+        sessionURL = sessionURL + SharedData.getSubjectData().getId() + "?alt=jsonc&v=2";
         listView = (ListView) findViewById(R.id.lvSession);
         sessionBaseAdapter = new SessionBaseActivity(listSessions, SessionActivity.this);
         listView.setAdapter(sessionBaseAdapter);
@@ -72,13 +71,13 @@ public class SessionActivity extends Activity {
                 return true;
             case R.id.mnSubjecDelete:
                 //Delete subject, only when the subject has finished!
-                
+
                 return true;
         }
         return false;
     }
 
-    private class LoadListSessions extends AsyncTask<Void,Void,Void> {
+    private class LoadListSessions extends AsyncTask<Void, Void, Void> {
         ProgressDialog dialog;
 
         /**
@@ -132,18 +131,18 @@ public class SessionActivity extends Activity {
 //            if(content!=null){
 //                dialog.setTitle("Content not null!");
 //            }
-            try{
+            try {
                 JSONObject jsonObject = new JSONObject(content);
                 JSONObject jsonObject1 = jsonObject.getJSONObject("data");
                 JSONArray array = jsonObject1.getJSONArray("items");
-                for(int i=0;i<array.length();i++){
+                for (int i = 0; i < array.length(); i++) {
 
                     JSONObject detailInfor = array.getJSONObject(i).getJSONObject("video");
-                    listSessions.add(new SessionData(detailInfor.getString("id"),detailInfor.getString("title"),detailInfor.getString("uploader"),detailInfor.getString("viewCount"),detailInfor.getString("uploaded")));
+                    listSessions.add(new SessionData(detailInfor.getString("id"), detailInfor.getString("title"), detailInfor.getString("uploader"), detailInfor.getString("viewCount"), detailInfor.getString("uploaded")));
                 }
 
                 sessionBaseAdapter.notifyDataSetChanged();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;

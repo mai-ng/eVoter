@@ -42,9 +42,12 @@ public class Login extends Activity {
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                GetData getData = new GetData();
+
                 String i_Usrname = etUsrName.getText().toString();
                 String i_Password = etPassword.getText().toString();
                 String sttMsg = "";
+//                String sttMsg = getData.getContent("http://www.vogella.com");
 
                 if (i_Usrname.equals("") || i_Password.equals("")) {
                     sttMsg += "User name or password is empty!";

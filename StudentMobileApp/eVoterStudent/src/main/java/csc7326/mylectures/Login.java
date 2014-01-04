@@ -8,8 +8,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import csc7326.subject.SubjectActivity;
 
 /**
  * Created by luongnv89 on 05/12/13.
@@ -26,11 +29,17 @@ public class Login extends Activity {
     Button btFgPassword;
     Button btRegister;
 
+    CheckBox cbRemember;
+
+    EVoterSessionManager eVoterSessionManager;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.login);
+
+        eVoterSessionManager = new EVoterSessionManager(this);
+
         etUsrName = (EditText) findViewById(R.id.usrname);
         etPassword = (EditText) findViewById(R.id.password);
         tvStatusLogin = (TextView) findViewById(R.id.tvStatusLogin);
@@ -38,6 +47,8 @@ public class Login extends Activity {
         btLogin = (Button) findViewById(R.id.btLogin);
         btFgPassword = (Button) findViewById(R.id.btfgPassword);
         btRegister = (Button) findViewById(R.id.btRegister);
+
+        cbRemember = (CheckBox) findViewById(R.id.cb_remember);
 
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +71,13 @@ public class Login extends Activity {
                     btFgPassword.setVisibility(View.VISIBLE);
                     btRegister.setVisibility(View.VISIBLE);
                 } else if (i_Usrname.equals(usrname) && i_Password.equals(password)) {
-                    startActivity(new Intent("android.intent.action.SUBJECT"));
+                    if (cbRemember.isChecked()) {
+                        eVoterSessionManager.createLoginSession(i_Usrname, i_Password);
+                    }
+                    Intent subjectIntent = new Intent(Login.this, SubjectActivity.class);
+                    subjectIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    subjectIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(subjectIntent);
                 }
 
             }
@@ -82,19 +99,17 @@ public class Login extends Activity {
 
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater mnInfalter = getMenuInflater();
-        mnInfalter.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.mnExit:
-                finish();
-                return true;
-        }
-        return false;
+    /**
+     * Called when the activity has detected the user's press of the back
+     * key.  The default implementation simply finishes the current activity,
+     * but you can override this to do whatever you want.
+     */
+    @Override
+    public void onBackPressed() {
+        Intent exitIntent = new Intent(this, Splash.class);
+        exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        exitIntent.putExtra("Exit application", true);
+        startActivity(exitIntent);
+        finish();
     }
 }

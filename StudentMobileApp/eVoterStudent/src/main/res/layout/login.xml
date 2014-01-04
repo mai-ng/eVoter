@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:paddingTop="20dp">
+        android:paddingTop="10dp">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -26,7 +26,8 @@
             android:text="Welcome to eVoter"
             android:id="@+id/textView"
             android:layout_gravity="center"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:paddingLeft="10dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -42,7 +43,7 @@
             android:lines="2"
             android:padding="10dp"
             android:textColor="#ff0007"
-            android:textSize="18dp"
+            android:textSize="14dp"
             android:textStyle="italic" />
 
         <TableLayout
@@ -99,6 +100,13 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:padding="10dp">
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remember me"
+            android:id="@+id/cb_remember"
+            android:checked="true" />
 
         <Button
             android:layout_width="fill_parent"

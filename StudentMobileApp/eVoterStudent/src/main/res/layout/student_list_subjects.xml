@@ -19,14 +19,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/etSubjectSearch"
             android:layout_weight="9"
-            android:hint="Find subjects" />
+            android:hint="Find subjects"
+            android:lines="1"
+            android:singleLine="true"
+            android:maxLines="1">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btSubjectSearch"
-            android:src="@drawable/abc_ic_search"
-            android:layout_weight="1" />
+            <requestFocus />
+        </EditText>
+
     </LinearLayout>
 
     <ListView

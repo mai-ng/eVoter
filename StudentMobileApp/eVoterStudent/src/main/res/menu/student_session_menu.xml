@@ -2,18 +2,13 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/mnSubjecInfor"
-        android:title="Subject detail"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
-    <item
-        android:id="@+id/mnSubjecDelete"
-        android:title="Delete Subject"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
-    <item
         android:id="@+id/mnListSessionReload"
         android:title="Refresh"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/mnLogout"
+        android:title="Logout"
         android:orderInCategory="100"
         android:showAsAction="never" />
 

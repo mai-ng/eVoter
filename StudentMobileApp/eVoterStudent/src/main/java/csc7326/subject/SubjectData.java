@@ -1,8 +1,8 @@
-package csc7326.subjectview;
+package csc7326.subject;
 
 import java.util.ArrayList;
 
-import csc7326.sessionview.SessionData;
+import csc7326.session.SessionData;
 
 /**
  * Created by luongnv89 on 06/12/13.
@@ -11,13 +11,18 @@ public class SubjectData {
     String id;
     String name;
     String date;
-    ArrayList<SessionData> listSession = new ArrayList<SessionData>();
+    int nbSessions;
 
-    public SubjectData(String id, String name, String date, ArrayList<SessionData> listSession) {
+    public SubjectData(String id, String name, String date) {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.listSession = listSession;
+    }
+
+    public SubjectData(SubjectData copy) {
+        this.id = copy.getId();
+        this.name = copy.getName();
+        this.date = copy.getDate();
     }
 
     public String getId() {
@@ -44,11 +49,11 @@ public class SubjectData {
         this.date = date;
     }
 
-    public ArrayList<SessionData> getListSession() {
-        return listSession;
+    public int getNbSessions() {
+        return nbSessions;
     }
 
-    public void setListSession(ArrayList<SessionData> listSession) {
-        this.listSession = listSession;
+    public void setNbSessions(int nbSessions) {
+        this.nbSessions = nbSessions;
     }
 }

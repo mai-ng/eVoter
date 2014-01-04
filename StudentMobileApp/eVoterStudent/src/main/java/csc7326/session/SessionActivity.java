@@ -1,23 +1,32 @@
-package csc7326.sessionview;
+package csc7326.session;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import csc7326.mylectures.EVoterSessionManager;
 import csc7326.mylectures.InternetChecking;
 import csc7326.mylectures.R;
 import csc7326.mylectures.SharedData;
+import csc7326.mylectures.Splash;
 
 /**
  * Created by luongnv89 on 06/12/13.
@@ -26,9 +35,10 @@ public class SessionActivity extends Activity {
 
     ArrayList<SessionData> listSessions = new ArrayList<SessionData>();
     ListView listView;
-    SessionBaseActivity sessionBaseAdapter;
+    SessionBaseAdapter sessionBaseAdapter;
     Context context;
     String sessionURL = "https://gdata.youtube.com/feeds/api/playlists/";
+    EditText etSearch;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,19 +46,46 @@ public class SessionActivity extends Activity {
         context = this;
         sessionURL = sessionURL + SharedData.getSubjectData().getId() + "?alt=jsonc&v=2";
         listView = (ListView) findViewById(R.id.lvSession);
-        sessionBaseAdapter = new SessionBaseActivity(listSessions, SessionActivity.this);
+        sessionBaseAdapter = new SessionBaseAdapter(listSessions, SessionActivity.this);
         listView.setAdapter(sessionBaseAdapter);
         LoadListSessions loadListSessions = new LoadListSessions();
         loadListSessions.execute();
 
-    }
+        etSearch = (EditText) findViewById(R.id.etSessionSearch);
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                SessionActivity.this.sessionBaseAdapter.getFilter().filter(s);
+            }
 
-    /*
-    * Order sessions by status and date
-    * **/
-    private void loadSessions() {
-        listSessions.clear();
-        listSessions = SharedData.getSubjectData().getListSession();
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SessionData selectedSession = (SessionData) parent.getItemAtPosition(position);
+                Toast.makeText(SessionActivity.this, "Process item clicked for item: " + selectedSession.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                SessionData selectedSession = (SessionData) parent.getItemAtPosition(position);
+                Toast.makeText(SessionActivity.this, "Process item long clicked for item: " + selectedSession.getName(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -61,17 +98,22 @@ public class SessionActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.mnExit:
+                Intent exitIntent = new Intent(this, Splash.class);
+                exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                exitIntent.putExtra("Exit application", true);
+                startActivity(exitIntent);
                 finish();
                 return true;
             case R.id.mnListSessionReload:
-                loadSessions();
+                LoadListSessions loadListSessions = new LoadListSessions();
+                loadListSessions.execute();
                 return true;
-            case R.id.mnSubjecInfor:
-                //Show the detail information of subject from database
-                return true;
-            case R.id.mnSubjecDelete:
-                //Delete subject, only when the subject has finished!
-
+            case R.id.mnLogout:
+                EVoterSessionManager eVoterSessionManager = new EVoterSessionManager(this);
+                if (eVoterSessionManager.isLoggedIn()) {
+                    eVoterSessionManager.logoutUser();
+                }
+                eVoterSessionManager.checkLogin();
                 return true;
         }
         return false;
@@ -128,9 +170,7 @@ public class SessionActivity extends Activity {
         @Override
         protected Void doInBackground(Void... params) {
             String content = InternetChecking.getData(sessionURL);
-//            if(content!=null){
-//                dialog.setTitle("Content not null!");
-//            }
+            listSessions.clear();
             try {
                 JSONObject jsonObject = new JSONObject(content);
                 JSONObject jsonObject1 = jsonObject.getJSONObject("data");
@@ -138,7 +178,18 @@ public class SessionActivity extends Activity {
                 for (int i = 0; i < array.length(); i++) {
 
                     JSONObject detailInfor = array.getJSONObject(i).getJSONObject("video");
-                    listSessions.add(new SessionData(detailInfor.getString("id"), detailInfor.getString("title"), detailInfor.getString("uploader"), detailInfor.getString("viewCount"), detailInfor.getString("uploaded")));
+                    SessionData sessionData = new SessionData(detailInfor.getString("id"), detailInfor.getString("title"), detailInfor.getString("uploader"), detailInfor.getString("viewCount"), detailInfor.getString("uploaded"));
+                    int count = Integer.parseInt(sessionData.getStatus());
+                    if (count % 2 == 0)
+                        sessionData.setStatus(count + " - Status: Wait for accepting");
+                    else {
+                        sessionData.setStatus(count + " - Status: accepted");
+                    }
+                    if (count % 7 == 0) sessionData.setActive(true);
+                    else {
+                        sessionData.setActive(false);
+                    }
+                    listSessions.add(sessionData);
                 }
 
                 sessionBaseAdapter.notifyDataSetChanged();

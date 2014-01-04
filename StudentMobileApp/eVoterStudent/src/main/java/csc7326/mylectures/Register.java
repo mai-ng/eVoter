@@ -1,6 +1,7 @@
 package csc7326.mylectures;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -83,6 +84,10 @@ public class Register extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.mnExit:
+                Intent exitIntent = new Intent(this, Splash.class);
+                exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                exitIntent.putExtra("Exit application", true);
+                startActivity(exitIntent);
                 finish();
                 return true;
         }

@@ -17,14 +17,13 @@
             android:layout_height="wrap_content"
             android:id="@+id/etSessionSearch"
             android:layout_weight="9"
-            android:hint="Find sessions" />
+            android:hint="Find sessions"
+            android:lines="1"
+            android:maxLines="1"
+            android:singleLine="true">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btSessionSearch"
-            android:src="@drawable/abc_ic_search"
-            android:layout_weight="1" />
+            <requestFocus />
+        </EditText>
 
     </LinearLayout>
 

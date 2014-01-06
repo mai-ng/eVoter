@@ -21,7 +21,8 @@
             android:id="@+id/tvSesName"
             android:layout_gravity="center_horizontal"
             android:textSize="20dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:lines="1" />
 
         <TextView
             android:layout_width="fill_parent"
@@ -44,20 +45,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Date created"
             android:id="@+id/tvSessDate" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="7.5">
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:text="Action"
-            android:id="@+id/btSessionAction" />
-
     </LinearLayout>
 
 </LinearLayout>

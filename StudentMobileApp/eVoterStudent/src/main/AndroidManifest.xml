@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="csc7326.subjectview.SubjectActivity"
+            android:name="csc7326.subject.SubjectActivity"
             android:label="Subject">
             <intent-filter>
                 <action android:name="android.intent.action.SUBJECT" />
@@ -62,7 +62,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="csc7326.sessionview.SessionActivity"
+            android:name="csc7326.session.SessionActivity"
             android:label="Session">
             <intent-filter>
                 <action android:name="android.intent.action.SESSION" />

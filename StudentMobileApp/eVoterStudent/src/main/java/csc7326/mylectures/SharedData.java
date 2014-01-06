@@ -1,6 +1,6 @@
 package csc7326.mylectures;
 
-import csc7326.subjectview.SubjectData;
+import csc7326.subject.SubjectData;
 
 /**
  * Created by luongnv89 on 06/12/13.

@@ -1,4 +1,4 @@
-package csc7326.sessionview;
+package csc7326.session;
 
 /**
  * Created by luongnv89 on 06/12/13.
@@ -9,6 +9,7 @@ public class SessionData {
     String teacherName;
     String status;
     String createDate;
+    boolean isActive;
 
     public SessionData(String id, String name, String teacherName, String status, String createDate) {
         this.id = id;
@@ -16,6 +17,24 @@ public class SessionData {
         this.teacherName = teacherName;
         this.status = status;
         this.createDate = createDate;
+        this.isActive = false;
+    }
+
+    public SessionData(SessionData copy) {
+        this.id = copy.getId();
+        this.name = copy.getName();
+        this.teacherName = copy.getTeacherName();
+        this.status = copy.getStatus();
+        this.createDate = copy.getCreateDate();
+        this.isActive = copy.isActive();
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     public String getId() {

@@ -9,10 +9,9 @@
 
 
     <item
-        android:id="@+id/mnExit"
-        android:title="Exit"
+        android:id="@+id/mnLogout"
+        android:title="Logout"
         android:orderInCategory="100"
         android:showAsAction="never" />
-
 
 </menu>

@@ -11,6 +11,7 @@ public interface QuestionDAO {
 	public static final String SESSION_ID = "SESSION_ID";
 	public static final String QUESTION_TYPE_ID = "QUESTION_TYPE_ID";
 	public static final String TABLE_NAME = "QUESTION";
+	public static final String BEAN_NAME = "questionDAO";
 	
 	public int insert (Question Question);
 	public List<Question> findAll();

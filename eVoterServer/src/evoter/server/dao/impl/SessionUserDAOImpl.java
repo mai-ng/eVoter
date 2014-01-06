@@ -117,4 +117,17 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 		
 	}
 
+	@Override
+	public int update(SessionUser sessUser) {
+		
+		String sql = "UPDATE " + TABLE_NAME + 
+				" SET " + ACCEPT_SESSION +"=" +sessUser.isAcceptSession() 
+					+ " , " + DELETE_INDICATOR + "=" + sessUser.isDeleteIndicator()
+					+ " WHERE " + SESSION_ID + "=" + sessUser.getSessionId()
+					+ " AND " + USER_ID + " = " + sessUser.getSessionId();
+	
+		return getJdbcTemplate().update(sql);
+		
+	}
+
 }

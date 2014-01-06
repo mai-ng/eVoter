@@ -9,6 +9,7 @@ public interface SubjectDAO {
 	public static final String TITLE = "TITLE";
 	public static final String CREATION_DATE = "CREATION_DATE";
 	public static final String TABLE_NAME = "SUBJECT";
+	public static final String BEAN_NAME = "subjectDAO";
 	
 	public int insert (Subject subject);
 	public List<Subject> findAll();

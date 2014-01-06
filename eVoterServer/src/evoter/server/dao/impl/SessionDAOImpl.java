@@ -14,8 +14,8 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	@Override
 	public int insert(Session session) {
 		
-		String sql = "INSERT INTO " + TABLE_NAME + "(" + SUBJECT_ID + "," + NAME + "," + CREATION_DATE + ")" + " VALUES(?,?,?)";
-		return getJdbcTemplate().update(sql, new Object[]{session.getSubjectId(),session.getName(), session.getCreationDate()});
+		String sql = "INSERT INTO " + TABLE_NAME + "(" + SUBJECT_ID + "," + NAME + "," + CREATION_DATE + "," + IS_ACTIVE + ")" + " VALUES(?,?,?,?)";
+		return getJdbcTemplate().update(sql, new Object[]{session.getSubjectId(),session.getName(), session.getCreationDate(), session.isActive()});
 
 	}
 
@@ -109,6 +109,35 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	public void deleteByCreationDate(String date) {
 
 		deleteByProperty(new String[]{CREATION_DATE}, new String[]{date});
+		
+	}
+
+	@Override
+	public List<Session> findBySessionIsActive(boolean isActive) {
+
+		return findBySessionIsActive(isActive);
+	}
+
+	@Override
+	public void deleteBySessionIsActive(boolean isActive) {
+
+		deleteBySessionIsActive(isActive);
+		
+	}
+
+	@Override
+	public int update(Session session) {
+		
+		String sql = "UPDATE " + TABLE_NAME + 
+					" SET " + CREATION_DATE +"='" + session.getCreationDate()+"'" 
+						+ " , " + IS_ACTIVE + "=" + session.isActive()
+						+ " , " + NAME + "='" + session.getName()+"'"
+						+ " , " + SUBJECT_ID + "=" + session.getSubjectId()
+						+ " WHERE " + ID + "=" + session.getId();
+		
+		return getJdbcTemplate().update(sql);
+		
+					
 		
 	}
 

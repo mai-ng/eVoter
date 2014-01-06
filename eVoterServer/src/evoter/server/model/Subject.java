@@ -3,6 +3,10 @@ package evoter.server.model;
 import java.io.Serializable;
 import java.sql.Date;
 
+import org.json.simple.JSONObject;
+
+import evoter.server.dao.SubjectDAO;
+
 public class Subject implements Serializable {
 
 	/**
@@ -43,6 +47,15 @@ public class Subject implements Serializable {
 				+ creationDate + "]";
 	}
 
-	
+	@SuppressWarnings("unchecked")
+	public String toJSONString(){
+		
+		JSONObject obj = new JSONObject();
+		obj.put(SubjectDAO.ID, id);
+		obj.put(SubjectDAO.TITLE, title);
+		obj.put(SubjectDAO.CREATION_DATE, creationDate);
+		return obj.toJSONString();
+
+	}
 	
 }

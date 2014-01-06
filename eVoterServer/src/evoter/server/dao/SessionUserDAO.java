@@ -11,6 +11,7 @@ public interface SessionUserDAO {
 	public static final String DELETE_INDICATOR = "DELETE_INDICATOR";
 	public static final String ACCEPT_SESSION = "ACCEPT_STT";
 	public static final String TABLE_NAME = "SESSION_USER";
+	public static final String BEAN_NAME = "sessionUserDAO";
 	
 	public int insert (SessionUser SessionUser);
 	public List<SessionUser> findAll();
@@ -39,5 +40,6 @@ public interface SessionUserDAO {
 	public void deleteBySessionId(long sessionId);
 	public void deleteByDeleteIndicator(boolean deleteIndicator);
 	public void deleteByAcceptSession(boolean acceptSession);
+	public int update(SessionUser sessUser);
 
 }

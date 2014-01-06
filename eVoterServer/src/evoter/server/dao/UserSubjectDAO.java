@@ -9,6 +9,7 @@ public interface UserSubjectDAO {
 	public static final String USER_ID = "USER_ID";
 	public static final String SUBJECT_ID = "SUBJECT_ID";
 	public static final String TABLE_NAME = "USER_SUBJECT";
+	public static final String BEAN_NAME = "userSubjectDAO";
 	
 	public int insert(UserSubject us);
 	public List<UserSubject> findAll();

@@ -18,6 +18,7 @@ public class SessionRowMapper implements RowMapper {
 		session.setId(rs.getLong(SessionDAO.ID));
 		session.setName(rs.getString(SessionDAO.NAME));
 		session.setSubjectId(rs.getLong(SessionDAO.SUBJECT_ID));
+		session.setActive(rs.getBoolean(SessionDAO.IS_ACTIVE));
 		return session;
 	}
 

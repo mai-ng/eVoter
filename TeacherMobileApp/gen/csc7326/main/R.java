@@ -31,12 +31,12 @@ public final class R {
         public static final int icon=0x7f020001;
     }
     public static final class id {
-        public static final int action_settings=0x7f090026;
+        public static final int action_settings=0x7f090025;
         public static final int btLogin=0x7f090008;
         public static final int btRegister=0x7f09000a;
         public static final int btResetPassword=0x7f09000e;
-        public static final int btSubjectDeleting=0x7f090024;
-        public static final int btSubjectDetail=0x7f090023;
+        public static final int btSubjectDeleting=0x7f090023;
+        public static final int btSubjectDetail=0x7f090022;
         public static final int btSubmit=0x7f090015;
         public static final int btfgPassword=0x7f090009;
         public static final int cbAcceptPolicy=0x7f090014;
@@ -47,15 +47,15 @@ public final class R {
         public static final int etSessionSearch=0x7f090018;
         public static final int etSubjectSearch=0x7f09001a;
         public static final int etUserNameRegister=0x7f090010;
-        public static final int imIcon=0x7f090025;
+        public static final int imIcon=0x7f090024;
         public static final int imageView=0x7f090000;
         public static final int linearLayout=0x7f09000b;
         public static final int lvSession=0x7f090019;
         public static final int lvSubjects=0x7f09001b;
-        public static final int mnExit=0x7f090029;
-        public static final int mnListSessionReload=0x7f090027;
-        public static final int mnListSubjectReload=0x7f09002a;
-        public static final int mnLogout=0x7f090028;
+        public static final int mnExit=0x7f090028;
+        public static final int mnListSessionReload=0x7f090026;
+        public static final int mnListSubjectReload=0x7f090029;
+        public static final int mnLogout=0x7f090027;
         public static final int password=0x7f090006;
         public static final int prBar=0x7f090017;
         public static final int textView=0x7f090001;
@@ -64,13 +64,12 @@ public final class R {
         public static final int textView4=0x7f090012;
         public static final int textView5=0x7f090016;
         public static final int tvFgPassStatus=0x7f09000c;
-        public static final int tvNumSessions=0x7f090021;
         public static final int tvRegisterStt=0x7f09000f;
         public static final int tvSesName=0x7f09001c;
         public static final int tvSessDate=0x7f09001f;
         public static final int tvSessionStatus=0x7f09001e;
         public static final int tvStatusLogin=0x7f090002;
-        public static final int tvSubDate=0x7f090022;
+        public static final int tvSubDate=0x7f090021;
         public static final int tvSubname=0x7f090020;
         public static final int tvTeacher=0x7f09001d;
         public static final int usrname=0x7f090004;

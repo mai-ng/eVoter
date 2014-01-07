@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 import csc7326.enums.SessionStatus;
 import csc7326.main.R;
-import csc7326.subject.SubjectData;
 
 /**
  * Created by luongnv89 on 06/12/13.

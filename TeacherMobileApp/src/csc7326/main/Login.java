@@ -65,7 +65,7 @@ public class Login extends Activity {
 				params.add("password", i_Password);
 
 				// String sttMsg = getData.getContent("http://www.vogella.com");
-
+				//Pre-checking on client	
 				if (i_Usrname.equals("") || i_Password.equals("")) {
 					tvStatusLogin.setText("User name or password is empty!");
 					btFgPassword.setVisibility(View.VISIBLE);
@@ -73,14 +73,17 @@ public class Login extends Activity {
 				} else
 
 				{
+					//Send request to login
 					client.post(Configuration.get_urlLogin(), params,
 							new AsyncHttpResponseHandler() {
+								//Request successfully
 								@Override
 								public void onSuccess(String response) {
 
 									Log.i("LoginTest", "response : " + response);
-
+									
 									if (response.equalsIgnoreCase("TRUE")) {
+										//Correct user and password
 										if (cbRemember.isChecked()) {
 											eVoterSessionManager
 													.createLoginSession(
@@ -97,15 +100,31 @@ public class Login extends Activity {
 										startActivity(subjectIntent);
 										Log.i("LoginTest", "SUCCESS");
 									} else {
-
-										tvStatusLogin
-												.setText("Username and password incorrect!");
-										// tvStatusLogin.setText(sttMsg);
-										btFgPassword
-												.setVisibility(View.VISIBLE);
-										btRegister.setVisibility(View.VISIBLE);
-										Log.i("LoginTest",
-												"Username and password incorrect!");
+//										//Incorrect user and password	
+//										tvStatusLogin
+//												.setText("Username and password incorrect!");
+//										// tvStatusLogin.setText(sttMsg);
+//										btFgPassword
+//												.setVisibility(View.VISIBLE);
+//										btRegister.setVisibility(View.VISIBLE);
+//										Log.i("LoginTest",
+//												"Username and password incorrect!");
+										//Correct user and password
+										if (cbRemember.isChecked()) {
+											eVoterSessionManager
+													.createLoginSession(
+															i_Usrname,
+															i_Password);
+										}
+										Intent subjectIntent = new Intent(
+												Login.this,
+												SubjectActivity.class);
+										subjectIntent
+												.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+										subjectIntent
+												.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+										startActivity(subjectIntent);
+										Log.i("LoginTest", "SUCCESS");
 									}
 									// tvStatusLogin.setText(response);
 

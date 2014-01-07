@@ -20,8 +20,8 @@ public class AccountRequest {
 		String username = parameters.get(UserDAO.USER_NAME);
 		String password = parameters.get(UserDAO.PASSWORD);
 		UserDAO userDao = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
-		if (userDao.findByProperty(new String[]{UserDAO.USER_NAME, UserDAO.PASSWORD}, 
-				new Object[]{username, password}) != null){
+		if (!userDao.findByProperty(new String[]{UserDAO.USER_NAME, UserDAO.PASSWORD}, 
+				new Object[]{username, password}).isEmpty()){
 			System.out.println("user exists in db");
 			//generate user key
 			URIUtils.writeResponse("TRUE", exchange);

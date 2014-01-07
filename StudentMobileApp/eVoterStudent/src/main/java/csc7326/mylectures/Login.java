@@ -3,6 +3,7 @@ package csc7326.mylectures;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,12 +13,17 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
 import csc7326.subject.SubjectActivity;
 
 /**
  * Created by luongnv89 on 05/12/13.
  */
 public class Login extends Activity {
+    String _urlLogin = "http://157.159.100.211:1000/evoter/login" ;
     String usrname = "a";
     String password = "a";
 
@@ -54,9 +60,13 @@ public class Login extends Activity {
             @Override
             public void onClick(View v) {
 //                GetData getData = new GetData();
+                AsyncHttpClient client = new AsyncHttpClient(1000);
+                final String i_Usrname = etUsrName.getText().toString();
+                final String i_Password = etPassword.getText().toString();
+                RequestParams params = new RequestParams();
+                params.add("username", i_Usrname);
+                params.add("password", i_Password);
 
-                String i_Usrname = etUsrName.getText().toString();
-                String i_Password = etPassword.getText().toString();
                 String sttMsg = "";
 //                String sttMsg = getData.getContent("http://www.vogella.com");
 
@@ -65,20 +75,59 @@ public class Login extends Activity {
                     tvStatusLogin.setText(sttMsg);
                     btFgPassword.setVisibility(View.VISIBLE);
                     btRegister.setVisibility(View.VISIBLE);
-                } else if (!i_Usrname.equals(usrname) || !i_Password.equals(password)) {
-                    sttMsg += "Username and password incorrect!";
-                    tvStatusLogin.setText(sttMsg);
-                    btFgPassword.setVisibility(View.VISIBLE);
-                    btRegister.setVisibility(View.VISIBLE);
-                } else if (i_Usrname.equals(usrname) && i_Password.equals(password)) {
+                } else
+                {
                     if (cbRemember.isChecked()) {
-                        eVoterSessionManager.createLoginSession(i_Usrname, i_Password);
-                    }
-                    Intent subjectIntent = new Intent(Login.this, SubjectActivity.class);
-                    subjectIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    subjectIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(subjectIntent);
+                                    eVoterSessionManager.createLoginSession(i_Usrname, i_Password);
+                                }
+                                Intent subjectIntent = new Intent(Login.this, SubjectActivity.class);
+                                subjectIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                subjectIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(subjectIntent);
                 }
+//                {
+//                    client.post(_urlLogin, params, new AsyncHttpResponseHandler() {
+//                        @Override
+//                        public void onSuccess(String response) {
+//
+//                            Log.i("LoginTest" , "response : " + response);
+//
+//                            if (response.equalsIgnoreCase("TRUE")){
+//                                if (cbRemember.isChecked()) {
+//                                    eVoterSessionManager.createLoginSession(i_Usrname, i_Password);
+//                                }
+//                                Intent subjectIntent = new Intent(Login.this, SubjectActivity.class);
+//                                subjectIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                subjectIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                startActivity(subjectIntent);
+//                                Log.i("LoginTest" , "SUCCESS");
+//                            }else{
+//                                if (cbRemember.isChecked()) {
+//                                    eVoterSessionManager.createLoginSession(i_Usrname, i_Password);
+//                                }
+//                                Intent subjectIntent = new Intent(Login.this, SubjectActivity.class);
+//                                subjectIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                subjectIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                startActivity(subjectIntent);
+//                                Log.i("LoginTest" , "SUCCESS");
+////                                tvStatusLogin.setText("Username and password incorrect!");
+//////                                tvStatusLogin.setText(sttMsg);
+////                                btFgPassword.setVisibility(View.VISIBLE);
+////                                btRegister.setVisibility(View.VISIBLE);
+////                                Log.i("LoginTest", "FAILURE");
+//                            }
+//                            tvStatusLogin.setText(response);
+//
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Throwable error, String content)
+//                        {
+////                            tv.setText(error.toString()+"\nContext: "+content);
+//                            Log.e("LoginTest" , "onFailure error : " + error.toString() + "content : " + content);
+//                        }
+//                    });
+//                }
 
             }
         });

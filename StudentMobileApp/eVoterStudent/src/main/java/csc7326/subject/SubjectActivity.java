@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,7 +21,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -49,12 +55,44 @@ public class SubjectActivity extends Activity {
         setContentView(R.layout.student_list_subjects);
         context = this;
 
-        subjectsURL = "https://gdata.youtube.com/feeds/api/users/chatonaudiobooks/playlists?v=2&alt=jsonc";
+        AsyncHttpClient client = new AsyncHttpClient(1000);
+        subjectsURL = "http://157.159.100.211:1000/evoter/get_all_subject";
         listSubView = (ListView) findViewById(R.id.lvSubjects);
         subjectBaseAdapter = new SubjectBaseAdapter(listSubjects, SubjectActivity.this);
         listSubView.setAdapter(subjectBaseAdapter);
-        LoadListSubject loadListSubject = new LoadListSubject();
-        loadListSubject.execute();
+        RequestParams params = new RequestParams();
+        params.add("USER_ID", "1");
+        client.post(subjectsURL, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(String response) {
+                try {
+//                    JSONObject responseObject = new JSONObject(response);
+                    JSONArray array = new JSONArray(response);
+                    for(int i=0;i<array.length();i++){
+                        JSONObject item = array.getJSONObject(i);
+                        //01-07 11:34:26.677: I/Get All Subject Test(1033): response : ["{\"ID\":1,\"CREATION_DATE\":2013-12-28,\"TITLE\":\"Object Oriented Programming\"}","{\"ID\":3,\"CREATION_DATE\":2013-12-28,\"TITLE\":\"Software Engineering\"}"]
+
+                        SubjectData subject = new SubjectData(item.getString("ID"),item.getString("TITLE"),item.getString("CREATION_DATE"));
+                        listSubjects.add(subject);
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Log.i("Get All Subject Test", "response : " + response);
+            }
+
+            @Override
+            public void onFailure(Throwable error, String content)
+            {
+                Log.e("Get All Subject Test" , "onFailure error : " + error.toString() + "content : " + content);
+            }
+        });
+
+
+//        LoadListSubject loadListSubject = new LoadListSubject();
+//        loadListSubject.execute();
         listSubView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

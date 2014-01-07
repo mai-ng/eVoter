@@ -47,7 +47,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <bean id="httpConnection" class="evoter.server.http.HttpConnection" lazy-init="true">
 		<property name="context" value="evoter" />
 		<property name="port" value="1000" />
-		<property name="ip" value="157.159.42.152" />
+		<property name="ip" value="192.168.0.14" />
 	</bean>
     
     
@@ -55,7 +55,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/evoter" />
 		<property name="username" value="root" />
-		<property name="password" value="root" />
+		<property name="password" value="280189" />
 	</bean>
 	
     	

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="10">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="10"
+        android:id="@+id/linearLayout"
+        android:padding="10dp">
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etSubjectSearch"
+            android:layout_weight="9"
+            android:hint="Find subjects"
+            android:lines="1"
+            android:singleLine="true"
+            android:maxLines="1">
+
+            <requestFocus />
+        </EditText>
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/lvSubjects"
+        android:choiceMode="singleChoice"
+        android:layout_weight="5" />
+
+</LinearLayout>

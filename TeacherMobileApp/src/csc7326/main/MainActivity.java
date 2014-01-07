@@ -178,21 +178,7 @@
 //					}
 //                }); */
 //        		//test /get_all_session request
-///**        		RequestParams params = new RequestParams();
-//        		params.add("SUBJECT_ID", "1");
-//        		client.post(_urlGetAllSession, params, new AsyncHttpResponseHandler() {
-//                    @Override
-//                    public void onSuccess(String response) {
-//                    	
-//                    	Log.i("Get All Session Test" , "response : " + response);
-//                    }
-//                    
-//					@Override
-//					public void onFailure(Throwable error, String content)
-//					{
-//						Log.e("Get All Session Test" , "onFailure error : " + error.toString() + "content : " + content);
-//					}
-//                });  */
+///**        		
 //        		//test /view_session request
 ///**        		RequestParams params = new RequestParams();
 //        		params.add("ID", "1");

@@ -79,8 +79,8 @@ public class Login extends Activity {
 								//Request successfully
 								@Override
 								public void onSuccess(String response) {
-
 									Log.i("LoginTest", "response : " + response);
+									
 									
 									if (response.equalsIgnoreCase("TRUE")) {
 										//Correct user and password
@@ -100,6 +100,7 @@ public class Login extends Activity {
 										startActivity(subjectIntent);
 										Log.i("LoginTest", "SUCCESS");
 									} else {
+										Log.i("LoginTest", "response : " + response);
 //										//Incorrect user and password	
 //										tvStatusLogin
 //												.setText("Username and password incorrect!");

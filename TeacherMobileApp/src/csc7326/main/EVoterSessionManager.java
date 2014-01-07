@@ -8,12 +8,13 @@ import android.content.SharedPreferences.Editor;
 import java.util.HashMap;
 
 import csc7326.subject.SubjectActivity;
+import evoter.server.model.Subject;
 
 /**
  * Created by luongnv89 on 03/01/14.
  */
 public class EVoterSessionManager {
-
+	
     SharedPreferences preferences;
 
     Editor editor;
@@ -78,4 +79,32 @@ public class EVoterSessionManager {
     public boolean isLoggedIn() {
         return preferences.getBoolean(IS_LOGIN, false);
     }
+    
+    //Static part
+    private static long currentSubjectID;
+    private static long currentSessionID;
+    
+	public static void setCurrentSubjectID(long id) {
+		currentSubjectID = id;
+	}
+	
+	public static long getCurrentSubjectID(){
+		return currentSubjectID;
+	}
+
+	/**
+	 * @return the currentSessionID
+	 */
+	public static long getCurrentSessionID() {
+		return currentSessionID;
+	}
+
+	/**
+	 * @param currentSessionID the currentSessionID to set
+	 */
+	public static void setCurrentSessionID(long currentSessionID) {
+		EVoterSessionManager.currentSessionID = currentSessionID;
+	}
+	
+	
 }

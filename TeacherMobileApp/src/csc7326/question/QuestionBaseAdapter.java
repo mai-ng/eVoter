@@ -1,4 +1,7 @@
-package csc7326.session;
+/**
+ * 
+ */
+package csc7326.question;
 
 import java.util.ArrayList;
 
@@ -15,21 +18,22 @@ import android.widget.Filterable;
 import android.widget.TextView;
 import csc7326.main.R;
 import csc7326.utils.Utils;
-import evoter.server.model.Session;
+import evoter.server.model.Question;
 
 /**
- * Created by luongnv89 on 06/12/13.
+ * @author luongnv89
+ *
  */
-public class SessionBaseAdapter extends BaseAdapter implements Filterable {
+public class QuestionBaseAdapter extends BaseAdapter implements Filterable{
 
-	ArrayList<Session> listSessions;
-	ArrayList<Session> listSessionsFilters;
+	ArrayList<Question> listSessions;
+	ArrayList<Question> listSessionsFilters;
 
 	Context context;
 	LayoutInflater inflater;
-	private SessionValueFilter valueFilter;
+	private QuestionValueFilter valueFilter;
 
-	public SessionBaseAdapter(ArrayList<Session> listSessions, Context context) {
+	public QuestionBaseAdapter(ArrayList<Question> listSessions, Context context) {
 		this.listSessions = listSessions;
 		this.listSessionsFilters = listSessions;
 		this.context = context;
@@ -55,7 +59,7 @@ public class SessionBaseAdapter extends BaseAdapter implements Filterable {
 	 * @return The data at the specified position.
 	 */
 	@Override
-	public Session getItem(int position) {
+	public Question getItem(int position) {
 		return listSessions.get(position);
 	}
 
@@ -98,13 +102,13 @@ public class SessionBaseAdapter extends BaseAdapter implements Filterable {
 	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		SessionHolder holder;
+		QuestionHolder holder;
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.student_session_view, null);
-			holder = new SessionHolder();
+			holder = new QuestionHolder();
 			convertView.setTag(holder);
 		} else {
-			holder = (SessionHolder) convertView.getTag();
+			holder = (QuestionHolder) convertView.getTag();
 		}
 
 		holder.sessionName = detail(convertView, R.id.tvSesName, listSessions
@@ -151,13 +155,13 @@ public class SessionBaseAdapter extends BaseAdapter implements Filterable {
 	public Filter getFilter() {
 		if (valueFilter == null) {
 
-			valueFilter = new SessionValueFilter();
+			valueFilter = new QuestionValueFilter();
 		}
 
 		return valueFilter;
 	}
 
-	private class SessionHolder {
+	private class QuestionHolder {
 		TextView sessionName;
 		TextView teacherName;
 		TextView sessionStatus;
@@ -165,7 +169,7 @@ public class SessionBaseAdapter extends BaseAdapter implements Filterable {
 
 	}
 
-	private class SessionValueFilter extends Filter {
+	private class QuestionValueFilter extends Filter {
 
 		// Invoked in a worker thread to filter the data according to the
 		// constraint.
@@ -173,11 +177,11 @@ public class SessionBaseAdapter extends BaseAdapter implements Filterable {
 		protected FilterResults performFiltering(CharSequence constraint) {
 			FilterResults results = new FilterResults();
 			if (constraint != null && constraint.length() > 0) {
-				ArrayList<Session> filterList = new ArrayList<Session>();
+				ArrayList<Question> filterList = new ArrayList<Question>();
 				for (int i = 0; i < listSessionsFilters.size(); i++) {
 					if ((listSessionsFilters.get(i).getName().toUpperCase())
 							.contains(constraint.toString().toUpperCase())) {
-						Session subject = new Session(
+						Question subject = new Question(
 								listSessionsFilters.get(i));
 						filterList.add(subject);
 					}
@@ -197,7 +201,7 @@ public class SessionBaseAdapter extends BaseAdapter implements Filterable {
 		@Override
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
-			listSessions = (ArrayList<Session>) results.values;
+			listSessions = (ArrayList<Question>) results.values;
 			notifyDataSetChanged();
 		}
 	}

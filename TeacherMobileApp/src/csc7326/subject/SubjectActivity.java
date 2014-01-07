@@ -1,12 +1,16 @@
 package csc7326.subject;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,21 +29,10 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-
 import csc7326.main.Configuration;
 import csc7326.main.EVoterSessionManager;
-import csc7326.main.InternetChecking;
 import csc7326.main.R;
-import csc7326.main.SharedData;
 import csc7326.main.Splash;
-import csc7326.session.SessionData;
 import csc7326.utils.Utils;
 import evoter.server.model.Subject;
 
@@ -73,8 +66,8 @@ public class SubjectActivity extends Activity {
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 
-						SharedData.setSubjectData((Subject) parent
-								.getItemAtPosition(position));
+						EVoterSessionManager.setCurrentSubjectID(((Subject) parent
+								.getItemAtPosition(position)).getId());
 						startActivity(new Intent(
 								"android.intent.action.SESSION"));
 					}
@@ -171,7 +164,7 @@ public class SubjectActivity extends Activity {
 									subject = new Subject(
 											Long.parseLong(item.getString("ID")),
 											item.getString("TITLE"),
-											Utils.dateFormat.parse(item
+											Utils.convertToDate(item
 													.getString("CREATION_DATE")));
 								} catch (NumberFormatException e) {
 									// TODO Auto-generated catch block
@@ -211,6 +204,10 @@ public class SubjectActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.mnListSubjectReload:
 			loadListSubjects(userID, key);
+			return true;
+		case R.id.mnQuestion:
+			startActivity(new Intent(
+					"android.intent.action.QUESTIONMANAGEMENT"));
 			return true;
 		case R.id.mnLogout:
 			EVoterSessionManager eVoterSessionManager = new EVoterSessionManager(

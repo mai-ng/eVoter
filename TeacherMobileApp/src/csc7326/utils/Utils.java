@@ -1,18 +1,18 @@
 package csc7326.utils;
 
+import android.annotation.SuppressLint;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 /**
  * Created by luongnv89 on 05/12/13.
  */
 public class Utils {
-	public static final SimpleDateFormat dateFormat = new SimpleDateFormat(
-			"yyyy-MM-dd");
 
 	public static boolean usrnameValid(String usrname) {
 		return true;
@@ -27,9 +27,22 @@ public class Utils {
 	}
 
 	public static JSONArray getJSONArray(String response) throws JSONException {
-//		String reFormat = "{\"data\":" + response + "}";
-//		JSONObject data = new JSONObject(reFormat);
-//		return data.getJSONArray("data");
+		// String reFormat = "{\"data\":" + response + "}";
+		// JSONObject data = new JSONObject(reFormat);
+		// return data.getJSONArray("data");
 		return new JSONArray(response);
+	}
+
+	@SuppressLint("SimpleDateFormat")
+	public static Date convertToDate(String date) throws ParseException {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		return dateFormat.parse(date);
+	}
+
+	@SuppressLint("SimpleDateFormat")
+	public static String convertToString(Date date) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return dateFormat.format(date);
 	}
 }

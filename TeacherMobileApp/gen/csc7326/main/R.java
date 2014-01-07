@@ -52,10 +52,11 @@ public final class R {
         public static final int linearLayout=0x7f09000b;
         public static final int lvSession=0x7f090019;
         public static final int lvSubjects=0x7f09001b;
-        public static final int mnExit=0x7f090028;
+        public static final int mnExit=0x7f090029;
         public static final int mnListSessionReload=0x7f090026;
-        public static final int mnListSubjectReload=0x7f090029;
-        public static final int mnLogout=0x7f090027;
+        public static final int mnListSubjectReload=0x7f09002a;
+        public static final int mnLogout=0x7f090028;
+        public static final int mnQuestion=0x7f090027;
         public static final int password=0x7f090006;
         public static final int prBar=0x7f090017;
         public static final int textView=0x7f090001;

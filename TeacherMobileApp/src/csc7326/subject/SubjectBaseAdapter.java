@@ -110,7 +110,7 @@ public class SubjectBaseAdapter extends BaseAdapter implements Filterable {
 				convertView,
 				R.id.tvSubDate,
 				"Created: "
-						+ Utils.dateFormat.format(listSubjects.get(position)
+						+ Utils.convertToString(listSubjects.get(position)
 								.getCreationDate()));
 		return convertView;
 	}

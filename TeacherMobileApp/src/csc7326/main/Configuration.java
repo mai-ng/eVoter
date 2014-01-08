@@ -8,7 +8,7 @@ package csc7326.main;
  * 
  */
 public class Configuration {
-	private static String IPAddress ="192.168.0.14";
+	private static String IPAddress ="157.159.42.152";
 	private static int portNumber = 1000;
 	// for testing only
 	private static String _urlLogin = "/evoter/login";

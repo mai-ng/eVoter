@@ -1,5 +1,8 @@
 package csc7326.main;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,11 +19,14 @@ import android.widget.TextView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-
+import evoter.server.dao.UserDAO;
 import csc7326.subject.SubjectActivity;
 
 /**
- * Created by luongnv89 on 05/12/13.
+ * Created by luongnv89 on 05/12/13 </br>
+ * Updated by @author btdiem on 08-Jan-2014:</br>
+ * 		</li> parse response and store user key sent by server to verify next time
+ * 
  */
 public class Login extends Activity {
 
@@ -61,8 +67,8 @@ public class Login extends Activity {
 				final String i_Usrname = etUsrName.getText().toString();
 				final String i_Password = etPassword.getText().toString();
 				RequestParams params = new RequestParams();
-				params.add("username", i_Usrname);
-				params.add("password", i_Password);
+				params.add(UserDAO.USER_NAME, i_Usrname);
+				params.add(UserDAO.PASSWORD, i_Password);
 
 				// String sttMsg = getData.getContent("http://www.vogella.com");
 				//Pre-checking on client	
@@ -80,53 +86,84 @@ public class Login extends Activity {
 								@Override
 								public void onSuccess(String response) {
 									Log.i("LoginTest", "response : " + response);
+									String userKey = null;
 									
-									
-									if (response.equalsIgnoreCase("TRUE")) {
-										//Correct user and password
-										if (cbRemember.isChecked()) {
-											eVoterSessionManager
-													.createLoginSession(
-															i_Usrname,
-															i_Password);
-										}
-										Intent subjectIntent = new Intent(
-												Login.this,
-												SubjectActivity.class);
-										subjectIntent
-												.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-										subjectIntent
-												.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-										startActivity(subjectIntent);
-										Log.i("LoginTest", "SUCCESS");
-									} else {
-										Log.i("LoginTest", "response : " + response);
-//										//Incorrect user and password	
-//										tvStatusLogin
-//												.setText("Username and password incorrect!");
-//										// tvStatusLogin.setText(sttMsg);
-//										btFgPassword
-//												.setVisibility(View.VISIBLE);
-//										btRegister.setVisibility(View.VISIBLE);
-//										Log.i("LoginTest",
-//												"Username and password incorrect!");
-										//Correct user and password
-										if (cbRemember.isChecked()) {
-											eVoterSessionManager
-													.createLoginSession(
-															i_Usrname,
-															i_Password);
-										}
-										Intent subjectIntent = new Intent(
-												Login.this,
-												SubjectActivity.class);
-										subjectIntent
-												.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-										subjectIntent
-												.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-										startActivity(subjectIntent);
-										Log.i("LoginTest", "SUCCESS");
+									try {
+										
+										JSONObject object = new JSONObject(response);
+										userKey = object.getString(UserDAO.USER_KEY);
+										
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
 									}
+									
+									if (userKey != null || userKey != "null"){
+										
+										if (cbRemember.isChecked()) {
+											eVoterSessionManager
+													.createLoginSession(
+															i_Usrname,
+															i_Password);
+										}
+										Intent subjectIntent = new Intent(
+												Login.this,
+												SubjectActivity.class);
+										subjectIntent
+												.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+										subjectIntent
+												.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+										startActivity(subjectIntent);
+										Log.i("LoginTest", "SUCCESS");
+										EVoterSessionManager.setUserKey(userKey);
+										
+									}
+									
+//									if (response.equalsIgnoreCase("TRUE")) {
+//										//Correct user and password
+//										if (cbRemember.isChecked()) {
+//											eVoterSessionManager
+//													.createLoginSession(
+//															i_Usrname,
+//															i_Password);
+//										}
+//										Intent subjectIntent = new Intent(
+//												Login.this,
+//												SubjectActivity.class);
+//										subjectIntent
+//												.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//										subjectIntent
+//												.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//										startActivity(subjectIntent);
+//										Log.i("LoginTest", "SUCCESS");
+//									} else {
+//										Log.i("LoginTest", "response : " + response);
+////										//Incorrect user and password	
+////										tvStatusLogin
+////												.setText("Username and password incorrect!");
+////										// tvStatusLogin.setText(sttMsg);
+////										btFgPassword
+////												.setVisibility(View.VISIBLE);
+////										btRegister.setVisibility(View.VISIBLE);
+////										Log.i("LoginTest",
+////												"Username and password incorrect!");
+//										//Correct user and password
+//										if (cbRemember.isChecked()) {
+//											eVoterSessionManager
+//													.createLoginSession(
+//															i_Usrname,
+//															i_Password);
+//										}
+//										Intent subjectIntent = new Intent(
+//												Login.this,
+//												SubjectActivity.class);
+//										subjectIntent
+//												.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//										subjectIntent
+//												.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//										startActivity(subjectIntent);
+//										Log.i("LoginTest", "SUCCESS");
+//									}
 									// tvStatusLogin.setText(response);
 
 								}

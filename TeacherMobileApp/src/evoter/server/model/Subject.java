@@ -73,7 +73,7 @@ public class Subject implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public String toJSONString() {
+	public String toJSON() {
 
 		JSONObject obj = new JSONObject();
 		obj.put(SubjectDAO.ID, id);

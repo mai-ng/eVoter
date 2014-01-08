@@ -84,7 +84,16 @@ public class EVoterSessionManager {
     private static long currentSubjectID;
     private static long currentSessionID;
     private static boolean currentSessionStatus;
+    private static String userKey;
     
+	public static String getUserKey() {
+		return userKey;
+	}
+
+	public static void setUserKey(String userKey) {
+		EVoterSessionManager.userKey = userKey;
+	}
+
 	public static void setCurrentSubjectID(long id) {
 		currentSubjectID = id;
 	}

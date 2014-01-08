@@ -34,10 +34,16 @@ import csc7326.main.EVoterSessionManager;
 import csc7326.main.R;
 import csc7326.main.Splash;
 import csc7326.utils.Utils;
+import evoter.server.dao.UserDAO;
 import evoter.server.model.Subject;
+import evoter.server.dao.SubjectDAO;
 
 /**
- * Created by luongnv89 on 05/12/13.
+ * Created by @author nvluong on 05-Dec-2013</br>
+ * Updated by @author btdiem on 08-Jan-2014 : </br> 
+ * 	</li>update loadListSubjects() method:
+ * 		</li>remove parameters 
+ * 		</li>add userKey to parameter map when sending request to server 
  */
 public class SubjectActivity extends Activity {
 
@@ -46,8 +52,6 @@ public class SubjectActivity extends Activity {
 	SubjectBaseAdapter subjectBaseAdapter;
 	Context context;
 	EditText etSearch;
-	String userID = "USER_ID";
-	String key = "4";
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,7 +59,7 @@ public class SubjectActivity extends Activity {
 		context = this;
 		listSubjects = new ArrayList<Subject>();
 		listSubView = (ListView) findViewById(R.id.lvSubjects);
-		loadListSubjects(userID, key);
+		loadListSubjects();
 		subjectBaseAdapter = new SubjectBaseAdapter(listSubjects,
 				SubjectActivity.this);
 		listSubView.setAdapter(subjectBaseAdapter);
@@ -145,10 +149,12 @@ public class SubjectActivity extends Activity {
 		});
 	}
 
-	private void loadListSubjects(String userID2, String key2) {
+	private void loadListSubjects() {
+		
 		AsyncHttpClient client = new AsyncHttpClient(1000);
 		RequestParams params = new RequestParams();
-		params.add(userID2, key2);
+		//params.add(userID2, key2);
+		params.put(UserDAO.USER_KEY, EVoterSessionManager.getUserKey());
 		client.post(Configuration.get_urlGetAllSubject(), params,
 				new AsyncHttpResponseHandler() {
 					@Override
@@ -162,10 +168,10 @@ public class SubjectActivity extends Activity {
 								Subject subject = null;
 								try {
 									subject = new Subject(
-											Long.parseLong(item.getString("ID")),
-											item.getString("TITLE"),
+											Long.parseLong(item.getString(SubjectDAO.ID)),
+											item.getString(SubjectDAO.TITLE),
 											Utils.convertToDate(item
-													.getString("CREATION_DATE")));
+													.getString(SubjectDAO.CREATION_DATE)));
 								} catch (NumberFormatException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
@@ -203,7 +209,7 @@ public class SubjectActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.mnListSubjectReload:
-			loadListSubjects(userID, key);
+			loadListSubjects();
 			return true;
 		case R.id.mnQuestion:
 			startActivity(new Intent(

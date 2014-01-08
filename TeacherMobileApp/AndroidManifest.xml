@@ -71,7 +71,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="csc7326.question.SessionViewActivity"
+            android:name="csc7326.question.QuestionViewActivity"
             android:label="Session View" >
             <intent-filter>
                 <action android:name="android.intent.action.SESSIONVIEW" />

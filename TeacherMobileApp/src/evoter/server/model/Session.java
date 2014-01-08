@@ -86,7 +86,7 @@ public class Session implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public String toJSONString() {
+	public String toJSON() {
 
 		JSONObject obj = new JSONObject();
 		obj.put(SessionDAO.ID, id);

@@ -268,4 +268,10 @@ public class URIUtils {
 		
 		URIUtils.writeResponse("FAILURE", httpExchange);
 	}
+	
+	public static Long getUserIdFromUserKey(String userKey){
+		
+		String[] arrays = userKey.split("_");
+		return Long.valueOf(arrays[1]);
+	}
 }

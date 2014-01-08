@@ -2,6 +2,11 @@ package evoter.server.model;
 
 import java.io.Serializable;
 
+import org.json.simple.JSONObject;
+
+import evoter.server.dao.AnswerDAO;
+import evoter.server.dao.QuestionDAO;
+
 public class Answer implements Serializable {
 
 	/**
@@ -36,7 +41,14 @@ public class Answer implements Serializable {
 				+ ", answerText=" + answerText + "]";
 	}
 	
-	
+	@SuppressWarnings("unchecked")
+	public JSONObject toJSON() {
+		JSONObject object = new JSONObject();
+		object.put(AnswerDAO.ID, id);
+		object.put(AnswerDAO.QUESTION_ID, questionId);
+		object.put(AnswerDAO.ANSWER_TEXT, answerText);
+		return object;
+	}
 	
 
 }

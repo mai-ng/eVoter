@@ -1,16 +1,20 @@
 package evoter.server.http.request;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import com.sun.net.httpserver.HttpExchange;
 
+import evoter.server.dao.AnswerDAO;
 import evoter.server.dao.BeanDAOFactory;
 import evoter.server.dao.QuestionDAO;
 import evoter.server.http.URIUtils;
+import evoter.server.model.Answer;
 import evoter.server.model.Question;
 
 public class QuestionRequest {
@@ -30,8 +34,11 @@ public class QuestionRequest {
 			
 			JSONArray jsArray = new JSONArray();
 			for (Question question : questionList){
-				jsArray.add(question.toJSONString());
+				JSONObject object = question.toJSON();
+				object.put("answers", getAnswersOfQuestion(question.getId()));
+				jsArray.add(object.toJSONString());			
 			}
+			System.out.println("question:" + jsArray.toJSONString());
 			URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
 			
 		}else{
@@ -48,10 +55,11 @@ public class QuestionRequest {
 		QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
 		List<Question> questionList = questionDao.findById(questionId);
 		if (questionList != null && !questionList.isEmpty()){
-			
 			JSONArray jsArray = new JSONArray();
 			for (Question question : questionList){
-				jsArray.add(question.toJSONString());
+				//JSONObject jsObject = question.toJSON();
+				question.toJSON().put("answers", getAnswersOfQuestion(question.getId()));
+				jsArray.add(question.toJSON().toJSONString());
 			}
 			URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
 			
@@ -60,6 +68,26 @@ public class QuestionRequest {
 		}		
 	}
 
+	/**
+	 * 
+	 * @param questionId
+	 * @return a {@link JSONArray} 
+	 */
+	@SuppressWarnings("unchecked")
+	public static String getAnswersOfQuestion(long questionId){
+		
+		List<Answer> answers = (List<Answer>) ((AnswerDAO)BeanDAOFactory.getBean(AnswerDAO.BEAN_NAME)).findByQuestionId(questionId);
+		if (answers != null && !answers.isEmpty()){
+			JSONArray arrays = new JSONArray();
+			for (Answer answer : answers){
+				arrays.add(answer.toJSON());
+			}
+			return arrays.toJSONString();
+		}else{
+			return null;
+		}
+		
+	}
 	public static void doSave(HttpExchange httpExchange,
 			Map<String, String> parameters) {
 		// TODO Auto-generated method stub
@@ -72,6 +100,7 @@ public class QuestionRequest {
 		long questionId = Long.parseLong(parameters.get(QuestionDAO.ID));
 		QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
 		questionDao.deleteById(questionId);
+		((AnswerDAO)BeanDAOFactory.getBean(AnswerDAO.BEAN_NAME)).deleteByQuestionId(questionId);
 		URIUtils.writeSuccessResponse(httpExchange);
 		
 	}
@@ -84,6 +113,7 @@ public class QuestionRequest {
 		mapSentQuestion.put(sessionId, questionId);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void doGetLatest(HttpExchange httpExchange,
 			Map<String, String> parameters) {
 		
@@ -92,7 +122,8 @@ public class QuestionRequest {
 			long questionId = mapSentQuestion.get(sessionId);
 			QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
 			Question question = questionDao.findById(questionId).get(0);
-			URIUtils.writeResponse(question.toJSONString(), httpExchange);
+			question.toJSON().put("answers", getAnswersOfQuestion(question.getId()));
+			URIUtils.writeResponse(question.toJSON().toJSONString(), httpExchange);
 		}else{
 			URIUtils.writeFailureResponse(httpExchange);
 		}

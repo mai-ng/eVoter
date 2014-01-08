@@ -1,15 +1,62 @@
 package evoter.server.dao.test;
 
+import javax.annotation.Resource;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
+
 import evoter.server.dao.BeanDAOFactory;
 import evoter.server.dao.UserTypeDAO;
 import evoter.server.model.UserType;
 
-public class TestUserTypeDAO {
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:application-context.xml"})
+@TransactionConfiguration
+@Transactional
+public class TestUserTypeDAO extends AbstractTransactionalJUnit4SpringContextTests{
+
+	@Autowired
+	UserTypeDAO userTypeDAO;
+	
+	@Before
+	public void setUp() throws Exception {
+		//userTypeDAO = (UserTypeDAO)BeanDAOFactory.getBean(UserTypeDAO.BEAN_NAME);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		//userTypeDAO = null;
+	}
+
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testInsert(){
+		
+		UserType insert = new UserType();
+		insert.setUserTypeValue("test data");
+		userTypeDAO.insert(insert);
+	}
+
+	
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+/**	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 		UserTypeDAO userTypeDao = (UserTypeDAO)BeanDAOFactory.getBean("userTypeDAO");
@@ -32,7 +79,7 @@ public class TestUserTypeDAO {
 		userTypeDao.deleteByUserTypeValue("test data");
 		System.out.println(userTypeDao.findAll());
 	}
-	
+	*/
 	
 
 }

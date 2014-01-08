@@ -11,6 +11,7 @@ public interface AnswerDAO {
 	public static final String ANSWER_TEXT = "ANSWER_TEXT";
 	public static final String QUESTION_ID = "QUESTION_ID";
 	public static final String TABLE_NAME = "ANSWER";
+	public static final String BEAN_NAME = "answerDAO";
 	
 	public int insert (Answer answer);
 	public List<Answer> findAll();

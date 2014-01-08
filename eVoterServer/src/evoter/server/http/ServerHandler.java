@@ -17,7 +17,7 @@ public class ServerHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange httpExchange) throws IOException {
 		
-		System.out.println("Request is comming...");
+		System.out.println("Request is comming..." + httpExchange.getRequestURI());
 		new Thread(new ThreadHandler(httpExchange)).start();
 		
 	}

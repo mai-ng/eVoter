@@ -48,13 +48,13 @@ public class Subject implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public String toJSONString(){
+	public JSONObject toJSON(){
 		
 		JSONObject obj = new JSONObject();
 		obj.put(SubjectDAO.ID, id);
 		obj.put(SubjectDAO.TITLE, title);
 		obj.put(SubjectDAO.CREATION_DATE, creationDate);
-		return obj.toJSONString();
+		return obj;
 
 	}
 	

@@ -25,7 +25,7 @@ public class SessionRequest {
 		List<Session> sessions = sesDao.findBySubjectId(subjectId);
 		JSONArray jsArray = new JSONArray();
 		for (Session ses : sessions){
-			jsArray.add(ses.toJSONString());
+			jsArray.add(ses.toJSON().toJSONString());
 		}
 		URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
 	}
@@ -39,7 +39,7 @@ public class SessionRequest {
 		List<Session> sessions = sesDao.findById(id);
 		JSONArray jsArray = new JSONArray();
 		for (Session ses : sessions){
-			jsArray.add(ses.toJSONString());
+			jsArray.add(ses.toJSON().toJSONString());
 		}
 		URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
 	}
@@ -84,8 +84,6 @@ public class SessionRequest {
 			URIUtils.writeFailureResponse(httpExchange);
 		}
 	
-		
-		
 	}
 
 	public static void doDelete(HttpExchange httpExchange,

@@ -13,6 +13,7 @@ public interface UserDAO {
 	public static final String ID = "id";
 	public static final String TABLE_NAME = "USER";
 	public static final String BEAN_NAME = "userDAO";
+	public static final String USER_KEY = "userkey";
 	
 	public int insert(User user);
 	public List<User> findAll();

@@ -52,7 +52,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     <bean id="httpConnection" class="evoter.server.http.HttpConnection" lazy-init="true">
 		<property name="context" value="evoter" />
 		<property name="port" value="1000" />
-		<property name="ip" value="157.159.42.152" />
+		<property name="ip" value="192.168.102.14" />
 	</bean>
     
     

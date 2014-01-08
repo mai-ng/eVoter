@@ -51,7 +51,9 @@ public class User implements Serializable{
 				+ "]";
 	}
 	
-	
+	public String generateUserKey(long responseTime){
+		return responseTime+"_"+id+"_"+userTypeId; 
+	}
 	
 	
 }

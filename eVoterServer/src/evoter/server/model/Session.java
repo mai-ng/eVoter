@@ -52,7 +52,7 @@ public class Session implements Serializable {
 
 	
 	@SuppressWarnings("unchecked")
-	public String toJSONString(){
+	public JSONObject toJSON(){
 
 		JSONObject obj = new JSONObject();
 		obj.put(SessionDAO.ID, id);
@@ -60,7 +60,7 @@ public class Session implements Serializable {
 		obj.put(SessionDAO.IS_ACTIVE, isActive);
 		obj.put(SessionDAO.NAME, name);
 		obj.put(SessionDAO.SUBJECT_ID, subjectId);
-		return obj.toJSONString();
+		return obj;
 
 	}
 	@Override

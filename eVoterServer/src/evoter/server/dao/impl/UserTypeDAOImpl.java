@@ -10,7 +10,7 @@ import evoter.server.model.mapper.UserTypeRowMapper;
 
 public class UserTypeDAOImpl extends JdbcDaoSupport implements UserTypeDAO {
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked"})
 	@Override
 	public List<UserType> findAll() {
 		

@@ -48,13 +48,13 @@ public class Question implements Serializable {
 				+ "]";
 	}
 	@SuppressWarnings("unchecked")
-	public String toJSONString() {
+	public JSONObject toJSON() {
 		JSONObject object = new JSONObject();
 		object.put(QuestionDAO.ID, id);
 		object.put(QuestionDAO.QUESTION_TEXT, questionText);
 		object.put(QuestionDAO.QUESTION_TYPE_ID, questionTypeId);
 		object.put(QuestionDAO.SESSION_ID, sessionId);
-		return object.toJSONString();
+		return object;
 	}
 	
 	

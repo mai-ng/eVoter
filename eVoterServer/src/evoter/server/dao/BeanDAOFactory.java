@@ -18,14 +18,17 @@ public class BeanDAOFactory {
 //	}
 	
 	public static BeanFactory getApplicationContext(){
-		//TODO : Luongnv89: Test connection on Mac
+		
 		if (beanFactory == null){
 			
-			File f = new File("resources/Application-Context.xml");
+			File f = new File(".\\resources\\Application-Context.xml");
+			System.out.println("read application-context");
 			try {
-//				beanFactory = (BeanFactory)new FileSystemXmlApplicationContext(f.getCanonicalPath());
-				beanFactory = (BeanFactory)new FileSystemXmlApplicationContext("resources/Application-Context.xml");
+				beanFactory = (BeanFactory)new FileSystemXmlApplicationContext(f.getCanonicalPath());
 			} catch (BeansException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

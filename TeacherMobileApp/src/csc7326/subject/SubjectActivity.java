@@ -124,7 +124,7 @@ public class SubjectActivity extends Activity {
 					}
 				});
 
-		etSearch = (EditText) findViewById(R.id.etSubjectSearch);
+		etSearch = (EditText) findViewById(R.id.etQuestionSearchSessionRunning);
 		etSearch.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,

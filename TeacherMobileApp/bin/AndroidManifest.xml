@@ -70,6 +70,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="csc7326.question.SessionViewActivity"
+            android:label="Session View" >
+            <intent-filter>
+                <action android:name="android.intent.action.SESSIONVIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

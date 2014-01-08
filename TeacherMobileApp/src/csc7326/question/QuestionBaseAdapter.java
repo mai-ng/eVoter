@@ -9,33 +9,34 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
+import csc7326.main.EVoterSessionManager;
 import csc7326.main.R;
-import csc7326.utils.Utils;
 import evoter.server.model.Question;
 
 /**
  * @author luongnv89
- *
+ * 
  */
-public class QuestionBaseAdapter extends BaseAdapter implements Filterable{
+public class QuestionBaseAdapter extends BaseAdapter implements Filterable {
 
-	ArrayList<Question> listSessions;
-	ArrayList<Question> listSessionsFilters;
+	ArrayList<Question> listQuestionToPublic;
+	ArrayList<Question> listQuestionToFilter;
 
 	Context context;
 	LayoutInflater inflater;
 	private QuestionValueFilter valueFilter;
 
-	public QuestionBaseAdapter(ArrayList<Question> listSessions, Context context) {
-		this.listSessions = listSessions;
-		this.listSessionsFilters = listSessions;
+	public QuestionBaseAdapter(ArrayList<Question> listQuestion, Context context) {
+		this.listQuestionToPublic = listQuestion;
+		this.listQuestionToFilter = listQuestion;
 		this.context = context;
 		this.inflater = LayoutInflater.from(this.context);
 	}
@@ -47,7 +48,7 @@ public class QuestionBaseAdapter extends BaseAdapter implements Filterable{
 	 */
 	@Override
 	public int getCount() {
-		return listSessions.size();
+		return listQuestionToPublic.size();
 	}
 
 	/**
@@ -60,7 +61,7 @@ public class QuestionBaseAdapter extends BaseAdapter implements Filterable{
 	 */
 	@Override
 	public Question getItem(int position) {
-		return listSessions.get(position);
+		return listQuestionToPublic.get(position);
 	}
 
 	/**
@@ -101,34 +102,45 @@ public class QuestionBaseAdapter extends BaseAdapter implements Filterable{
 	 * @return A View corresponding to the data at the specified position.
 	 */
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
+
 		QuestionHolder holder;
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.student_session_view, null);
+			convertView = inflater.inflate(R.layout.question_view_item, null);
 			holder = new QuestionHolder();
 			convertView.setTag(holder);
 		} else {
 			holder = (QuestionHolder) convertView.getTag();
 		}
 
-		holder.sessionName = detail(convertView, R.id.tvSesName, listSessions
-				.get(position).getName());
-		holder.teacherName = detail(convertView, R.id.tvTeacher, "Unknown");
-		holder.sessionStatus = detail(convertView, R.id.tvSessionStatus,
-				listSessions.get(position).isActive() ? "Active" : "Inactive");
-		if (listSessions.get(position).isActive()) {
-			holder.sessionStatus.setTextColor(Color.RED);
-			Animation animation = new TranslateAnimation(0, 480, 0, 0);
-			// Animation animation = new AlphaAnimation(0.0f,1.0f);
-			animation.setDuration(5000);
-			// animation.setStartOffset(20);
-			animation.setRepeatMode(Animation.REVERSE);
-			animation.setRepeatCount(Animation.INFINITE);
-			holder.sessionStatus.startAnimation(animation);
+		holder.auestionText = detail(convertView, R.id.tvQuestionShortDescript,
+				listQuestionToPublic.get(position).getQuestionText());
+		holder.btAction = (Button) convertView
+				.findViewById(R.id.btSessionAction);
+		holder.btAction.setText("Send");
+		if (!EVoterSessionManager.getCurrentSessionStatus()) {
+			holder.btAction.setTextColor(Color.GRAY);
+			holder.btAction.setClickable(false);
+		} else {
+			holder.btAction.setOnClickListener(new OnClickListener() {
+			
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					// TODO: Send question for student and move to statistic
+					// view
+
+					Toast.makeText(
+							context,
+							"Send question for student and move to statistic view: "
+									+ listQuestionToPublic.get(position)
+											.getQuestionText(),
+							Toast.LENGTH_LONG).show();
+
+				}
+			}
+			);
 		}
-		holder.sessionDate = detail(convertView, R.id.tvSessDate,
-				Utils.convertToString(listSessions.get(position)
-						.getCreationDate()));
 		return convertView;
 	}
 
@@ -162,11 +174,8 @@ public class QuestionBaseAdapter extends BaseAdapter implements Filterable{
 	}
 
 	private class QuestionHolder {
-		TextView sessionName;
-		TextView teacherName;
-		TextView sessionStatus;
-		TextView sessionDate;
-
+		TextView auestionText;
+		Button btAction;
 	}
 
 	private class QuestionValueFilter extends Filter {
@@ -178,19 +187,20 @@ public class QuestionBaseAdapter extends BaseAdapter implements Filterable{
 			FilterResults results = new FilterResults();
 			if (constraint != null && constraint.length() > 0) {
 				ArrayList<Question> filterList = new ArrayList<Question>();
-				for (int i = 0; i < listSessionsFilters.size(); i++) {
-					if ((listSessionsFilters.get(i).getName().toUpperCase())
-							.contains(constraint.toString().toUpperCase())) {
+				for (int i = 0; i < listQuestionToFilter.size(); i++) {
+					if ((listQuestionToFilter.get(i).getQuestionText()
+							.toUpperCase()).contains(constraint.toString()
+							.toUpperCase())) {
 						Question subject = new Question(
-								listSessionsFilters.get(i));
+								listQuestionToFilter.get(i));
 						filterList.add(subject);
 					}
 				}
 				results.count = filterList.size();
 				results.values = filterList;
 			} else {
-				results.count = listSessionsFilters.size();
-				results.values = listSessionsFilters;
+				results.count = listQuestionToFilter.size();
+				results.values = listQuestionToFilter;
 			}
 			return results;
 		}
@@ -201,7 +211,7 @@ public class QuestionBaseAdapter extends BaseAdapter implements Filterable{
 		@Override
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
-			listSessions = (ArrayList<Question>) results.values;
+			listQuestionToPublic = (ArrayList<Question>) results.values;
 			notifyDataSetChanged();
 		}
 	}

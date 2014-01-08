@@ -14,81 +14,105 @@ public class Question implements Serializable {
 	private static final long serialVersionUID = -5892190903011268048L;
 
 	private long id;
-	private long questionTypeId;
-	private long sessionId;
 	private String questionText;
-
+	private String answers;
+	private int questionType;
+	private String correctAnswer;
+	
+	
+	
 	/**
-	 * 
-	 */
-	public Question(Question cp) {
-		this.id = cp.getId();
-		this.questionTypeId = cp.getQuestionTypeId();
-		this.sessionId = cp.getSessionId();
-		this.questionText = cp.getQuestionText();
-	}
-
-	/**
+	 * Student and teacher: Create an object of {@link Question} from response
 	 * @param id
-	 * @param questionTypeId
-	 * @param sessionId
 	 * @param questionText
+	 * @param answers
+	 * @param questionTy
 	 */
-	public Question(long id, long questionTypeId, long sessionId,
-			String questionText) {
+	public Question(long id, String questionText, String answers, int questionTy) {
 		this.id = id;
-		this.questionTypeId = questionTypeId;
-		this.sessionId = sessionId;
 		this.questionText = questionText;
+		this.answers = answers;
+		this.questionType = questionTy;
+	}
+	
+	
+	
+	/**
+	 * Teacher: Create new question to submit to sever
+	 * @param questionText
+	 * @param answers
+	 * @param questionTy
+	 * @param correctAnswer
+	 */
+	public Question(String questionText, String answers, int questionTy,
+			String correctAnswer) {
+		this.questionText = questionText;
+		this.answers = answers;
+		this.questionType = questionTy;
+		this.correctAnswer = correctAnswer;
 	}
 
+	
+	/**
+	 * Teacher: Edit a question
+	 * @param id
+	 * @param questionText
+	 * @param answers
+	 * @param questionTy
+	 * @param correctAnswer
+	 */
+	public Question(long id, String questionText, String answers,
+			int questionTy, String correctAnswer) {
+		this.id = id;
+		this.questionText = questionText;
+		this.answers = answers;
+		this.questionType = questionTy;
+		this.correctAnswer = correctAnswer;
+	}
+
+
+
+	/**
+	 * @param question
+	 */
+	public Question(Question question) {
+		this.id = question.getId();
+		this.questionText = question.getQuestionText();
+		this.questionType = question.getQuestionType();
+		this.answers = question.getAnswers();
+	}
+
+
+
+	/**
+	 * @return the correctAnswer
+	 */
+	public String getCorrectAnswer() {
+		return correctAnswer;
+	}
+	/**
+	 * @return the id
+	 */
 	public long getId() {
 		return id;
 	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public long getQuestionTypeId() {
-		return questionTypeId;
-	}
-
-	public void setQuestionTypeId(long questionTypeId) {
-		this.questionTypeId = questionTypeId;
-	}
-
-	public long getSessionId() {
-		return sessionId;
-	}
-
-	public void setSessionId(long sessionId) {
-		this.sessionId = sessionId;
-	}
-
+	/**
+	 * @return the questionText
+	 */
 	public String getQuestionText() {
 		return questionText;
 	}
-
-	public void setQuestionText(String questionText) {
-		this.questionText = questionText;
+	/**
+	 * @return the answers
+	 */
+	public String getAnswers() {
+		return answers;
 	}
-
-	@Override
-	public String toString() {
-		return "Question [id=" + id + ", questionTypeId=" + questionTypeId
-				+ ", sessionId=" + sessionId + ", questionText=" + questionText
-				+ "]";
-	}
-
-	@SuppressWarnings("unchecked")
-	public String toJSONString() {
-		JSONObject object = new JSONObject();
-		object.put(QuestionDAO.ID, id);
-		object.put(QuestionDAO.QUESTION_TEXT, questionText);
-		object.put(QuestionDAO.QUESTION_TYPE_ID, questionTypeId);
-		object.put(QuestionDAO.SESSION_ID, sessionId);
-		return object.toJSONString();
+	/**
+	 * @return the questionTy
+	 */
+	public int getQuestionType() {
+		return questionType;
 	}
 
 }

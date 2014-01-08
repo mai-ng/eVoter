@@ -15,14 +15,14 @@
         android:padding="10dp">
 
         <EditText
+            android:id="@+id/etQuestionSearchSessionRunning"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/etQuestionSearchSessionRunning"
             android:layout_weight="9"
-            android:hint="Find subjects"
+            android:hint="Find question"
             android:lines="1"
-            android:singleLine="true"
-            android:maxLines="1">
+            android:maxLines="1"
+            android:singleLine="true" >
 
             <requestFocus />
         </EditText>
@@ -30,10 +30,10 @@
     </LinearLayout>
 
     <ListView
+        android:id="@+id/lvQuestionSesionRunning"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/lvSubjects"
-        android:choiceMode="singleChoice"
-        android:layout_weight="5" />
+        android:layout_weight="5"
+        android:choiceMode="singleChoice" />
 
 </LinearLayout>

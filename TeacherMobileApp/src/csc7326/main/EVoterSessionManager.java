@@ -83,6 +83,7 @@ public class EVoterSessionManager {
     //Static part
     private static long currentSubjectID;
     private static long currentSessionID;
+    private static boolean currentSessionStatus;
     
 	public static void setCurrentSubjectID(long id) {
 		currentSubjectID = id;
@@ -104,6 +105,20 @@ public class EVoterSessionManager {
 	 */
 	public static void setCurrentSessionID(long currentSessionID) {
 		EVoterSessionManager.currentSessionID = currentSessionID;
+	}
+
+	/**
+	 * @return the currentSessionStatus
+	 */
+	public static boolean getCurrentSessionStatus() {
+		return currentSessionStatus;
+	}
+
+	/**
+	 * @param currentSessionStatus the currentSessionStatus to set
+	 */
+	public static void setCurrentSessionStatus(boolean currentSessionStatus) {
+		EVoterSessionManager.currentSessionStatus = currentSessionStatus;
 	}
 	
 	

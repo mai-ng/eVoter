@@ -32,6 +32,7 @@ import csc7326.main.R;
 import csc7326.main.Splash;
 import csc7326.utils.Utils;
 import evoter.server.dao.QuestionDAO;
+import evoter.server.dao.QuestionSessionDAO;
 import evoter.server.dao.UserDAO;
 import evoter.server.model.Question;
 
@@ -110,7 +111,7 @@ public class QuestionViewActivity extends Activity {
 	private void loadListQuestion(long sessionID) {
 		AsyncHttpClient client = new AsyncHttpClient(1000);
 		RequestParams params = new RequestParams();
-		params.add(QuestionDAO.SESSION_ID, String.valueOf(sessionID));
+		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(sessionID));
 		params.put(UserDAO.USER_KEY, EVoterSessionManager.getUserKey());
 		
 		client.post(Configuration.get_urlGetAllQuestion(), params,
@@ -126,7 +127,7 @@ public class QuestionViewActivity extends Activity {
 								Question question = new Question(Long
 										.parseLong(s.getString(QuestionDAO.ID)), s
 										.getString(QuestionDAO.QUESTION_TEXT), s
-										.getString(QuestionDAO.SESSION_ID), Integer
+										.getString(QuestionSessionDAO.SESSION_ID), Integer
 										.parseInt(s.getString(QuestionDAO.QUESTION_TYPE_ID)));
 								listQuestions.add(question);
 							}

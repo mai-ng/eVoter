@@ -21,7 +21,6 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 							statistics.getStatisticValue()});
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Statistics> findAll() {
 
@@ -30,7 +29,6 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 	
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Statistics> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {

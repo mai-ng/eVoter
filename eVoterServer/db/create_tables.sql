@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `answer` (
   CONSTRAINT `FK_answer_question` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter.answer: ~6 rows (approximately)
+-- Dumping data for table evoter.answer: ~8 rows (approximately)
 DELETE FROM `answer`;
 /*!40000 ALTER TABLE `answer` DISABLE KEYS */;
 INSERT INTO `answer` (`id`, `question_id`, `answer_text`) VALUES
@@ -33,31 +33,40 @@ INSERT INTO `answer` (`id`, `question_id`, `answer_text`) VALUES
 	(2, 3, '2'),
 	(3, 3, '0'),
 	(4, 3, 'unlimited'),
-	(7, 2, 'add a new answer'),
-	(8, 2, 'add a new answer');
+	(5, 4, 'My brother'),
+	(6, 4, 'He broke his leg.'),
+	(7, 4, 'Two hours.'),
+	(8, 4, 'It\'s 2 o\'clock.');
 /*!40000 ALTER TABLE `answer` ENABLE KEYS */;
 
 
 -- Dumping structure for table evoter.question
 CREATE TABLE IF NOT EXISTS `question` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `question_type_id` int(10) unsigned NOT NULL,
-  `session_id` int(10) unsigned NOT NULL,
   `question_text` char(255) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  `question_type_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `parent_id` int(10) DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `question_FKIndex1` (`session_id`),
-  KEY `question_FKIndex2` (`question_type_id`),
+  KEY `FK_question_user` (`user_id`),
+  KEY `FK_question_question_type` (`question_type_id`),
   CONSTRAINT `FK_question_question_type` FOREIGN KEY (`question_type_id`) REFERENCES `question_type` (`id`),
-  CONSTRAINT `FK_question_session` FOREIGN KEY (`session_id`) REFERENCES `session` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+  CONSTRAINT `FK_question_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter.question: ~3 rows (approximately)
+-- Dumping data for table evoter.question: ~8 rows (approximately)
 DELETE FROM `question`;
 /*!40000 ALTER TABLE `question` DISABLE KEYS */;
-INSERT INTO `question` (`id`, `question_type_id`, `session_id`, `question_text`) VALUES
-	(1, 2, 1, 'Interface can implement an interface?'),
-	(2, 2, 1, 'Abstract can implement an interface?'),
-	(3, 1, 1, 'An class can implement how many interface?');
+INSERT INTO `question` (`id`, `question_text`, `creation_date`, `question_type_id`, `user_id`, `parent_id`) VALUES
+	(1, 'Interface can implement an interface?', '2014-01-09 10:31:17', 2, 1, 0),
+	(2, 'Abstract can implement an interface?', '2014-01-09 10:31:17', 2, 1, 0),
+	(3, 'An class can implement how many interface?', '2014-01-09 10:31:17', 1, 1, 0),
+	(4, 'Match the questions with the answers', '2014-01-09 22:39:24', 5, 1, 0),
+	(5, 'Who are you waiting for?', '2014-01-09 22:40:19', 5, 1, 4),
+	(6, 'What happened to Bob?', '2014-01-09 22:43:35', 5, 1, 4),
+	(7, 'How long does it take you to get there?', '2014-01-09 22:44:40', 5, 1, 4),
+	(8, 'Can you tell me the time?', '2014-01-09 22:45:45', 5, 1, 4);
 /*!40000 ALTER TABLE `question` ENABLE KEYS */;
 
 
@@ -66,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `question_type` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `question_type_value` char(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.question_type: ~5 rows (approximately)
 DELETE FROM `question_type`;
@@ -90,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `session` (
   PRIMARY KEY (`id`),
   KEY `session_FKIndex1` (`subject_id`),
   CONSTRAINT `FK_session_subject` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.session: ~9 rows (approximately)
 DELETE FROM `session`;
@@ -106,6 +115,27 @@ INSERT INTO `session` (`id`, `subject_id`, `name`, `creation_date`, `is_active`)
 	(8, 3, 'subject_3_session_8', '2013-12-28 12:50:24', 0),
 	(9, 3, 'subject_3_session_9', '2013-12-28 12:50:24', 0);
 /*!40000 ALTER TABLE `session` ENABLE KEYS */;
+
+
+-- Dumping structure for table evoter.session_question
+CREATE TABLE IF NOT EXISTS `session_question` (
+  `question_id` int(10) unsigned NOT NULL,
+  `session_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`question_id`,`session_id`),
+  KEY `FK_session_question_session` (`session_id`),
+  CONSTRAINT `FK_session_question_question` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`),
+  CONSTRAINT `FK_session_question_session` FOREIGN KEY (`session_id`) REFERENCES `session` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Dumping data for table evoter.session_question: ~4 rows (approximately)
+DELETE FROM `session_question`;
+/*!40000 ALTER TABLE `session_question` DISABLE KEYS */;
+INSERT INTO `session_question` (`question_id`, `session_id`) VALUES
+	(1, 1),
+	(3, 1),
+	(4, 1),
+	(2, 4);
+/*!40000 ALTER TABLE `session_question` ENABLE KEYS */;
 
 
 -- Dumping structure for table evoter.session_user
@@ -144,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `statistics` (
   PRIMARY KEY (`question_id`,`session_id`),
   KEY `statistics_FKIndex1` (`question_id`),
   KEY `statistics_FKIndex2` (`session_id`),
-  CONSTRAINT `FK_statistics_question` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`),
+  CONSTRAINT `FK_statistics_question` FOREIGN KEY (`question_id`) REFERENCES `question_session` (`id`),
   CONSTRAINT `FK_statistics_session` FOREIGN KEY (`session_id`) REFERENCES `session` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -160,9 +190,9 @@ CREATE TABLE IF NOT EXISTS `subject` (
   `title` char(100) NOT NULL,
   `creation_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter.subject: ~14 rows (approximately)
+-- Dumping data for table evoter.subject: ~15 rows (approximately)
 DELETE FROM `subject`;
 /*!40000 ALTER TABLE `subject` DISABLE KEYS */;
 INSERT INTO `subject` (`id`, `title`, `creation_date`) VALUES
@@ -195,7 +225,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   CONSTRAINT `FK_user_user_type` FOREIGN KEY (`user_type_id`) REFERENCES `user_type` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter.user: ~7 rows (approximately)
+-- Dumping data for table evoter.user: ~6 rows (approximately)
 DELETE FROM `user`;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`id`, `user_type_id`, `email_address`, `username`, `passwd`) VALUES
@@ -241,15 +271,25 @@ CREATE TABLE IF NOT EXISTS `user_type` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_type_value` char(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter.user_type: ~3 rows (approximately)
+-- Dumping data for table evoter.user_type: ~12 rows (approximately)
 DELETE FROM `user_type`;
 /*!40000 ALTER TABLE `user_type` DISABLE KEYS */;
 INSERT INTO `user_type` (`id`, `user_type_value`) VALUES
 	(1, 'Secretary'),
 	(2, 'Teacher'),
-	(3, 'Student');
+	(3, 'Student'),
+	(17, 'test data'),
+	(18, 'test data'),
+	(19, 'test data'),
+	(20, 'test data'),
+	(21, 'test data'),
+	(22, 'test data'),
+	(23, 'test data'),
+	(24, 'test data'),
+	(25, 'test data'),
+	(26, 'test data');
 /*!40000 ALTER TABLE `user_type` ENABLE KEYS */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;

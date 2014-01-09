@@ -1,22 +1,29 @@
 package evoter.server.model;
 
 import java.io.Serializable;
-
+import java.sql.Date;
 import org.json.simple.JSONObject;
-
 import evoter.server.dao.QuestionDAO;
 
 public class Question implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5892190903011268048L;
 
 	private long id;
 	private long questionTypeId;
-	private long sessionId;
+	private long userId;
 	private String questionText;
+	private Date creationDate;
+	private long parentId;
+	public static final String COL1 = "column1";
+	public static final String COL2 = "column2";
+	
+	public long getParentId() {
+		return parentId;
+	}
+	public void setParentId(long parentId) {
+		this.parentId = parentId;
+	}
 	public long getId() {
 		return id;
 	}
@@ -29,22 +36,31 @@ public class Question implements Serializable {
 	public void setQuestionTypeId(long questionTypeId) {
 		this.questionTypeId = questionTypeId;
 	}
-	public long getSessionId() {
-		return sessionId;
-	}
-	public void setSessionId(long sessionId) {
-		this.sessionId = sessionId;
-	}
 	public String getQuestionText() {
 		return questionText;
+	}
+	public long getUserId() {
+		return userId;
+	}
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+	public Date getCreationDate() {
+		return creationDate;
+	}
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 	public void setQuestionText(String questionText) {
 		this.questionText = questionText;
 	}
+
+
 	@Override
 	public String toString() {
 		return "Question [id=" + id + ", questionTypeId=" + questionTypeId
-				+ ", sessionId=" + sessionId + ", questionText=" + questionText
+				+ ", userId=" + userId + ", questionText=" + questionText
+				+ ", creationDate=" + creationDate + ", parentId=" + parentId
 				+ "]";
 	}
 	@SuppressWarnings("unchecked")
@@ -53,7 +69,9 @@ public class Question implements Serializable {
 		object.put(QuestionDAO.ID, id);
 		object.put(QuestionDAO.QUESTION_TEXT, questionText);
 		object.put(QuestionDAO.QUESTION_TYPE_ID, questionTypeId);
-		object.put(QuestionDAO.SESSION_ID, sessionId);
+		object.put(QuestionDAO.USER_ID, userId);
+		object.put(QuestionDAO.CREATION_DATE, creationDate);
+		object.put(QuestionDAO.PARENT_ID, parentId);
 		return object;
 	}
 	

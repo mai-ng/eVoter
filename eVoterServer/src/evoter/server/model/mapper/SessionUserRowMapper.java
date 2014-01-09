@@ -8,10 +8,10 @@ import org.springframework.jdbc.core.RowMapper;
 import evoter.server.dao.SessionUserDAO;
 import evoter.server.model.SessionUser;
 
-public class SessionUserRowMapper implements RowMapper {
+public class SessionUserRowMapper implements RowMapper<SessionUser> {
 
 	@Override
-	public Object mapRow(ResultSet rs, int rowIndex) throws SQLException {
+	public SessionUser mapRow(ResultSet rs, int rowIndex) throws SQLException {
 		
 		SessionUser su = new SessionUser();
 		su.setAcceptSession(rs.getBoolean(SessionUserDAO.ACCEPT_SESSION));

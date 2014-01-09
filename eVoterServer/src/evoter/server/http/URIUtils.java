@@ -220,9 +220,9 @@ public class URIUtils {
 		
 	}
 	
-	public static void writeResponse(String response, HttpExchange t) {
+	public static void writeResponse(Object response, HttpExchange t) {
 		
-		byte[] responseBytes = response.getBytes();
+		byte[] responseBytes = response.toString().getBytes();
 		
 		
 		try {

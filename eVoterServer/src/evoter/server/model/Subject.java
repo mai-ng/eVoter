@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.sql.Date;
 
 import org.json.simple.JSONObject;
-
 import evoter.server.dao.SubjectDAO;
 
 public class Subject implements Serializable {

@@ -8,11 +8,11 @@ import org.springframework.jdbc.core.RowMapper;
 import evoter.server.dao.SessionDAO;
 import evoter.server.model.Session;
 
-public class SessionRowMapper implements RowMapper {
+public class SessionRowMapper implements RowMapper<Session> {
 
 
 	@Override
-	public Object mapRow(ResultSet rs, int rowIndex) throws SQLException {
+	public Session mapRow(ResultSet rs, int rowIndex) throws SQLException {
 		Session session = new Session();
 		session.setCreationDate(rs.getDate(SessionDAO.CREATION_DATE));
 		session.setId(rs.getLong(SessionDAO.ID));

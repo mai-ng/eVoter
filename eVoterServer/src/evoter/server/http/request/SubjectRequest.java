@@ -39,7 +39,7 @@ public class SubjectRequest {
 			Subject subject = (Subject)((SubjectDAO) BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME)).findById(us.getSubjectId()).get(0);
 			jsArray.add(subject.toJSON().toJSONString());
 		}
-		
+		System.out.println("SUBJECT : " + jsArray.toJSONString());
 		URIUtils.writeResponse(jsArray.toJSONString(), exchange);
 		
 	}

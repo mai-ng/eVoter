@@ -10,7 +10,6 @@ import evoter.server.model.mapper.QuestionTypeRowMapper;
 
 public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeDAO {
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<QuestionType> findAll() {
 		
@@ -40,7 +39,6 @@ public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeD
 		return findByProperty(new String[]{QUESTION_TYPE_VALUE}, new String[]{questionTypeValue});
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<QuestionType> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {

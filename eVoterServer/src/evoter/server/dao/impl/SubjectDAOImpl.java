@@ -19,7 +19,6 @@ public class SubjectDAOImpl extends JdbcDaoSupport implements SubjectDAO {
 					
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Subject> findAll() {
 
@@ -27,7 +26,6 @@ public class SubjectDAOImpl extends JdbcDaoSupport implements SubjectDAO {
 		return getJdbcTemplate().query(sql, new SubjectRowMapper());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Subject> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {

@@ -19,7 +19,6 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Session> findAll() {
 		
@@ -28,7 +27,6 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Session> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {

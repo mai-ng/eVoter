@@ -8,10 +8,10 @@ import org.springframework.jdbc.core.RowMapper;
 import evoter.server.dao.StatisticsDAO;
 import evoter.server.model.Statistics;
 
-public class StatisticsRowMapper implements RowMapper {
+public class StatisticsRowMapper implements RowMapper<Statistics> {
 
 	@Override
-	public Object mapRow(ResultSet rs, int rowIndex) throws SQLException {
+	public Statistics mapRow(ResultSet rs, int rowIndex) throws SQLException {
 
 		Statistics st = new Statistics();
 		st.setQuestionId(rs.getLong(StatisticsDAO.QUESTION_ID));

@@ -33,7 +33,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 		
 	}
 
-	@SuppressWarnings({ "unchecked"})
+	@SuppressWarnings({})
 	@Override
 	public List<User> findAll() {
 
@@ -70,7 +70,6 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> findByProperty(String[] propertyNames, Object[] propertyValues) {
 

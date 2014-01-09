@@ -1,5 +1,6 @@
 package evoter.server.dao.impl;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -15,14 +16,20 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 	public int insert(Question question) {
 		
 		String sql = "INSERT INTO " + TABLE_NAME + "(" 
-		+ SESSION_ID + "," + QUESTION_TYPE_ID + ","+ QUESTION_TEXT + ")" + " VALUES(?,?,?)";
+		+ USER_ID 
+		+ "," + QUESTION_TYPE_ID 
+		+ ","+ QUESTION_TEXT 
+		+ "," + CREATION_DATE 
+		+ "," + PARENT_ID + ")" 
+		+ " VALUES(?,?,?,?,?)";
 		return getJdbcTemplate().update(sql, 
-				new Object[]{question.getSessionId(),
+				new Object[]{	question.getUserId(),
 								question.getQuestionTypeId(), 
-								question.getQuestionText()});
+								question.getQuestionText(),
+								question.getCreationDate(),
+								question.getParentId()});
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Question> findAll() {
 		
@@ -31,7 +38,6 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Question> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {
@@ -55,9 +61,9 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 	}
 
 	@Override
-	public List<Question> findBySessionId(long sessionId) {
+	public List<Question> findByUserId(long userId) {
 		
-		return findByProperty(new String[]{SESSION_ID}, new Long[]{sessionId});	
+		return findByProperty(new String[]{USER_ID}, new Long[]{userId});	
 		
 	}
 
@@ -86,22 +92,16 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 				sql += " AND ";
 		}
 		getJdbcTemplate().update(sql, propertyValues);
-
-		
 	}
 
 	@Override
 	public void deleteById(long id) {
-		
 		deleteByProperty(new String[]{ID}, new Long[]{id});
-		
 	}
 
 	@Override
-	public void deleteBySessiontId(long sessionId) {
-		
-		deleteByProperty(new String[]{SESSION_ID}, new Long[]{sessionId});
-		
+	public void deleteByUserId(long userId) {
+		deleteByProperty(new String[]{USER_ID}, new Long[]{userId});
 	}
 
 	@Override
@@ -116,6 +116,31 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		
 		deleteByProperty(new String[]{QUESTION_TYPE_ID}, new Long[]{questionTypeId});
 		
+	}
+
+	@Override
+	public List<Question> findByCreationDate(Date creationDate) {
+		
+		return findByProperty(new String[]{CREATION_DATE}, new Object[]{creationDate});
+	}
+
+	@Override
+	public void deleteByCreationDate(Date creationDate) {
+		
+		deleteByProperty(new String[]{CREATION_DATE}, new Object[]{creationDate});
+		
+	}
+
+	@Override
+	public List<Question> findByParentId(long parentId) {
+		
+		return findByProperty(new String[]{PARENT_ID}, new Long[]{parentId});
+	}
+
+	@Override
+	public void deleteByParentId(long parentId) {
+		
+		deleteByProperty(new String[]{PARENT_ID}, new Long[]{parentId});
 	}
 
 }

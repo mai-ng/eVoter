@@ -8,11 +8,11 @@ import org.springframework.jdbc.core.RowMapper;
 import evoter.server.dao.SubjectDAO;
 import evoter.server.model.Subject;
 
-public class SubjectRowMapper implements RowMapper {
+public class SubjectRowMapper implements RowMapper<Subject> {
 
 
 	@Override
-	public Object mapRow(ResultSet rs, int rowIndex) throws SQLException {
+	public Subject mapRow(ResultSet rs, int rowIndex) throws SQLException {
 		
 		Subject sub = new Subject();
 		sub.setId(rs.getLong(SubjectDAO.ID));

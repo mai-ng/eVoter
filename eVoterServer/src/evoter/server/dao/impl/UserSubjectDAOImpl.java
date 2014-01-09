@@ -17,7 +17,6 @@ public class UserSubjectDAOImpl extends JdbcDaoSupport implements UserSubjectDAO
 		return getJdbcTemplate().update(sql, new Object[]{us.getUserId(), us.getSubjectId()});
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<UserSubject> findAll() {
 		
@@ -25,7 +24,6 @@ public class UserSubjectDAOImpl extends JdbcDaoSupport implements UserSubjectDAO
 		return getJdbcTemplate().query(sql, new UserSubjectRowMapper());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<UserSubject> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {

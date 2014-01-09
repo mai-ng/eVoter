@@ -8,10 +8,10 @@ import org.springframework.jdbc.core.RowMapper;
 import evoter.server.dao.UserDAO;
 import evoter.server.model.User;
 
-public class UserRowMapper implements RowMapper {
+public class UserRowMapper implements RowMapper<User> {
 
 	@Override
-	public Object mapRow(ResultSet rs, int rowIndex) throws SQLException {
+	public User mapRow(ResultSet rs, int rowIndex) throws SQLException {
 		
 		User user = new User();
 		user.setId(rs.getInt(UserDAO.ID));

@@ -1,49 +1,112 @@
 package evoter.server.http.request;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
 import com.sun.net.httpserver.HttpExchange;
 
 import evoter.server.dao.AnswerDAO;
 import evoter.server.dao.BeanDAOFactory;
 import evoter.server.dao.QuestionDAO;
+import evoter.server.dao.QuestionSessionDAO;
 import evoter.server.http.URIUtils;
 import evoter.server.model.Answer;
 import evoter.server.model.Question;
+import evoter.server.model.QuestionSession;
 
 public class QuestionRequest {
 
 	//This value is updated when receiving a /send_question request 
 	private static Map<Long,Long> mapSentQuestion = new HashMap<Long, Long>();
-	
+
 
 	@SuppressWarnings("unchecked")
 	public static void doGetAll(HttpExchange httpExchange,
 			Map<String, String> parameters) {
 		
-		long sessionId = Long.parseLong(parameters.get(QuestionDAO.SESSION_ID));
+		long sessionId = Long.parseLong(parameters.get(QuestionSessionDAO.SESSION_ID));
+		
+		QuestionSessionDAO quesSesDao = (QuestionSessionDAO)BeanDAOFactory.getBean(QuestionSessionDAO.BEAN_NAME);
+		
+		List<QuestionSession> questionSessionList = quesSesDao.findBySessionId(sessionId);
 		QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
-		List<Question> questionList = questionDao.findBySessionId(sessionId);
-		if (questionList != null && !questionList.isEmpty()){
-			
-			JSONArray jsArray = new JSONArray();
+		JSONArray jsArray = new JSONArray();
+		
+		for (QuestionSession questionSession : questionSessionList){
+			List<Question> questionList = questionDao.findByProperty(new String[]{QuestionDAO.ID, QuestionDAO.PARENT_ID}, new Object[]{questionSession.getQuestionId(), 0});//questionDao.findById(questionSession.getQuestionId());
 			for (Question question : questionList){
+				
 				JSONObject object = question.toJSON();
-				object.put("answers", getAnswersOfQuestion(question.getId()));
-				jsArray.add(object.toJSONString());			
+				object.put(QuestionSessionDAO.SESSION_ID, questionSession.getSessionId());
+				
+				JSONArray answers = getAnswersOfQuestion(question.getId());
+				
+				List<Question> subQuestionList = questionDao.findByParentId(question.getId());
+				if (subQuestionList != null && !subQuestionList.isEmpty()){
+					JSONArray jsPart1 = new JSONArray();
+					for (Question subQuestion : subQuestionList){
+						jsPart1.add(subQuestion.toJSON());
+					}
+					object.put(Question.COL1, jsPart1);
+					object.put(Question.COL2,  answers);
+					
+				}else{ //if
+					object.put(Question.COL1,  answers);
+				}
+				jsArray.add(object);
 			}
-			System.out.println("question:" + jsArray.toJSONString());
-			URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
 			
-		}else{
-			URIUtils.writeFailureResponse(httpExchange);
 		}
+		System.out.println("QUESTION : " + jsArray.toJSONString());
+		URIUtils.writeResponse(jsArray, httpExchange);
+
+				
+//				if (question.getParentId() == 0){
+//					
+//					object.put(Question.COL1,  getAnswersOfQuestion(question.getId()));
+//					
+//				}else{
+//					//this is match type question
+//					//is column1
+//					List<Question> subQuestionList = questionDao.findByParentId(question.getParentId());
+//					JSONArray jsPart1 = new JSONArray();
+//					for (Question subQuestion : subQuestionList){
+//						jsPart1.add(subQuestion.toJSON().toJSONString());
+//					}
+//					//answer is column2
+//					object.put(Question.COL1, jsPart1);
+//					object.put(Question.COL2, getAnswersOfQuestion(question.getParentId()));
+//				}
+//				jsArray.add(object.toJSONString());
+//			}//for
+//			if (questionList != null && !questionList.isEmpty()){
+//				
+//				Question question = questionList.get(0);
+//				JSONObject object = question.toJSON();
+//				object.put("answers",  getAnswersOfQuestion(question.getId()));
+//				jsArray.add(object.toJSONString());
+//				
+//			}
+//		}
+		
+//		List<Question> questionList = questionDao.findBySessionId(sessionId);
+//		if (questionList != null && !questionList.isEmpty()){
+//			
+//			JSONArray jsArray = new JSONArray();
+//			for (Question question : questionList){
+//				JSONObject object = question.toJSON();
+//				object.put("answers", getAnswersOfQuestion(question.getId()));
+//				jsArray.add(object.toJSONString());			
+//			}
+//			System.out.println("question:" + jsArray.toJSONString());
+//			URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
+//			
+//		}else{
+//			URIUtils.writeFailureResponse(httpExchange);
+//		}
 		
 	}
 
@@ -74,7 +137,7 @@ public class QuestionRequest {
 	 * @return a {@link JSONArray} 
 	 */
 	@SuppressWarnings("unchecked")
-	public static String getAnswersOfQuestion(long questionId){
+	public static JSONArray getAnswersOfQuestion(long questionId){
 		
 		List<Answer> answers = (List<Answer>) ((AnswerDAO)BeanDAOFactory.getBean(AnswerDAO.BEAN_NAME)).findByQuestionId(questionId);
 		if (answers != null && !answers.isEmpty()){
@@ -82,7 +145,7 @@ public class QuestionRequest {
 			for (Answer answer : answers){
 				arrays.add(answer.toJSON());
 			}
-			return arrays.toJSONString();
+			return arrays;
 		}else{
 			return null;
 		}
@@ -109,7 +172,7 @@ public class QuestionRequest {
 			Map<String, String> parameters) {
 		
 		long questionId = Long.parseLong(parameters.get(QuestionDAO.ID));
-		long sessionId = Long.parseLong(parameters.get(QuestionDAO.SESSION_ID));
+		long sessionId = Long.parseLong(parameters.get(QuestionSessionDAO.SESSION_ID));
 		mapSentQuestion.put(sessionId, questionId);
 	}
 
@@ -117,7 +180,7 @@ public class QuestionRequest {
 	public static void doGetLatest(HttpExchange httpExchange,
 			Map<String, String> parameters) {
 		
-		long sessionId = Long.parseLong(parameters.get(QuestionDAO.SESSION_ID));
+		long sessionId = Long.parseLong(parameters.get(QuestionSessionDAO.SESSION_ID));
 		if (mapSentQuestion.containsKey(sessionId)){
 			long questionId = mapSentQuestion.get(sessionId);
 			QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
@@ -132,7 +195,7 @@ public class QuestionRequest {
 
 	public static void doStopSend(HttpExchange httpExchange,
 			Map<String, String> parameters) {
-		long sessionId = Long.parseLong(parameters.get(QuestionDAO.SESSION_ID));
+		long sessionId = Long.parseLong(parameters.get(QuestionSessionDAO.SESSION_ID));
 		mapSentQuestion.remove(sessionId);
 		URIUtils.writeSuccessResponse(httpExchange);
 	} 

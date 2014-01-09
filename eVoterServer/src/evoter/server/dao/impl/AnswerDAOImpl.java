@@ -20,7 +20,6 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 								answer.getAnswerText()});
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Answer> findAll() {
 		
@@ -29,7 +28,6 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Answer> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {

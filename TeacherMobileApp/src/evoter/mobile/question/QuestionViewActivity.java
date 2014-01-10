@@ -121,7 +121,7 @@ public class QuestionViewActivity extends EVoterActivity {
 		RequestParams params = new RequestParams();
 		params.add(QuestionSessionDAO.SESSION_ID,
 				String.valueOf(EVoterSessionManager.getCurrentSessionID()));
-		params.put(UserDAO.USER_KEY, EVoterSessionManager.getUserKey());
+		params.put(UserDAO.USER_KEY, EVoterSessionManager.getUSER_KEY());
 
 		client.post(Configuration.get_urlGetAllQuestion(), params,
 				new AsyncHttpResponseHandler() {

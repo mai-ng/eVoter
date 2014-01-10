@@ -130,8 +130,8 @@ public class SessionActivity extends EVoterActivity {
 		AsyncHttpClient client = new AsyncHttpClient(1000);
 		RequestParams params = new RequestParams();
 		params.add(SessionDAO.SUBJECT_ID,
-				String.valueOf(EVoterSessionManager.getCurrentSessionID()));
-		params.put(UserDAO.USER_KEY, EVoterSessionManager.getUserKey());
+				String.valueOf(EVoterSessionManager.getCurrentSubjectID()));
+		params.put(UserDAO.USER_KEY, EVoterSessionManager.getUSER_KEY());
 		client.post(Configuration.get_urlGetAllSession(), params,
 				new AsyncHttpResponseHandler() {
 					@Override

@@ -77,12 +77,10 @@ public class Login extends EVoterActivity {
 				} else if (i_Password.equals("")) {
 					Utils.showeVoterToast(Login.this,
 							"Please input your password");
-				} 
-				else if (!UserAccountValidation.isValidUserName(i_Usrname)) {
+				} else if (!UserAccountValidation.isValidUserName(i_Usrname)) {
 					Utils.showeVoterToast(Login.this,
 							"Input username is not valid");
-				} 
-				else if (!UserAccountValidation.isValidPassword(i_Password)) {
+				} else if (!UserAccountValidation.isValidPassword(i_Password)) {
 					Utils.showeVoterToast(Login.this,
 							"Input password is not valid");
 				} else
@@ -96,8 +94,6 @@ public class Login extends EVoterActivity {
 								public void onSuccess(String response) {
 
 									String userKey = null;
-									EVoterSessionManager
-											.setCurrentUserName(i_Usrname);
 									try {
 
 										JSONObject object = new JSONObject(
@@ -110,15 +106,22 @@ public class Login extends EVoterActivity {
 									}
 
 									if (userKey != null || userKey != "null") {
-										Utils.showeVoterToast(Login.this,
-												"Welcome " + i_Usrname
-														+ " to eVoter!");
+
 										if (cbRemember.isChecked()) {
 											eVoterSessionManager
-													.createLoginSession(
+													.rememberCurrentUser(
 															i_Usrname,
 															i_Password);
 										}
+
+										EVoterSessionManager
+												.setCurrentSubjectName(i_Usrname);
+										EVoterSessionManager
+												.setUSER_KEY(userKey);
+										Utils.showeVoterToast(Login.this,
+												"Welcome " + i_Usrname
+														+ " to eVoter!");
+
 										Intent subjectIntent = new Intent(
 												Login.this,
 												SubjectActivity.class);
@@ -127,8 +130,6 @@ public class Login extends EVoterActivity {
 										subjectIntent
 												.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 										startActivity(subjectIntent);
-										EVoterSessionManager
-												.setUserKey(userKey);
 
 									}
 								}
@@ -152,7 +153,8 @@ public class Login extends EVoterActivity {
 		});
 
 		tvRegister = (TextView) findViewById(R.id.tvSignUp);
-		tvRegister.setPaintFlags(tvRegister.getPaintFlags()|Paint.UNDERLINE_TEXT_FLAG);
+		tvRegister.setPaintFlags(tvRegister.getPaintFlags()
+				| Paint.UNDERLINE_TEXT_FLAG);
 		tvRegister.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -162,7 +164,8 @@ public class Login extends EVoterActivity {
 		});
 
 		tvResetPassword = (TextView) findViewById(R.id.tvForgotPassword);
-		tvResetPassword.setPaintFlags(tvResetPassword.getPaintFlags()|Paint.UNDERLINE_TEXT_FLAG);
+		tvResetPassword.setPaintFlags(tvResetPassword.getPaintFlags()
+				| Paint.UNDERLINE_TEXT_FLAG);
 		tvResetPassword.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

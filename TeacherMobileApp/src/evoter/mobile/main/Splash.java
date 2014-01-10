@@ -15,11 +15,8 @@ public class Splash extends EVoterActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		 requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.splash);
-//		 getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,R.layout.evoter_title_bar);
 		this.tvTitleBarContent.setContentDescription("eVoter Mobile");
-		this.ivTitleBarRefresh.setVisibility(View.INVISIBLE);
 		
 		if (getIntent().getBooleanExtra("Exit application", false)) {
 			finish();

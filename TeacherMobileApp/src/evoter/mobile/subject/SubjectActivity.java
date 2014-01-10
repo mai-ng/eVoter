@@ -40,11 +40,9 @@ import evoter.server.dao.UserDAO;
 import evoter.server.model.Subject;
 
 /**
- * Created by @author nvluong on 05-Dec-2013</br>
- * Updated by @author btdiem on 08-Jan-2014 : </br> 
- * 	</li>update loadListSubjects() method:
- * 		</li>remove parameters 
- * 		</li>add userKey to parameter map when sending request to server 
+ * Created by @author nvluong on 05-Dec-2013</br> Updated by @author btdiem on
+ * 08-Jan-2014 : </br> </li>update loadListSubjects() method: </li>remove
+ * parameters </li>add userKey to parameter map when sending request to server
  */
 public class SubjectActivity extends EVoterActivity {
 
@@ -53,22 +51,33 @@ public class SubjectActivity extends EVoterActivity {
 	SubjectBaseAdapter subjectBaseAdapter;
 	Context context;
 	EditText etSearch;
+	EVoterSessionManager eVoterSessionManager;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.student_list_subjects);
-		//Set content for title bar is the username
-		this.tvTitleBarContent.setText(EVoterSessionManager.getCurrentUserName());
-		
-		//Set listener for refresh button
+		eVoterSessionManager = new EVoterSessionManager(this);
+		// Set content for title bar is the username
+		this.tvTitleBarContent.setText(EVoterSessionManager
+				.getCurrentUserName());
+
+		// Set listener for refresh button
 		this.ivTitleBarRefresh.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				loadListSubjects();
 			}
 		});
-		
+
+		this.ivTitleBarIcon.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				eVoterSessionManager.logoutUser();
+			}
+		});
+
 		context = this;
 		listSubjects = new ArrayList<Subject>();
 		listSubView = (ListView) findViewById(R.id.lvSubjects);
@@ -83,10 +92,13 @@ public class SubjectActivity extends EVoterActivity {
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 
-						EVoterSessionManager.setCurrentSubjectID(((Subject) parent
-								.getItemAtPosition(position)).getId());
-						EVoterSessionManager.setCurrentSubject(((Subject) parent
-								.getItemAtPosition(position)).getTitle());
+						EVoterSessionManager
+								.setCurrentSubjectID(((Subject) parent
+										.getItemAtPosition(position)).getId());
+						EVoterSessionManager
+								.setCurrentSubject(((Subject) parent
+										.getItemAtPosition(position))
+										.getTitle());
 						startActivity(new Intent(
 								"android.intent.action.SESSION"));
 					}
@@ -165,10 +177,10 @@ public class SubjectActivity extends EVoterActivity {
 	}
 
 	private void loadListSubjects() {
-		
+
 		AsyncHttpClient client = new AsyncHttpClient(1000);
 		RequestParams params = new RequestParams();
-		//params.add(userID2, key2);
+		// params.add(userID2, key2);
 		params.put(UserDAO.USER_KEY, EVoterSessionManager.getUserKey());
 		client.post(Configuration.get_urlGetAllSubject(), params,
 				new AsyncHttpResponseHandler() {
@@ -183,7 +195,8 @@ public class SubjectActivity extends EVoterActivity {
 								Subject subject = null;
 								try {
 									subject = new Subject(
-											Long.parseLong(item.getString(SubjectDAO.ID)),
+											Long.parseLong(item
+													.getString(SubjectDAO.ID)),
 											item.getString(SubjectDAO.TITLE),
 											Utils.convertToDate(item
 													.getString(SubjectDAO.CREATION_DATE)));
@@ -227,8 +240,7 @@ public class SubjectActivity extends EVoterActivity {
 			loadListSubjects();
 			return true;
 		case R.id.mnQuestion:
-			startActivity(new Intent(
-					"android.intent.action.QUESTIONMANAGEMENT"));
+			startActivity(new Intent("android.intent.action.QUESTIONMANAGEMENT"));
 			return true;
 		case R.id.mnLogout:
 			EVoterSessionManager eVoterSessionManager = new EVoterSessionManager(

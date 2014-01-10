@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -49,16 +51,29 @@ public class Utils {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		return dateFormat.format(date);
 	}
-	
+
 	/**
 	 * Check internet connection
+	 * 
 	 * @param context
-	 * @return true if the mobile phone has internet connection
-	 * <br>false otherwise
+	 * @return true if the mobile phone has internet connection <br>
+	 *         false otherwise
 	 */
 	public static boolean hasInternetConnection(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    }
+		ConnectivityManager cm = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+		return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+	}
+
+	/**
+	 * Show a message
+	 * @param context
+	 * @param message
+	 */
+	public static void showeVoterToast(Context context, String message) {
+		Toast t = Toast.makeText(context, message, Toast.LENGTH_LONG);
+		t.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+		t.show();
+	}
 }

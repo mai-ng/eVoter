@@ -4,7 +4,6 @@
 package evoter.mobile.main;
 
 import android.app.Activity;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -36,6 +35,7 @@ public class EVoterActivity extends Activity {
 		ivTitleBarIcon = (ImageView) findViewById(R.id.ivIconTitleBar);
 		ivTitleBarRefresh = (ImageView) findViewById(R.id.ivRefreshTitleBar);
 		tvTitleBarContent = (TextView) findViewById(R.id.tvTitleBar);
+		ivTitleBarRefresh.setVisibility(View.GONE);
 	}
 
 }

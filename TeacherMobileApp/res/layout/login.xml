@@ -1,112 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="10dp" >
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:paddingTop="10dp">
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="10dp" >
 
-        <ImageView
+        <TextView
+            android:id="@+id/tvRegisterTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"
-            android:src="@drawable/icon"
-            android:layout_gravity="center" />
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Welcome to eVoter"
-            android:id="@+id/textView"
-            android:layout_gravity="center"
-            android:textSize="20dp"
-            android:paddingLeft="10dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/tvStatusLogin"
-            android:lines="2"
+            android:layout_gravity="center_horizontal"
             android:padding="10dp"
-            android:textColor="#ff0007"
-            android:textSize="14dp"
-            android:textStyle="italic" />
+            android:text="Welcome to eVoter"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20dp" />
 
-        <TableLayout
+        <EditText
+            android:id="@+id/usrname"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="username"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingLeft="10dp" />
 
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:fitsSystemWindows="false"
+            android:hint="password"
+            android:inputType="textPassword"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingLeft="10dp" >
 
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Username"
-                    android:id="@+id/textView2"
-                    android:padding="10dp"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/usrname"
-                    android:padding="10dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Password"
-                    android:id="@+id/textView3"
-                    android:padding="10dp"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:ems="10"
-                    android:id="@+id/password"
-                    android:padding="10dp" />
-            </TableRow>
-        </TableLayout>
+            <requestFocus />
+        </EditText>
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:padding="10dp">
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="10dp" >
 
         <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Remember me"
             android:id="@+id/cb_remember"
-            android:checked="true" />
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Remember me" />
 
         <Button
             android:layout_width="fill_parent"
@@ -116,22 +72,21 @@
             android:layout_gravity="center_horizontal"
             android:padding="10dp" />
 
-        <Button
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/tvSignUp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Forget password"
-            android:id="@+id/btfgPassword"
-            android:enabled="true"
-            android:visibility="invisible"
-            android:padding="10dp" />
+            android:padding="10dp"
+            android:text="Register new account"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <Button
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/tvForgotPassword"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Register"
-            android:id="@+id/btRegister"
-            android:visibility="invisible"
-            android:padding="10dp" />
+            android:padding="5dp"
+            android:text="Forgot password"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </LinearLayout>
 </LinearLayout>

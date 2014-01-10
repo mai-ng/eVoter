@@ -17,10 +17,6 @@ import javax.swing.table.TableColumn;
 
 public class AddSubject extends JPanel {
 
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	public static final String INVITE = "Invite";
@@ -41,6 +37,9 @@ public class AddSubject extends JPanel {
 	public DefaultTableModel modelStudent;
 	GridBagConstraints c;
 
+	/**
+	 * paint user interface for adding a 
+	 */
 	public AddSubject() {
 		initComponents();
 		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
@@ -51,32 +50,32 @@ public class AddSubject extends JPanel {
 		c.fill = GridBagConstraints.BOTH;
 		c.insets = new Insets(1, 1, 1, 5);
 
-		// Row 0: Title |
+		// Row 0: Title
 		c.weightx = 0;
-		this.add(new JLabel("Title"));
+		this.add(new JLabel("Title: "));
 		c.weightx = 0.5;
 		this.add(txtTitle, c);
 		
 
-		// Row 1
+		// Row 1: Space
 		c.gridy = 1;
 		c.weightx = 0;
 		this.add(new JLabel("  "),c);
 		
 		
 
-		// Setup operations panel: Operations table + Add button + Delete button
+		// setup Teacher panel
 		c.weighty = 1;
-		JPanel opPanel = new JPanel();
-		opPanel.setBorder(javax.swing.BorderFactory
+		JPanel teacherPanel = new JPanel();
+		teacherPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Teacher"));
 
-		opPanel.setLayout(gridbag);
+		teacherPanel.setLayout(gridbag);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridheight = 3;
 		c.weightx = 1.0;
-		opPanel.add(new JScrollPane(tblTeacher,
+		teacherPanel.add(new JScrollPane(tblTeacher,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), c);
 
@@ -84,28 +83,28 @@ public class AddSubject extends JPanel {
 		c.weighty = 0;
 		c.gridx = 1;
 		c.gridheight = 1;
-		opPanel.add(btnAddTeacher, c);
+		teacherPanel.add(btnAddTeacher, c);
 		
 
-		// Row 3: Operations table
+		// Row 2: Teacher table
 		c.gridy = 3;
 		c.gridx = 0;
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.weighty = 0.5;
-		this.add(opPanel, c);
+		this.add(teacherPanel, c);
 
-		// Setup events panel: Events table + Add button + Delete button
+		// Setup student panel
 		c.gridwidth = 1;
 		c.weighty = 1;
-		JPanel evPanel = new JPanel();
-		evPanel.setBorder(BorderFactory.createTitledBorder("Student"));
+		JPanel studentPanel = new JPanel();
+		studentPanel.setBorder(BorderFactory.createTitledBorder("Student"));
 
-		evPanel.setLayout(gridbag);
+		studentPanel.setLayout(gridbag);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridheight = 3;
 		c.weightx = 1.0;
-		evPanel.add(new JScrollPane(tblStudent,
+		studentPanel.add(new JScrollPane(tblStudent,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), c);
 
@@ -113,16 +112,16 @@ public class AddSubject extends JPanel {
 		c.weighty = 0;
 		c.gridx = 1;
 		c.gridheight = 1;
-		evPanel.add(btnAddStudent, c);
+		studentPanel.add(btnAddStudent, c);
 
-		// Row 4: Events table
+		// Row 3: Students table
 		c.gridy = 4;
 		c.gridx = 0;
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.weighty = 0.5;
-		this.add(evPanel, c);
+		this.add(studentPanel, c);
 
-		// Row 5: Create Button
+		// Row 4: Create Button
 		c.gridy = 5;
 		c.fill = 0;
 		c.weighty = 0.2;
@@ -136,11 +135,6 @@ public class AddSubject extends JPanel {
 
 	}
 
-	/**
-	 * Reset fields: device name, operations and events Keep information about
-	 * IP address, manufacturer, ...
-	 * 
-	 */
 	public void reset() {
 		this.txtTitle.setText("");
 		while (modelTeacher.getRowCount() > 0) {
@@ -152,12 +146,7 @@ public class AddSubject extends JPanel {
 		}
 	}
 
-	/**
-	 * This is the
-	 * 
-	 * @param a
-	 *            asdf asd
-	 */
+
 	private JTable createTable(DefaultTableModel model) {
 		JTable table = new JTable(model);
 		table.setFillsViewportHeight(true);
@@ -174,6 +163,9 @@ public class AddSubject extends JPanel {
 		return table;
 	}
 
+	/**
+	 * initialize components
+	 */
 	private void initComponents() {
 		txtTitle = new JTextField();
 

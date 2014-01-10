@@ -14,12 +14,11 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-public class EditSubject extends JPanel {
-
+public class SubjectGUISpecification extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	public static final String SAVE = "Save";
+	public static final String INVITE = "Invite";
 	public static final String IMPORT_TEACHER = "Import";
 	public static final String IMPORT_STUDENT = "Import";
 	public static final String CLOSE = "Close";
@@ -28,7 +27,7 @@ public class EditSubject extends JPanel {
 
 	private JButton btnAddTeacher;
 	private JButton btnAddStudent;
-	private JButton btnSave;
+//	private JButton btnInvite;
 	private JButton btnClose;
 	
 	public JTable tblTeacher;
@@ -37,10 +36,7 @@ public class EditSubject extends JPanel {
 	public DefaultTableModel modelStudent;
 	GridBagConstraints c;
 
-	/**
-	 * paint user interface for editing a subject
-	 */
-	public EditSubject() {
+	public SubjectGUISpecification() {
 		initComponents();
 		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		GridBagLayout gridbag = new GridBagLayout();
@@ -50,32 +46,32 @@ public class EditSubject extends JPanel {
 		c.fill = GridBagConstraints.BOTH;
 		c.insets = new Insets(1, 1, 1, 5);
 
-		// Row 0: Title
+		// Row 0: Title |
 		c.weightx = 0;
-		this.add(new JLabel("Title: "));
+		this.add(new JLabel("Title"));
 		c.weightx = 0.5;
 		this.add(txtTitle, c);
 		
 
-		// Row 1: Space
+		// Row 1
 		c.gridy = 1;
 		c.weightx = 0;
 		this.add(new JLabel("  "),c);
 		
 		
 
-		// setup Teacher panel
+		// Setup teacher panel
 		c.weighty = 1;
-		JPanel teacherPanel = new JPanel();
-		teacherPanel.setBorder(javax.swing.BorderFactory
+		JPanel opPanel = new JPanel();
+		opPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Teacher"));
 
-		teacherPanel.setLayout(gridbag);
+		opPanel.setLayout(gridbag);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridheight = 3;
 		c.weightx = 1.0;
-		teacherPanel.add(new JScrollPane(tblTeacher,
+		opPanel.add(new JScrollPane(tblTeacher,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), c);
 
@@ -83,28 +79,28 @@ public class EditSubject extends JPanel {
 		c.weighty = 0;
 		c.gridx = 1;
 		c.gridheight = 1;
-		teacherPanel.add(btnAddTeacher, c);
+		opPanel.add(btnAddTeacher, c);
 		
 
-		// Row 3: Teacher table
+		// Row 3: Operations table
 		c.gridy = 3;
 		c.gridx = 0;
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.weighty = 0.5;
-		this.add(teacherPanel, c);
+		this.add(opPanel, c);
 
 		// Setup student panel
 		c.gridwidth = 1;
 		c.weighty = 1;
-		JPanel studentPanel = new JPanel();
-		studentPanel.setBorder(BorderFactory.createTitledBorder("Student"));
+		JPanel evPanel = new JPanel();
+		evPanel.setBorder(BorderFactory.createTitledBorder("Student"));
 
-		studentPanel.setLayout(gridbag);
+		evPanel.setLayout(gridbag);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridheight = 3;
 		c.weightx = 1.0;
-		studentPanel.add(new JScrollPane(tblStudent,
+		evPanel.add(new JScrollPane(tblStudent,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), c);
 
@@ -112,20 +108,20 @@ public class EditSubject extends JPanel {
 		c.weighty = 0;
 		c.gridx = 1;
 		c.gridheight = 1;
-		studentPanel.add(btnAddStudent, c);
+		evPanel.add(btnAddStudent, c);
 
-		// Row 4: Students table
+		// Row 4: student table
 		c.gridy = 4;
 		c.gridx = 0;
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.weighty = 0.5;
-		this.add(studentPanel, c);
+		this.add(evPanel, c);
 
 		// Row 5: Create Button
 		c.gridy = 5;
-		c.fill = 0;
-		c.weighty = 0.2;
-		this.add(btnSave, c);
+//		c.fill = 0;
+//		c.weighty = 0.2;
+//		this.add(btnInvite, c);
 		
 		c.gridx = 2;
 		c.fill = 0;
@@ -135,6 +131,11 @@ public class EditSubject extends JPanel {
 
 	}
 
+	/**
+	 * Reset fields: device name, operations and events Keep information about
+	 * IP address, manufacturer, ...
+	 * 
+	 */
 	public void reset() {
 		this.txtTitle.setText("");
 		while (modelTeacher.getRowCount() > 0) {
@@ -146,7 +147,12 @@ public class EditSubject extends JPanel {
 		}
 	}
 
-
+	/**
+	 * This is the
+	 * 
+	 * @param a
+	 *            asdf asd
+	 */
 	private JTable createTable(DefaultTableModel model) {
 		JTable table = new JTable(model);
 		table.setFillsViewportHeight(true);
@@ -163,15 +169,12 @@ public class EditSubject extends JPanel {
 		return table;
 	}
 
-	/**
-	 * initialize components
-	 */
 	private void initComponents() {
 		txtTitle = new JTextField();
 
 		btnAddTeacher = new JButton(IMPORT_TEACHER);
 		btnAddStudent = new JButton(IMPORT_STUDENT);
-		btnSave = new JButton(SAVE);
+//		btnInvite = new JButton(INVITE);
 		btnClose = new JButton(CLOSE);
 
 		modelTeacher = new DefaultTableModel();
@@ -180,4 +183,5 @@ public class EditSubject extends JPanel {
 		tblStudent = createTable(modelStudent);
 
 	}
+
 }

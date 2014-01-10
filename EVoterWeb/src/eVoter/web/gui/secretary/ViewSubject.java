@@ -1,6 +1,6 @@
-package eVoter.web.gui.secretary;
+	package eVoter.web.gui.secretary;
 
-import java.awt.GridBagConstraints;
+	import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
@@ -10,25 +10,25 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-public class EditSubject extends JPanel {
+public class ViewSubject extends JPanel {
 
 
 	private static final long serialVersionUID = 1L;
 	
-	public static final String SAVE = "Save";
-	public static final String IMPORT_TEACHER = "Import";
-	public static final String IMPORT_STUDENT = "Import";
+//	public static final String INVITE = "Invite";
+//	public static final String IMPORT_TEACHER = "Import";
+//	public static final String IMPORT_STUDENT = "Import";
 	public static final String CLOSE = "Close";
 
-	public JTextField txtTitle;
+//	public JTextField txtTitle;
+	private JLabel lblTitle;
 
-	private JButton btnAddTeacher;
-	private JButton btnAddStudent;
-	private JButton btnSave;
+//	private JButton btnAddTeacher;
+//	private JButton btnAddStudent;
+//	private JButton btnInvite;
 	private JButton btnClose;
 	
 	public JTable tblTeacher;
@@ -38,9 +38,9 @@ public class EditSubject extends JPanel {
 	GridBagConstraints c;
 
 	/**
-	 * paint user interface for editing a subject
+	 * paint user interface for viewing a subject
 	 */
-	public EditSubject() {
+	public ViewSubject() {
 		initComponents();
 		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		GridBagLayout gridbag = new GridBagLayout();
@@ -54,7 +54,7 @@ public class EditSubject extends JPanel {
 		c.weightx = 0;
 		this.add(new JLabel("Title: "));
 		c.weightx = 0.5;
-		this.add(txtTitle, c);
+		this.add(lblTitle,c);
 		
 
 		// Row 1: Space
@@ -79,11 +79,11 @@ public class EditSubject extends JPanel {
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), c);
 
-		c.weightx = 0;
-		c.weighty = 0;
-		c.gridx = 1;
+//		c.weightx = 0;
+//		c.weighty = 0;
+//		c.gridx = 1;
 		c.gridheight = 1;
-		teacherPanel.add(btnAddTeacher, c);
+//		teacherPanel.add(btnAddTeacher, c);
 		
 
 		// Row 3: Teacher table
@@ -107,12 +107,12 @@ public class EditSubject extends JPanel {
 		studentPanel.add(new JScrollPane(tblStudent,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), c);
-
-		c.weightx = 0;
-		c.weighty = 0;
-		c.gridx = 1;
+//
+//		c.weightx = 0;
+//		c.weighty = 0;
+//		c.gridx = 1;
 		c.gridheight = 1;
-		studentPanel.add(btnAddStudent, c);
+//		studentPanel.add(btnAddStudent, c);
 
 		// Row 4: Students table
 		c.gridy = 4;
@@ -123,9 +123,9 @@ public class EditSubject extends JPanel {
 
 		// Row 5: Create Button
 		c.gridy = 5;
-		c.fill = 0;
-		c.weighty = 0.2;
-		this.add(btnSave, c);
+//		c.fill = 0;
+//		c.weighty = 0.2;
+//		this.add(btnInvite, c);
 		
 		c.gridx = 2;
 		c.fill = 0;
@@ -136,7 +136,7 @@ public class EditSubject extends JPanel {
 	}
 
 	public void reset() {
-		this.txtTitle.setText("");
+//		this.txtTitle.setText("");
 		while (modelTeacher.getRowCount() > 0) {
 			modelTeacher.removeRow(0);
 		}
@@ -167,11 +167,12 @@ public class EditSubject extends JPanel {
 	 * initialize components
 	 */
 	private void initComponents() {
-		txtTitle = new JTextField();
+//		txtTitle = new JTextField();
+		lblTitle = new JLabel("here is the title of the subject");
 
-		btnAddTeacher = new JButton(IMPORT_TEACHER);
-		btnAddStudent = new JButton(IMPORT_STUDENT);
-		btnSave = new JButton(SAVE);
+//		btnAddTeacher = new JButton(IMPORT_TEACHER);
+//		btnAddStudent = new JButton(IMPORT_STUDENT);
+//		btnInvite = new JButton(INVITE);
 		btnClose = new JButton(CLOSE);
 
 		modelTeacher = new DefaultTableModel();
@@ -180,4 +181,5 @@ public class EditSubject extends JPanel {
 		tblStudent = createTable(modelStudent);
 
 	}
-}
+	}
+

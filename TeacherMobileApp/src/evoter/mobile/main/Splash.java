@@ -1,15 +1,13 @@
 package evoter.mobile.main;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.ProgressBar;
 import evoter.mobile.utils.Utils;
 
-public class Splash extends Activity {
+public class Splash extends EVoterActivity {
 
 	ProgressBar progressBar;
 	EVoterSessionManager eVoterSessionManager;
@@ -20,6 +18,8 @@ public class Splash extends Activity {
 //		 requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.splash);
 //		 getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,R.layout.evoter_title_bar);
+		this.tvTitleBarContent.setContentDescription("eVoter Mobile");
+		this.ivTitleBarRefresh.setVisibility(View.INVISIBLE);
 		
 		if (getIntent().getBooleanExtra("Exit application", false)) {
 			finish();

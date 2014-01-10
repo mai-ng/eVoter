@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +30,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.Configuration;
+import evoter.mobile.main.EVoterActivity;
 import evoter.mobile.main.EVoterSessionManager;
 import evoter.mobile.main.R;
 import evoter.mobile.main.Splash;
@@ -45,7 +46,7 @@ import evoter.server.model.Subject;
  * 		</li>remove parameters 
  * 		</li>add userKey to parameter map when sending request to server 
  */
-public class SubjectActivity extends Activity {
+public class SubjectActivity extends EVoterActivity {
 
 	ListView listSubView;
 	ArrayList<Subject> listSubjects;
@@ -56,6 +57,18 @@ public class SubjectActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.student_list_subjects);
+		//Set content for title bar is the username
+		this.tvTitleBarContent.setText(EVoterSessionManager.getCurrentUserName());
+		
+		//Set listener for refresh button
+		this.ivTitleBarRefresh.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				loadListSubjects();
+			}
+		});
+		
 		context = this;
 		listSubjects = new ArrayList<Subject>();
 		listSubView = (ListView) findViewById(R.id.lvSubjects);
@@ -72,6 +85,8 @@ public class SubjectActivity extends Activity {
 
 						EVoterSessionManager.setCurrentSubjectID(((Subject) parent
 								.getItemAtPosition(position)).getId());
+						EVoterSessionManager.setCurrentSubject(((Subject) parent
+								.getItemAtPosition(position)).getTitle());
 						startActivity(new Intent(
 								"android.intent.action.SESSION"));
 					}

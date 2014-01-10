@@ -27,6 +27,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.Configuration;
+import evoter.mobile.main.EVoterActivity;
 import evoter.mobile.main.EVoterSessionManager;
 import evoter.mobile.main.R;
 import evoter.mobile.main.Splash;
@@ -39,7 +40,7 @@ import evoter.server.model.Question;
 /**
  * Created by luongnv89 on 06/12/13.
  */
-public class QuestionViewActivity extends Activity {
+public class QuestionViewActivity extends EVoterActivity {
 
 	ArrayList<Question> listQuestions = new ArrayList<Question>();
 	ListView listQuestionView;
@@ -53,8 +54,10 @@ public class QuestionViewActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.session_running_teacher);
 		context = this;
+		this.tvTitleBarContent.setText(EVoterSessionManager
+				.getCurrentSessionName());
 		listQuestionView = (ListView) findViewById(R.id.lvQuestionSesionRunning);
-		loadListQuestion(EVoterSessionManager.getCurrentSessionID());
+		loadListQuestion();
 		questionBaseAdapter = new QuestionBaseAdapter(listQuestions,
 				QuestionViewActivity.this);
 		listQuestionView.setAdapter(questionBaseAdapter);
@@ -64,7 +67,8 @@ public class QuestionViewActivity extends Activity {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				QuestionViewActivity.this.questionBaseAdapter.getFilter().filter(s);
+				QuestionViewActivity.this.questionBaseAdapter.getFilter()
+						.filter(s);
 			}
 
 			@Override
@@ -79,41 +83,46 @@ public class QuestionViewActivity extends Activity {
 			}
 		});
 
-		listQuestionView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				Question selectQuestion = (Question) parent
-						.getItemAtPosition(position);
-				Toast.makeText(QuestionViewActivity.this,
-						"View question" + selectQuestion.getQuestionText(),
-						Toast.LENGTH_LONG).show();
-			}
-		});
+		listQuestionView
+				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						Question selectQuestion = (Question) parent
+								.getItemAtPosition(position);
+						Toast.makeText(
+								QuestionViewActivity.this,
+								"View question"
+										+ selectQuestion.getQuestionText(),
+								Toast.LENGTH_LONG).show();
+					}
+				});
 
-		listQuestionView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				Question selectQuestion = (Question) parent
-						.getItemAtPosition(position);
-				Toast.makeText(
-						QuestionViewActivity.this,
-						"Process item long clicked for item: "
-								+ selectQuestion.getQuestionText(),
-						Toast.LENGTH_SHORT).show();
-				return true;
-			}
-		});
+		listQuestionView
+				.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+					@Override
+					public boolean onItemLongClick(AdapterView<?> parent,
+							View view, int position, long id) {
+						Question selectQuestion = (Question) parent
+								.getItemAtPosition(position);
+						Toast.makeText(
+								QuestionViewActivity.this,
+								"Process item long clicked for item: "
+										+ selectQuestion.getQuestionText(),
+								Toast.LENGTH_SHORT).show();
+						return true;
+					}
+				});
 
 	}
 
-	private void loadListQuestion(long sessionID) {
+	private void loadListQuestion() {
 		AsyncHttpClient client = new AsyncHttpClient(1000);
 		RequestParams params = new RequestParams();
-		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(sessionID));
+		params.add(QuestionSessionDAO.SESSION_ID,
+				String.valueOf(EVoterSessionManager.getCurrentSessionID()));
 		params.put(UserDAO.USER_KEY, EVoterSessionManager.getUserKey());
-		
+
 		client.post(Configuration.get_urlGetAllQuestion(), params,
 				new AsyncHttpResponseHandler() {
 					@Override
@@ -124,11 +133,13 @@ public class QuestionViewActivity extends Activity {
 							for (int i = 0; i < array.length(); i++) {
 								String sString = array.get(i).toString();
 								JSONObject s = new JSONObject(sString);
-								Question question = new Question(Long
-										.parseLong(s.getString(QuestionDAO.ID)), s
-										.getString(QuestionDAO.QUESTION_TEXT), s
-										.getString(QuestionSessionDAO.SESSION_ID), Integer
-										.parseInt(s.getString(QuestionDAO.QUESTION_TYPE_ID)));
+								Question question = new Question(
+										Long.parseLong(s
+												.getString(QuestionDAO.ID)),
+										s.getString(QuestionDAO.QUESTION_TEXT),
+										s.getString(QuestionSessionDAO.SESSION_ID),
+										Integer.parseInt(s
+												.getString(QuestionDAO.QUESTION_TYPE_ID)));
 								listQuestions.add(question);
 							}
 						} catch (JSONException e) {
@@ -138,7 +149,8 @@ public class QuestionViewActivity extends Activity {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						//Log.i("Get All Quesion Test", "response : " + response);
+						// Log.i("Get All Quesion Test", "response : " +
+						// response);
 					}
 
 					@Override
@@ -150,119 +162,4 @@ public class QuestionViewActivity extends Activity {
 
 	}
 
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		MenuInflater mnInfalter = getMenuInflater();
-		mnInfalter.inflate(R.menu.session_running_menu, menu);
-		return true;
-	}
-
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.mnExit:
-			Intent exitIntent = new Intent(this, Splash.class);
-			exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			exitIntent.putExtra("Exit application", true);
-			startActivity(exitIntent);
-			finish();
-			return true;
-		case R.id.mnListQuestionReload:
-			loadListQuestion(EVoterSessionManager.getCurrentSessionID());
-			return true;
-		case R.id.mnLogout:
-			EVoterSessionManager eVoterSessionManager = new EVoterSessionManager(
-					this);
-			if (eVoterSessionManager.isLoggedIn()) {
-				eVoterSessionManager.logoutUser();
-			}
-			eVoterSessionManager.checkLogin();
-			return true;
-		}
-		return false;
-	}
-	//
-	// private class LoadListSessions extends AsyncTask<Void, Void, Void> {
-	// ProgressDialog dialog;
-	//
-	// /**
-	// * Runs on the UI thread before {@link #doInBackground}.
-	// *
-	// * @see #onPostExecute
-	// * @see #doInBackground
-	// */
-	// @Override
-	// protected void onPreExecute() {
-	// dialog = new ProgressDialog(context);
-	// dialog.setTitle("Loading list session");
-	// dialog.show();
-	// super.onPreExecute();
-	// }
-	//
-	// /**
-	// * <p>Runs on the UI thread after {@link #doInBackground}. The
-	// * specified result is the value returned by {@link #doInBackground}.</p>
-	// * <p/>
-	// * <p>This method won't be invoked if the task was cancelled.</p>
-	// *
-	// * @param aVoid The result of the operation computed by {@link
-	// #doInBackground}.
-	// * @see #onPreExecute
-	// * @see #doInBackground
-	// * @see #onCancelled(Object)
-	// */
-	// @Override
-	// protected void onPostExecute(Void aVoid) {
-	// dialog.dismiss();
-	// super.onPostExecute(aVoid);
-	// }
-	//
-	// /**
-	// * Override this method to perform a computation on a background thread.
-	// The
-	// * specified parameters are the parameters passed to {@link #execute}
-	// * by the caller of this task.
-	// * <p/>
-	// * This method can call {@link #publishProgress} to publish updates
-	// * on the UI thread.
-	// *
-	// * @param params The parameters of the task.
-	// * @return A result, defined by the subclass of this task.
-	// * @see #onPreExecute()
-	// * @see #onPostExecute
-	// * @see #publishProgress
-	// */
-	// @Override
-	// protected Void doInBackground(Void... params) {
-	// String content = InternetChecking.getData(sessionURL);
-	// listSessions.clear();
-	// try {
-	// JSONObject jsonObject = new JSONObject(content);
-	// JSONObject jsonObject1 = jsonObject.getJSONObject("data");
-	// JSONArray array = jsonObject1.getJSONArray("items");
-	// for (int i = 0; i < array.length(); i++) {
-	//
-	// JSONObject detailInfor = array.getJSONObject(i).getJSONObject("video");
-	// Session sessionData = new Session(detailInfor.getString("id"),
-	// detailInfor.getString("title"), detailInfor.getString("uploader"),
-	// detailInfor.getString("viewCount"), detailInfor.getString("uploaded"));
-	// int count = Integer.parseInt(sessionData.getStatus());
-	// if (count % 2 == 0)
-	// sessionData.setStatus(count + " - Status: Wait for accepting");
-	// else {
-	// sessionData.setStatus(count + " - Status: accepted");
-	// }
-	// if (count % 7 == 0) sessionData.setActive(true);
-	// else {
-	// sessionData.setActive(false);
-	// }
-	// listSessions.add(sessionData);
-	// }
-	//
-	// sessionBaseAdapter.notifyDataSetChanged();
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// return null;
-	// }
-	// }
 }

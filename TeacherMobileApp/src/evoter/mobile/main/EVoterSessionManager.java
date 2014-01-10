@@ -29,6 +29,12 @@ public class EVoterSessionManager {
     public static final String KEY_USERNAME = "username";
 
     public static final String KEY_PASSWORD = "email";
+    
+    public static String currentUserName;
+    
+    public static String currentSubject;
+    
+    public static String currentSession;
 
     public EVoterSessionManager(Context contex) {
         this.contex = contex;
@@ -129,6 +135,49 @@ public class EVoterSessionManager {
 	public static void setCurrentSessionStatus(boolean currentSessionStatus) {
 		EVoterSessionManager.currentSessionStatus = currentSessionStatus;
 	}
+
+	/**
+	 * @return the currentUserName
+	 */
+	public static String getCurrentUserName() {
+		return currentUserName;
+	}
+
+	/**
+	 * @param currentUserName the currentUserName to set
+	 */
+	public static void setCurrentUserName(String currentUserName) {
+		EVoterSessionManager.currentUserName = currentUserName;
+	}
+
+	/**
+	 * @return the currentSubject
+	 */
+	public static String getCurrentSubjectName() {
+		return currentSubject;
+	}
+
+	/**
+	 * @param currentSubject the currentSubject to set
+	 */
+	public static void setCurrentSubject(String currentSubject) {
+		EVoterSessionManager.currentSubject = currentSubject;
+	}
+
+	/**
+	 * @return the currentSession
+	 */
+	public static String getCurrentSessionName() {
+		return currentSession;
+	}
+
+	/**
+	 * @param currentSession the currentSession to set
+	 */
+	public static void setCurrentSessionName(String currentSession) {
+		EVoterSessionManager.currentSession = currentSession;
+	}
+	
 	
 	
 }

@@ -26,7 +26,7 @@ import evoter.server.dao.UserDAO;
  * 		</li> parse response and store user key sent by server to verify next time
  * 
  */
-public class Login extends Activity {
+public class Login extends EVoterActivity {
 
 	EditText etUsrName;
 	EditText etPassword;
@@ -44,7 +44,10 @@ public class Login extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.login);
-
+		
+		this.tvTitleBarContent.setText("Login");
+		this.ivTitleBarRefresh.setVisibility(View.INVISIBLE);
+		
 		eVoterSessionManager = new EVoterSessionManager(this);
 
 		etUsrName = (EditText) findViewById(R.id.usrname);
@@ -85,7 +88,7 @@ public class Login extends Activity {
 								public void onSuccess(String response) {
 									Log.i("LoginTest", "response : " + response);
 									String userKey = null;
-									
+									EVoterSessionManager.setCurrentUserName(i_Usrname);
 									try {
 										
 										JSONObject object = new JSONObject(response);

@@ -11,6 +11,6 @@
 	<classpathentry kind="lib" path="libs/gson-2.2.4.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/evoterServer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/eVoterServer"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

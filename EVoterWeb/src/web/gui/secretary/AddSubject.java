@@ -1,55 +1,41 @@
-package eVoter.web.gui.secretary;
+package web.gui.secretary;
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 
-
-public class AddSubject extends JPanel {
+/**
+ * @author maint<br>
+ * a JFrame to add a subject. 
+ * extends {@link GUISubjectAbstract} class.
+ */
+public class AddSubject extends GUISubjectAbstract {
 
 	private static final long serialVersionUID = 1L;
 	
-	public static final String INVITE = "Invite";
-	public static final String IMPORT_TEACHER = "Import";
-	public static final String IMPORT_STUDENT = "Import";
-	public static final String CLOSE = "Close";
+	private JTextField txtTitle;
 
-	public JTextField txtTitle;
-
-	private JButton btnAddTeacher;
-	private JButton btnAddStudent;
 	private JButton btnInvite;
-	private JButton btnClose;
 	
-	public JTable tblTeacher;
-	public JTable tblStudent;
-	public DefaultTableModel modelTeacher;
-	public DefaultTableModel modelStudent;
-	GridBagConstraints c;
 
 	/**
-	 * paint user interface for adding a 
+	 * set the title of the frame, and initialize its components.<br>
+	 * Design user interface ( {@link JFrame} ) to add a subject.
+	 * @throws IOException 
 	 */
-	public AddSubject() {
+	public AddSubject() throws IOException {
+		this.setTitle("Add new subject");
 		initComponents();
-		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
-		GridBagLayout gridbag = new GridBagLayout();
-		c = new GridBagConstraints();
-		this.setLayout(gridbag);
-
-		c.fill = GridBagConstraints.BOTH;
-		c.insets = new Insets(1, 1, 1, 5);
-
+		importFile();
+		
+		// design user interface
 		// Row 0: Title
 		c.weightx = 0;
 		this.add(new JLabel("Title: "));
@@ -75,7 +61,7 @@ public class AddSubject extends JPanel {
 		c.gridy = 0;
 		c.gridheight = 3;
 		c.weightx = 1.0;
-		teacherPanel.add(new JScrollPane(tblTeacher,
+		teacherPanel.add(new JScrollPane(getTxtTeacher(),
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), c);
 
@@ -104,7 +90,7 @@ public class AddSubject extends JPanel {
 		c.gridy = 0;
 		c.gridheight = 3;
 		c.weightx = 1.0;
-		studentPanel.add(new JScrollPane(tblStudent,
+		studentPanel.add(new JScrollPane(getTxtStudent(),
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), c);
 
@@ -135,50 +121,18 @@ public class AddSubject extends JPanel {
 
 	}
 
-	public void reset() {
-		this.txtTitle.setText("");
-		while (modelTeacher.getRowCount() > 0) {
-			modelTeacher.removeRow(0);
-		}
-
-		while (modelStudent.getRowCount() > 0) {
-			modelStudent.removeRow(0);
-		}
-	}
-
-
-	private JTable createTable(DefaultTableModel model) {
-		JTable table = new JTable(model);
-		table.setFillsViewportHeight(true);
-		TableColumn column = null;
-		for (int i = 0; i < model.getColumnCount(); i++) {
-			column = table.getColumnModel().getColumn(i);
-
-			if (i == 2) {
-				column.setPreferredWidth(100);
-			} else {
-				column.setPreferredWidth(10);
-			}
-		}
-		return table;
-	}
-
 	/**
-	 * initialize components
+	 * initialize additional components which are not defined in
+	 * {@link GUISubjectAbstract}. Components only belong to {@link AddSubject}
 	 */
-	private void initComponents() {
+	protected void initComponents() {
+		super.initComponents();
+		
 		txtTitle = new JTextField();
 
 		btnAddTeacher = new JButton(IMPORT_TEACHER);
 		btnAddStudent = new JButton(IMPORT_STUDENT);
 		btnInvite = new JButton(INVITE);
-		btnClose = new JButton(CLOSE);
-
-		modelTeacher = new DefaultTableModel();
-		tblTeacher = createTable(modelTeacher);
-		modelStudent = new DefaultTableModel();
-		tblStudent = createTable(modelStudent);
-
 	}
 
 }

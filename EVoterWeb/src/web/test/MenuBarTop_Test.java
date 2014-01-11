@@ -1,11 +1,11 @@
-package eVoter.web.test;
+package web.test;
 
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 
-import eVoter.web.gui.secretary.ItemOfListView;
-import eVoter.web.gui.secretary.MenuBarTop;
+import web.gui.secretary.subcomponents.MenuBarTop;
+
 
 public class MenuBarTop_Test{
 	

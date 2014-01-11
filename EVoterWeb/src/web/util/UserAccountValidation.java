@@ -1,4 +1,4 @@
-package eVoter.web.util;
+package web.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

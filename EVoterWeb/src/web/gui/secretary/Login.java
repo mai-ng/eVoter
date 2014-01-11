@@ -1,4 +1,4 @@
-package eVoter.web.gui.secretary;
+package web.gui.secretary;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;

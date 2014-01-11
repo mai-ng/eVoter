@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eVoter.web.test;
+package web.test;
 
 /**
  * @author luongnv89

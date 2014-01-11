@@ -1,14 +1,15 @@
 /**
  * 
  */
-package eVoter.web.test;
+package web.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import eVoter.web.util.UserAccountValidation;
+import web.util.UserAccountValidation;
+
 
 /**
  * @author maint
@@ -20,7 +21,7 @@ public class JUnit_UserAccountValidation {
 	 *  UserName is OK when:
 	 * <li> length from 6 - 15
 	 * <li> contains characters a-z, A-Z, 0-9, _, and -
-	 * Test method for {@link eVoter.web.util.UserAccountValidation#isValidUserName(java.lang.String)}.
+	 * Test method for {@link web.util.UserAccountValidation#isValidUserName(java.lang.String)}.
 	 */
 	@Test
 	public void testIsValidUserName_OK() {
@@ -38,7 +39,7 @@ public class JUnit_UserAccountValidation {
 	 * <li> length less than 6
 	 * <li> length more than 15
 	 * <li> there is at least a character or symbol not belong to a-z, A-Z, 0-9, _, or -
-	 * Test method for {@link eVoter.web.util.UserAccountValidation#isValidUserName(java.lang.String)}.
+	 * Test method for {@link web.util.UserAccountValidation#isValidUserName(java.lang.String)}.
 	 */
 	@Test
 	public void testIsValidUserName_KO() {
@@ -51,7 +52,7 @@ public class JUnit_UserAccountValidation {
 	 * Password is OK when:
 	 * <li> length from 6 - 15
 	 * <li> contains characters a-z, A-Z, 0-9
-	 * Test method for {@link eVoter.web.util.UserAccountValidation#isValidPassword(java.lang.String)}.
+	 * Test method for {@link web.util.UserAccountValidation#isValidPassword(java.lang.String)}.
 	 */
 	@Test
 	public void testIsValidPassword_OK() {
@@ -67,7 +68,7 @@ public class JUnit_UserAccountValidation {
 	 * <li> length less than 6
 	 * <li> length more than 15
 	 * <li> there is at least a character or symbol not belong to a-z, A-Z, 0-9
-	 * Test method for {@link eVoter.web.util.UserAccountValidation#isValidPassword(java.lang.String)}.
+	 * Test method for {@link web.util.UserAccountValidation#isValidPassword(java.lang.String)}.
 	 */
 	@Test
 	public void testIsValidPassword_KO() {
@@ -83,7 +84,7 @@ public class JUnit_UserAccountValidation {
 	 * <li> First part characters and symbols, a-z, A-Z, 0-9, _, .
 	 * <li> and followed by @, 
 	 * <li> and last part characters and symbols, a-z, A-Z, .
-	 * Test method for {@link eVoter.web.util.UserAccountValidation#isValidEmail(java.lang.String)}.
+	 * Test method for {@link web.util.UserAccountValidation#isValidEmail(java.lang.String)}.
 	 */
 	@Test
 	public void testIsValidEmail_OK() {
@@ -99,7 +100,7 @@ public class JUnit_UserAccountValidation {
 	 * <li> First part, there is at least a character or symbol not a-z, A-Z, 0-9, _, .
 	 * <li> or don't have symbol @, 
 	 * <li> or last part, there is at least a character or symbol not a-z, A-Z, .
-	 * Test method for {@link eVoter.web.util.UserAccountValidation#isValidEmail(java.lang.String)}.
+	 * Test method for {@link web.util.UserAccountValidation#isValidEmail(java.lang.String)}.
 	 */
 	@Test
 	public void testIsValidEmail_KO() {

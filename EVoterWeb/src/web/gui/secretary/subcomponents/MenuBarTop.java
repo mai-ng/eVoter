@@ -1,4 +1,4 @@
-package eVoter.web.gui.secretary;
+package web.gui.secretary.subcomponents;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;

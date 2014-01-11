@@ -10,7 +10,7 @@ import evoter.mobile.utils.Utils;
 public class Splash extends EVoterActivity {
 
 	ProgressBar progressBar;
-	EVoterSessionManager eVoterSessionManager;
+	OfflineEVoterManager eVoterSessionManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class Splash extends EVoterActivity {
 			return;
 		}
 
-		eVoterSessionManager = new EVoterSessionManager(this);
+		eVoterSessionManager = new OfflineEVoterManager(this);
 
 		progressBar = (ProgressBar) findViewById(R.id.prBar);
 
@@ -59,6 +59,6 @@ public class Splash extends EVoterActivity {
 					});
 				}
 			}
-		}, 3000);
+		}, 1000);
 	}
 }

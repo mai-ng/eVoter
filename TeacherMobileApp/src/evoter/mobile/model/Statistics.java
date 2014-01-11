@@ -1,7 +1,7 @@
 /**
  * 
  */
-package evoter.server.model;
+package evoter.mobile.model;
 
 import java.io.Serializable;
 

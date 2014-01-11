@@ -1,21 +1,17 @@
-package evoter.server.model;
+package evoter.mobile.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import org.json.simple.JSONObject;
 
 import evoter.server.dao.SubjectDAO;
 
-public class Subject implements Serializable {
+public class Subject extends ItemData {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private long id;
-	private String title;
 	private Date creationDate;
 
 	/**
@@ -24,8 +20,7 @@ public class Subject implements Serializable {
 	 * @param creationDate
 	 */
 	public Subject(long id, String title, Date creationDate) {
-		this.id = id;
-		this.title = title;
+		super(id, title);
 		this.creationDate = creationDate;
 	}
 
@@ -33,37 +28,12 @@ public class Subject implements Serializable {
 	 * 
 	 */
 	public Subject(Subject copy) {
-		this.id = copy.getId();
-		this.title = copy.getTitle();
+		super(copy);
 		this.creationDate = copy.getCreationDate();
 	}
 
 	public Date getCreationDate() {
 		return creationDate;
-	}
-
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 	@Override

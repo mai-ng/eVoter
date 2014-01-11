@@ -1,26 +1,23 @@
-package evoter.server.model;
+package evoter.mobile.model;
 
 import java.io.Serializable;
 import java.util.Date;
 
 import org.json.simple.JSONObject;
+
 import evoter.server.dao.SessionDAO;
 
-public class Session implements Serializable {
+public class Session extends ItemData implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -9112405387599457550L;
 
-	private long id;
 	private long subjectId;
-	private String name;
 	private Date creationDate;
 	private boolean isActive;
 
-	
-	
 	/**
 	 * @param id
 	 * @param subjectId
@@ -30,17 +27,15 @@ public class Session implements Serializable {
 	 */
 	public Session(long id, long subjectId, String name, Date creationDate,
 			boolean isActive) {
-		this.id = id;
+		super(id, name);
 		this.subjectId = subjectId;
-		this.name = name;
 		this.creationDate = creationDate;
 		this.isActive = isActive;
 	}
 
 	public Session(Session cp) {
-		this.id = cp.getId();
+		super(cp);
 		this.subjectId = cp.getSubjectId();
-		this.name = cp.getName();
 		this.creationDate = cp.getCreationDate();
 		this.isActive = cp.isActive();
 	}
@@ -49,40 +44,12 @@ public class Session implements Serializable {
 		return isActive;
 	}
 
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
 	public long getSubjectId() {
 		return subjectId;
 	}
 
-	public void setSubjectId(long subjectId) {
-		this.subjectId = subjectId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public Date getCreationDate() {
 		return creationDate;
-	}
-
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -92,7 +59,7 @@ public class Session implements Serializable {
 		obj.put(SessionDAO.ID, id);
 		obj.put(SessionDAO.CREATION_DATE, creationDate);
 		obj.put(SessionDAO.IS_ACTIVE, isActive);
-		obj.put(SessionDAO.NAME, name);
+		obj.put(SessionDAO.NAME, getTitle());
 		obj.put(SessionDAO.SUBJECT_ID, subjectId);
 		return obj.toJSONString();
 
@@ -101,7 +68,7 @@ public class Session implements Serializable {
 	@Override
 	public String toString() {
 		return "Session [id=" + id + ", subjectId=" + subjectId + ", name="
-				+ name + ", creationDate=" + creationDate + ", isActive="
+				+ getTitle() + ", creationDate=" + creationDate + ", isActive="
 				+ isActive + "]";
 	}
 

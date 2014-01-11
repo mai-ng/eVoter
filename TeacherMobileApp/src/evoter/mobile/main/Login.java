@@ -41,7 +41,7 @@ public class Login extends EVoterActivity {
 
 	CheckBox cbRemember;
 
-	EVoterSessionManager eVoterSessionManager;
+	OfflineEVoterManager eVoterSessionManager;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,9 +49,8 @@ public class Login extends EVoterActivity {
 		setContentView(R.layout.login);
 
 		this.tvTitleBarContent.setText("Login");
-		this.ivTitleBarRefresh.setVisibility(View.INVISIBLE);
 
-		eVoterSessionManager = new EVoterSessionManager(this);
+		eVoterSessionManager = new OfflineEVoterManager(this);
 
 		etUsrName = (EditText) findViewById(R.id.usrname);
 		etPassword = (EditText) findViewById(R.id.password);
@@ -110,16 +109,18 @@ public class Login extends EVoterActivity {
 										if (cbRemember.isChecked()) {
 											eVoterSessionManager
 													.rememberCurrentUser(
-															i_Usrname,
-															i_Password);
+															i_Usrname, userKey);
 										}
 
-										EVoterSessionManager
-												.setCurrentSubjectName(i_Usrname);
-										EVoterSessionManager
+										RuntimeEVoterManager
+												.setCurrentUserName(i_Usrname);
+										RuntimeEVoterManager
 												.setUSER_KEY(userKey);
-										Utils.showeVoterToast(Login.this,
-												"Welcome " + i_Usrname
+										Utils.showeVoterToast(
+												Login.this,
+												"Welcome "
+														+ RuntimeEVoterManager
+																.getCurrentUserName()
 														+ " to eVoter!");
 
 										Intent subjectIntent = new Intent(
@@ -159,7 +160,8 @@ public class Login extends EVoterActivity {
 
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent("android.intent.action.REGISTER"));
+				Intent registerIntent = new Intent(Login.this, Register.class);
+				startActivity(registerIntent);
 			}
 		});
 
@@ -169,8 +171,9 @@ public class Login extends EVoterActivity {
 		tvResetPassword.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(
-						"android.intent.action.RECOVERPASSWORD"));
+				Intent registerIntent = new Intent(Login.this,
+						ResetPassword.class);
+				startActivity(registerIntent);
 			}
 		});
 

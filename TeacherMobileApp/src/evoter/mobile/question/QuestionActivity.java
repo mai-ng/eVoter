@@ -1,13 +1,11 @@
-package evoter.mobile.session;
+package evoter.mobile.question;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,39 +20,34 @@ import evoter.mobile.item.ItemDataActivity;
 import evoter.mobile.main.Configuration;
 import evoter.mobile.main.RuntimeEVoterManager;
 import evoter.mobile.model.ItemData;
-import evoter.mobile.model.Session;
+import evoter.mobile.model.Question;
 import evoter.mobile.utils.Utils;
-import evoter.server.dao.SessionDAO;
+import evoter.server.dao.QuestionDAO;
+import evoter.server.dao.QuestionSessionDAO;
 import evoter.server.dao.UserDAO;
 
 /**
  * Created by luongnv89 on 06/12/13.
  */
-public class SessionActivity extends ItemDataActivity {
+public class QuestionActivity extends ItemDataActivity {
 
 	public void onCreate(Bundle savedInstanceState) {
-
 		super.onCreate(savedInstanceState);
-		// Set title bar content is the subject of session
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
-				.getCurrentSubjectName());
+				.getCurrentSessionName());
 
-		adapter = new SessionAdapter(listInitial, SessionActivity.this);
+		adapter = new QuestionAdapter(listInitial, QuestionActivity.this);
 		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Session selectedSession = (Session) parent
+				Question selectQuestion = (Question) parent
 						.getItemAtPosition(position);
-				RuntimeEVoterManager.setCurrentSessionID(selectedSession
-						.getId());
-				RuntimeEVoterManager.setCurrentSessionStatus(selectedSession
-						.isActive());
-				RuntimeEVoterManager.setCurrentSessionName(selectedSession
-						.getTitle());
-				startActivity(new Intent("android.intent.action.SESSIONVIEW"));
+				Toast.makeText(QuestionActivity.this,
+						"View question" + selectQuestion.getTitle(),
+						Toast.LENGTH_LONG).show();
 			}
 		});
 
@@ -62,13 +55,13 @@ public class SessionActivity extends ItemDataActivity {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Session selectedSession = (Session) parent
+				Question selectQuestion = (Question) parent
 						.getItemAtPosition(position);
 				Toast.makeText(
-						SessionActivity.this,
+						QuestionActivity.this,
 						"Process item long clicked for item: "
-								+ selectedSession.getTitle(),
-						Toast.LENGTH_SHORT).show();
+								+ selectQuestion.getTitle(), Toast.LENGTH_SHORT)
+						.show();
 				return true;
 			}
 		});
@@ -78,43 +71,40 @@ public class SessionActivity extends ItemDataActivity {
 	protected void loadListItemData() {
 		AsyncHttpClient client = new AsyncHttpClient(1000);
 		RequestParams params = new RequestParams();
-		params.add(SessionDAO.SUBJECT_ID,
-				String.valueOf(RuntimeEVoterManager.getCurrentSubjectID()));
+		params.add(QuestionSessionDAO.SESSION_ID,
+				String.valueOf(RuntimeEVoterManager.getCurrentSessionID()));
 		params.put(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
-		Log.i("SUBJECT_ID",
-				String.valueOf(RuntimeEVoterManager.getCurrentSubjectID()));
-		client.post(Configuration.get_urlGetAllSession(), params,
+
+		client.post(Configuration.get_urlGetAllQuestion(), params,
 				new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(String response) {
+						Log.i("Get All Quesion Test", "response : " + response);
 						try {
-							ArrayList<ItemData> listSession = new ArrayList<ItemData>();
+							ArrayList<ItemData> listQuestion = new ArrayList<ItemData>();
 							JSONArray array = Utils.getJSONArray(response);
 							for (int i = 0; i < array.length(); i++) {
 								String sString = array.get(i).toString();
 								JSONObject s = new JSONObject(sString);
-								Session session = new Session(Long.parseLong(s
-										.getString("ID")), Long.parseLong(s
-										.getString("SUBJECT_ID")), s
-										.getString("NAME"), Utils
-										.convertToDate(s
-												.getString("CREATION_DATE")),
-										Boolean.parseBoolean(s
-												.getString("is_active")));
-								listSession.add(session);
+								Question question = new Question(
+										Long.parseLong(s
+												.getString(QuestionDAO.ID)),
+										s.getString(QuestionDAO.QUESTION_TEXT),
+										s.getString(QuestionSessionDAO.SESSION_ID),
+										Integer.parseInt(s
+												.getString(QuestionDAO.QUESTION_TYPE_ID)));
+								listQuestion.add(question);
 							}
-							adapter.updateList(listSession);
+							adapter.updateList(listQuestion);
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (NumberFormatException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
 						}
-						Log.i("Get All Session Test", "response : " + response);
+						// Log.i("Get All Quesion Test", "response : " +
+						// response);
 					}
 
 					@Override
@@ -125,4 +115,5 @@ public class SessionActivity extends ItemDataActivity {
 				});
 
 	}
+
 }

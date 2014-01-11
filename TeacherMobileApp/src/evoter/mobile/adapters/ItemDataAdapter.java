@@ -27,9 +27,7 @@ public abstract class ItemDataAdapter extends BaseAdapter implements Filterable 
 	protected Context context;
 	protected ValueFilter valueFilter;
 
-	public ItemDataAdapter(ArrayList<ItemData> listSubjects, Context context) {
-		this.listItemDataToPublic = listSubjects;
-		this.listItemDataToPublic = listSubjects;
+	public ItemDataAdapter(Context context) {
 		this.context = context;
 		this.inflater = LayoutInflater.from(this.context);
 	}

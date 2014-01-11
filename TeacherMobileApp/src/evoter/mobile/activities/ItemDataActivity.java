@@ -3,8 +3,6 @@
  */
 package evoter.mobile.activities;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,7 +13,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import evoter.mobile.adapters.ItemDataAdapter;
 import evoter.mobile.main.R;
-import evoter.mobile.models.ItemData;
 import evoter.mobile.objects.OfflineEVoterManager;
 
 /**
@@ -24,7 +21,6 @@ import evoter.mobile.objects.OfflineEVoterManager;
  */
 public abstract class ItemDataActivity extends EVoterActivity {
 	protected ListView listView;
-	protected ArrayList<ItemData> listInitial;
 	protected ItemDataAdapter adapter;
 	protected Context context;
 	protected EditText etSearch;
@@ -47,7 +43,6 @@ public abstract class ItemDataActivity extends EVoterActivity {
 		offlineEVoterManager = new OfflineEVoterManager(this);
 
 		context = this;
-		listInitial = new ArrayList<ItemData>();
 		listView = (ListView) findViewById(R.id.lvItemData);
 		loadListItemData();
 		etSearch = (EditText) findViewById(R.id.etSearch);

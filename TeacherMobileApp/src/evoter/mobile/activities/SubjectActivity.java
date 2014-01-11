@@ -52,7 +52,7 @@ public class SubjectActivity extends ItemDataActivity {
 			}
 		});
 
-		adapter = new SubjectAdapter(listInitial, SubjectActivity.this);
+		adapter = new SubjectAdapter(SubjectActivity.this);
 		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -153,9 +153,6 @@ public class SubjectActivity extends ItemDataActivity {
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
-
-						Log.i("Get All Subject Test", "response : " + response
-								+ "\nListSubject: " + listInitial.size());
 					}
 
 					@Override

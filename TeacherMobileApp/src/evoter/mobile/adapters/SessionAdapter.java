@@ -1,7 +1,5 @@
 package evoter.mobile.adapters;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
@@ -11,7 +9,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Filterable;
 import android.widget.TextView;
 import evoter.mobile.main.R;
-import evoter.mobile.models.ItemData;
 import evoter.mobile.models.Session;
 import evoter.mobile.utils.Utils;
 
@@ -20,8 +17,8 @@ import evoter.mobile.utils.Utils;
  */
 public class SessionAdapter extends ItemDataAdapter implements Filterable {
 
-	public SessionAdapter(ArrayList<ItemData> listSessions, Context context) {
-		super(listSessions, context);
+	public SessionAdapter(Context context) {
+		super(context);
 	}
 
 	/**
@@ -52,7 +49,7 @@ public class SessionAdapter extends ItemDataAdapter implements Filterable {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		SessionHolder holder;
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.session_item_view, null);
+			convertView = inflater.inflate(R.layout.item_session_view_student, null);
 			holder = new SessionHolder();
 			convertView.setTag(holder);
 		} else {

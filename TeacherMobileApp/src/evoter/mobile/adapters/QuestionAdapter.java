@@ -3,19 +3,11 @@
  */
 package evoter.mobile.adapters;
 
-import java.util.ArrayList;
-
 import android.content.Context;
-import android.graphics.Color;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Filterable;
-import android.widget.Toast;
-import evoter.mobile.activities.RuntimeEVoterManager;
 import evoter.mobile.main.R;
-import evoter.mobile.models.ItemData;
 
 /**
  * @author luongnv89
@@ -27,8 +19,8 @@ public class QuestionAdapter extends ItemDataAdapter implements Filterable {
 	 * @param listSubjects
 	 * @param context
 	 */
-	public QuestionAdapter(ArrayList<ItemData> listSubjects, Context context) {
-		super(listSubjects, context);
+	public QuestionAdapter(Context context) {
+		super(context);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -61,7 +53,8 @@ public class QuestionAdapter extends ItemDataAdapter implements Filterable {
 
 		QuestionHolder holder;
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.question_view_item, null);
+			convertView = inflater.inflate(R.layout.item_question_view_student,
+					null);
 			holder = new QuestionHolder();
 			convertView.setTag(holder);
 		} else {
@@ -70,37 +63,9 @@ public class QuestionAdapter extends ItemDataAdapter implements Filterable {
 
 		holder.title = detail(convertView, R.id.tvQuestionShortDescript,
 				listItemDataToPublic.get(position).getTitle());
-		holder.btAction = (Button) convertView
-				.findViewById(R.id.btSessionAction);
-		holder.btAction.setText("Send");
-		if (!RuntimeEVoterManager.getCurrentSessionStatus()) {
-			holder.btAction.setTextColor(Color.GRAY);
-			holder.btAction.setClickable(false);
-		} else {
-			holder.btAction.setOnClickListener(new OnClickListener() {
-			
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					// TODO: Send question for student and move to statistic
-					// view
-
-					Toast.makeText(
-							context,
-							"Send question for student and move to statistic view: "
-									+ listItemDataToPublic.get(position)
-											.getTitle(),
-							Toast.LENGTH_LONG).show();
-
-				}
-			}
-			);
-		}
 		return convertView;
 	}
 
-
-	private class QuestionHolder extends ItemDataViewHolder{
-		Button btAction;
+	private class QuestionHolder extends ItemDataViewHolder {
 	}
 }

@@ -1,13 +1,10 @@
 package evoter.mobile.adapters;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filterable;
 import evoter.mobile.main.R;
-import evoter.mobile.models.ItemData;
 import evoter.mobile.models.Subject;
 import evoter.mobile.utils.Utils;
 
@@ -16,8 +13,8 @@ import evoter.mobile.utils.Utils;
  */
 public class SubjectAdapter extends ItemDataAdapter implements Filterable {
 
-	public SubjectAdapter(ArrayList<ItemData> listSubjects, Context context) {
-		super(listSubjects, context);
+	public SubjectAdapter(Context context) {
+		super(context);
 	}
 
 	/**
@@ -48,7 +45,7 @@ public class SubjectAdapter extends ItemDataAdapter implements Filterable {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		SubjectViewHolder holder;
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.subject_item_view, null);
+			convertView = inflater.inflate(R.layout.item_subject_view, null);
 			holder = new SubjectViewHolder();
 			convertView.setTag(holder);
 		} else {

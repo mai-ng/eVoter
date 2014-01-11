@@ -35,7 +35,7 @@ public class QuestionActivity extends ItemDataActivity {
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentSessionName());
 
-		adapter = new QuestionAdapter(listInitial, QuestionActivity.this);
+		adapter = new QuestionAdapter(QuestionActivity.this);
 		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -1,8 +1,9 @@
 /**
  * 
  */
-package evoter.mobile.main;
+package evoter.mobile.activities;
 
+import evoter.mobile.main.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;

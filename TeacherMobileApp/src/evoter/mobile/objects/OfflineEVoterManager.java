@@ -1,4 +1,4 @@
-package evoter.mobile.main;
+package evoter.mobile.objects;
 
 import java.util.HashMap;
 
@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import evoter.mobile.subject.SubjectActivity;
+import evoter.mobile.activities.LoginActivity;
+import evoter.mobile.activities.RuntimeEVoterManager;
+import evoter.mobile.activities.SubjectActivity;
 import evoter.server.dao.UserDAO;
 
 /**
@@ -70,7 +72,7 @@ public class OfflineEVoterManager {
 	 */
 	public void checkLogin() {
 		if (!this.isLoggedIn()) {
-			Intent i = new Intent(contex, Login.class);
+			Intent i = new Intent(contex, LoginActivity.class);
 			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			contex.startActivity(i);
@@ -90,7 +92,7 @@ public class OfflineEVoterManager {
 		editor.clear();
 		editor.commit();
 
-		Intent i = new Intent(contex, Login.class);
+		Intent i = new Intent(contex, LoginActivity.class);
 		i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		contex.startActivity(i);

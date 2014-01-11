@@ -1,4 +1,4 @@
-package evoter.mobile.subject;
+package evoter.mobile.adapters;
 
 import java.util.ArrayList;
 
@@ -6,11 +6,9 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filterable;
-import evoter.mobile.item.ItemDataAdapter;
-import evoter.mobile.item.ItemDataViewHolder;
 import evoter.mobile.main.R;
-import evoter.mobile.model.ItemData;
-import evoter.mobile.model.Subject;
+import evoter.mobile.models.ItemData;
+import evoter.mobile.models.Subject;
 import evoter.mobile.utils.Utils;
 
 /**

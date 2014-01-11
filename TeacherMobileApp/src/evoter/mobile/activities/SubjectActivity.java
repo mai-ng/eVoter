@@ -1,4 +1,4 @@
-package evoter.mobile.subject;
+package evoter.mobile.activities;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -21,14 +21,11 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import evoter.mobile.item.ItemDataActivity;
-import evoter.mobile.main.Configuration;
+import evoter.mobile.adapters.SubjectAdapter;
 import evoter.mobile.main.R;
-import evoter.mobile.main.RuntimeEVoterManager;
-import evoter.mobile.main.Splash;
-import evoter.mobile.model.ItemData;
-import evoter.mobile.model.Subject;
-import evoter.mobile.session.SessionActivity;
+import evoter.mobile.models.ItemData;
+import evoter.mobile.models.Subject;
+import evoter.mobile.objects.Configuration;
 import evoter.mobile.utils.Utils;
 import evoter.server.dao.SubjectDAO;
 import evoter.server.dao.UserDAO;
@@ -177,7 +174,7 @@ public class SubjectActivity extends ItemDataActivity {
 	 */
 	@Override
 	public void onBackPressed() {
-		Intent exitIntent = new Intent(this, Splash.class);
+		Intent exitIntent = new Intent(this, StartActivity.class);
 		exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		exitIntent.putExtra("Exit application", true);
 		startActivity(exitIntent);

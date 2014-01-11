@@ -1,7 +1,7 @@
 /**
  * 
  */
-package evoter.mobile.question;
+package evoter.mobile.adapters;
 
 import java.util.ArrayList;
 
@@ -13,11 +13,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Filterable;
 import android.widget.Toast;
-import evoter.mobile.item.ItemDataAdapter;
-import evoter.mobile.item.ItemDataViewHolder;
+import evoter.mobile.activities.RuntimeEVoterManager;
 import evoter.mobile.main.R;
-import evoter.mobile.main.RuntimeEVoterManager;
-import evoter.mobile.model.ItemData;
+import evoter.mobile.models.ItemData;
 
 /**
  * @author luongnv89

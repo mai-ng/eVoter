@@ -1,4 +1,4 @@
-package evoter.mobile.session;
+package evoter.mobile.adapters;
 
 import java.util.ArrayList;
 
@@ -10,11 +10,9 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Filterable;
 import android.widget.TextView;
-import evoter.mobile.item.ItemDataAdapter;
-import evoter.mobile.item.ItemDataViewHolder;
 import evoter.mobile.main.R;
-import evoter.mobile.model.ItemData;
-import evoter.mobile.model.Session;
+import evoter.mobile.models.ItemData;
+import evoter.mobile.models.Session;
 import evoter.mobile.utils.Utils;
 
 /**

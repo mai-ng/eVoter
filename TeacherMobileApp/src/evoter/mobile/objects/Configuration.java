@@ -1,7 +1,7 @@
 /**
  * 
  */
-package evoter.mobile.main;
+package evoter.mobile.objects;
 
 /**
  * @author luongnv89

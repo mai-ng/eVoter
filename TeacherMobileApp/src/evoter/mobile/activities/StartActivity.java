@@ -1,13 +1,16 @@
-package evoter.mobile.main;
+package evoter.mobile.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ProgressBar;
+import evoter.mobile.main.R;
+import evoter.mobile.objects.DialogInfor;
+import evoter.mobile.objects.OfflineEVoterManager;
 import evoter.mobile.utils.Utils;
 
-public class Splash extends EVoterActivity {
+public class StartActivity extends EVoterActivity {
 
 	ProgressBar progressBar;
 	OfflineEVoterManager eVoterSessionManager;
@@ -30,11 +33,11 @@ public class Splash extends EVoterActivity {
 		progressBar.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				if (Utils.hasInternetConnection(Splash.this)) {
+				if (Utils.hasInternetConnection(StartActivity.this)) {
 					eVoterSessionManager.checkLogin();
 				} else {
-					EVoterDialogInfor dialog = new EVoterDialogInfor(
-							Splash.this, "Error connection!");
+					DialogInfor dialog = new DialogInfor(
+							StartActivity.this, "Error connection!");
 					dialog.setMessageContent("Cannot connect to internet. Check your mobile internet connection an try again!");
 					dialog.show();
 					dialog.getBtOK().setText("Retry");
@@ -42,8 +45,8 @@ public class Splash extends EVoterActivity {
 
 						@Override
 						public void onClick(View v) {
-							Intent exitIntent = new Intent(Splash.this,
-									Splash.class);
+							Intent exitIntent = new Intent(StartActivity.this,
+									StartActivity.class);
 							exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							exitIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 							startActivity(exitIntent);

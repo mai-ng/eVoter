@@ -1,7 +1,7 @@
 /**
  * 
  */
-package evoter.mobile.item;
+package evoter.mobile.adapters;
 
 import android.widget.TextView;
 

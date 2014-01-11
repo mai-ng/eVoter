@@ -1,7 +1,7 @@
 /**
  * 
  */
-package evoter.mobile.main;
+package evoter.mobile.activities;
 
 /**
  * {@link RuntimeEVoterManager} manage the parameters of eVoter application 

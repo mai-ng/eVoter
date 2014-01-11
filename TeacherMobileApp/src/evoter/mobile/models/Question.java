@@ -1,4 +1,5 @@
-package evoter.mobile.model;
+package evoter.mobile.models;
+
 
 
 public class Question extends ItemData {

@@ -1,25 +1,19 @@
-package evoter.mobile.main;
+package evoter.mobile.activities;
 
-import evoter.mobile.main.R;
-import evoter.mobile.utils.UserAccountValidation;
-import evoter.mobile.utils.Utils;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import evoter.mobile.main.R;
+import evoter.mobile.utils.UserAccountValidation;
+import evoter.mobile.utils.Utils;
 
 /**
  * Created by luongnv89 on 05/12/13.
  */
-public class ResetPassword extends EVoterActivity {
+public class ResetPasswordActivity extends EVoterActivity {
 
-	String validEmail = "luongnv89@gmail.com";
 	EditText etEmail;
 	Button btReset;
 
@@ -37,17 +31,17 @@ public class ResetPassword extends EVoterActivity {
 			public void onClick(View v) {
 				String i_email = etEmail.getText().toString();
 				if (i_email.equals("")) {
-					Utils.showeVoterToast(ResetPassword.this,
+					Utils.showeVoterToast(ResetPasswordActivity.this,
 							"Input your email!");
 				} else if (!UserAccountValidation.isValidEmail(i_email)) {
-					Utils.showeVoterToast(ResetPassword.this,
+					Utils.showeVoterToast(ResetPasswordActivity.this,
 							"Input email is invalid. Try again!");
 				} else {
 
 					// TODO: Send request to sever: email to change the password
-					Utils.showeVoterToast(ResetPassword.this,
+					Utils.showeVoterToast(ResetPasswordActivity.this,
 							"You will receive an email confirm to reset your password!");
-					Intent intent = new Intent(ResetPassword.this, Login.class);
+					Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(intent);

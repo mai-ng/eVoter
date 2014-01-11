@@ -1,4 +1,4 @@
-package evoter.mobile.main;
+package evoter.mobile.activities;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +18,9 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import evoter.mobile.subject.SubjectActivity;
+import evoter.mobile.main.R;
+import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.OfflineEVoterManager;
 import evoter.mobile.utils.UserAccountValidation;
 import evoter.mobile.utils.Utils;
 import evoter.server.dao.UserDAO;
@@ -29,7 +31,7 @@ import evoter.server.dao.UserDAO;
  * verify next time
  * 
  */
-public class Login extends EVoterActivity {
+public class LoginActivity extends EVoterActivity {
 
 	EditText etUsrName;
 	EditText etPassword;
@@ -71,16 +73,16 @@ public class Login extends EVoterActivity {
 				params.add(UserDAO.PASSWORD, i_Password);
 
 				if (i_Usrname.equals("")) {
-					Utils.showeVoterToast(Login.this,
+					Utils.showeVoterToast(LoginActivity.this,
 							"Please input your username");
 				} else if (i_Password.equals("")) {
-					Utils.showeVoterToast(Login.this,
+					Utils.showeVoterToast(LoginActivity.this,
 							"Please input your password");
 				} else if (!UserAccountValidation.isValidUserName(i_Usrname)) {
-					Utils.showeVoterToast(Login.this,
+					Utils.showeVoterToast(LoginActivity.this,
 							"Input username is not valid");
 				} else if (!UserAccountValidation.isValidPassword(i_Password)) {
-					Utils.showeVoterToast(Login.this,
+					Utils.showeVoterToast(LoginActivity.this,
 							"Input password is not valid");
 				} else
 
@@ -117,14 +119,14 @@ public class Login extends EVoterActivity {
 										RuntimeEVoterManager
 												.setUSER_KEY(userKey);
 										Utils.showeVoterToast(
-												Login.this,
+												LoginActivity.this,
 												"Welcome "
 														+ RuntimeEVoterManager
 																.getCurrentUserName()
 														+ " to eVoter!");
 
 										Intent subjectIntent = new Intent(
-												Login.this,
+												LoginActivity.this,
 												SubjectActivity.class);
 										subjectIntent
 												.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -139,7 +141,7 @@ public class Login extends EVoterActivity {
 								public void onFailure(Throwable error,
 										String content) {
 									Utils.showeVoterToast(
-											Login.this,
+											LoginActivity.this,
 											"onFailure error : "
 													+ error.toString()
 													+ "content : " + content);
@@ -160,7 +162,7 @@ public class Login extends EVoterActivity {
 
 			@Override
 			public void onClick(View v) {
-				Intent registerIntent = new Intent(Login.this, Register.class);
+				Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
 				startActivity(registerIntent);
 			}
 		});
@@ -171,8 +173,8 @@ public class Login extends EVoterActivity {
 		tvResetPassword.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent registerIntent = new Intent(Login.this,
-						ResetPassword.class);
+				Intent registerIntent = new Intent(LoginActivity.this,
+						ResetPasswordActivity.class);
 				startActivity(registerIntent);
 			}
 		});
@@ -186,7 +188,7 @@ public class Login extends EVoterActivity {
 	 */
 	@Override
 	public void onBackPressed() {
-		Intent exitIntent = new Intent(this, Splash.class);
+		Intent exitIntent = new Intent(this, StartActivity.class);
 		exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		exitIntent.putExtra("Exit application", true);
 		startActivity(exitIntent);

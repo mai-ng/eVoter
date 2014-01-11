@@ -1,4 +1,4 @@
-package evoter.mobile.question;
+package evoter.mobile.activities;
 
 import java.util.ArrayList;
 
@@ -16,11 +16,10 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import evoter.mobile.item.ItemDataActivity;
-import evoter.mobile.main.Configuration;
-import evoter.mobile.main.RuntimeEVoterManager;
-import evoter.mobile.model.ItemData;
-import evoter.mobile.model.Question;
+import evoter.mobile.adapters.QuestionAdapter;
+import evoter.mobile.models.ItemData;
+import evoter.mobile.models.Question;
+import evoter.mobile.objects.Configuration;
 import evoter.mobile.utils.Utils;
 import evoter.server.dao.QuestionDAO;
 import evoter.server.dao.QuestionSessionDAO;

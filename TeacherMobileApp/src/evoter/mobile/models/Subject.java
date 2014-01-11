@@ -1,4 +1,4 @@
-package evoter.mobile.model;
+package evoter.mobile.models;
 
 import java.util.Date;
 

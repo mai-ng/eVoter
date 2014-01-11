@@ -1,9 +1,11 @@
 /**
  * 
  */
-package evoter.mobile.item;
+package evoter.mobile.adapters;
 
 import java.util.ArrayList;
+
+import evoter.mobile.models.ItemData;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,7 +14,6 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-import evoter.mobile.model.ItemData;
 
 /**
  * @author luongnv89

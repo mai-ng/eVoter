@@ -1,7 +1,7 @@
 /**
  * 
  */
-package evoter.mobile.item;
+package evoter.mobile.activities;
 
 import java.util.ArrayList;
 
@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
-import evoter.mobile.main.EVoterActivity;
-import evoter.mobile.main.OfflineEVoterManager;
+import evoter.mobile.adapters.ItemDataAdapter;
 import evoter.mobile.main.R;
-import evoter.mobile.model.ItemData;
+import evoter.mobile.models.ItemData;
+import evoter.mobile.objects.OfflineEVoterManager;
 
 /**
  * @author luongnv89

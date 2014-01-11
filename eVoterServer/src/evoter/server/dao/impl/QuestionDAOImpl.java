@@ -1,9 +1,14 @@
 package evoter.server.dao.impl;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import evoter.server.dao.QuestionDAO;
 import evoter.server.model.Question;
@@ -13,21 +18,40 @@ import evoter.server.model.mapper.QuestionRowMapper;
 public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 
 	@Override
-	public int insert(Question question) {
+	public long insert(final Question question) {
 		
-		String sql = "INSERT INTO " + TABLE_NAME + "(" 
+		final String sql = "INSERT INTO " + TABLE_NAME + "(" 
 		+ USER_ID 
 		+ "," + QUESTION_TYPE_ID 
 		+ ","+ QUESTION_TEXT 
 		+ "," + CREATION_DATE 
 		+ "," + PARENT_ID + ")" 
 		+ " VALUES(?,?,?,?,?)";
-		return getJdbcTemplate().update(sql, 
-				new Object[]{	question.getUserId(),
-								question.getQuestionTypeId(), 
-								question.getQuestionText(),
-								question.getCreationDate(),
-								question.getParentId()});
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		 getJdbcTemplate().update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(
+						java.sql.Connection connection) throws SQLException {
+					
+		            PreparedStatement ps = connection.prepareStatement(sql);
+		            ps.setLong(1, question.getUserId());
+		            ps.setLong(2, question.getQuestionTypeId());
+		            ps.setString(3, question.getQuestionText());
+		            ps.setDate(4, question.getCreationDate());
+		            ps.setLong(5, question.getParentId());
+		            return ps;
+
+				}
+		    }, keyHolder);
+		
+		 return keyHolder.getKey().longValue();
+		
+//		return getJdbcTemplate().update(sql, 
+//				new Object[]{	question.getUserId(),
+//								question.getQuestionTypeId(), 
+//								question.getQuestionText(),
+//								question.getCreationDate(),
+//								question.getParentId()});
 	}
 
 	@Override

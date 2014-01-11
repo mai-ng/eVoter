@@ -1,8 +1,13 @@
 package evoter.server.dao.impl;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import evoter.server.dao.AnswerDAO;
 import evoter.server.model.Answer;
@@ -11,13 +16,32 @@ import evoter.server.model.mapper.AnswerRowMapper;
 public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 
 	@Override
-	public int insert(Answer answer) {
+	public long insert(final Answer answer) {
 		
-		String sql = "INSERT INTO " + TABLE_NAME + "(" 
+		
+		final String sql = "INSERT INTO " + TABLE_NAME + "(" 
 		+ QUESTION_ID + "," + ANSWER_TEXT +")" + " VALUES(?,?)";
-		return getJdbcTemplate().update(sql, 
-				new Object[]{answer.getQuestionId(),
-								answer.getAnswerText()});
+		 KeyHolder keyHolder = new GeneratedKeyHolder();
+		 getJdbcTemplate().update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(
+						java.sql.Connection connection) throws SQLException {
+					
+		            PreparedStatement ps = connection.prepareStatement(sql);
+		            ps.setLong(1, answer.getQuestionId());
+		            ps.setString(2, answer.getAnswerText());
+		            return ps;
+
+				}
+		    }, keyHolder);
+		
+//		return getJdbcTemplate().update(sql, 
+//				new Object[]{answer.getQuestionId(),
+//								answer.getAnswerText()});
+		
+		 return keyHolder.getKey().longValue();
+		//getJdbcTemplate().
+		//return getJdbcTemplate().getMaxRows();
 	}
 
 	@Override

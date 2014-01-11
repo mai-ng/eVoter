@@ -15,7 +15,7 @@ public interface SessionDAO {
 	public static final String TABLE_NAME = "SESSION";
 	public static final String BEAN_NAME = "sessionDAO";
 	
-	public int insert (Session session);
+	public long insert (Session session);
 	public List<Session> findAll();
 	public int update(Session session);
 	/**

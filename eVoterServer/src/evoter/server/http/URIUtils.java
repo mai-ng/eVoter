@@ -92,7 +92,14 @@ public class URIUtils {
 				&& URIString.contains(((HttpConnection)BeanDAOFactory.getBean("httpConnection")).getContext()) 
 				&& URIString.endsWith(URIRequest.ACTIVE_SESSION); 
 	}
-	
+
+	public static boolean isInActiveSessionRequest(String URIString){
+		
+		return (URIString != null) 
+				&& URIString.contains(((HttpConnection)BeanDAOFactory.getBean("httpConnection")).getContext()) 
+				&& URIString.endsWith(URIRequest.INACTIVE_SESSION); 
+	}
+
 	public static boolean isDeleteSessionRequest(String URIString){
 		
 		return (URIString != null) 
@@ -135,11 +142,11 @@ public class URIUtils {
 			&& URIString.endsWith(URIRequest.VIEW_QUESTION); 
 	}
 	
-	public static boolean isSaveQuestionRequest(String URIString){
+	public static boolean isCreateQuestionRequest(String URIString){
 		
 		return (URIString != null) 
 			&& URIString.contains(((HttpConnection)BeanDAOFactory.getBean("httpConnection")).getContext()) 
-			&& URIString.endsWith(URIRequest.SAVE_QUESTION); 
+			&& URIString.endsWith(URIRequest.CREATE_QUESTION); 
 	}
 	
 	public static boolean isDeleteQuestionRequest(String URIString){
@@ -198,9 +205,9 @@ public class URIUtils {
 			&& URIString.endsWith(URIRequest.GET_STATISTICS); 
 	}
 	
-	public static Map<String, String> getParameters(HttpExchange exchange) {
+	public static Map<String, Object> getParameters(HttpExchange exchange) {
 		
-		Map<String,String> parameters = new HashMap<String, String>();
+		Map<String,Object> parameters = new HashMap<String, Object>();
 		try {
 			
 			StringWriter writer = new StringWriter();
@@ -261,17 +268,34 @@ public class URIUtils {
 	
 	public static void writeSuccessResponse(HttpExchange httpExchange){
 		
-		URIUtils.writeResponse("SUCCESS", httpExchange);
+		URIUtils.writeResponse(URIRequest.SUCCESS_MESSAGE, httpExchange);
 	}
 	
 	public static void writeFailureResponse(HttpExchange httpExchange){
 		
-		URIUtils.writeResponse("FAILURE", httpExchange);
+		URIUtils.writeResponse(URIRequest.FAILURE_MESSAGE, httpExchange);
 	}
 	
 	public static Long getUserIdFromUserKey(String userKey){
 		
 		String[] arrays = userKey.split("_");
 		return Long.valueOf(arrays[1]);
+	}
+	public static Long getUserTypeIdFromUserKey(String userKey){
+
+		String[] arrays = userKey.split("_");
+		return Long.valueOf(arrays[2]);
+	}
+
+	public static boolean isResetPassword(String URIString) {
+		return (URIString != null) 
+				&& URIString.contains(((HttpConnection)BeanDAOFactory.getBean("httpConnection")).getContext()) 
+				&& URIString.endsWith(URIRequest.RESET_PASSWORD); 
+	}
+	
+	public static boolean isRegister(String URIString) {
+		return (URIString != null) 
+				&& URIString.contains(((HttpConnection)BeanDAOFactory.getBean("httpConnection")).getContext()) 
+				&& URIString.endsWith(URIRequest.REGISTER); 
 	}
 }

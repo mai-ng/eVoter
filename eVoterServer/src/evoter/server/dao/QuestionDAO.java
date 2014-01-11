@@ -18,8 +18,12 @@ public interface QuestionDAO {
 	public static final String TABLE_NAME = "QUESTION";	
 	public static final String BEAN_NAME = "questionDAO";
 	
-	
-	public int insert (Question Question);
+	/**
+	 * 
+	 * @param question 
+	 * @return the generated key of inserted record </br>
+	 */
+	public long insert (Question question);
 	public List<Question> findAll();
 	/**
 	 * Search {@link Question} object in the database by input properties and their values </br> 

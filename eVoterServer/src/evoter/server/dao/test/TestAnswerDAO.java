@@ -22,9 +22,9 @@ public class TestAnswerDAO {
 		Answer answer = new Answer();
 		answer.setQuestionId(2);
 		answer.setAnswerText("add a new answer");
-		answerDao.insert(answer);
+		System.out.println("the returned key : " + answerDao.insert(answer));
 		//test delete by property
-		answerDao.deleteByProperty(new String[]{AnswerDAO.ID, AnswerDAO.QUESTION_ID}, new Integer[]{6, 2});
+		//answerDao.deleteByProperty(new String[]{AnswerDAO.ID, AnswerDAO.QUESTION_ID}, new Integer[]{6, 2});
 		
 
 	}

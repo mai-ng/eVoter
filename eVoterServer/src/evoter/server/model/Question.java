@@ -3,6 +3,8 @@ package evoter.server.model;
 import java.io.Serializable;
 import java.sql.Date;
 import org.json.simple.JSONObject;
+
+import sun.font.CreatedFontTracker;
 import evoter.server.dao.QuestionDAO;
 
 public class Question implements Serializable {
@@ -18,6 +20,20 @@ public class Question implements Serializable {
 	public static final String COL1 = "column1";
 	public static final String COL2 = "column2";
 	
+	public Question(){}
+	public Question(long questionTypeId, 
+					long userId, 
+					String questionText, 
+					Date creationDate, 
+					long parentId){
+		
+		this.questionTypeId = questionTypeId;
+		this.userId = userId;
+		this.questionText = questionText;
+		this.creationDate = creationDate;
+		this.parentId = parentId;
+		
+	}
 	public long getParentId() {
 		return parentId;
 	}

@@ -1,8 +1,13 @@
 package evoter.server.dao.impl;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import evoter.server.dao.SessionDAO;
 import evoter.server.model.Session;
@@ -12,10 +17,33 @@ import evoter.server.model.mapper.SessionRowMapper;
 public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 
 	@Override
-	public int insert(Session session) {
+	public long insert(final Session session) {
 		
-		String sql = "INSERT INTO " + TABLE_NAME + "(" + SUBJECT_ID + "," + NAME + "," + CREATION_DATE + "," + IS_ACTIVE + ")" + " VALUES(?,?,?,?)";
-		return getJdbcTemplate().update(sql, new Object[]{session.getSubjectId(),session.getName(), session.getCreationDate(), session.isActive()});
+		final String sql = "INSERT INTO " + TABLE_NAME + 
+				"(" + SUBJECT_ID 
+				+ "," + NAME + "," 
+				+ CREATION_DATE + "," 
+				+ IS_ACTIVE + ")" 
+				+ " VALUES(?,?,?,?)";
+		
+		 KeyHolder keyHolder = new GeneratedKeyHolder();
+		 getJdbcTemplate().update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(
+						java.sql.Connection connection) throws SQLException {
+					
+		            PreparedStatement ps = connection.prepareStatement(sql);
+		            ps.setLong(1, session.getSubjectId());
+		            ps.setString(2, session.getName());
+		            ps.setDate(3, session.getCreationDate());
+		            ps.setBoolean(4, session.isActive());
+		            return ps;
+
+				}
+		    }, keyHolder);
+		
+		 return keyHolder.getKey().longValue();
+//		return getJdbcTemplate().update(sql, new Object[]{session.getSubjectId(),session.getName(), session.getCreationDate(), session.isActive()});
 
 	}
 

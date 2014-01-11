@@ -13,6 +13,17 @@ public class SessionUser implements Serializable {
 	private long sessionId;
 	private boolean deleteIndicator;
 	private boolean acceptSession;
+	
+	public SessionUser(){}
+	
+	public SessionUser(long userId, long sessionId, 
+			boolean deleteIndicator, boolean acceptSession){
+		this.userId = userId;
+		this.sessionId = sessionId;
+		this.deleteIndicator = deleteIndicator;
+		this.acceptSession = acceptSession;
+	}
+	
 	public long getUserId() {
 		return userId;
 	}

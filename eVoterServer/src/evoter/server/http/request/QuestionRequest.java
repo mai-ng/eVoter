@@ -1,5 +1,6 @@
 package evoter.server.http.request;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,8 @@ import evoter.server.dao.AnswerDAO;
 import evoter.server.dao.BeanDAOFactory;
 import evoter.server.dao.QuestionDAO;
 import evoter.server.dao.QuestionSessionDAO;
+import evoter.server.dao.QuestionTypeDAO;
+import evoter.server.dao.UserDAO;
 import evoter.server.http.URIUtils;
 import evoter.server.model.Answer;
 import evoter.server.model.Question;
@@ -25,9 +28,9 @@ public class QuestionRequest {
 
 	@SuppressWarnings("unchecked")
 	public static void doGetAll(HttpExchange httpExchange,
-			Map<String, String> parameters) {
+			Map<String,Object> parameters) {
 		
-		long sessionId = Long.parseLong(parameters.get(QuestionSessionDAO.SESSION_ID));
+		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
 		
 		QuestionSessionDAO quesSesDao = (QuestionSessionDAO)BeanDAOFactory.getBean(QuestionSessionDAO.BEAN_NAME);
 		
@@ -62,59 +65,14 @@ public class QuestionRequest {
 		}
 		System.out.println("QUESTION : " + jsArray.toJSONString());
 		URIUtils.writeResponse(jsArray, httpExchange);
-
-				
-//				if (question.getParentId() == 0){
-//					
-//					object.put(Question.COL1,  getAnswersOfQuestion(question.getId()));
-//					
-//				}else{
-//					//this is match type question
-//					//is column1
-//					List<Question> subQuestionList = questionDao.findByParentId(question.getParentId());
-//					JSONArray jsPart1 = new JSONArray();
-//					for (Question subQuestion : subQuestionList){
-//						jsPart1.add(subQuestion.toJSON().toJSONString());
-//					}
-//					//answer is column2
-//					object.put(Question.COL1, jsPart1);
-//					object.put(Question.COL2, getAnswersOfQuestion(question.getParentId()));
-//				}
-//				jsArray.add(object.toJSONString());
-//			}//for
-//			if (questionList != null && !questionList.isEmpty()){
-//				
-//				Question question = questionList.get(0);
-//				JSONObject object = question.toJSON();
-//				object.put("answers",  getAnswersOfQuestion(question.getId()));
-//				jsArray.add(object.toJSONString());
-//				
-//			}
-//		}
-		
-//		List<Question> questionList = questionDao.findBySessionId(sessionId);
-//		if (questionList != null && !questionList.isEmpty()){
-//			
-//			JSONArray jsArray = new JSONArray();
-//			for (Question question : questionList){
-//				JSONObject object = question.toJSON();
-//				object.put("answers", getAnswersOfQuestion(question.getId()));
-//				jsArray.add(object.toJSONString());			
-//			}
-//			System.out.println("question:" + jsArray.toJSONString());
-//			URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
-//			
-//		}else{
-//			URIUtils.writeFailureResponse(httpExchange);
-//		}
 		
 	}
 
 	@SuppressWarnings("unchecked")
 	public static void doView(HttpExchange httpExchange,
-			Map<String, String> parameters) {
+			Map<String,Object> parameters) {
 		
-		long questionId = Long.parseLong(parameters.get(QuestionDAO.ID));
+		long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
 		QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
 		List<Question> questionList = questionDao.findById(questionId);
 		if (questionList != null && !questionList.isEmpty()){
@@ -151,40 +109,144 @@ public class QuestionRequest {
 		}
 		
 	}
-	public static void doSave(HttpExchange httpExchange,
-			Map<String, String> parameters) {
-		// TODO Auto-generated method stub
+	
+	/**
+	 * Insert {@link Question} object to QUESTION table </br>
+	 * Insert {@link QuestionSession} object to QUESTION_SESSION table </br>
+	 * Insert {@link Answer} object to ANSWER table </br>
+	 * 
+	 * 
+	 * @param httpExchange
+	 * @param parameters contains: </br>
+	 * 	</li> {@link QuestionDAO#QUESTION_TEXT} is a string array
+	 * 	</li> {@link QuestionDAO#QUESTION_TYPE_ID}
+	 *  </li> {@link QuestionDAO#CREATION_DATE} 
+	 *  </li> {@link UserDAO#USER_KEY}
+	 *  </li> {@link QuestionSessionDAO#SESSION_ID};
+	 *  </li> {@link AnswerDAO#ANSWER_TEXT}  is a string array
+	 *  
+	 */
+	public static void doCreate(HttpExchange httpExchange,
+			Map<String, Object> parameters) {
 		
-	}
-
-	public static void doDelete(HttpExchange httpExchange,
-			Map<String, String> parameters) {
+		String[] questionTexts = (String[])parameters.get(QuestionDAO.QUESTION_TEXT);
+		long questionTypeId = Long.valueOf((String)parameters.get(QuestionDAO.QUESTION_TYPE_ID));
+		Date creationDate = Date.valueOf((String)parameters.get(QuestionDAO.CREATION_DATE));
+		String userKey = (String)parameters.get(UserDAO.USER_KEY);
+		long userId = URIUtils.getUserIdFromUserKey(userKey);
+		long sessionId = Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID));
+		String[] answerTexts = (String[])parameters.get(AnswerDAO.ANSWER_TEXT);
 		
-		long questionId = Long.parseLong(parameters.get(QuestionDAO.ID));
-		QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
-		questionDao.deleteById(questionId);
-		((AnswerDAO)BeanDAOFactory.getBean(AnswerDAO.BEAN_NAME)).deleteByQuestionId(questionId);
+		try{
+			
+			QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
+			Question question = null;
+			long parentId = 0;
+			int index = 0;
+			long questionId = 0;
+			
+			//insert the 1st question of array
+			question = new Question(questionTypeId, 
+					userId, 
+					questionTexts[index++], 
+					creationDate, 
+					parentId);
+			questionId =  questionDao.insert(question);
+			/**
+			 * if this is match type question, the inserted question id is parent id </br>
+			 * continue inserting the sub questions to the database </br>
+			 */
+			if (questionTypeId == QuestionTypeDAO.MATCH){
+				parentId = questionId;
+				for (; index < questionTexts.length; index++){
+					question = new Question(questionTypeId, 
+							userId, 
+							questionTexts[index++], 
+							creationDate, 
+							parentId);
+					questionId =  questionDao.insert(question);
+				}
+			}
+			/**
+			 * Create Answer object and insert it to ANSWER table
+			 */
+			AnswerDAO answerDAO = (AnswerDAO)BeanDAOFactory.getBean(AnswerDAO.BEAN_NAME);
+			for (String answerText : answerTexts){
+				Answer answer = new Answer(questionId, answerText);
+				answerDAO.insert(answer);
+			}
+			/**
+			 * Create SessionQuestion object and insert it to QUESTION_SESSION table
+			 */
+			QuestionSession questionSession = new QuestionSession(questionId, sessionId);
+			QuestionSessionDAO questionSessionDAO = (QuestionSessionDAO)BeanDAOFactory.getBean(QuestionSessionDAO.BEAN_NAME);
+			questionSessionDAO.insert(questionSession);
+			
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			URIUtils.writeFailureResponse(httpExchange);
+		}
+		
 		URIUtils.writeSuccessResponse(httpExchange);
 		
 	}
 
-	public static void doSend(HttpExchange httpExchange,
-			Map<String, String> parameters) {
+	/**
+	 * Delete {@link Answer} in ANSWER table </br>
+	 * Delete {@link Statistics} in STATISTICS table </br>
+	 * Delete {@link QuestionSession} in QUESTION_SESSION table </br>
+	 * Delete {@link Question} in QUESTION table</br>
+	 * 
+	 * @param httpExchange
+	 * @param parameters contains:
+	 * 	{@link QuestionDAO#ID}
+	 */
+	public static void doDelete(HttpExchange httpExchange,
+			Map<String,Object> parameters) {
 		
-		long questionId = Long.parseLong(parameters.get(QuestionDAO.ID));
-		long sessionId = Long.parseLong(parameters.get(QuestionSessionDAO.SESSION_ID));
+		long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
+		
+		try{
+			
+			QuestionDAO questionDAO = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
+			AnswerDAO answerDAO = (AnswerDAO)BeanDAOFactory.getBean(AnswerDAO.BEAN_NAME);
+			QuestionSessionDAO questionSessionDAO = (QuestionSessionDAO)BeanDAOFactory.getBean(QuestionSessionDAO.TABLE_NAME);
+			
+			// ANSWER table
+			answerDAO.deleteByQuestionId(questionId);
+			// QUESTION_SESSION table
+			questionSessionDAO.deleteByQuestionId(questionId);
+			// QUESTION table
+			questionDAO.deleteById(questionId);
+			
+			URIUtils.writeSuccessResponse(httpExchange);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			URIUtils.writeFailureResponse(httpExchange);
+		}
+		
+	}
+
+	public static void doSend(HttpExchange httpExchange,
+			Map<String,Object> parameters) {
+		
+		long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
+		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
 		mapSentQuestion.put(sessionId, questionId);
 	}
 
 	@SuppressWarnings("unchecked")
 	public static void doGetLatest(HttpExchange httpExchange,
-			Map<String, String> parameters) {
+			Map<String,Object> parameters) {
 		
-		long sessionId = Long.parseLong(parameters.get(QuestionSessionDAO.SESSION_ID));
+		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
 		if (mapSentQuestion.containsKey(sessionId)){
 			long questionId = mapSentQuestion.get(sessionId);
 			QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
 			Question question = questionDao.findById(questionId).get(0);
+			//RE-WORK 
 			question.toJSON().put("answers", getAnswersOfQuestion(question.getId()));
 			URIUtils.writeResponse(question.toJSON().toJSONString(), httpExchange);
 		}else{
@@ -194,8 +256,8 @@ public class QuestionRequest {
 	}
 
 	public static void doStopSend(HttpExchange httpExchange,
-			Map<String, String> parameters) {
-		long sessionId = Long.parseLong(parameters.get(QuestionSessionDAO.SESSION_ID));
+			Map<String,Object> parameters) {
+		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
 		mapSentQuestion.remove(sessionId);
 		URIUtils.writeSuccessResponse(httpExchange);
 	} 

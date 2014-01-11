@@ -17,19 +17,19 @@ import evoter.server.model.UserSubject;
 public class SubjectRequest {
 	
 	
-	public static void doView(HttpExchange exchange, Map<String,String> parameters){
+	public static void doView(HttpExchange exchange, Map<String,Object> parameters){
 		
-		long id = Long.valueOf(parameters.get(SubjectDAO.ID));
+		long id = Long.valueOf((String)parameters.get(SubjectDAO.ID));
 		Subject subject = (Subject)((SubjectDAO) BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME)).findById(id).get(0);
 		URIUtils.writeResponse(subject.toJSON().toJSONString(), exchange);
 		
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static void doGetAll(HttpExchange exchange, Map<String,String> parameters){
+	public static void doGetAll(HttpExchange exchange, Map<String,Object> parameters){
 		
 		//long id = Long.valueOf(parameters.get(UserSubjectDAO.USER_ID));
-		String userKey = parameters.get(UserDAO.USER_KEY);
+		String userKey = (String)parameters.get(UserDAO.USER_KEY);
 		Long id = URIUtils.getUserIdFromUserKey(userKey);
 		UserSubjectDAO userSubjectDao = (UserSubjectDAO)BeanDAOFactory.getBean(UserSubjectDAO.BEAN_NAME);
 		List<UserSubject> usList = userSubjectDao.findByUserId(id);
@@ -44,9 +44,9 @@ public class SubjectRequest {
 		
 	}
 	
-	public static void doDelete(HttpExchange exchange, Map<String,String> parameters){
+	public static void doDelete(HttpExchange exchange, Map<String,Object> parameters){
 		
-		long subjectId = Long.valueOf(parameters.get(SubjectDAO.ID));
+		long subjectId = Long.valueOf((String)parameters.get(SubjectDAO.ID));
 		SubjectDAO subjectDao = (SubjectDAO)BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME);
 		try{
 			
@@ -63,8 +63,8 @@ public class SubjectRequest {
 
 	@SuppressWarnings("unchecked")
 	public static void doSearch(HttpExchange httpExchange,
-			Map<String, String> parameters) {
-		// TODO Auto-generated method stub
+			Map<String,Object> parameters) {
+
 		SubjectDAO subjectDao = (SubjectDAO)BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME);
 		List<Subject> subjects = subjectDao.findByProperty(parameters.keySet().toArray(new String[]{}), parameters.values().toArray());
 		JSONArray jsArray = new JSONArray();

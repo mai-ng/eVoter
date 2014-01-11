@@ -19,6 +19,15 @@ public class Session implements Serializable {
 	private Date creationDate;
 	private boolean isActive;
 	
+	public Session(){}
+	
+	public Session(long subjectId, String name, Date creationDate, boolean isActive){
+		this.subjectId = subjectId;
+		this.name = name;
+		this.creationDate = creationDate;
+		this.isActive = isActive;
+	}
+	
 	public boolean isActive() {
 		return isActive;
 	}

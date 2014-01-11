@@ -34,13 +34,20 @@ public class ServerHandler implements HttpHandler {
 		public void run() {
 		
 			String uri = httpExchange.getRequestURI().toString();
-			Map<String,String> parameters = URIUtils.getParameters(httpExchange);			
+			Map<String,Object> parameters = URIUtils.getParameters(httpExchange);			
 			
 			if (URIUtils.isLoginRequest(uri)){
 				AccountRequest.doLogin(httpExchange, parameters);
 			}else if (URIUtils.isLogoutRequest(uri)){
 				AccountRequest.doLogout(httpExchange, parameters);
-			}else{
+			}else if (URIUtils.isResetPassword(uri)){
+				AccountRequest.doResetPassword(httpExchange, parameters);
+			}else if (URIUtils.isRegister(uri)){
+				AccountRequest.doRegister(httpExchange, parameters);
+			}
+			
+			
+			else{
 				//verify the user key 1st
 				if (AccountRequest.hasUserKey(parameters)){
 					
@@ -52,6 +59,8 @@ public class ServerHandler implements HttpHandler {
 						SubjectRequest.doDelete(httpExchange, parameters);
 					}else if (URIUtils.isSearchSubjectRequest(uri)){
 						SubjectRequest.doSearch(httpExchange, parameters);
+						
+						//start with session management part
 					}else if (URIUtils.isGetAllSessionRequest(uri)){
 						SessionRequest.doGetAll(httpExchange, parameters);
 					}else if (URIUtils.isViewSessionRequest(uri)){
@@ -64,12 +73,22 @@ public class ServerHandler implements HttpHandler {
 						SessionRequest.doAccept(httpExchange, parameters);
 					}else if (URIUtils.isDeleteSessionRequest(uri)){
 						SessionRequest.doDelete(httpExchange, parameters);
+					}else if (URIUtils.isCreateSessionRequest(uri)){
+						SessionRequest.doCreate(httpExchange, parameters);
+					}else if (URIUtils.isActiveSessionRequest(uri)){
+						SessionRequest.doActive(httpExchange, parameters);
+					}else if (URIUtils.isInActiveSessionRequest(uri)){
+						SessionRequest.doInActive(httpExchange, parameters);
+					}else if (URIUtils.isUpdateSessionRequest(uri)){
+						SessionRequest.doUpdate(httpExchange, parameters);
+						
+						//start with question management part
 					}else if (URIUtils.isGetAllQuestionRequest(uri)){
 						QuestionRequest.doGetAll(httpExchange, parameters);
 					}else if (URIUtils.isViewQuestionRequest(uri)){
 						QuestionRequest.doView(httpExchange, parameters);
-					}else if (URIUtils.isSaveQuestionRequest(uri)){
-						QuestionRequest.doSave(httpExchange, parameters);
+					}else if (URIUtils.isCreateQuestionRequest(uri)){
+						QuestionRequest.doCreate(httpExchange, parameters);
 					}else if (URIUtils.isDeleteQuestionRequest(uri)){
 						QuestionRequest.doDelete(httpExchange, parameters);
 					}else if (URIUtils.isSendQuestionRequest(uri)){

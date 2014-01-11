@@ -13,7 +13,12 @@ public interface AnswerDAO {
 	public static final String TABLE_NAME = "ANSWER";
 	public static final String BEAN_NAME = "answerDAO";
 	
-	public int insert (Answer answer);
+	/**
+	 * 
+	 * @param answer
+	 * @return the id of insert record </br>
+	 */
+	public long insert (Answer answer);
 	public List<Answer> findAll();
 	/**
 	 * Search {@link Answer} object in the database by input properties and their values </br> 

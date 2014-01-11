@@ -16,6 +16,11 @@ public class Answer implements Serializable {
 	private long questionId;
 	private String answerText;
 	
+	public Answer(){}
+	public Answer(long questionId, String answerText){
+		this.questionId = questionId;
+		this.answerText = answerText;
+	}
 	public long getId() {
 		return id;
 	}

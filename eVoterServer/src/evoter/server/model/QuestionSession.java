@@ -11,6 +11,12 @@ public class QuestionSession implements Serializable {
 	
 	private long questionId;
 	private long sessionId;
+	
+	public QuestionSession(){}
+	public QuestionSession(long questionId, long sessionId){
+		this.questionId = questionId;
+		this.sessionId = sessionId;
+	}
 	public long getQuestionId() {
 		return questionId;
 	}

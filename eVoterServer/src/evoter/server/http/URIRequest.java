@@ -16,6 +16,11 @@ import evoter.server.model.Subject;
  */
 public class URIRequest {
 	
+	public static final String SUCCESS_MESSAGE = "SUCCESS";
+	public static final String FAILURE_MESSAGE = "FAILURE";
+	public static final String USER_EXIST_MESSAGE = "USER EXISTS ALREADY";
+	public static final String EMAIL_EXIST_MESSAGE = "EMAIL EXISTS ALREADY";
+	
 	//for login
 	/**
 	 * request parameters:
@@ -25,6 +30,24 @@ public class URIRequest {
 	 * 	</li> boolean
 	 */
 	public static final String LOGIN="/login";
+	//for reset password
+	/**
+	 * request parameters:
+	 * 	</li> email
+	 * 	</li> 
+	 * response: 
+	 * 	</li> boolean
+	 */
+	public static final String RESET_PASSWORD="/reset_password";	
+	//for account registration
+	/**
+	 * request parameters:
+	 * 	</li> email
+	 * 	</li> 
+	 * response: 
+	 * 	</li> boolean
+	 */
+	public static final String REGISTER="/register";
 	//for login
 	/**
 	 * request parameters:
@@ -103,6 +126,15 @@ public class URIRequest {
 	 * request parameter </br>
 	 * 	</li> user key
 	 * 	</li> session id
+	 * response </br>
+	 * 	</li> Boolean  
+	 */
+	public static final String INACTIVE_SESSION="/inactive_session";//start a session
+	
+	/**
+	 * request parameter </br>
+	 * 	</li> user key
+	 * 	</li> session id
 	 *  </i> user id
 	 * response </br>
 	 * 	</li> Boolean  
@@ -159,7 +191,7 @@ public class URIRequest {
 	 * response </br>
 	 * 	</li> {@link Boolean}  
 	 */
-	public static final String SAVE_QUESTION="/save_question";
+	public static final String CREATE_QUESTION="/create_question";
 	/**
 	 * request parameter </br>
 	 * 	</li> user key

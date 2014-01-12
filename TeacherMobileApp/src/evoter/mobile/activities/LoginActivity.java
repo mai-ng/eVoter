@@ -43,8 +43,6 @@ public class LoginActivity extends EVoterActivity {
 
 	CheckBox cbRemember;
 
-	OfflineEVoterManager eVoterSessionManager;
-
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -52,7 +50,7 @@ public class LoginActivity extends EVoterActivity {
 
 		this.tvTitleBarContent.setText("Login");
 
-		eVoterSessionManager = new OfflineEVoterManager(this);
+		offlineEVoterManager = new OfflineEVoterManager(this);
 
 		etUsrName = (EditText) findViewById(R.id.usrname);
 		etPassword = (EditText) findViewById(R.id.password);
@@ -109,7 +107,7 @@ public class LoginActivity extends EVoterActivity {
 									if (userKey != null || userKey != "null") {
 
 										if (cbRemember.isChecked()) {
-											eVoterSessionManager
+											offlineEVoterManager
 													.rememberCurrentUser(
 															i_Usrname, userKey);
 										}
@@ -162,7 +160,8 @@ public class LoginActivity extends EVoterActivity {
 
 			@Override
 			public void onClick(View v) {
-				Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+				Intent registerIntent = new Intent(LoginActivity.this,
+						RegisterActivity.class);
 				startActivity(registerIntent);
 			}
 		});

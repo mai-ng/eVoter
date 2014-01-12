@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import evoter.mobile.adapters.ItemDataAdapter;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.OfflineEVoterManager;
@@ -24,7 +26,7 @@ public abstract class ItemDataActivity extends EVoterActivity {
 	protected ItemDataAdapter adapter;
 	protected Context context;
 	protected EditText etSearch;
-	protected OfflineEVoterManager offlineEVoterManager;
+	protected TextView tvLoadingStatus;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -39,18 +41,23 @@ public abstract class ItemDataActivity extends EVoterActivity {
 				loadListItemData();
 			}
 		});
-
+		
+		tvLoadingStatus = (TextView)findViewById(R.id.tvLoadingStatus);
+		tvLoadingStatus.setVisibility(View.GONE);
+		progressBar = (ProgressBar)findViewById(R.id.progressRefresh);
+		progressBar.setVisibility(View.GONE);
+		progressBar.setProgress(0);
 		offlineEVoterManager = new OfflineEVoterManager(this);
 
 		context = this;
 		listView = (ListView) findViewById(R.id.lvItemData);
-		loadListItemData();
+//		listView.setEmptyView(progressBar);
 		etSearch = (EditText) findViewById(R.id.etSearch);
 		etSearch.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				
+
 			}
 
 			@Override
@@ -64,10 +71,12 @@ public abstract class ItemDataActivity extends EVoterActivity {
 
 			}
 		});
+		loadListItemData();
 	}
 
 	/**
 	 * Load data for list view
 	 */
 	protected abstract void loadListItemData();
+
 }

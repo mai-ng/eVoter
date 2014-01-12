@@ -4,11 +4,13 @@
 package evoter.mobile.activities;
 
 import evoter.mobile.main.R;
+import evoter.mobile.objects.OfflineEVoterManager;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
@@ -19,6 +21,9 @@ public class EVoterActivity extends Activity {
 	protected ImageView ivTitleBarIcon;
 	protected TextView tvTitleBarContent;
 	protected ImageView ivTitleBarRefresh;
+	
+	protected ProgressBar progressBar;
+	protected OfflineEVoterManager offlineEVoterManager;
 
 	/*
 	 * (non-Javadoc)
@@ -30,7 +35,7 @@ public class EVoterActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-		setContentView(R.layout.splash);
+		setContentView(R.layout.start);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
 				R.layout.evoter_title_bar);
 		ivTitleBarIcon = (ImageView) findViewById(R.id.ivIconTitleBar);

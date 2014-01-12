@@ -84,12 +84,51 @@ public class SessionActivity extends ItemDataActivity {
 				String.valueOf(RuntimeEVoterManager.getCurrentSubjectID()));
 		client.post(Configuration.get_urlGetAllSession(), params,
 				new AsyncHttpResponseHandler() {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * com.loopj.android.http.AsyncHttpResponseHandler#onFinish
+			 * ()
+			 */
+			@Override
+			public void onFinish() {
+				// TODO Auto-generated method stub
+				super.onFinish();
+				tvLoadingStatus.setText("Finished");
+				tvLoadingStatus.setVisibility(View.GONE);
+				progressBar.setVisibility(View.GONE);
+				etSearch.setVisibility(View.VISIBLE);
+			}
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * com.loopj.android.http.AsyncHttpResponseHandler#onStart()
+			 */
+			@Override
+			public void onStart() {
+				// TODO Auto-generated method stub
+				super.onStart();
+				tvLoadingStatus.setText("Loading...");
+				tvLoadingStatus.setVisibility(View.VISIBLE);
+				progressBar.setVisibility(View.VISIBLE);
+				etSearch.setVisibility(View.GONE);
+			}
+
+
 					@Override
 					public void onSuccess(String response) {
 						try {
 							ArrayList<ItemData> listSession = new ArrayList<ItemData>();
 							JSONArray array = Utils.getJSONArray(response);
 							for (int i = 0; i < array.length(); i++) {
+								progressBar.setProgress((i + 1) * 100
+										/ array.length());
+								tvLoadingStatus.setText("Loading..." + (i + 1)
+										* 100 / array.length());
 								String sString = array.get(i).toString();
 								JSONObject s = new JSONObject(sString);
 								Session session = new Session(Long.parseLong(s
@@ -101,6 +140,10 @@ public class SessionActivity extends ItemDataActivity {
 										Boolean.parseBoolean(s
 												.getString("is_active")));
 								listSession.add(session);
+							}
+							if (listSession.isEmpty()) {
+								Utils.showeVoterToast(SessionActivity.this,
+										"There isn't any session!");
 							}
 							adapter.updateList(listSession);
 						} catch (JSONException e) {

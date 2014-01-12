@@ -12,13 +12,10 @@ import evoter.mobile.utils.Utils;
 
 public class StartActivity extends EVoterActivity {
 
-	ProgressBar progressBar;
-	OfflineEVoterManager eVoterSessionManager;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.splash);
+		setContentView(R.layout.start);
 		this.tvTitleBarContent.setContentDescription("eVoter Mobile");
 		
 		if (getIntent().getBooleanExtra("Exit application", false)) {
@@ -26,7 +23,7 @@ public class StartActivity extends EVoterActivity {
 			return;
 		}
 
-		eVoterSessionManager = new OfflineEVoterManager(this);
+		offlineEVoterManager = new OfflineEVoterManager(this);
 
 		progressBar = (ProgressBar) findViewById(R.id.prBar);
 
@@ -34,7 +31,7 @@ public class StartActivity extends EVoterActivity {
 			@Override
 			public void run() {
 				if (Utils.hasInternetConnection(StartActivity.this)) {
-					eVoterSessionManager.checkLogin();
+					offlineEVoterManager.checkLogin();
 				} else {
 					DialogInfor dialog = new DialogInfor(
 							StartActivity.this, "Error connection!");

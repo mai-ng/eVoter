@@ -59,7 +59,6 @@ public class SubjectActivity extends ItemDataActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-
 				Subject currentSubject = ((Subject) parent
 						.getItemAtPosition(position));
 
@@ -116,19 +115,57 @@ public class SubjectActivity extends ItemDataActivity {
 	}
 
 	protected void loadListItemData() {
-
 		AsyncHttpClient client = new AsyncHttpClient(1000);
 		RequestParams params = new RequestParams();
 		params.put(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
 		client.post(Configuration.get_urlGetAllSubject(), params,
 				new AsyncHttpResponseHandler() {
+
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see
+					 * com.loopj.android.http.AsyncHttpResponseHandler#onFinish
+					 * ()
+					 */
+					@Override
+					public void onFinish() {
+						// TODO Auto-generated method stub
+						super.onFinish();
+						tvLoadingStatus.setText("Finished");
+						tvLoadingStatus.setVisibility(View.GONE);
+						progressBar.setVisibility(View.GONE);
+						etSearch.setVisibility(View.VISIBLE);
+					}
+
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see
+					 * com.loopj.android.http.AsyncHttpResponseHandler#onStart()
+					 */
+					@Override
+					public void onStart() {
+						// TODO Auto-generated method stub
+						super.onStart();
+						tvLoadingStatus.setText("Loading...");
+						tvLoadingStatus.setVisibility(View.VISIBLE);
+						progressBar.setVisibility(View.VISIBLE);
+						etSearch.setVisibility(View.GONE);
+					}
+
 					@Override
 					public void onSuccess(String response) {
 
 						try {
 							ArrayList<ItemData> newList = new ArrayList<ItemData>();
 							JSONArray array = Utils.getJSONArray(response);
+
 							for (int i = 0; i < array.length(); i++) {
+								progressBar.setProgress((i + 1) * 100
+										/ array.length());
+								tvLoadingStatus.setText("Loading..." + (i + 1)
+										* 100 / array.length());
 								String sItem = array.get(i).toString();
 								JSONObject item = new JSONObject(sItem);
 								Log.i("JSON TEST: ", item.toString());
@@ -149,6 +186,10 @@ public class SubjectActivity extends ItemDataActivity {
 								}
 								newList.add(subject);
 							}
+							if (newList.isEmpty()) {
+								Utils.showeVoterToast(SubjectActivity.this,
+										"There isn't any subject!");
+							}
 							adapter.updateList(newList);
 						} catch (JSONException e) {
 							e.printStackTrace();
@@ -161,7 +202,6 @@ public class SubjectActivity extends ItemDataActivity {
 								+ error.toString() + "content : " + content);
 					}
 				});
-
 	}
 
 	/**

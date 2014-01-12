@@ -76,6 +76,40 @@ public class QuestionActivity extends ItemDataActivity {
 
 		client.post(Configuration.get_urlGetAllQuestion(), params,
 				new AsyncHttpResponseHandler() {
+
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see
+					 * com.loopj.android.http.AsyncHttpResponseHandler#onFinish
+					 * ()
+					 */
+					@Override
+					public void onFinish() {
+						// TODO Auto-generated method stub
+						super.onFinish();
+						tvLoadingStatus.setText("Finished");
+						tvLoadingStatus.setVisibility(View.GONE);
+						progressBar.setVisibility(View.GONE);
+						etSearch.setVisibility(View.VISIBLE);
+					}
+
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see
+					 * com.loopj.android.http.AsyncHttpResponseHandler#onStart()
+					 */
+					@Override
+					public void onStart() {
+						// TODO Auto-generated method stub
+						super.onStart();
+						tvLoadingStatus.setText("Loading...");
+						tvLoadingStatus.setVisibility(View.VISIBLE);
+						progressBar.setVisibility(View.VISIBLE);
+						etSearch.setVisibility(View.GONE);
+					}
+
 					@Override
 					public void onSuccess(String response) {
 						Log.i("Get All Quesion Test", "response : " + response);
@@ -83,6 +117,10 @@ public class QuestionActivity extends ItemDataActivity {
 							ArrayList<ItemData> listQuestion = new ArrayList<ItemData>();
 							JSONArray array = Utils.getJSONArray(response);
 							for (int i = 0; i < array.length(); i++) {
+								progressBar.setProgress((i + 1) * 100
+										/ array.length());
+								tvLoadingStatus.setText("Loading..." + (i + 1)
+										* 100 / array.length());
 								String sString = array.get(i).toString();
 								JSONObject s = new JSONObject(sString);
 								Question question = new Question(
@@ -93,6 +131,10 @@ public class QuestionActivity extends ItemDataActivity {
 										Integer.parseInt(s
 												.getString(QuestionDAO.QUESTION_TYPE_ID)));
 								listQuestion.add(question);
+							}
+							if (listQuestion.isEmpty()) {
+								Utils.showeVoterToast(QuestionActivity.this,
+										"There isn't any question!");
 							}
 							adapter.updateList(listQuestion);
 						} catch (JSONException e) {

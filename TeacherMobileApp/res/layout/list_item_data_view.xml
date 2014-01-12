@@ -14,12 +14,13 @@
         android:padding="10dp">
 
         <EditText
+            android:id="@+id/etSearch"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/etSearch"
             android:hint="Input keyword"
+            android:inputType="textAutoCorrect|textAutoComplete"
             android:lines="1"
-            android:maxLines="1">
+            android:maxLines="1" >
 
             <requestFocus />
         </EditText>

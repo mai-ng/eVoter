@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -41,8 +40,6 @@ public class LoginActivity extends EVoterActivity {
 	TextView tvRegister;
 	TextView tvResetPassword;
 
-	CheckBox cbRemember;
-
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -53,11 +50,12 @@ public class LoginActivity extends EVoterActivity {
 		offlineEVoterManager = new OfflineEVoterManager(this);
 
 		etUsrName = (EditText) findViewById(R.id.usrname);
+		if (RuntimeEVoterManager.getCurrentUserName() != null) {
+			etUsrName.setText(RuntimeEVoterManager.getCurrentUserName());
+		}
 		etPassword = (EditText) findViewById(R.id.password);
 
 		btLogin = (Button) findViewById(R.id.btLogin);
-
-		cbRemember = (CheckBox) findViewById(R.id.cb_remember);
 
 		btLogin.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -106,11 +104,9 @@ public class LoginActivity extends EVoterActivity {
 
 									if (userKey != null || userKey != "null") {
 
-										if (cbRemember.isChecked()) {
-											offlineEVoterManager
-													.rememberCurrentUser(
-															i_Usrname, userKey);
-										}
+										offlineEVoterManager
+												.rememberCurrentUser(i_Usrname,
+														userKey);
 
 										RuntimeEVoterManager
 												.setCurrentUserName(i_Usrname);

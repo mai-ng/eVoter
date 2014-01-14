@@ -3,8 +3,8 @@ package evoter.server.dao.test;
 import java.sql.Date;
 
 import evoter.server.dao.BeanDAOFactory;
-import evoter.server.dao.SubjectDAO;
-import evoter.server.model.Subject;
+import evoter.share.dao.SubjectDAO;
+import evoter.share.model.Subject;
 
 public class TestSubjectDAO {
 

@@ -9,12 +9,12 @@ import org.json.simple.JSONArray;
 import com.sun.net.httpserver.HttpExchange;
 
 import evoter.server.dao.BeanDAOFactory;
-import evoter.server.dao.SessionDAO;
-import evoter.server.dao.SessionUserDAO;
-import evoter.server.dao.UserDAO;
+import evoter.share.dao.SessionDAO;
+import evoter.share.dao.SessionUserDAO;
+import evoter.share.dao.UserDAO;
 import evoter.server.http.URIUtils;
-import evoter.server.model.Session;
-import evoter.server.model.SessionUser;
+import evoter.share.model.Session;
+import evoter.share.model.SessionUser;
 
 public class SessionRequest {
 

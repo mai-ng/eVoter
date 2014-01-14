@@ -9,10 +9,10 @@ import org.json.simple.JSONObject;
 import com.sun.net.httpserver.HttpExchange;
 
 import evoter.server.dao.BeanDAOFactory;
-import evoter.server.dao.UserDAO;
+import evoter.share.dao.UserDAO;
 import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
-import evoter.server.model.User;
+import evoter.share.model.User;
 
 public class AccountRequest {
 	

@@ -7,12 +7,12 @@ import org.json.simple.JSONArray;
 import com.sun.net.httpserver.HttpExchange;
 
 import evoter.server.dao.BeanDAOFactory;
-import evoter.server.dao.SubjectDAO;
-import evoter.server.dao.UserDAO;
-import evoter.server.dao.UserSubjectDAO;
+import evoter.share.dao.SubjectDAO;
+import evoter.share.dao.UserDAO;
+import evoter.share.dao.UserSubjectDAO;
 import evoter.server.http.URIUtils;
-import evoter.server.model.Subject;
-import evoter.server.model.UserSubject;
+import evoter.share.model.Subject;
+import evoter.share.model.UserSubject;
 
 public class SubjectRequest {
 	

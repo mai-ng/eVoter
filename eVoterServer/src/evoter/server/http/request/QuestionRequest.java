@@ -9,16 +9,16 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.dao.AnswerDAO;
+import evoter.share.dao.AnswerDAO;
 import evoter.server.dao.BeanDAOFactory;
-import evoter.server.dao.QuestionDAO;
-import evoter.server.dao.QuestionSessionDAO;
-import evoter.server.dao.QuestionTypeDAO;
-import evoter.server.dao.UserDAO;
+import evoter.share.dao.QuestionDAO;
+import evoter.share.dao.QuestionSessionDAO;
+import evoter.share.dao.QuestionTypeDAO;
+import evoter.share.dao.UserDAO;
 import evoter.server.http.URIUtils;
-import evoter.server.model.Answer;
-import evoter.server.model.Question;
-import evoter.server.model.QuestionSession;
+import evoter.share.model.Answer;
+import evoter.share.model.Question;
+import evoter.share.model.QuestionSession;
 
 public class QuestionRequest {
 

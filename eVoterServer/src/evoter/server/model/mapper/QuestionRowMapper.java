@@ -5,8 +5,8 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import evoter.server.dao.QuestionDAO;
-import evoter.server.model.Question;
+import evoter.share.dao.*;
+import evoter.share.model.*;
 
 public class QuestionRowMapper implements RowMapper<Question> {
 

@@ -4,10 +4,10 @@ import java.util.List;
 
 import sun.org.mozilla.javascript.internal.json.JsonParser;
 
-import evoter.server.model.Answer;
-import evoter.server.model.Question;
-import evoter.server.model.Session;
-import evoter.server.model.Subject;
+import evoter.share.model.Answer;
+import evoter.share.model.Question;
+import evoter.share.model.Session;
+import evoter.share.model.Subject;
 
 /**
  * define client request

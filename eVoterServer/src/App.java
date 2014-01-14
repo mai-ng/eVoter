@@ -8,8 +8,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import evoter.server.dao.BeanDAOFactory;
-import evoter.server.dao.UserDAO;
-import evoter.server.model.User;
+import evoter.share.dao.UserDAO;
+import evoter.share.model.User;
 
 public class App {
 

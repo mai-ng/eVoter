@@ -3,8 +3,8 @@ package evoter.server.dao.test;
 import java.sql.Date;
 
 import evoter.server.dao.BeanDAOFactory;
-import evoter.server.dao.SessionDAO;
-import evoter.server.model.Session;
+import evoter.share.dao.SessionDAO;
+import evoter.share.model.Session;
 
 public class TestSessionDAO {
 

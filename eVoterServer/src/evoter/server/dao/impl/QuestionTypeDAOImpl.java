@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import evoter.server.dao.QuestionTypeDAO;
-import evoter.server.model.QuestionType;
+import evoter.share.dao.QuestionTypeDAO;
+import evoter.share.model.QuestionType;
 import evoter.server.model.mapper.QuestionTypeRowMapper;
 
 public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeDAO {

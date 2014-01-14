@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import evoter.server.dao.SubjectDAO;
-import evoter.server.model.Subject;
+import evoter.share.dao.SubjectDAO;
+import evoter.share.model.Subject;
 import evoter.server.model.mapper.SubjectRowMapper;
 
 public class SubjectDAOImpl extends JdbcDaoSupport implements SubjectDAO {

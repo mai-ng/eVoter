@@ -5,8 +5,8 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import evoter.server.dao.UserSubjectDAO;
-import evoter.server.model.UserSubject;
+import evoter.share.dao.UserSubjectDAO;
+import evoter.share.model.UserSubject;
 
 public class UserSubjectRowMapper implements RowMapper<UserSubject> {
 

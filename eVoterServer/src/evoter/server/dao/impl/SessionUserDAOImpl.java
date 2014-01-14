@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import evoter.server.dao.SessionUserDAO;
-import evoter.server.model.SessionUser;
 import evoter.server.model.mapper.SessionUserRowMapper;
+import evoter.share.dao.SessionUserDAO;
+import evoter.share.model.SessionUser;
 
 
 public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO {

@@ -9,12 +9,22 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import evoter.server.dao.AnswerDAO;
-import evoter.server.model.Answer;
 import evoter.server.model.mapper.AnswerRowMapper;
-
+import evoter.share.dao.AnswerDAO;
+import evoter.share.model.Answer;
+/**
+ * 
+ * This class is an implementation of {@link AnswerDAO} </br>
+ * 
+ * @author btdiem </br>
+ *
+ */
 public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.AnswerDAO#insert(evoter.share.model.Answer)
+	 */
 	@Override
 	public long insert(final Answer answer) {
 		
@@ -44,6 +54,10 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 		//return getJdbcTemplate().getMaxRows();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.AnswerDAO#findAll()
+	 */
 	@Override
 	public List<Answer> findAll() {
 		
@@ -52,6 +66,10 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.AnswerDAO#findByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public List<Answer> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {
@@ -67,24 +85,40 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 		return getJdbcTemplate().query(sql, propertyValues, new AnswerRowMapper());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.AnswerDAO#findById(long)
+	 */
 	@Override
 	public List<Answer> findById(long id) {
 		
 		return findByProperty(new String[]{ID}, new Long[]{id});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.AnswerDAO#findByAnswerText(java.lang.String)
+	 */
 	@Override
 	public List<Answer> findByAnswerText(String answerText) {
 		
 		return findByProperty(new String[]{ANSWER_TEXT}, new String[]{answerText});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.AnswerDAO#findByQuestionId(long)
+	 */
 	@Override
 	public List<Answer> findByQuestionId(long questionId) {
 
 		return findByProperty(new String[]{QUESTION_ID}, new Long[]{questionId});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.AnswerDAO#deleteByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public void deleteByProperty(String[] propertyNames, Object[] propertyValues) {
 
@@ -99,6 +133,10 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.AnswerDAO#deleteById(long)
+	 */
 	@Override
 	public void deleteById(long id) {
 		
@@ -106,6 +144,10 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.AnswerDAO#deleteByQuestionId(long)
+	 */
 	@Override
 	public void deleteByQuestionId(long questionId) {
 		
@@ -113,6 +155,10 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.AnswerDAO#deleteByAnswerText(java.lang.String)
+	 */
 	@Override
 	public void deleteByAnswerText(String answerText) {
 		

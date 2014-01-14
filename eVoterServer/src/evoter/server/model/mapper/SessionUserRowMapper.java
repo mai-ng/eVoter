@@ -5,8 +5,8 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import evoter.server.dao.SessionUserDAO;
-import evoter.server.model.SessionUser;
+import evoter.share.dao.SessionUserDAO;
+import evoter.share.model.SessionUser;
 
 public class SessionUserRowMapper implements RowMapper<SessionUser> {
 

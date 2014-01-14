@@ -9,55 +9,78 @@ import org.json.simple.JSONObject;
 import com.sun.net.httpserver.HttpExchange;
 
 import evoter.server.dao.BeanDAOFactory;
-import evoter.server.dao.UserDAO;
 import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
-import evoter.server.model.User;
-
+import evoter.share.dao.UserDAO;
+import evoter.share.model.User;
+/**
+ * Process all user account requests sent by client applications
+ * 
+ * @author btdiem
+ *
+ */
 public class AccountRequest {
 	
 	static List<String> userKeys = new ArrayList<String>();
 //	private static final String USER_KEY = "userkey";
 	
+	/**
+	 * Response clients a userkey generated from {@link UserDAO#USER_NAME} </br>
+	 * and {@link UserDAO#PASSWORD} if username and password exist in database </br> 
+	 * or response a null value if username and password do not exist in database </br>
+	 * or response a @ {@link URIRequest#FAILURE_MESSAGE } if there is an{@link Exception} </br>    
+	 * 
+	 * @param exchange {@link HttpExchange} communicates between server and clients </br>
+	 * @param parameters contains UserDAO.USER_NAME and UserDAO.PASSWORD </br>
+	 */
 	@SuppressWarnings("unchecked")
 	public static void doLogin(HttpExchange exchange, Map<String,Object> parameters){
 		
 		String username = (String)parameters.get(UserDAO.USER_NAME);
 		String password = (String)parameters.get(UserDAO.PASSWORD);
-		UserDAO userDao = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
-		List<User> users = userDao.findByProperty(new String[]{UserDAO.USER_NAME, UserDAO.PASSWORD}, 
-				new Object[]{username, password});
-		String userKey = null;
-		if (users != null && !users.isEmpty()){
-			userKey = users.get(0).generateUserKey(System.currentTimeMillis());
-			userKeys.add(userKey);
-			System.out.println("user exists in db");
+
+		try{
 			
+			UserDAO userDao = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
+			List<User> users = userDao.findByProperty(new String[]{UserDAO.USER_NAME, UserDAO.PASSWORD}, 
+					new Object[]{username, password});
+			String userKey = null;
+			if (users != null && !users.isEmpty()){
+				userKey = users.get(0).generateUserKey(System.currentTimeMillis());
+				userKeys.add(userKey);
+				System.out.println("user exists in db");
+				
+			}
+			JSONObject object = new JSONObject();
+			object.put(UserDAO.USER_KEY, userKey);
+			URIUtils.writeResponse(object.toJSONString(), exchange);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			
+			URIUtils.writeFailureResponse(exchange);
 		}
-		JSONObject object = new JSONObject();
-		object.put(UserDAO.USER_KEY, userKey);
-		URIUtils.writeResponse(object.toJSONString(), exchange);
-		
-//		if (userDao.findByProperty(new String[]{UserDAO.USER_NAME, UserDAO.PASSWORD}, 
-//				new Object[]{username, password}).isEmpty() == false){
-//			System.out.println("user exists in db");
-//			//generate user key
-//			URIUtils.writeResponse("TRUE", exchange);
-//			//write response
-//		}else{
-//			
-//			URIUtils.writeResponse("FALSE", exchange);
-//		}
-		
+
 	}
 	
-	
+	/**
+	 * 
+	 * @param parameters contaisn {@link UserDAO#USER_KEY} </br>
+	 * @return true if {@link UserDAO#USER_KEY} exists, otherwise return false </br>
+	 */
 	public static boolean hasUserKey(Map<String,Object> parameters){
 		
 		return userKeys.contains(parameters.get(UserDAO.USER_KEY));
 		//return true;
 	}
 
+	/**
+	 * Response clients a {@link URIRequest#SUCCESS_MESSAGE} if userkey value exists </br>
+	 * or response clients a {@link URIRequest#FAILURE_MESSAGE} if userkey does not exist </br>
+	 * 
+	 * @param exchange {@link HttpExchange} communicate between clients and server </br>
+	 * @param parameters contains {@link UserDAO#USER_KEY} </br>
+	 */
 	public static void doLogout(HttpExchange exchange, Map<String,Object> parameters) {
 		
 		if (hasUserKey(parameters)){
@@ -69,8 +92,8 @@ public class AccountRequest {
 
 	/**
 	 * Check if email exists in the database and return a success or failure response </br> 
-	 * @param httpExchange
-	 * @param parameters contains email address
+	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
+	 * @param parameters contains email address </br>
 	 */
 	public static void doResetPassword(HttpExchange httpExchange,
 			Map<String, Object> parameters) {
@@ -88,8 +111,11 @@ public class AccountRequest {
 	}
 
 	/**
+	 * Response lients a {@link URIRequest#SUCCESS_MESSAGE} if user name and password are valid </br>
+	 * and they do not exist in the database when receiving {@link URIRequest#LOGOUT} request from client applications</br>
+	 * Otherwise, response a {@link URIRequest#FAILURE_MESSAGE} </br>
 	 * 
-	 * @param httpExchange
+	 * @param httpExchange {@link HttpExchange} communicates between clients and server </br>
 	 * @param parameters contains: </br>
 	 * 		</li> {@link UserDAO#USER_NAME}
 	 * 		</li> {@link UserDAO#EMAIL}

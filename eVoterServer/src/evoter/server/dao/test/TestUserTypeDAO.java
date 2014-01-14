@@ -19,8 +19,8 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.dao.BeanDAOFactory;
-import evoter.server.dao.UserTypeDAO;
-import evoter.server.model.UserType;
+import evoter.share.dao.UserTypeDAO;
+import evoter.share.model.UserType;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

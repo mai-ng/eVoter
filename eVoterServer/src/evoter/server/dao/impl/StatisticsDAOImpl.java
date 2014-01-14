@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import evoter.server.dao.StatisticsDAO;
-import evoter.server.model.Statistics;
 import evoter.server.model.mapper.StatisticsRowMapper;
+import evoter.share.dao.StatisticsDAO;
+import evoter.share.model.Statistics;
 
 public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 

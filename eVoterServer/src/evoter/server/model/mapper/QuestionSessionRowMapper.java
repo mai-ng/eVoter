@@ -8,8 +8,8 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import evoter.server.dao.QuestionSessionDAO;
-import evoter.server.model.QuestionSession;
+import evoter.share.dao.QuestionSessionDAO;
+import evoter.share.model.QuestionSession;
 
 /**
  * @author btdiem

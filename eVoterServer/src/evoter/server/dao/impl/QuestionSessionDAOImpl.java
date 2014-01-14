@@ -4,10 +4,14 @@ import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import evoter.server.dao.QuestionSessionDAO;
-import evoter.server.model.QuestionSession;
 import evoter.server.model.mapper.QuestionSessionRowMapper;
-
+import evoter.share.dao.QuestionSessionDAO;
+import evoter.share.model.QuestionSession;
+/**
+ * 
+ * @author btdiem
+ *
+ */
 public class QuestionSessionDAOImpl extends JdbcDaoSupport implements
 		QuestionSessionDAO {
 

@@ -5,8 +5,8 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import evoter.server.dao.StatisticsDAO;
-import evoter.server.model.Statistics;
+import evoter.share.dao.StatisticsDAO;
+import evoter.share.model.Statistics;
 
 public class StatisticsRowMapper implements RowMapper<Statistics> {
 

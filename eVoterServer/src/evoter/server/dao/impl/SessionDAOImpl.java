@@ -9,11 +9,15 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import evoter.server.dao.SessionDAO;
-import evoter.server.model.Session;
 import evoter.server.model.mapper.SessionRowMapper;
+import evoter.share.dao.SessionDAO;
+import evoter.share.model.Session;
 
-
+/**
+ * 
+ * @author btdiem
+ *
+ */
 public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 
 	@Override

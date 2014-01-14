@@ -9,23 +9,40 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.dao.AnswerDAO;
 import evoter.server.dao.BeanDAOFactory;
-import evoter.server.dao.QuestionDAO;
-import evoter.server.dao.QuestionSessionDAO;
-import evoter.server.dao.QuestionTypeDAO;
-import evoter.server.dao.UserDAO;
+import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
-import evoter.server.model.Answer;
-import evoter.server.model.Question;
-import evoter.server.model.QuestionSession;
+import evoter.share.dao.AnswerDAO;
+import evoter.share.dao.QuestionDAO;
+import evoter.share.dao.QuestionSessionDAO;
+import evoter.share.dao.QuestionTypeDAO;
+import evoter.share.dao.UserDAO;
+import evoter.share.model.Answer;
+import evoter.share.model.Question;
+import evoter.share.model.QuestionSession;
+import evoter.share.utils.UserValidation;
+
+/**
+ * Process all {@link Question} requests sent by client applications </br>
+ * 
+ * @author btdiem </br>
+ *
+ */
 
 public class QuestionRequest {
 
 	//This value is updated when receiving a /send_question request 
 	private static Map<Long,Long> mapSentQuestion = new HashMap<Long, Long>();
 
-
+	/**
+	 * This method will response a list of {@link Question} and {@link Answer} when server </br>
+	 * receives request {@link URIRequest#GET_ALL_QUESTION} </br>
+	 * 
+	 * @param httpExchange </br>
+	 * @param parameters contains : </br>
+	 * 	</li> QuestionSessionDAO.SESSION_ID
+	 *  </li> {@link UserDAO#USER_KEY}
+	 */
 	@SuppressWarnings("unchecked")
 	public static void doGetAll(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
@@ -97,7 +114,8 @@ public class QuestionRequest {
 	@SuppressWarnings("unchecked")
 	public static JSONArray getAnswersOfQuestion(long questionId){
 		
-		List<Answer> answers = (List<Answer>) ((AnswerDAO)BeanDAOFactory.getBean(AnswerDAO.BEAN_NAME)).findByQuestionId(questionId);
+		List<Answer> answers = (List<Answer>) ((AnswerDAO)BeanDAOFactory.getBean(AnswerDAO.BEAN_NAME))
+				.findByQuestionId(questionId);
 		if (answers != null && !answers.isEmpty()){
 			JSONArray arrays = new JSONArray();
 			for (Answer answer : answers){
@@ -133,7 +151,7 @@ public class QuestionRequest {
 		long questionTypeId = Long.valueOf((String)parameters.get(QuestionDAO.QUESTION_TYPE_ID));
 		Date creationDate = Date.valueOf((String)parameters.get(QuestionDAO.CREATION_DATE));
 		String userKey = (String)parameters.get(UserDAO.USER_KEY);
-		long userId = URIUtils.getUserIdFromUserKey(userKey);
+		long userId = UserValidation.getUserIdFromUserKey(userKey);
 		long sessionId = Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID));
 		String[] answerTexts = (String[])parameters.get(AnswerDAO.ANSWER_TEXT);
 		
@@ -199,7 +217,7 @@ public class QuestionRequest {
 	 * Delete {@link Question} in QUESTION table</br>
 	 * 
 	 * @param httpExchange
-	 * @param parameters contains:
+	 * @param parameters contains: </br>
 	 * 	{@link QuestionDAO#ID}
 	 */
 	public static void doDelete(HttpExchange httpExchange,
@@ -229,6 +247,16 @@ public class QuestionRequest {
 		
 	}
 
+	/**
+	 * When receiving {@link URIRequest#SEND_QUESTION} from teacher application </br>
+	 * keep the questionId and sessionId of request and wait for request {@link URIRequest#GET_LATEST_QUESTION} </br>
+	 * from student application </br>
+	 * @param httpExchange </br>
+	 * @param parameters contains: </br>
+	 * 	</li> {@link QuestionDAO#ID} : questionID
+	 * 	</li> {@link QuestionSessionDAO#SESSION_ID} : current session ID
+	 * 	</li> {@link UserDAO#USER_KEY}
+	 */
 	public static void doSend(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
@@ -237,6 +265,15 @@ public class QuestionRequest {
 		mapSentQuestion.put(sessionId, questionId);
 	}
 
+	/**
+	 * This request is sent by student application within a certain time </br>
+	 * This request will receive a response if server receives a {@link URIRequest#SEARCH_QUESTION} </br>
+	 * 
+	 * @param httpExchange</br>
+	 * @param parameters contains: </br>
+	 * 	</li> QuestionSessionDAO.SESSION_ID
+	 * 	</li> {@link UserDAO#USER_KEY}
+	 */
 	@SuppressWarnings("unchecked")
 	public static void doGetLatest(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
@@ -255,6 +292,14 @@ public class QuestionRequest {
 		
 	}
 
+	/** 
+	 * This method is called when teacher sends the request </br>
+	 * {@link URIRequest#STOP_SEND_QUESTION} to server </br>
+	 *  
+	 * @param httpExchange </br>
+	 * @param parameters contains : </br>
+	 * 	</li> QuestionSessionDAO.SESSION_ID
+	 */
 	public static void doStopSend(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));

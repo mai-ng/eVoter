@@ -276,16 +276,7 @@ public class URIUtils {
 		URIUtils.writeResponse(URIRequest.FAILURE_MESSAGE, httpExchange);
 	}
 	
-	public static Long getUserIdFromUserKey(String userKey){
-		
-		String[] arrays = userKey.split("_");
-		return Long.valueOf(arrays[1]);
-	}
-	public static Long getUserTypeIdFromUserKey(String userKey){
 
-		String[] arrays = userKey.split("_");
-		return Long.valueOf(arrays[2]);
-	}
 
 	public static boolean isResetPassword(String URIString) {
 		return (URIString != null) 

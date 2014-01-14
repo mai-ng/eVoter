@@ -3,12 +3,14 @@
  */
 package evoter.mobile.activities;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -41,17 +43,27 @@ public abstract class ItemDataActivity extends EVoterActivity {
 				loadListItemData();
 			}
 		});
-		
-		tvLoadingStatus = (TextView)findViewById(R.id.tvLoadingStatus);
-		tvLoadingStatus.setVisibility(View.GONE);
-		progressBar = (ProgressBar)findViewById(R.id.progressRefresh);
-		progressBar.setVisibility(View.GONE);
+
+		dialogLoading = new Dialog(this);
+		dialogLoading.setContentView(R.layout.dialog_loading);
+		dialogLoading.setTitle("Refresh");
+		WindowManager.LayoutParams layoutParameters = new WindowManager.LayoutParams();
+		layoutParameters.copyFrom(dialogLoading.getWindow().getAttributes());
+		layoutParameters.width = WindowManager.LayoutParams.MATCH_PARENT;
+		layoutParameters.height = WindowManager.LayoutParams.WRAP_CONTENT;
+		dialogLoading.getWindow().setAttributes(layoutParameters);
+
+		tvLoadingStatus = (TextView) dialogLoading
+				.findViewById(R.id.tvLoadingStatus);
+		progressBar = (ProgressBar) dialogLoading
+				.findViewById(R.id.progressRefresh);
 		progressBar.setProgress(0);
+
 		offlineEVoterManager = new OfflineEVoterManager(this);
 
 		context = this;
 		listView = (ListView) findViewById(R.id.lvItemData);
-//		listView.setEmptyView(progressBar);
+		// listView.setEmptyView(progressBar);
 		etSearch = (EditText) findViewById(R.id.etSearch);
 		etSearch.addTextChangedListener(new TextWatcher() {
 			@Override

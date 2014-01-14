@@ -17,13 +17,12 @@ import evoter.mobile.utils.Utils;
 public class RegisterActivity extends EVoterActivity {
 
 	EditText etUsrname, etPassword, etPasswordConfirm, etEmail;
-	CheckBox cbAcceptPolicy;
 	Button btSubmit;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.register);
-		
+
 		this.tvTitleBarContent.setText("Register new account");
 
 		etEmail = (EditText) findViewById(R.id.etRegisterEmail);
@@ -72,7 +71,9 @@ public class RegisterActivity extends EVoterActivity {
 					// TODO: request to sever: email,username,password,user_type
 					Utils.showeVoterToast(RegisterActivity.this,
 							"You will receive an email to confirm your register!");
-					Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+					RuntimeEVoterManager.setCurrentUserName(i_usrname);
+					Intent intent = new Intent(RegisterActivity.this,
+							LoginActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(intent);
@@ -80,20 +81,6 @@ public class RegisterActivity extends EVoterActivity {
 
 			}
 		});
-
-		cbAcceptPolicy = (CheckBox) findViewById(R.id.cbRegisterPolicy);
-		cbAcceptPolicy
-				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView,
-							boolean isChecked) {
-						if (isChecked) {
-							btSubmit.setEnabled(true);
-						} else {
-							btSubmit.setEnabled(false);
-						}
-					}
-				});
 
 	}
 }

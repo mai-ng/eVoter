@@ -50,16 +50,16 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center_horizontal"
-        android:orientation="vertical"
         android:padding="10dp" >
 
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:text="Login"
             android:id="@+id/btLogin"
             android:layout_gravity="center_horizontal"
@@ -67,19 +67,23 @@
 
         <TextView
             android:id="@+id/tvSignUp"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:padding="10dp"
             android:text="Register new account"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium" 
+            android:layout_alignParentBottom="true"/>
 
         <TextView
             android:id="@+id/tvForgotPassword"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:padding="10dp"
+            android:gravity="center_horizontal"
             android:text="Forgot password"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium" 
+            android:layout_above="@id/tvSignUp"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

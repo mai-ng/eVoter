@@ -81,6 +81,20 @@ public class QuestionActivity extends ItemDataActivity {
 					 * (non-Javadoc)
 					 * 
 					 * @see
+					 * com.loopj.android.http.AsyncHttpResponseHandler#onStart()
+					 */
+					@Override
+					public void onStart() {
+						// TODO Auto-generated method stub
+						super.onStart();
+						tvLoadingStatus.setText("Loading...");
+						dialogLoading.show();
+					}
+
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see
 					 * com.loopj.android.http.AsyncHttpResponseHandler#onFinish
 					 * ()
 					 */
@@ -89,25 +103,7 @@ public class QuestionActivity extends ItemDataActivity {
 						// TODO Auto-generated method stub
 						super.onFinish();
 						tvLoadingStatus.setText("Finished");
-						tvLoadingStatus.setVisibility(View.GONE);
-						progressBar.setVisibility(View.GONE);
-						etSearch.setVisibility(View.VISIBLE);
-					}
-
-					/*
-					 * (non-Javadoc)
-					 * 
-					 * @see
-					 * com.loopj.android.http.AsyncHttpResponseHandler#onStart()
-					 */
-					@Override
-					public void onStart() {
-						// TODO Auto-generated method stub
-						super.onStart();
-						tvLoadingStatus.setText("Loading...");
-						tvLoadingStatus.setVisibility(View.VISIBLE);
-						progressBar.setVisibility(View.VISIBLE);
-						etSearch.setVisibility(View.GONE);
+						dialogLoading.dismiss();
 					}
 
 					@Override

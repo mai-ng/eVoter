@@ -6,6 +6,7 @@ package evoter.mobile.objects;
 import evoter.mobile.main.R;
 import android.app.Dialog;
 import android.content.Context;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -44,6 +45,11 @@ public class DialogInfor extends Dialog {
 		tvMessage = (TextView) findViewById(R.id.tvDialogMessage);
 		btOK = (Button) findViewById(R.id.btDialogOK);
 		btKO = (Button) findViewById(R.id.btDialogExit);
+		WindowManager.LayoutParams layoutParameters = new WindowManager.LayoutParams();
+		layoutParameters.copyFrom(this.getWindow().getAttributes());
+		layoutParameters.width = WindowManager.LayoutParams.MATCH_PARENT;
+		layoutParameters.height = WindowManager.LayoutParams.WRAP_CONTENT;
+		this.getWindow().setAttributes(layoutParameters);
 	}
 
 	/**

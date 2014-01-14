@@ -3,15 +3,16 @@
  */
 package evoter.mobile.activities;
 
-import evoter.mobile.main.R;
-import evoter.mobile.objects.OfflineEVoterManager;
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import evoter.mobile.main.R;
+import evoter.mobile.objects.OfflineEVoterManager;
 
 /**
  * @author luongnv89
@@ -24,6 +25,7 @@ public class EVoterActivity extends Activity {
 	
 	protected ProgressBar progressBar;
 	protected OfflineEVoterManager offlineEVoterManager;
+	protected Dialog dialogLoading;
 
 	/*
 	 * (non-Javadoc)

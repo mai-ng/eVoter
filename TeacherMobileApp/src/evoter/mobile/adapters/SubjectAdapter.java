@@ -5,8 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filterable;
 import evoter.mobile.main.R;
-import evoter.mobile.models.Subject;
-import evoter.mobile.utils.Utils;
+import evoter.share.model.Subject;
+import evoter.mobile.utils.EVoterMobileUtils;
 
 /**
  * Created by luongnv89 on 06/12/13.
@@ -58,7 +58,7 @@ public class SubjectAdapter extends ItemDataAdapter implements Filterable {
 				convertView,
 				R.id.tvSubDate,
 				"Created: "
-						+ Utils.convertToString(((Subject) listItemDataToPublic
+						+ EVoterMobileUtils.convertToString(((Subject) listItemDataToPublic
 								.get(position)).getCreationDate()));
 		return convertView;
 	}

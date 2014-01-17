@@ -7,10 +7,10 @@ import android.net.NetworkInfo;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,32 +18,18 @@ import org.json.JSONException;
 /**
  * Created by luongnv89 on 05/12/13.
  */
-public class Utils {
-
-	public static boolean usrnameValid(String usrname) {
-		return true;
-	}
-
-	public static boolean passwordValid(String pwd) {
-		return true;
-	}
-
-	public static boolean emailValid(String email) {
-		return true;
-	}
+public class EVoterMobileUtils {
 
 	public static JSONArray getJSONArray(String response) throws JSONException {
-		// String reFormat = "{\"data\":" + response + "}";
-		// JSONObject data = new JSONObject(reFormat);
-		// return data.getJSONArray("data");
 		return new JSONArray(response);
 	}
 
 	@SuppressLint("SimpleDateFormat")
 	public static Date convertToDate(String date) throws ParseException {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date utilDate = dateFormat.parse(date);
 
-		return dateFormat.parse(date);
+		return new java.sql.Date(utilDate.getTime());
 	}
 
 	@SuppressLint("SimpleDateFormat")

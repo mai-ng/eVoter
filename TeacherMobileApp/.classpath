@@ -6,8 +6,8 @@
 	<classpathentry exported="true" kind="lib" path="libs/android-async-http-1.4.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/android-support-v4.jar"/>
 	<classpathentry kind="lib" path="libs/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/evotershare.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/eVoterServer"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -23,12 +23,12 @@ import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.SubjectAdapter;
 import evoter.mobile.main.R;
-import evoter.mobile.models.ItemData;
-import evoter.mobile.models.Subject;
+import evoter.share.model.ItemData;
+import evoter.share.model.Subject;
 import evoter.mobile.objects.Configuration;
-import evoter.mobile.utils.Utils;
-import evoter.server.dao.SubjectDAO;
-import evoter.server.dao.UserDAO;
+import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.dao.SubjectDAO;
+import evoter.share.dao.UserDAO;
 
 /**
  * Created by @author nvluong on 05-Dec-2013</br> Updated by @author btdiem on
@@ -87,7 +87,7 @@ public class SubjectActivity extends ItemDataActivity {
 				btSbjDelete.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						Utils.showeVoterToast(SubjectActivity.this,
+						EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
 								"Deleted subject: " + subject.getTitle());
 						adapter.deleteItem(subject.getId());
 						adapter.notifyDataSetChanged();
@@ -155,7 +155,7 @@ public class SubjectActivity extends ItemDataActivity {
 
 						try {
 							ArrayList<ItemData> newList = new ArrayList<ItemData>();
-							JSONArray array = Utils.getJSONArray(response);
+							JSONArray array = EVoterMobileUtils.getJSONArray(response);
 
 							for (int i = 0; i < array.length(); i++) {
 								progressBar.setProgress((i + 1) * 100
@@ -171,7 +171,7 @@ public class SubjectActivity extends ItemDataActivity {
 											Long.parseLong(item
 													.getString(SubjectDAO.ID)),
 											item.getString(SubjectDAO.TITLE),
-											Utils.convertToDate(item
+											EVoterMobileUtils.convertToDate(item
 													.getString(SubjectDAO.CREATION_DATE)));
 								} catch (NumberFormatException e) {
 									// TODO Auto-generated catch block
@@ -183,7 +183,7 @@ public class SubjectActivity extends ItemDataActivity {
 								newList.add(subject);
 							}
 							if (newList.isEmpty()) {
-								Utils.showeVoterToast(SubjectActivity.this,
+								EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
 										"There isn't any subject!");
 							}
 							adapter.updateList(newList);

@@ -19,8 +19,6 @@ public class Subject extends ItemData implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private long id;
-	private String title;
 	private Date creationDate;
 
 	public Subject() {
@@ -36,6 +34,23 @@ public class Subject extends ItemData implements Serializable {
 		this.creationDate = creationDate;
 	}
 	
+	/**
+	 * @param cp
+	 */
+	public Subject(Subject cp) {
+		super(cp);
+		this.creationDate = cp.getCreationDate();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @param id
+	 * @param title
+	 */
+	public Subject(long id, String title) {
+		super(id, title);
+	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}

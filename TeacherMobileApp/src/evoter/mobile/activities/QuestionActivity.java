@@ -1,5 +1,6 @@
 package evoter.mobile.activities;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -17,13 +18,13 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.QuestionAdapter;
-import evoter.mobile.models.ItemData;
-import evoter.mobile.models.Question;
+import evoter.share.model.ItemData;
+import evoter.share.model.Question;
 import evoter.mobile.objects.Configuration;
-import evoter.mobile.utils.Utils;
-import evoter.server.dao.QuestionDAO;
-import evoter.server.dao.QuestionSessionDAO;
-import evoter.server.dao.UserDAO;
+import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.dao.QuestionDAO;
+import evoter.share.dao.QuestionSessionDAO;
+import evoter.share.dao.UserDAO;
 
 /**
  * Created by luongnv89 on 06/12/13.
@@ -111,7 +112,8 @@ public class QuestionActivity extends ItemDataActivity {
 						Log.i("Get All Quesion Test", "response : " + response);
 						try {
 							ArrayList<ItemData> listQuestion = new ArrayList<ItemData>();
-							JSONArray array = Utils.getJSONArray(response);
+							JSONArray array = EVoterMobileUtils
+									.getJSONArray(response);
 							for (int i = 0; i < array.length(); i++) {
 								progressBar.setProgress((i + 1) * 100
 										/ array.length());
@@ -119,17 +121,36 @@ public class QuestionActivity extends ItemDataActivity {
 										* 100 / array.length());
 								String sString = array.get(i).toString();
 								JSONObject s = new JSONObject(sString);
+								// long id, String questionText, long
+								// questionTypeId,
+								// long userId, Date creationDate, long
+								// sessionID, long parentId,
+								// String answerColumn1, String answerColumn2
+								String answerColumn2 = "null";
+								if(s.toString().contains(Question.COL2)){
+									answerColumn2 = s
+											.getString(Question.COL2);
+								}
 								Question question = new Question(
 										Long.parseLong(s
 												.getString(QuestionDAO.ID)),
 										s.getString(QuestionDAO.QUESTION_TEXT),
-										s.getString(QuestionSessionDAO.SESSION_ID),
-										Integer.parseInt(s
-												.getString(QuestionDAO.QUESTION_TYPE_ID)));
+										Long.parseLong(s
+												.getString(QuestionDAO.QUESTION_TYPE_ID)),
+										Long.parseLong(s
+												.getString(QuestionDAO.USER_ID)),
+										EVoterMobileUtils.convertToDate(s
+												.getString(QuestionDAO.CREATION_DATE)),
+										Long.parseLong(s
+												.getString(QuestionSessionDAO.SESSION_ID)),
+										Long.parseLong(s
+												.getString(QuestionDAO.PARENT_ID)),
+										s.getString(Question.COL1), answerColumn2);
 								listQuestion.add(question);
 							}
 							if (listQuestion.isEmpty()) {
-								Utils.showeVoterToast(QuestionActivity.this,
+								EVoterMobileUtils.showeVoterToast(
+										QuestionActivity.this,
 										"There isn't any question!");
 							}
 							adapter.updateList(listQuestion);
@@ -142,6 +163,10 @@ public class QuestionActivity extends ItemDataActivity {
 						}
 						// Log.i("Get All Quesion Test", "response : " +
 						// response);
+						catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 
 					@Override

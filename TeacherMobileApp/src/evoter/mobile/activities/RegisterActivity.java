@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import evoter.mobile.main.R;
-import evoter.mobile.utils.UserAccountValidation;
-import evoter.mobile.utils.Utils;
+import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.utils.UserValidation;
 
 /**
  * Created by luongnv89 on 05/12/13.
@@ -40,36 +38,36 @@ public class RegisterActivity extends EVoterActivity {
 						.toString();
 
 				if (i_email.equals("")) {
-					Utils.showeVoterToast(RegisterActivity.this,
+					EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 							"Please input your email");
-				} else if (!UserAccountValidation.isValidEmail(i_email)) {
-					Utils.showeVoterToast(RegisterActivity.this,
+				} else if (!UserValidation.isValidEmail(i_email)) {
+					EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 							"Input email is not valid");
 				} else if (i_usrname.equals("")) {
-					Utils.showeVoterToast(RegisterActivity.this,
+					EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 							"Please input your username");
-				} else if (!UserAccountValidation.isValidUserName(i_usrname)) {
-					Utils.showeVoterToast(RegisterActivity.this,
+				} else if (!UserValidation.isValidUserName(i_usrname)) {
+					EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 							"Input username is not valid");
 				} else if (i_password.equals("")) {
-					Utils.showeVoterToast(RegisterActivity.this,
+					EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 							"Please input your password");
-				} else if (!UserAccountValidation.isValidPassword(i_password)) {
-					Utils.showeVoterToast(RegisterActivity.this,
+				} else if (!UserValidation.isValidPassword(i_password)) {
+					EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 							"Input password is not valid");
 				} else if (i_passowrdConfirm.equals("")) {
-					Utils.showeVoterToast(RegisterActivity.this,
+					EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 							"Please input your password confirm");
-				} else if (!UserAccountValidation
+				} else if (!UserValidation
 						.isValidPassword(i_passowrdConfirm)) {
-					Utils.showeVoterToast(RegisterActivity.this,
+					EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 							"Input confirm password is not valid");
 				} else if (!i_passowrdConfirm.equals(i_password)) {
-					Utils.showeVoterToast(RegisterActivity.this,
+					EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 							"Password and confirm password are not the same!");
 				} else {
 					// TODO: request to sever: email,username,password,user_type
-					Utils.showeVoterToast(RegisterActivity.this,
+					EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 							"You will receive an email to confirm your register!");
 					RuntimeEVoterManager.setCurrentUserName(i_usrname);
 					Intent intent = new Intent(RegisterActivity.this,

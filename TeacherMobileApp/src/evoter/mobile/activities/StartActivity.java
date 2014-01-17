@@ -8,7 +8,7 @@ import android.widget.ProgressBar;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.OfflineEVoterManager;
-import evoter.mobile.utils.Utils;
+import evoter.mobile.utils.EVoterMobileUtils;
 
 public class StartActivity extends EVoterActivity {
 
@@ -30,7 +30,7 @@ public class StartActivity extends EVoterActivity {
 		progressBar.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				if (Utils.hasInternetConnection(StartActivity.this)) {
+				if (EVoterMobileUtils.hasInternetConnection(StartActivity.this)) {
 					offlineEVoterManager.checkLogin();
 				} else {
 					DialogInfor dialog = new DialogInfor(

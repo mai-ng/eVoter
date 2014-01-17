@@ -14,91 +14,136 @@ public class Question extends ItemData implements Serializable {
 	private long userId;
 	private Date creationDate;
 	private long parentId;
+	private long sessionID;
 	public static final String COL1 = "column1";
 	public static final String COL2 = "column2";
-	
-	/**
-	 * Student and teacher: Create an object of {@link Question} from response
-	 * 
-	 * @param id
-	 * @param questionText
-	 * @param answers
-	 * @param questionTypeID
-	 */
-	public Question(long id, String questionText, String answers, long questionTypeID) {
-		super(id, questionText);
-		this.answers = answers;
-		this.questionTypeId = questionTypeID;
-	}
+	private String answerColumn1;
+	private String answerColumn2;
 
 	/**
-	 * @param question
+	 * @param questionTypeId
+	 * @param userId
+	 * @param creationDate
+	 * @param parentId
+	 * @param answerColumn1
+	 * @param answerColumn2
 	 */
-	public Question(Question question) {
-		super(question);
-		this.questionTypeId = question.getQuestionTypeId();
-		this.answers = question.getAnswers();
+	public Question(long id, String questionText, long questionTypeId,
+			long userId, Date creationDate, long parentId,long sessionID,
+			String answerColumn1, String answerColumn2) {
+		super(id, questionText);
+		this.questionTypeId = questionTypeId;
+		this.userId = userId;
+		this.creationDate = creationDate;
+		this.sessionID = sessionID;
+		this.parentId = parentId;
+		this.answerColumn1 = answerColumn1;
+		if(answerColumn2.equals("null")) 
+			this.answerColumn2="";
+		else
+			this.answerColumn2 = answerColumn2;
 	}
-	
-	/**
-	 * @param id
-	 * @param title
-	 */
-	public Question(long id, String title) {
-		super(id, title);
-		// TODO Auto-generated constructor stub
+
+	public Question() {
 	}
-	public Question(){}
-	public Question(long questionTypeId, 
-					long userId, 
-					String questionText, 
-					Date creationDate, 
-					long parentId){
-		
+
+	public Question(long questionTypeId, long userId, String questionText,
+			Date creationDate, long parentId) {
+
 		this.questionTypeId = questionTypeId;
 		this.userId = userId;
 		this.title = questionText;
 		this.creationDate = creationDate;
 		this.parentId = parentId;
-		
+
 	}
+
+	
+	/**
+	 * 
+	 * @param cp
+	 */
+	public Question(Question cp) {
+		super(cp);
+		this.questionTypeId = cp.getQuestionTypeId();
+		this.userId = cp.getUserId();
+		this.creationDate = cp.getCreationDate();
+		this.sessionID = cp.getSessionID();
+		this.parentId = cp.getParentId();
+		this.answerColumn1 = cp.getAnswerColumn1();
+		this.answerColumn2 = cp.getAnswerColumn2();
+	}
+
+	
+	
+	/**
+	 * @return the sessionID
+	 */
+	public long getSessionID() {
+		return sessionID;
+	}
+
 	public long getParentId() {
 		return parentId;
 	}
+
 	public void setParentId(long parentId) {
 		this.parentId = parentId;
 	}
+
 	public long getId() {
 		return id;
 	}
+
 	public void setId(long id) {
 		this.id = id;
 	}
+
 	public long getQuestionTypeId() {
 		return questionTypeId;
 	}
+
 	public void setQuestionTypeId(long questionTypeId) {
 		this.questionTypeId = questionTypeId;
 	}
+
 	public String getQuestionText() {
 		return super.getTitle();
 	}
+
 	public long getUserId() {
 		return userId;
 	}
+
 	public void setUserId(long userId) {
 		this.userId = userId;
 	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
+
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
+
 	public void setQuestionText(String questionText) {
 		this.title = questionText;
 	}
 
+	/**
+	 * @return the answerColumn1
+	 */
+	public String getAnswerColumn1() {
+		return answerColumn1;
+	}
+
+	/**
+	 * @return the answerColumn2
+	 */
+	public String getAnswerColumn2() {
+		return answerColumn2;
+	}
 
 	@Override
 	public String toString() {
@@ -107,6 +152,7 @@ public class Question extends ItemData implements Serializable {
 				+ ", creationDate=" + creationDate + ", parentId=" + parentId
 				+ "]";
 	}
+
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON() {
 		JSONObject object = new JSONObject();
@@ -118,6 +164,5 @@ public class Question extends ItemData implements Serializable {
 		object.put(QuestionDAO.PARENT_ID, parentId);
 		return object;
 	}
-	
-	
+
 }

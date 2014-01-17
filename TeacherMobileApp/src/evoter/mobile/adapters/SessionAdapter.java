@@ -9,8 +9,8 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Filterable;
 import android.widget.TextView;
 import evoter.mobile.main.R;
-import evoter.mobile.models.Session;
-import evoter.mobile.utils.Utils;
+import evoter.share.model.Session;
+import evoter.mobile.utils.EVoterMobileUtils;
 
 /**
  * Created by luongnv89 on 06/12/13.
@@ -75,7 +75,7 @@ public class SessionAdapter extends ItemDataAdapter implements Filterable {
 			holder.sessionStatus.startAnimation(animation);
 		}
 		holder.creationDate = detail(convertView, R.id.tvSessDate,
-				Utils.convertToString(((Session) listItemDataToPublic
+				EVoterMobileUtils.convertToString(((Session) listItemDataToPublic
 						.get(position)).getCreationDate()));
 		return convertView;
 	}

@@ -5,7 +5,7 @@ package evoter.mobile.adapters;
 
 import java.util.ArrayList;
 
-import evoter.mobile.models.ItemData;
+import evoter.share.model.ItemData;
 
 import android.content.Context;
 import android.view.LayoutInflater;

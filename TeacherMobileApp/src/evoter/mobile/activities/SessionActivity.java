@@ -19,12 +19,12 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.SessionAdapter;
-import evoter.mobile.models.ItemData;
-import evoter.mobile.models.Session;
+import evoter.share.model.ItemData;
+import evoter.share.model.Session;
 import evoter.mobile.objects.Configuration;
-import evoter.mobile.utils.Utils;
-import evoter.server.dao.SessionDAO;
-import evoter.server.dao.UserDAO;
+import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.dao.SessionDAO;
+import evoter.share.dao.UserDAO;
 
 /**
  * Created by luongnv89 on 06/12/13.
@@ -118,7 +118,7 @@ public class SessionActivity extends ItemDataActivity {
 					public void onSuccess(String response) {
 						try {
 							ArrayList<ItemData> listSession = new ArrayList<ItemData>();
-							JSONArray array = Utils.getJSONArray(response);
+							JSONArray array = EVoterMobileUtils.getJSONArray(response);
 							for (int i = 0; i < array.length(); i++) {
 								progressBar.setProgress((i + 1) * 100
 										/ array.length());
@@ -129,7 +129,7 @@ public class SessionActivity extends ItemDataActivity {
 								Session session = new Session(Long.parseLong(s
 										.getString("ID")), Long.parseLong(s
 										.getString("SUBJECT_ID")), s
-										.getString("NAME"), Utils
+										.getString("NAME"), EVoterMobileUtils
 										.convertToDate(s
 												.getString("CREATION_DATE")),
 										Boolean.parseBoolean(s
@@ -137,7 +137,7 @@ public class SessionActivity extends ItemDataActivity {
 								listSession.add(session);
 							}
 							if (listSession.isEmpty()) {
-								Utils.showeVoterToast(SessionActivity.this,
+								EVoterMobileUtils.showeVoterToast(SessionActivity.this,
 										"There isn't any session!");
 							}
 							adapter.updateList(listSession);

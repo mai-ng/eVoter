@@ -10,7 +10,7 @@ import android.content.SharedPreferences.Editor;
 import evoter.mobile.activities.LoginActivity;
 import evoter.mobile.activities.RuntimeEVoterManager;
 import evoter.mobile.activities.SubjectActivity;
-import evoter.server.dao.UserDAO;
+import evoter.share.dao.UserDAO;
 
 /**
  * {@link OfflineEVoterManager} manages user, database,.. for different session of eVoter Application

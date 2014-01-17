@@ -20,9 +20,9 @@ import com.loopj.android.http.RequestParams;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.Configuration;
 import evoter.mobile.objects.OfflineEVoterManager;
-import evoter.mobile.utils.UserAccountValidation;
-import evoter.mobile.utils.Utils;
-import evoter.server.dao.UserDAO;
+import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.dao.*;
+import evoter.share.utils.*;
 
 /**
  * Created by luongnv89 on 05/12/13 </br> Updated by @author btdiem on
@@ -69,16 +69,16 @@ public class LoginActivity extends EVoterActivity {
 				params.add(UserDAO.PASSWORD, i_Password);
 
 				if (i_Usrname.equals("")) {
-					Utils.showeVoterToast(LoginActivity.this,
+					EVoterMobileUtils.showeVoterToast(LoginActivity.this,
 							"Please input your username");
 				} else if (i_Password.equals("")) {
-					Utils.showeVoterToast(LoginActivity.this,
+					EVoterMobileUtils.showeVoterToast(LoginActivity.this,
 							"Please input your password");
-				} else if (!UserAccountValidation.isValidUserName(i_Usrname)) {
-					Utils.showeVoterToast(LoginActivity.this,
+				} else if (!UserValidation.isValidUserName(i_Usrname)) {
+					EVoterMobileUtils.showeVoterToast(LoginActivity.this,
 							"Input username is not valid");
-				} else if (!UserAccountValidation.isValidPassword(i_Password)) {
-					Utils.showeVoterToast(LoginActivity.this,
+				} else if (!UserValidation.isValidPassword(i_Password)) {
+					EVoterMobileUtils.showeVoterToast(LoginActivity.this,
 							"Input password is not valid");
 				} else
 
@@ -112,7 +112,7 @@ public class LoginActivity extends EVoterActivity {
 												.setCurrentUserName(i_Usrname);
 										RuntimeEVoterManager
 												.setUSER_KEY(userKey);
-										Utils.showeVoterToast(
+										EVoterMobileUtils.showeVoterToast(
 												LoginActivity.this,
 												"Welcome "
 														+ RuntimeEVoterManager
@@ -134,7 +134,7 @@ public class LoginActivity extends EVoterActivity {
 								@Override
 								public void onFailure(Throwable error,
 										String content) {
-									Utils.showeVoterToast(
+									EVoterMobileUtils.showeVoterToast(
 											LoginActivity.this,
 											"onFailure error : "
 													+ error.toString()

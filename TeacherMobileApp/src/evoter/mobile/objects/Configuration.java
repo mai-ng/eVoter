@@ -10,17 +10,23 @@ package evoter.mobile.objects;
 public class Configuration {
 	private static String IPAddress ="192.168.0.13";
 	private static int portNumber = 1000;
+	public static int TIME_OUT=1000;
 	// for testing only
 	private static String _urlLogin = "/evoter/login";
+	private static String _urlResetPassword = "/evoter/reset_password";
+	private static String _urlRegister = "/evoter/register";
+	
 	private static String _urlViewSubject = "/evoter/view_subject";
 	private static String _urlGetAllSubject = "/evoter/get_all_subject";
 	private static String _urlDeleteSubject = "/evoter/delete_subject";
 	private static String _urlSearchSubject = "/evoter/search_subject";
+	
 	private static String _urlGetAllSession = "/evoter/get_all_session";
 	private static String _urlViewSession = "/evoter/view_session";
 	private static String _urlActiveSession = "/evoter/active_session";
 	private static String _urlAcceptSession = "/evoter/accept_session";
 	private static String _urlDeleteSession = "/evoter/delete_session";
+	
 	private static String _urlGetAllQuestion = "/evoter/get_all_question";
 	private static String _urlViewQuestion = "/evoter/view_question";
 	private static String _urlDeleteQuestion = "/evoter/delete_question";
@@ -125,6 +131,18 @@ public class Configuration {
 	 */
 	public static String get_urlDeleteQuestion() {
 		return "http://"+getIPAddress()+":"+getPortNumber()+_urlDeleteQuestion;
+	}
+	/**
+	 * @return the _urlResetPassword
+	 */
+	public static String get_urlResetPassword() {
+		return "http://"+getIPAddress()+":"+getPortNumber()+_urlResetPassword;
+	}
+	/**
+	 * @return the _urlRegister
+	 */
+	public static String get_urlRegister() {
+		return "http://"+getIPAddress()+":"+getPortNumber()+_urlRegister;
 	}
 	
 	

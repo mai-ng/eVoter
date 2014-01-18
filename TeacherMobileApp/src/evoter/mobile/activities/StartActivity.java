@@ -31,7 +31,13 @@ public class StartActivity extends EVoterActivity {
 			@Override
 			public void run() {
 				if (EVoterMobileUtils.hasInternetConnection(StartActivity.this)) {
-					offlineEVoterManager.checkLogin();
+					if(serverReady()){
+						offlineEVoterManager.checkLogin();	
+					}else{
+						EVoterMobileUtils.showeVoterToast(StartActivity.this, "Server error! Cannot connect to server!");
+						exit();
+					}
+					
 				} else {
 					DialogInfor dialog = new DialogInfor(
 							StartActivity.this, "Error connection!");
@@ -59,8 +65,16 @@ public class StartActivity extends EVoterActivity {
 					});
 				}
 				
-				//TODO: eVoterMobile: Check request to server???
 			}
 		}, 1000);
 	}
+
+	/**
+	 * @return
+	 */
+	protected boolean serverReady() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 }

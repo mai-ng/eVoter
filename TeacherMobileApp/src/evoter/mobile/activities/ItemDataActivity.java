@@ -3,6 +3,8 @@
  */
 package evoter.mobile.activities;
 
+import com.loopj.android.http.AsyncHttpClient;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import evoter.mobile.adapters.ItemDataAdapter;
 import evoter.mobile.main.R;
+import evoter.mobile.objects.Configuration;
 import evoter.mobile.objects.OfflineEVoterManager;
 
 /**

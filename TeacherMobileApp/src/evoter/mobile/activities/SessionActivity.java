@@ -12,11 +12,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -79,7 +76,6 @@ public class SessionActivity extends ItemDataActivity {
 	}
 
 	protected void loadListItemData() {
-		AsyncHttpClient client = new AsyncHttpClient(1000);
 		RequestParams params = new RequestParams();
 		params.add(SessionDAO.SUBJECT_ID,
 				String.valueOf(RuntimeEVoterManager.getCurrentSubjectID()));

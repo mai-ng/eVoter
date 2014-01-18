@@ -3,6 +3,10 @@
  */
 package evoter.mobile.activities;
 
+import org.apache.http.client.HttpClient;
+
+import com.loopj.android.http.AsyncHttpClient;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -13,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import evoter.mobile.main.R;
+import evoter.mobile.objects.Configuration;
 import evoter.mobile.objects.OfflineEVoterManager;
 
 /**
@@ -53,7 +58,7 @@ public class EVoterActivity extends Activity {
 	 */
 	protected OfflineEVoterManager offlineEVoterManager;
 	
-	
+	protected AsyncHttpClient client;
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -70,6 +75,7 @@ public class EVoterActivity extends Activity {
 		ivTitleBarRefresh = (ImageView) findViewById(R.id.ivRefreshTitleBar);
 		tvTitleBarContent = (TextView) findViewById(R.id.tvTitleBar);
 		ivTitleBarRefresh.setVisibility(View.GONE);
+		client = new AsyncHttpClient(Configuration.TIME_OUT);
 	}
 	
 	/**

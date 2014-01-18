@@ -13,23 +13,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.SeekBar;
-import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.QuestionAdapter;
-import evoter.share.model.ItemData;
-import evoter.share.model.Question;
-import evoter.share.model.UserType;
 import evoter.mobile.objects.Configuration;
 import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.UserDAO;
+import evoter.share.model.ItemData;
+import evoter.share.model.Question;
+import evoter.share.model.UserType;
 
 /**
  * Updated by @author luongnv89 on 18-Jan-2014
@@ -129,7 +128,6 @@ public class QuestionActivity extends ItemDataActivity {
 	}
 	
 	protected void loadListItemData() {
-		AsyncHttpClient client = new AsyncHttpClient(1000);
 		RequestParams params = new RequestParams();
 		params.add(QuestionSessionDAO.SESSION_ID,
 				String.valueOf(RuntimeEVoterManager.getCurrentSessionID()));

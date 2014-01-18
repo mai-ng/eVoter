@@ -26,6 +26,9 @@ import evoter.share.dao.*;
 import evoter.share.utils.*;
 
 /**
+ * Updated by @author luongnv89 on 19-Jan-2014:<br>
+ * <li> Deleted start new LoginActivity in case "username and password is incorrect!"
+ * <br>Just notify for user and user can try again
  * Update by @author luongnv89 on 18-Jan-2014<br>
  * <li>add comments for class, variable, method, <li>Edited onBackPressed() by
  * using {@link EVoterActivity#exit()} method; <li>Add relogin in case the input username and password is not correct. <br>
@@ -70,9 +73,6 @@ public class LoginActivity extends EVoterActivity {
 				RuntimeEVoterManager
 						.setCurrentUserName(i_Usrname);
 				final String i_Password = etPassword.getText().toString();
-				RequestParams params = new RequestParams();
-				params.add(UserDAO.USER_NAME, i_Usrname);
-				params.add(UserDAO.PASSWORD, i_Password);
 				
 				//Pre-check validation of input username and password
 				if (i_Usrname.equals("")) {
@@ -91,6 +91,9 @@ public class LoginActivity extends EVoterActivity {
 				
 				{
 					// Send login request to server
+					RequestParams params = new RequestParams();
+					params.add(UserDAO.USER_NAME, i_Usrname);
+					params.add(UserDAO.PASSWORD, i_Password);
 					client.post(Configuration.get_urlLogin(), params,
 							new AsyncHttpResponseHandler() {
 								// Request successfully - client receive a response
@@ -138,14 +141,6 @@ public class LoginActivity extends EVoterActivity {
 									}
 									else {
 										EVoterMobileUtils.showeVoterToast(LoginActivity.this, "Error! Username and password is not correct. Please try again!");
-										Intent relogin = new Intent(
-												LoginActivity.this,
-												LoginActivity.class);
-										relogin
-												.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-										relogin
-												.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-										startActivity(relogin);
 									}
 								}
 								

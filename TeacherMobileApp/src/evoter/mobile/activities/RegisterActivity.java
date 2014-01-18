@@ -6,10 +6,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import evoter.mobile.main.R;
+import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.utils.UserValidation;
 
 /**
+ * Only student can register new account
  * Created by luongnv89 on 05/12/13.
  */
 public class RegisterActivity extends EVoterActivity {

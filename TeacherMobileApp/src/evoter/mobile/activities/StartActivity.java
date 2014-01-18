@@ -58,6 +58,8 @@ public class StartActivity extends EVoterActivity {
 						}
 					});
 				}
+				
+				//TODO: eVoterMobile: Check request to server???
 			}
 		}, 1000);
 	}

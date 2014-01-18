@@ -26,6 +26,7 @@ import evoter.mobile.main.R;
 import evoter.share.model.ItemData;
 import evoter.share.model.Subject;
 import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;

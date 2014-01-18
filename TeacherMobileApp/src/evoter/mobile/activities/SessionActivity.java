@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -19,12 +21,13 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.SessionAdapter;
-import evoter.share.model.ItemData;
-import evoter.share.model.Session;
 import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.UserDAO;
+import evoter.share.model.ItemData;
+import evoter.share.model.Session;
 
 /**
  * Created by luongnv89 on 06/12/13.
@@ -38,6 +41,7 @@ public class SessionActivity extends ItemDataActivity {
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentSubjectName());
 
+		
 		adapter = new SessionAdapter(SessionActivity.this);
 		listView.setAdapter(adapter);
 

@@ -7,11 +7,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.SeekBar;
 import android.widget.Toast;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -20,37 +23,94 @@ import com.loopj.android.http.RequestParams;
 import evoter.mobile.adapters.QuestionAdapter;
 import evoter.share.model.ItemData;
 import evoter.share.model.Question;
+import evoter.share.model.UserType;
 import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.UserDAO;
 
 /**
+ * Updated by @author luongnv89 on 18-Jan-2014
+ * <br>
+ * <li> Add 2 seekbar for difficult and bored value of session - only add when usertype is student and session is active 
+ * 
+ * {@link QuestionActivity} extend from {@link ItemDataActivity} manages
+ * questions in a session.
+ * 
  * Created by luongnv89 on 06/12/13.
  */
 public class QuestionActivity extends ItemDataActivity {
-
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//Set titlebar of current activity is the name of current session
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentSessionName());
-
+		
+		if (RuntimeEVoterManager.getCurrentUserType() == UserType.STUDENT && RuntimeEVoterManager.getCurrentSessionStatus()) {
+			//Setup seekbar
+			tbSessionValue.setVisibility(View.VISIBLE);
+			sbBored.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+				int progressValue;
+				
+				@Override
+				public void onStopTrackingTouch(SeekBar seekBar) {
+					Toast.makeText(QuestionActivity.this, String.valueOf(progressValue), Toast.LENGTH_SHORT).show();
+					
+				}
+				
+				@Override
+				public void onStartTrackingTouch(SeekBar seekBar) {
+					Toast.makeText(QuestionActivity.this, "Slide the seekbar to the value of Bored!", Toast.LENGTH_SHORT).show();
+					
+				}
+				
+				@Override
+				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+					progressValue = progress;
+				}
+			});
+			
+			sbDifficult.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+				int value;
+				
+				@Override
+				public void onStopTrackingTouch(SeekBar seekBar) {
+					Toast.makeText(QuestionActivity.this, String.valueOf(value), Toast.LENGTH_SHORT).show();
+					
+				}
+				
+				@Override
+				public void onStartTrackingTouch(SeekBar seekBar) {
+					Toast.makeText(QuestionActivity.this, "Slide the seekbar to the value of Bored!", Toast.LENGTH_SHORT).show();
+					
+				}
+				
+				@Override
+				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+					
+					value = progress;
+				}
+			});
+		}
+		
 		adapter = new QuestionAdapter(QuestionActivity.this);
 		listView.setAdapter(adapter);
-
+		
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Question selectQuestion = (Question) parent
 						.getItemAtPosition(position);
-				Toast.makeText(QuestionActivity.this,
-						"View question" + selectQuestion.getTitle(),
-						Toast.LENGTH_LONG).show();
+				RuntimeEVoterManager.setCurrentQuestion(selectQuestion);
+				Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);
+				startActivity(detailQuestion);
 			}
 		});
-
+		
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
@@ -65,22 +125,21 @@ public class QuestionActivity extends ItemDataActivity {
 				return true;
 			}
 		});
-
+		
 	}
-
+	
 	protected void loadListItemData() {
 		AsyncHttpClient client = new AsyncHttpClient(1000);
 		RequestParams params = new RequestParams();
 		params.add(QuestionSessionDAO.SESSION_ID,
 				String.valueOf(RuntimeEVoterManager.getCurrentSessionID()));
 		params.put(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
-
+		
 		client.post(Configuration.get_urlGetAllQuestion(), params,
 				new AsyncHttpResponseHandler() {
-
+					
 					/*
 					 * (non-Javadoc)
-					 * 
 					 * @see
 					 * com.loopj.android.http.AsyncHttpResponseHandler#onStart()
 					 */
@@ -91,10 +150,9 @@ public class QuestionActivity extends ItemDataActivity {
 						tvLoadingStatus.setText("Loading...");
 						dialogLoading.show();
 					}
-
+					
 					/*
 					 * (non-Javadoc)
-					 * 
 					 * @see
 					 * com.loopj.android.http.AsyncHttpResponseHandler#onFinish
 					 * ()
@@ -106,7 +164,7 @@ public class QuestionActivity extends ItemDataActivity {
 						tvLoadingStatus.setText("Finished");
 						dialogLoading.dismiss();
 					}
-
+					
 					@Override
 					public void onSuccess(String response) {
 						Log.i("Get All Quesion Test", "response : " + response);
@@ -127,7 +185,7 @@ public class QuestionActivity extends ItemDataActivity {
 								// sessionID, long parentId,
 								// String answerColumn1, String answerColumn2
 								String answerColumn2 = "null";
-								if(s.toString().contains(Question.COL2)){
+								if (s.toString().contains(Question.COL2)) {
 									answerColumn2 = s
 											.getString(Question.COL2);
 								}
@@ -168,14 +226,14 @@ public class QuestionActivity extends ItemDataActivity {
 							e.printStackTrace();
 						}
 					}
-
+					
 					@Override
 					public void onFailure(Throwable error, String content) {
 						Log.e("Get All Session Test", "onFailure error : "
 								+ error.toString() + "content : " + content);
 					}
 				});
-
+		
 	}
-
+	
 }

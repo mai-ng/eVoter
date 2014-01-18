@@ -6,15 +6,16 @@ package evoter.mobile.adapters;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Filterable;
 import evoter.mobile.main.R;
+import evoter.mobile.objects.RuntimeEVoterManager;
 
 /**
  * @author luongnv89
- * 
  */
 public class QuestionAdapter extends ItemDataAdapter implements Filterable {
-
+	
 	/**
 	 * @param listSubjects
 	 * @param context
@@ -23,7 +24,7 @@ public class QuestionAdapter extends ItemDataAdapter implements Filterable {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	/**
 	 * Get a View that displays the data at the specified position in the data
 	 * set. You can either create a View manually or inflate it from an XML
@@ -50,22 +51,22 @@ public class QuestionAdapter extends ItemDataAdapter implements Filterable {
 	 */
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-
+		
 		QuestionHolder holder;
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.item_question_view_student,
+			convertView = inflater.inflate(R.layout.item_question_view,
 					null);
 			holder = new QuestionHolder();
 			convertView.setTag(holder);
 		} else {
 			holder = (QuestionHolder) convertView.getTag();
 		}
-
+		
 		holder.title = detail(convertView, R.id.tvQuestionShortDescript,
 				listItemDataToPublic.get(position).getTitle());
 		return convertView;
 	}
-
+	
 	private class QuestionHolder extends ItemDataViewHolder {
 	}
 }

@@ -1,7 +1,9 @@
 /**
  * 
  */
-package evoter.mobile.activities;
+package evoter.mobile.objects;
+
+import evoter.share.model.Question;
 
 /**
  * {@link RuntimeEVoterManager} manage the parameters of eVoter application 
@@ -33,6 +35,8 @@ public class RuntimeEVoterManager {
 	 * To show title at question list view screen
 	 */
 	public static String currentSessionName;
+	
+	public static int currentUserType;
 
 	/**
 	 * Parameter to get list question
@@ -43,6 +47,9 @@ public class RuntimeEVoterManager {
 	 * Parameter to show status of current session
 	 */
 	private static boolean currentSessionStatus;
+	
+	private static Question currentQuestion;
+	
 
 	/**
 	 * @return the currentUserName
@@ -149,4 +156,29 @@ public class RuntimeEVoterManager {
 		RuntimeEVoterManager.currentSubjectID = currentSubjectID;
 	}
 
+	/**
+	 * @return the currentQuestion
+	 */
+	public static Question getCurrentQuestion() {
+		return currentQuestion;
+	}
+
+	/**
+	 * @param currentQuestion the currentQuestion to set
+	 */
+	public static void setCurrentQuestion(Question currentQuestion) {
+		RuntimeEVoterManager.currentQuestion = currentQuestion;
+	}
+
+	/**
+	 * Extract userkey to get user type
+	 * @return the currentUserType
+	 */
+	public static int getCurrentUserType() {
+		if(getUSER_KEY()==null || getUSER_KEY().equals("")) return 0;
+		String[] array = getUSER_KEY().split("_");
+		return Integer.parseInt(array[array.length-1]);
+	}
+	
+	
 }

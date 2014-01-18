@@ -6,6 +6,14 @@ import org.json.simple.JSONObject;
 
 import evoter.share.dao.QuestionDAO;
 
+/**
+ * Updated by @author luongnv89 on 18-Jan-2014: <br>
+ * <li>Updated for eVoterMobile
+ * 
+ * 
+ * Created by btDiem
+ *
+ */
 public class Question extends ItemData implements Serializable {
 
 	private static final long serialVersionUID = -5892190903011268048L;

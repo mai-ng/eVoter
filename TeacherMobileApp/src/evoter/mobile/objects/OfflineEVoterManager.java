@@ -8,12 +8,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import evoter.mobile.activities.LoginActivity;
-import evoter.mobile.activities.RuntimeEVoterManager;
 import evoter.mobile.activities.SubjectActivity;
 import evoter.share.dao.UserDAO;
 
 /**
- * {@link OfflineEVoterManager} manages user, database,.. for different session of eVoter Application
+ * {@link OfflineEVoterManager} manages user, database,.. for different session of eVoterMobile Application
  * Created by luongnv89 on 03/01/14.
  */
 public class OfflineEVoterManager {
@@ -99,6 +98,12 @@ public class OfflineEVoterManager {
 
 	}
 
+	/**
+	 * Check if there is an user already logged in to application
+	 * @return
+	 * true if there is an user already logged in to application
+	 * <br>false otherwise
+	 */
 	public boolean isLoggedIn() {
 		return preferences.getBoolean(IS_LOGIN, false);
 	}

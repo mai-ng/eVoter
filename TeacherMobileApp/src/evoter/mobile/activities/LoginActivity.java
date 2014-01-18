@@ -20,54 +20,61 @@ import com.loopj.android.http.RequestParams;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.Configuration;
 import evoter.mobile.objects.OfflineEVoterManager;
+import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.*;
 import evoter.share.utils.*;
 
 /**
+ * Update by @author luongnv89 on 18-Jan-2014<br>
+ * <li>add comments for class, variable, method, <li>Edited onBackPressed() by
+ * using {@link EVoterActivity#exit()} method; <li>Add relogin in case the input username and password is not correct. <br>
  * Created by luongnv89 on 05/12/13 </br> Updated by @author btdiem on
- * 08-Jan-2014:</br> </li> parse response and store user key sent by server to
+ * 08-Jan-2014:</br></li> parse response and store user key sent by server to
  * verify next time
- * 
  */
 public class LoginActivity extends EVoterActivity {
-
+	
 	EditText etUsrName;
 	EditText etPassword;
-
+	
 	Button btLogin;
-
+	
 	TextView tvRegister;
 	TextView tvResetPassword;
-
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		setContentView(R.layout.login);
-
+		
 		this.tvTitleBarContent.setText("Login");
-
+		
 		offlineEVoterManager = new OfflineEVoterManager(this);
-
+		
 		etUsrName = (EditText) findViewById(R.id.usrname);
 		if (RuntimeEVoterManager.getCurrentUserName() != null) {
 			etUsrName.setText(RuntimeEVoterManager.getCurrentUserName());
 		}
 		etPassword = (EditText) findViewById(R.id.password);
-
+		
 		btLogin = (Button) findViewById(R.id.btLogin);
-
+		
+		//Login button click
 		btLogin.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// GetData getData = new GetData();
 				AsyncHttpClient client = new AsyncHttpClient(1000);
 				final String i_Usrname = etUsrName.getText().toString();
+				RuntimeEVoterManager
+						.setCurrentUserName(i_Usrname);
 				final String i_Password = etPassword.getText().toString();
 				RequestParams params = new RequestParams();
 				params.add(UserDAO.USER_NAME, i_Usrname);
 				params.add(UserDAO.PASSWORD, i_Password);
-
+				
+				//Pre-check validation of input username and password
 				if (i_Usrname.equals("")) {
 					EVoterMobileUtils.showeVoterToast(LoginActivity.this,
 							"Please input your username");
@@ -81,35 +88,35 @@ public class LoginActivity extends EVoterActivity {
 					EVoterMobileUtils.showeVoterToast(LoginActivity.this,
 							"Input password is not valid");
 				} else
-
+				
 				{
-					// Send request to login
+					// Send login request to server
 					client.post(Configuration.get_urlLogin(), params,
 							new AsyncHttpResponseHandler() {
-								// Request successfully
+								// Request successfully - client receive a response
 								@Override
 								public void onSuccess(String response) {
-
+									
 									String userKey = null;
 									try {
-
+										
 										JSONObject object = new JSONObject(
 												response);
 										userKey = object
 												.getString(UserDAO.USER_KEY);
-
+										
 									} catch (JSONException e) {
 										e.printStackTrace();
+										EVoterMobileUtils.showeVoterToast(LoginActivity.this, "Error! Cannot get user information");
+										exit();
 									}
-
-									if (userKey != null || userKey != "null") {
-
+									Log.i("USER_KEY", userKey);
+									//Got the userkey
+									if (userKey != null && userKey != "null") {
+										
 										offlineEVoterManager
 												.rememberCurrentUser(i_Usrname,
 														userKey);
-
-										RuntimeEVoterManager
-												.setCurrentUserName(i_Usrname);
 										RuntimeEVoterManager
 												.setUSER_KEY(userKey);
 										EVoterMobileUtils.showeVoterToast(
@@ -118,7 +125,7 @@ public class LoginActivity extends EVoterActivity {
 														+ RuntimeEVoterManager
 																.getCurrentUserName()
 														+ " to eVoter!");
-
+										
 										Intent subjectIntent = new Intent(
 												LoginActivity.this,
 												SubjectActivity.class);
@@ -127,33 +134,45 @@ public class LoginActivity extends EVoterActivity {
 										subjectIntent
 												.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 										startActivity(subjectIntent);
-
+										
+									}
+									else {
+										EVoterMobileUtils.showeVoterToast(LoginActivity.this, "Error! Username and password is not correct. Please try again!");
+										Intent relogin = new Intent(
+												LoginActivity.this,
+												LoginActivity.class);
+										relogin
+												.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+										relogin
+												.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+										startActivity(relogin);
 									}
 								}
-
+								
+								//Login fail
 								@Override
 								public void onFailure(Throwable error,
 										String content) {
 									EVoterMobileUtils.showeVoterToast(
 											LoginActivity.this,
-											"onFailure error : "
-													+ error.toString()
-													+ "content : " + content);
+											"Cannot request to server!");
 									Log.e("LoginTest", "onFailure error : "
 											+ error.toString() + "content : "
 											+ content);
 								}
 							});
 				}
-
+				
 			}
 		});
+		
 
 		tvRegister = (TextView) findViewById(R.id.tvSignUp);
 		tvRegister.setPaintFlags(tvRegister.getPaintFlags()
 				| Paint.UNDERLINE_TEXT_FLAG);
+		//Register textview click
 		tvRegister.setOnClickListener(new OnClickListener() {
-
+			
 			@Override
 			public void onClick(View v) {
 				Intent registerIntent = new Intent(LoginActivity.this,
@@ -161,10 +180,12 @@ public class LoginActivity extends EVoterActivity {
 				startActivity(registerIntent);
 			}
 		});
-
+		
 		tvResetPassword = (TextView) findViewById(R.id.tvForgotPassword);
 		tvResetPassword.setPaintFlags(tvResetPassword.getPaintFlags()
 				| Paint.UNDERLINE_TEXT_FLAG);
+		
+		//Reset password text view click
 		tvResetPassword.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -173,9 +194,9 @@ public class LoginActivity extends EVoterActivity {
 				startActivity(registerIntent);
 			}
 		});
-
+		
 	}
-
+	
 	/**
 	 * Called when the activity has detected the user's press of the back key.
 	 * The default implementation simply finishes the current activity, but you
@@ -183,10 +204,6 @@ public class LoginActivity extends EVoterActivity {
 	 */
 	@Override
 	public void onBackPressed() {
-		Intent exitIntent = new Intent(this, StartActivity.class);
-		exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		exitIntent.putExtra("Exit application", true);
-		startActivity(exitIntent);
-		finish();
+		exit();
 	}
 }

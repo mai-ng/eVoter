@@ -87,6 +87,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="evoter.mobile.activities.QuestionDetailActivity"
+            android:screenOrientation="portrait"
+            android:label="Question detail" >
+            <intent-filter>
+                <action android:name="android.intent.action.QUESTIONDETAIL" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

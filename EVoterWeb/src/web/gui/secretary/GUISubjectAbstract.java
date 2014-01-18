@@ -1,12 +1,8 @@
 package web.gui.secretary;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.io.IOException;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
 import web.util.ReadFileByClick;
@@ -14,37 +10,21 @@ import web.util.ReadFileByClick;
 /**
  * @author maint<br>
  * extended by {@link AddSubject}, {@link EditSubject}, and {@link ViewSubject}.
- * create a framework for these classes with common components, and also define a layout for them.
- *
+ * create a framework for these classes with common components, and also define a layout for them. <br>
+ * extends {@link GUIAbstract}
  */
-public abstract class GUISubjectAbstract extends JFrame {
+public abstract class GUISubjectAbstract extends GUIAbstract {
 
 	private static final long serialVersionUID = 1L;
-
-	public static final String INVITE = "Invite";
-	public static final String SAVE = "Save";
-	public static final String IMPORT_TEACHER = "Import";
-	public static final String IMPORT_STUDENT = "Import";
-	public static final String CLOSE = "Close";
 
 	private JTextArea txtTeacher;
 	private JTextArea txtStudent;
 
 	protected JButton btnAddTeacher;
 	protected JButton btnAddStudent;
-	protected JButton btnClose;
-	
-	protected GridBagConstraints c;
-	protected GridBagLayout gridbag;
-	
-	public GUISubjectAbstract(){
-//		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
-		gridbag = new GridBagLayout();
-		c = new GridBagConstraints();
-		this.setLayout(gridbag);
 
-		c.fill = GridBagConstraints.BOTH;
-		c.insets = new Insets(1, 1, 1, 5);
+	public GUISubjectAbstract(){
+		super();
 	}
 
 	/**
@@ -58,13 +38,6 @@ public abstract class GUISubjectAbstract extends JFrame {
 	}
 
 	/**
-	 * action of button "Close". When click it, return the page {@link ViewSubject}
-	 */
-	public void closeButton() {
-
-	}
-
-	/**
 	 * initialize components which are used in {@link AddSubject}, {@link EditSubject},
 	 *  {@link ViewSubject}. They are:
 	 *  <li> a {@link JTextArea} for list of Teachers.
@@ -72,8 +45,9 @@ public abstract class GUISubjectAbstract extends JFrame {
 	 *  <li> button "Close"
 	 */
 	protected void initComponents() {
-		btnClose = new JButton(CLOSE);
+		super.initComponents();
 
+		//text fields
 		txtTeacher = new JTextArea();
 		txtTeacher.setEditable(true);
 

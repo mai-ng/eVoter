@@ -1,24 +1,21 @@
 package web.gui.secretary;
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 /**
- * @author maint
- *
+ * @author maint<br>
+ * extended by {@link AddTeacher}, {@link EditTeacher}, and {@link ViewTeacher}.
+ * create a framework for these classes with common components, and also define a layout for them. <br>
+ * extends {@link GUIAbstract}.
  */
-public abstract class GUITeacherAbstract extends JFrame{
+public abstract class GUITeacherAbstract extends GUIAbstract{
 
 	private static final long serialVersionUID = 1L;
-	
-	public static final String SAVE = "Save";
-	public static final String CLOSE = "Close";
 	
 	/**
 	 * be ID label in {@link AddTeacher}.
@@ -64,25 +61,17 @@ public abstract class GUITeacherAbstract extends JFrame{
 	 */
 	private JTextField txtTel;
 
+	/**
+	 * button "Save"
+	 */
 	protected JButton btnSave;
-	protected JButton btnClose;
 
-	protected GridBagConstraints c;
-	protected GridBagLayout gridbag;
 
 	/**
 	 * design user interface of teacher
 	 */
 	public GUITeacherAbstract() {
-		initComponents();
-		
-//		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
-		gridbag = new GridBagLayout();
-		c = new GridBagConstraints();
-		this.setLayout(gridbag);
-
-		c.fill = GridBagConstraints.BOTH;
-//		c.insets = new Insets(1, 1, 1, 1);
+		super();
 
 		// Row 0: First name
 		c.gridy = 0;
@@ -166,6 +155,8 @@ public abstract class GUITeacherAbstract extends JFrame{
 	 * initialize components: 4 {@link JLabel} and 4 {@link JTextField}.	 * 
 	 */
 	public void initComponents() {
+		super.initComponents();
+		
 		//create labels
 		lbl1 = new JLabel();
 		lbl2 = new JLabel();
@@ -180,8 +171,6 @@ public abstract class GUITeacherAbstract extends JFrame{
 
 		// create buttons
 		btnSave = new JButton(SAVE);
-		btnClose = new JButton(CLOSE);
-
 	}
 
 	/**

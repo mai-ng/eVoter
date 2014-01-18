@@ -11,9 +11,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import web.gui.secretary.AddSubject;
 import web.gui.secretary.EditSubject;
 import web.gui.secretary.EditTeacher;
-import web.gui.secretary.ViewTeacher;
 
 /**
  * @author maint<br>
@@ -23,7 +23,7 @@ import web.gui.secretary.ViewTeacher;
  * <li> button: edit
  * <li> button: delete
  * <li> button: view detail <br>
- * Display: "Title		btnEdit	 btnDelete	btnDetail"
+ * Display: "Title------btnEdit---btnDelete---btnDetail"
  */
 public class ItemOfListView extends JPanel {
 
@@ -127,16 +127,18 @@ private static final long serialVersionUID = 1L;
 				try {
 					//item is a subject
 					if (type == TYPE_SUBJECT) {
-						EditSubject editSub = new EditSubject();
+//						EditSubject editSub = new EditSubject();
+						AddSubject editSub = new AddSubject();
 						editSub.setSize(800, 600);
 						editSub.setLocationRelativeTo(null);
-						editSub.getTxtTitle().setText(itemName.getText());
+//						editSub.getTxtTitle().setText(itemName.getText());
 						editSub.setVisible(true);
 					}
 					
 					//item is a teacher
 					if ( type == TYPE_TEACHER){
-						ViewTeacher editTeacher = new ViewTeacher();
+						EditTeacher editTeacher = new EditTeacher();
+//						ViewTeacher editTeacher = new ViewTeacher();
 						editTeacher.setSize(600, 400);
 						editTeacher.setLocationRelativeTo(null);
 						editTeacher.getTxtEmail().setText(itemName.getText());

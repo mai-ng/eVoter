@@ -42,7 +42,7 @@ import org.apache.http.nio.client.methods.HttpAsyncMethods;
 import org.apache.http.nio.protocol.HttpAsyncRequestProducer;
 import org.apache.http.protocol.HttpContext;
 
-import evoter.server.dao.UserDAO;
+import evoter.share.dao.*;
 
 /**
  * @author maint

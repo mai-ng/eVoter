@@ -67,7 +67,7 @@ public class MainApplet extends JApplet {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
 				public void run() {
-					setContentPane(listTeachers);
+					setContentPane(login);
 				}
 			});
 		} catch (Exception e) {

@@ -15,9 +15,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import eVoter.web.utils.Utils;
-import evoter.server.dao.SessionDAO;
-import evoter.server.dao.SubjectDAO;
-import evoter.server.dao.UserDAO;
+import evoter.share.dao.SessionDAO;
+import evoter.share.dao.SubjectDAO;
+import evoter.share.dao.UserDAO;
+
 
 /**
  * @author luongnv89
@@ -39,16 +40,22 @@ public class TestHttpClientRequest {
 		List<NameValuePair> loginParams = new ArrayList<NameValuePair>();
 		loginParams.add(new BasicNameValuePair(UserDAO.USER_NAME, "nvluong"));
 		loginParams.add(new BasicNameValuePair(UserDAO.PASSWORD, "12345678"));
+		
 		int reponseStatus = client.post(Configuration.get_urlLogin(),
 				loginParams);
 		System.out.println(reponseStatus);
-		if (reponseStatus != -1) {
+		if (reponseStatus == 200) {
 			String content = client.getResponseContent();
 			System.out.println(content);
 			try {
 				JSONObject item = new JSONObject(content);
 				USER_KEY = item.getString(UserDAO.USER_KEY);
-				System.out.println(USER_KEY);
+				if(USER_KEY!=null&&USER_KEY!="null"){
+					
+					}
+				else{
+					
+				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

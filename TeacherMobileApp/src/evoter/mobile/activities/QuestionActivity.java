@@ -47,6 +47,7 @@ public class QuestionActivity extends ItemDataActivity {
 		//Set titlebar of current activity is the name of current session
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentSessionName());
+		this.menuDialog.enableQuestionActivityMenu();
 		
 		if (RuntimeEVoterManager.getCurrentUserType() == UserType.STUDENT && RuntimeEVoterManager.getCurrentSessionStatus()) {
 			//Setup seekbar

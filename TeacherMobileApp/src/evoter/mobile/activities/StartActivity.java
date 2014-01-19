@@ -18,6 +18,8 @@ public class StartActivity extends EVoterActivity {
 		setContentView(R.layout.start);
 		this.tvTitleBarContent.setContentDescription("eVoter Mobile");
 		
+		this.ivTitleBarIcon.setEnabled(false);
+		
 		if (getIntent().getBooleanExtra("Exit application", false)) {
 			finish();
 			return;

@@ -37,7 +37,8 @@ public class SessionActivity extends ItemDataActivity {
 		// Set title bar content is the subject of session
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentSubjectName());
-
+		
+		menuDialog.enableSessionActivityMenu();
 		
 		adapter = new SessionAdapter(SessionActivity.this);
 		listView.setAdapter(adapter);

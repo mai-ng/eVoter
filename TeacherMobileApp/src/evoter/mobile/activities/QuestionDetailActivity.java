@@ -40,6 +40,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		setContentView(R.layout.question_view_detail);
 		this.tvTitleBarContent.setText(RuntimeEVoterManager.getCurrentSessionName());
 		this.ivTitleBarRefresh.setVisibility(View.GONE);
+		this.menuDialog.enableQuestionDetailActivityMenu();
 		
 		currentQuestion = RuntimeEVoterManager.getCurrentQuestion();
 		

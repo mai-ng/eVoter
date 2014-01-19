@@ -53,6 +53,8 @@ public class LoginActivity extends EVoterActivity {
 		
 		this.tvTitleBarContent.setText("Login");
 		
+		this.ivTitleBarIcon.setEnabled(false);
+		
 		offlineEVoterManager = new OfflineEVoterManager(this);
 		
 		etUsrName = (EditText) findViewById(R.id.usrname);

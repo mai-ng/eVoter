@@ -36,8 +36,6 @@ public class RuntimeEVoterManager {
 	 */
 	public static String currentSessionName;
 	
-	public static int currentUserType;
-
 	/**
 	 * Parameter to get list question
 	 */
@@ -174,10 +172,10 @@ public class RuntimeEVoterManager {
 	 * Extract userkey to get user type
 	 * @return the currentUserType
 	 */
-	public static int getCurrentUserType() {
+	public static long getCurrentUserType() {
 		if(getUSER_KEY()==null || getUSER_KEY().equals("")) return 0;
 		String[] array = getUSER_KEY().split("_");
-		return Integer.parseInt(array[array.length-1]);
+		return Long.parseLong(array[array.length-1]);
 	}
 	
 	

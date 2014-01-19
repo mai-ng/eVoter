@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="10dp"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <LinearLayout
+        android:id="@+id/mainMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btExit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Exit" />
+
+        <Button
+            android:id="@+id/btLogout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/subjectActivityMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btSubjectUser"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="List Users" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sessionActivityMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btNewSession"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="New session" />
+
+        <Button
+            android:id="@+id/btAcceptedUser"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Accepted User" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/questionActivityMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btNewQuestion"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="New Question" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/questionDetailActivityMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btAllQuestion"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="All question" />
+
+</LinearLayout>

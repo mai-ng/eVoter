@@ -14,15 +14,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.SubjectAdapter;
-import evoter.mobile.main.R;
 import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.SubjectDAO;
@@ -32,8 +30,10 @@ import evoter.share.model.Subject;
 import evoter.share.model.UserType;
 
 /**
+ * Updated by @author luongnv89 on 19-Jun-2014:<br>
+ * <li>Using {@link DialogInfor} for long click event instead of {@link Dialog}
  * Created by @author nvluong on 05-Dec-2013</br> Updated by @author btdiem on
- * 08-Jan-2014 : </br> </li>update loadListSubjects() method: </li>remove
+ * 08-Jan-2014 : </br></li>update loadListSubjects() method: </li>remove
  * parameters </li>add userKey to parameter map when sending request to server
  */
 public class SubjectActivity extends ItemDataActivity {
@@ -44,12 +44,14 @@ public class SubjectActivity extends ItemDataActivity {
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentUserName());
 		
-		this.ivTitleBarIcon.setOnClickListener(new OnClickListener() {
+		menuDialog.enableSubjectActivityMenu();
+		menuDialog.getBtListUsers().setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO: Show
-				offlineEVoterManager.logoutUser();
+				menuDialog.dismiss();
+				//TODO: REQUEST GET ALL USER OF A SUBJECT
+				EVoterMobileUtils.showeVoterToast(SubjectActivity.this, "Show all user of subject");
 			}
 		});
 		
@@ -72,74 +74,64 @@ public class SubjectActivity extends ItemDataActivity {
 			}
 		});
 		
-		//Only teacher can deleted subject
-		if (RuntimeEVoterManager.getCurrentUserType() == UserType.TEACHER)
-		{
-			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-				@Override
-				public boolean onItemLongClick(AdapterView<?> parent, View view,
-						int position, long id) {
-					final Dialog dialog = new Dialog(SubjectActivity.this);
-					final Subject subject = (Subject) parent
-							.getItemAtPosition(position);
-					dialog.setContentView(R.layout.subject_dialog);
-					dialog.setTitle("Subject Action");
-					
-					Button btSbjDelete = (Button) dialog
-							.findViewById(R.id.btSubjectDeleting);
-					
-					btSbjDelete.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
-									"Deleted subject: " + subject.getTitle());
-							deleteSubject(subject.getId());
-							adapter.deleteItem(subject.getId());
-							adapter.notifyDataSetChanged();
-							dialog.dismiss();
-						}
-						
-					});
-					
-					Button btSbjDetail = (Button) dialog
-							.findViewById(R.id.btSubjectDetail);
-					btSbjDetail.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							Toast.makeText(SubjectActivity.this,
-									"Not implemented yet!!!" + subject.getTitle(),
-									Toast.LENGTH_LONG).show();
-							dialog.dismiss();
-						}
-					});
-					dialog.show();
-					
-					return true;
-				}
-			});
-		}
-	}
-	
-	/**
-	 * Deleted a subject by id of subject
-	 * @param id
-	 */
-	private void deleteSubject(long id) {
-		RequestParams params = new RequestParams();
-		params.add(RuntimeEVoterManager.getUSER_KEY(), String.valueOf(id));
-		client.post(Configuration.get_urlDeleteSubject(), params, new AsyncHttpResponseHandler() {
+		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
-			public void onSuccess(String response) {
-				Log.i("Delete Subject Test", "response : " + response);
-			}
-			
-			@Override
-			public void onFailure(Throwable error, String content)
-			{
-				Log.e("Delete Subject Test", "onFailure error : " + error.toString() + "content : " + content);
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				
+				final Subject subject = (Subject) parent
+						.getItemAtPosition(position);
+				
+				final DialogInfor dialog = new DialogInfor(
+						SubjectActivity.this, "Subject");
+				dialog.setMessageContent(subject.getTitle());
+				dialog.getBtOK().setText("Exit");
+				dialog.getBtOK().setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+					}
+				});
+				
+				dialog.getBtKO().setText("Delete");
+				dialog.getBtKO().setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						RequestParams params = new RequestParams();
+						params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
+						params.add(SubjectDAO.ID, String.valueOf(subject.getId()));
+						client.post(Configuration.get_urlDeleteSubject(), params, new AsyncHttpResponseHandler() {
+							@Override
+							public void onSuccess(String response) {
+								if (response.contains("SUCCESS")) {
+									EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
+											"Deleted subject: " + subject.getTitle());
+									adapter.deleteItem(subject.getId());
+									adapter.notifyDataSetChanged();
+								}
+								else {
+									EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
+											"Cannot delete subject: " + subject.getTitle());
+								}
+							}
+							
+							@Override
+							public void onFailure(Throwable error, String content)
+							{
+								EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
+										"FAILURE: " + error.toString());
+								Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+							}
+						});
+						dialog.dismiss();
+					}
+				});
+				dialog.show();
+				return true;
 			}
 		});
-		
 	}
 	
 	protected void loadListItemData() {

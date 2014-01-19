@@ -12,6 +12,7 @@ import com.sun.net.httpserver.HttpExchange;
 import evoter.server.dao.BeanDAOFactory;
 import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
+import evoter.server.http.request.interfaces.ISessionRequest;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
@@ -27,8 +28,11 @@ import evoter.share.utils.UserValidation;
  * @author btdiem
  *
  */
-public class SessionRequest {
+public class SessionRequest implements ISessionRequest{
 
+	private static ISessionRequest _this;
+	
+	private SessionRequest(){}
 	/**
 	 * This method will select all {@link Session} of a specific {@link Subject} </br>
 	 * and the result will be added to response to client application </br>
@@ -43,7 +47,7 @@ public class SessionRequest {
 	 * 	</li> {@link UserDAO#USER_KEY}
 	 */
 	@SuppressWarnings("unchecked")
-	public static void doGetAll(HttpExchange httpExchange,
+	public  void doGetAll(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		try{
@@ -90,7 +94,7 @@ public class SessionRequest {
 	 * 	</li> SessionDAO.ID
 	 */
 	@SuppressWarnings("unchecked")
-	public static void doView(HttpExchange httpExchange,
+	public  void doView(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		long id = Long.parseLong((String)parameters.get(SessionDAO.ID));
@@ -112,13 +116,13 @@ public class SessionRequest {
 	 *  </li> SessionDAO.ID
 	 *  </li> {@link UserDAO#USER_KEY}
 	 */
-	public static void doActive(HttpExchange httpExchange,
+	public  void doActive(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		updateStatus(httpExchange, parameters, true);
 	}
 
-	public static void doAccept(HttpExchange httpExchange,
+	public  void doAccept(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		long sessionId = Long.parseLong((String)parameters.get(SessionUserDAO.SESSION_ID));
@@ -150,7 +154,7 @@ public class SessionRequest {
 	 * 	</li> SessionUserDAO.SESSION_ID
 	 *  </li> UserDAO.USER_KEY
 	 */
-	public static void doDelete(HttpExchange httpExchange,
+	public  void doDelete(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		long sessionId = Long.parseLong((String)parameters.get(SessionUserDAO.SESSION_ID));
@@ -185,7 +189,7 @@ public class SessionRequest {
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 * 		</li> 
 	 */
-	public static void doCreate(HttpExchange httpExchange,
+	public  void doCreate(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		String creattionDate = (String)parameters.get(SessionDAO.CREATION_DATE);
@@ -227,7 +231,7 @@ public class SessionRequest {
 	 * 		</li> {@link SessionDAO#ID}
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 */
-	public static void doInActive(HttpExchange httpExchange,
+	public  void doInActive(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		updateStatus(httpExchange, parameters, false);
@@ -244,7 +248,7 @@ public class SessionRequest {
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 * @param isActive true if the current session is activated. False if the current value is in-activated </br>
 	 */
-	public static void updateStatus(HttpExchange httpExchange,
+	public  void updateStatus(HttpExchange httpExchange,
 			Map<String,Object> parameters, boolean isActive){
 		
 		Long sessionId = Long.valueOf((String)parameters.get(SessionDAO.ID));
@@ -278,7 +282,7 @@ public class SessionRequest {
 	 * 		</li> {@link SessionDAO#ID} 
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 */
-	public static void doUpdate(HttpExchange httpExchange,
+	public  void doUpdate(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		String sessionName = (String)parameters.get(SessionDAO.NAME);
@@ -296,6 +300,14 @@ public class SessionRequest {
 			URIUtils.writeFailureResponse(httpExchange);
 		}
 		
+	}
+	
+	public static ISessionRequest getInstance(){
+		
+		if(_this == null){
+			_this = new SessionRequest();
+		}
+		return _this;
 	}
 	
 

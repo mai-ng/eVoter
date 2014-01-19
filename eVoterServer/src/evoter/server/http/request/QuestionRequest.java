@@ -12,6 +12,7 @@ import com.sun.net.httpserver.HttpExchange;
 import evoter.server.dao.BeanDAOFactory;
 import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
+import evoter.server.http.request.interfaces.IQuestionRequest;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
@@ -29,10 +30,14 @@ import evoter.share.utils.UserValidation;
  *
  */
 
-public class QuestionRequest {
+public class QuestionRequest implements IQuestionRequest{
+	
+	private static IQuestionRequest _this;
+	
+	private QuestionRequest(){}
 
 	//This value is updated when receiving a /send_question request 
-	private static Map<Long,Long> mapSentQuestion = new HashMap<Long, Long>();
+	private  Map<Long,Long> mapSentQuestion = new HashMap<Long, Long>();
 
 	/**
 	 * This method will response a list of {@link Question} and {@link Answer} when server </br>
@@ -44,7 +49,7 @@ public class QuestionRequest {
 	 *  </li> {@link UserDAO#USER_KEY}
 	 */
 	@SuppressWarnings("unchecked")
-	public static void doGetAll(HttpExchange httpExchange,
+	public  void doGetAll(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
@@ -86,7 +91,7 @@ public class QuestionRequest {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void doView(HttpExchange httpExchange,
+	public  void doView(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
@@ -112,7 +117,7 @@ public class QuestionRequest {
 	 * @return a {@link JSONArray} 
 	 */
 	@SuppressWarnings("unchecked")
-	public static JSONArray getAnswersOfQuestion(long questionId){
+	public  JSONArray getAnswersOfQuestion(long questionId){
 		
 		List<Answer> answers = (List<Answer>) ((AnswerDAO)BeanDAOFactory.getBean(AnswerDAO.BEAN_NAME))
 				.findByQuestionId(questionId);
@@ -144,7 +149,7 @@ public class QuestionRequest {
 	 *  </li> {@link AnswerDAO#ANSWER_TEXT}  is a string array
 	 *  
 	 */
-	public static void doCreate(HttpExchange httpExchange,
+	public  void doCreate(HttpExchange httpExchange,
 			Map<String, Object> parameters) {
 		
 		String[] questionTexts = (String[])parameters.get(QuestionDAO.QUESTION_TEXT);
@@ -220,7 +225,7 @@ public class QuestionRequest {
 	 * @param parameters contains: </br>
 	 * 	{@link QuestionDAO#ID}
 	 */
-	public static void doDelete(HttpExchange httpExchange,
+	public  void doDelete(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
@@ -257,7 +262,7 @@ public class QuestionRequest {
 	 * 	</li> {@link QuestionSessionDAO#SESSION_ID} : current session ID
 	 * 	</li> {@link UserDAO#USER_KEY}
 	 */
-	public static void doSend(HttpExchange httpExchange,
+	public  void doSend(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
@@ -275,7 +280,7 @@ public class QuestionRequest {
 	 * 	</li> {@link UserDAO#USER_KEY}
 	 */
 	@SuppressWarnings("unchecked")
-	public static void doGetLatest(HttpExchange httpExchange,
+	public  void doGetLatest(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
@@ -300,11 +305,18 @@ public class QuestionRequest {
 	 * @param parameters contains : </br>
 	 * 	</li> QuestionSessionDAO.SESSION_ID
 	 */
-	public static void doStopSend(HttpExchange httpExchange,
+	public  void doStopSend(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
 		mapSentQuestion.remove(sessionId);
 		URIUtils.writeSuccessResponse(httpExchange);
+	}
+
+	public static IQuestionRequest getInstance() {
+		if (_this == null){
+			_this = new QuestionRequest();
+		}
+		return _this;
 	} 
 
 	

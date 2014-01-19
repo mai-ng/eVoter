@@ -9,6 +9,7 @@ import com.sun.net.httpserver.HttpExchange;
 import evoter.server.dao.BeanDAOFactory;
 import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
+import evoter.server.http.request.interfaces.ISubjectRequest;
 import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.dao.UserSubjectDAO;
@@ -22,7 +23,11 @@ import evoter.share.utils.UserValidation;
  * @author btdiem
  *
  */
-public class SubjectRequest {
+public class SubjectRequest implements ISubjectRequest{
+	
+	private static ISubjectRequest _this;
+	
+	private SubjectRequest(){}
 	
 	
 	/**
@@ -33,7 +38,7 @@ public class SubjectRequest {
 	 *  </li> SubjectDAO.ID
 	 *  </li> {@link UserDAO#USER_KEY}
 	 */
-	public static void doView(HttpExchange exchange, Map<String,Object> parameters){
+	public  void doView(HttpExchange exchange, Map<String,Object> parameters){
 		
 		long id = Long.valueOf((String)parameters.get(SubjectDAO.ID));
 		Subject subject = (Subject)((SubjectDAO) BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME)).findById(id).get(0);
@@ -48,7 +53,7 @@ public class SubjectRequest {
 	 *  </li> UserDAO.USER_KEY
 	 */
 	@SuppressWarnings("unchecked")
-	public static void doGetAll(HttpExchange exchange, Map<String,Object> parameters){
+	public  void doGetAll(HttpExchange exchange, Map<String,Object> parameters){
 		
 		//long id = Long.valueOf(parameters.get(UserSubjectDAO.USER_ID));
 		String userKey = (String)parameters.get(UserDAO.USER_KEY);
@@ -83,7 +88,7 @@ public class SubjectRequest {
 	 *  </li> SubjectDAO.ID
 	 *  </li> {@link UserDAO#USER_KEY}
 	 */
-	public static void doDelete(HttpExchange exchange, Map<String,Object> parameters){
+	public  void doDelete(HttpExchange exchange, Map<String,Object> parameters){
 		
 
 		try{
@@ -111,7 +116,7 @@ public class SubjectRequest {
 	 *  </li> {@link SubjectDAO#CREATION_DATE}
 	 */
 	@SuppressWarnings("unchecked")
-	public static void doSearch(HttpExchange httpExchange,
+	public  void doSearch(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 
 		SubjectDAO subjectDao = (SubjectDAO)BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME);
@@ -123,5 +128,11 @@ public class SubjectRequest {
 		URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
 	}
 	
+	public static ISubjectRequest getInstance(){
+		if(_this==null){
+			_this = new SubjectRequest();
+		}
+		return _this;
+	}
 
 }

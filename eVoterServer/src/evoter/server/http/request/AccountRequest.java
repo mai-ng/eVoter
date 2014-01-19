@@ -11,6 +11,7 @@ import com.sun.net.httpserver.HttpExchange;
 import evoter.server.dao.BeanDAOFactory;
 import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
+import evoter.server.http.request.interfaces.IAccountRequest;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.User;
 /**
@@ -19,10 +20,12 @@ import evoter.share.model.User;
  * @author btdiem
  *
  */
-public class AccountRequest {
+public class AccountRequest implements IAccountRequest{
 	
-	static List<String> userKeys = new ArrayList<String>();
-//	private static final String USER_KEY = "userkey";
+	 List<String> userKeys = new ArrayList<String>();
+	 private static IAccountRequest _this;
+	 private AccountRequest(){}
+//	private  final String USER_KEY = "userkey";
 	
 	/**
 	 * Response clients a userkey generated from {@link UserDAO#USER_NAME} </br>
@@ -34,7 +37,7 @@ public class AccountRequest {
 	 * @param parameters contains UserDAO.USER_NAME and UserDAO.PASSWORD </br>
 	 */
 	@SuppressWarnings("unchecked")
-	public static void doLogin(HttpExchange exchange, Map<String,Object> parameters){
+	public  void doLogin(HttpExchange exchange, Map<String,Object> parameters){
 		
 		String username = (String)parameters.get(UserDAO.USER_NAME);
 		String password = (String)parameters.get(UserDAO.PASSWORD);
@@ -68,7 +71,7 @@ public class AccountRequest {
 	 * @param parameters contaisn {@link UserDAO#USER_KEY} </br>
 	 * @return true if {@link UserDAO#USER_KEY} exists, otherwise return false </br>
 	 */
-	public static boolean hasUserKey(Map<String,Object> parameters){
+	public  boolean hasUserKey(Map<String,Object> parameters){
 		
 		return userKeys.contains(parameters.get(UserDAO.USER_KEY));
 		//return true;
@@ -81,7 +84,7 @@ public class AccountRequest {
 	 * @param exchange {@link HttpExchange} communicate between clients and server </br>
 	 * @param parameters contains {@link UserDAO#USER_KEY} </br>
 	 */
-	public static void doLogout(HttpExchange exchange, Map<String,Object> parameters) {
+	public  void doLogout(HttpExchange exchange, Map<String,Object> parameters) {
 		
 		if (hasUserKey(parameters)){
 			URIUtils.writeSuccessResponse(exchange);
@@ -95,7 +98,7 @@ public class AccountRequest {
 	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
 	 * @param parameters contains email address </br>
 	 */
-	public static void doResetPassword(HttpExchange httpExchange,
+	public  void doResetPassword(HttpExchange httpExchange,
 			Map<String, Object> parameters) {
 		
 		String email = (String)parameters.get(UserDAO.EMAIL);
@@ -123,7 +126,7 @@ public class AccountRequest {
 	 * 		</li> {@link UserDAO#USER_TYPE_ID}
 	 * 
 	 */
-	public static void doRegister(HttpExchange httpExchange,
+	public  void doRegister(HttpExchange httpExchange,
 			Map<String, Object> parameters) {
 		
 		String username = (String)parameters.get(UserDAO.USER_NAME);
@@ -160,6 +163,13 @@ public class AccountRequest {
 			URIUtils.writeFailureResponse(httpExchange);
 		}
 		
+	}
+	
+	public static IAccountRequest getInstance(){
+		if (_this == null){
+			_this = new AccountRequest();
+		}
+		return _this;
 	}
 
 }

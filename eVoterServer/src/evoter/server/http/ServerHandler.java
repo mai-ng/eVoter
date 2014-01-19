@@ -10,6 +10,10 @@ import evoter.server.http.request.QuestionRequest;
 import evoter.server.http.request.SessionRequest;
 import evoter.server.http.request.SubjectRequest;
 import evoter.server.http.request.AccountRequest;
+import evoter.server.http.request.interfaces.IAccountRequest;
+import evoter.server.http.request.interfaces.IQuestionRequest;
+import evoter.server.http.request.interfaces.ISessionRequest;
+import evoter.server.http.request.interfaces.ISubjectRequest;
 
 
 public class ServerHandler implements HttpHandler {
@@ -37,67 +41,73 @@ public class ServerHandler implements HttpHandler {
 			Map<String,Object> parameters = URIUtils.getParameters(httpExchange);			
 			System.out.println("parameters: " + parameters);
 			
+			IAccountRequest accountRequest = AccountRequest.getInstance();
+			ISubjectRequest subjectRequest = SubjectRequest.getInstance();
+			ISessionRequest sessionRequest = SessionRequest.getInstance();
+			IQuestionRequest questionRequest = QuestionRequest.getInstance();
+			//ISubjectRequest subjectQuestion = SubjectRequest
+			
 			if (URIUtils.isLoginRequest(uri)){
-				AccountRequest.doLogin(httpExchange, parameters);
+				accountRequest.doLogin(httpExchange, parameters);
 			}else if (URIUtils.isLogoutRequest(uri)){
-				AccountRequest.doLogout(httpExchange, parameters);
+				accountRequest.doLogout(httpExchange, parameters);
 			}else if (URIUtils.isResetPassword(uri)){
-				AccountRequest.doResetPassword(httpExchange, parameters);
+				accountRequest.doResetPassword(httpExchange, parameters);
 			}else if (URIUtils.isRegister(uri)){
-				AccountRequest.doRegister(httpExchange, parameters);
+				accountRequest.doRegister(httpExchange, parameters);
 			}
 			
 			
 			else{
 				//verify the user key 1st
-				if (AccountRequest.hasUserKey(parameters)){
+				if (accountRequest.hasUserKey(parameters)){
 					System.out.println("has userKey");
 					if (URIUtils.isViewSubjectRequest(uri)){
-						SubjectRequest.doView(httpExchange, parameters);
+						subjectRequest.doView(httpExchange, parameters);
 					}else if (URIUtils.isGetAllSubjectRequest(uri)){
-						SubjectRequest.doGetAll(httpExchange, parameters);
+						subjectRequest.doGetAll(httpExchange, parameters);
 					}else if (URIUtils.isDeleteSubjectRequest(uri)){
-						SubjectRequest.doDelete(httpExchange, parameters);
+						subjectRequest.doDelete(httpExchange, parameters);
 					}else if (URIUtils.isSearchSubjectRequest(uri)){
-						SubjectRequest.doSearch(httpExchange, parameters);
+						subjectRequest.doSearch(httpExchange, parameters);
 						
 						//start with session management part
 					}else if (URIUtils.isGetAllSessionRequest(uri)){
-						SessionRequest.doGetAll(httpExchange, parameters);
+						sessionRequest.doGetAll(httpExchange, parameters);
 					}else if (URIUtils.isViewSessionRequest(uri)){
-						SessionRequest.doView(httpExchange, parameters);
+						sessionRequest.doView(httpExchange, parameters);
 					}else if (URIUtils.isCreateSessionRequest(uri)){
-						SessionRequest.doCreate(httpExchange, parameters);
+						sessionRequest.doCreate(httpExchange, parameters);
 					}else if (URIUtils.isActiveSessionRequest(uri)){
-						SessionRequest.doActive(httpExchange, parameters);
+						sessionRequest.doActive(httpExchange, parameters);
 					}else if (URIUtils.isAcceptSessionRequest(uri)){
-						SessionRequest.doAccept(httpExchange, parameters);
+						sessionRequest.doAccept(httpExchange, parameters);
 					}else if (URIUtils.isDeleteSessionRequest(uri)){
-						SessionRequest.doDelete(httpExchange, parameters);
+						sessionRequest.doDelete(httpExchange, parameters);
 					}else if (URIUtils.isCreateSessionRequest(uri)){
-						SessionRequest.doCreate(httpExchange, parameters);
+						sessionRequest.doCreate(httpExchange, parameters);
 					}else if (URIUtils.isActiveSessionRequest(uri)){
-						SessionRequest.doActive(httpExchange, parameters);
+						sessionRequest.doActive(httpExchange, parameters);
 					}else if (URIUtils.isInActiveSessionRequest(uri)){
-						SessionRequest.doInActive(httpExchange, parameters);
+						sessionRequest.doInActive(httpExchange, parameters);
 					}else if (URIUtils.isUpdateSessionRequest(uri)){
-						SessionRequest.doUpdate(httpExchange, parameters);
+						sessionRequest.doUpdate(httpExchange, parameters);
 						
 						//start with question management part
 					}else if (URIUtils.isGetAllQuestionRequest(uri)){
-						QuestionRequest.doGetAll(httpExchange, parameters);
+						questionRequest.doGetAll(httpExchange, parameters);
 					}else if (URIUtils.isViewQuestionRequest(uri)){
-						QuestionRequest.doView(httpExchange, parameters);
+						questionRequest.doView(httpExchange, parameters);
 					}else if (URIUtils.isCreateQuestionRequest(uri)){
-						QuestionRequest.doCreate(httpExchange, parameters);
+						questionRequest.doCreate(httpExchange, parameters);
 					}else if (URIUtils.isDeleteQuestionRequest(uri)){
-						QuestionRequest.doDelete(httpExchange, parameters);
+						questionRequest.doDelete(httpExchange, parameters);
 					}else if (URIUtils.isSendQuestionRequest(uri)){
-						QuestionRequest.doSend(httpExchange, parameters);
+						questionRequest.doSend(httpExchange, parameters);
 					}else if (URIUtils.isGetLatestQuestionRequest(uri)){
-						QuestionRequest.doGetLatest(httpExchange, parameters);
+						questionRequest.doGetLatest(httpExchange, parameters);
 					}else if (URIUtils.isStopSendQuestionRequest(uri)){
-						QuestionRequest.doStopSend(httpExchange, parameters);
+						questionRequest.doStopSend(httpExchange, parameters);
 					}
 				}
 

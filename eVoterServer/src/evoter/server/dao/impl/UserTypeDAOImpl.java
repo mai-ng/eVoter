@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
+import evoter.server.model.mapper.UserTypeRowMapper;
 import evoter.share.dao.UserTypeDAO;
 import evoter.share.model.UserType;
-import evoter.server.model.mapper.UserTypeRowMapper;
 
 public class UserTypeDAOImpl extends JdbcDaoSupport implements UserTypeDAO {
 

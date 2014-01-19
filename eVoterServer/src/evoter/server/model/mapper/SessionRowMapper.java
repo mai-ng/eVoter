@@ -5,8 +5,8 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import evoter.share.dao.*;
-import evoter.share.model.*;
+import evoter.share.dao.SessionDAO;
+import evoter.share.model.Session;
 
 public class SessionRowMapper implements RowMapper<Session> {
 
@@ -19,6 +19,7 @@ public class SessionRowMapper implements RowMapper<Session> {
 		session.setName(rs.getString(SessionDAO.NAME));
 		session.setSubjectId(rs.getLong(SessionDAO.SUBJECT_ID));
 		session.setActive(rs.getBoolean(SessionDAO.IS_ACTIVE));
+		session.setUserId(rs.getLong(SessionDAO.USER_ID));
 		return session;
 	}
 

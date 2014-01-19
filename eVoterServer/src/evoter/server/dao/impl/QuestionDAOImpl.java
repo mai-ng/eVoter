@@ -10,11 +10,15 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import evoter.server.model.mapper.QuestionRowMapper;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.model.Question;
-import evoter.server.model.mapper.QuestionRowMapper;
 
-
+/**
+ * 
+ * @author btdiem
+ *
+ */
 public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 
 	@Override

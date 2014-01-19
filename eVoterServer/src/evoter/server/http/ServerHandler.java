@@ -35,6 +35,7 @@ public class ServerHandler implements HttpHandler {
 		
 			String uri = httpExchange.getRequestURI().toString();
 			Map<String,Object> parameters = URIUtils.getParameters(httpExchange);			
+			System.out.println("parameters: " + parameters);
 			
 			if (URIUtils.isLoginRequest(uri)){
 				AccountRequest.doLogin(httpExchange, parameters);
@@ -50,7 +51,7 @@ public class ServerHandler implements HttpHandler {
 			else{
 				//verify the user key 1st
 				if (AccountRequest.hasUserKey(parameters)){
-					
+					System.out.println("has userKey");
 					if (URIUtils.isViewSubjectRequest(uri)){
 						SubjectRequest.doView(httpExchange, parameters);
 					}else if (URIUtils.isGetAllSubjectRequest(uri)){

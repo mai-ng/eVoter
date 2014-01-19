@@ -13,5 +13,7 @@
 	<classpathentry kind="lib" path="lib/spring-test-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-tx-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-core-4.0.0.RELEASE.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/eVoterShare"/>
+	<classpathentry kind="lib" path="lib/cglib-3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

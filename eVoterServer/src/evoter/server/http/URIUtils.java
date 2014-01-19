@@ -211,13 +211,13 @@ public class URIUtils {
 		try {
 			
 			StringWriter writer = new StringWriter();
-			IOUtils.copy(exchange.getRequestBody(), writer, "UTF-8");
+			IOUtils.copy(exchange.getRequestBody(), writer);
 			String parameterMessage = writer.toString();
 			StringTokenizer parameterValueToken = new StringTokenizer(parameterMessage,"&");
 			while(parameterValueToken.hasMoreTokens()) {
 				 String parameterValue = parameterValueToken.nextToken();
 				 StringTokenizer value = new StringTokenizer(parameterValue,"=");
-				 parameters.put(value.nextToken(), value.nextToken().replace("+", " "));
+				 parameters.put(value.nextToken(), value.nextToken().replace("+", " ").replace("%40", "@"));
 			}
 			
 		} catch (IOException e1) {
@@ -276,16 +276,7 @@ public class URIUtils {
 		URIUtils.writeResponse(URIRequest.FAILURE_MESSAGE, httpExchange);
 	}
 	
-	public static Long getUserIdFromUserKey(String userKey){
-		
-		String[] arrays = userKey.split("_");
-		return Long.valueOf(arrays[1]);
-	}
-	public static Long getUserTypeIdFromUserKey(String userKey){
 
-		String[] arrays = userKey.split("_");
-		return Long.valueOf(arrays[2]);
-	}
 
 	public static boolean isResetPassword(String URIString) {
 		return (URIString != null) 

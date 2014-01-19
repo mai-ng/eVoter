@@ -1,0 +1,82 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+    
+    <bean
+		id="jdbcOperations"
+		class="org.springframework.jdbc.core.JdbcTemplate">
+	 	<property name="fetchSize" value="100"/>
+		<constructor-arg ref="dataSource" />
+	</bean>
+	
+    
+    <bean id="userDAO" class="evoter.server.dao.impl.UserDAOImpl" lazy-init="true">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+    <bean id="userTypeDAO" class="evoter.server.dao.impl.UserTypeDAOImpl" lazy-init="true">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+    <bean id="subjectDAO" class="evoter.server.dao.impl.SubjectDAOImpl" lazy-init="true">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+    
+    <bean id="userSubjectDAO" class="evoter.server.dao.impl.UserSubjectDAOImpl" lazy-init="true">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+    <bean id="questionTypeDAO" class="evoter.server.dao.impl.QuestionTypeDAOImpl" lazy-init="true">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+    <bean id="sessionDAO" class="evoter.server.dao.impl.SessionDAOImpl" lazy-init="true">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+    <bean id="sessionUserDAO" class="evoter.server.dao.impl.SessionUserDAOImpl" lazy-init="true">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+    <bean id="questionDAO" class="evoter.server.dao.impl.QuestionDAOImpl" lazy-init="true">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+    <bean id="questionSessionDAO" class="evoter.server.dao.impl.QuestionSessionDAOImpl" lazy-init="true">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+    
+    <bean id="answerDAO" class="evoter.server.dao.impl.AnswerDAOImpl" lazy-init="true">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+    <bean id="statisticsDAO" class="evoter.server.dao.impl.StatisticsDAOImpl" lazy-init="true">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+    <bean id="httpConnection" class="evoter.server.http.HttpConnection" lazy-init="true">
+		<property name="context" value="evoter" />
+		<property name="port" value="1000" />
+		<property name="ip" value="157.159.42.152" />
+	</bean>
+    
+    
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/evoter" />
+		<property name="username" value="root" />
+		<property name="password" value="root" />
+	</bean>
+	<!--  
+    <tx:annotation-driven />
+    <context:annotation-config/>
+    <context:component-scan base-package="evoter"/>
+    -->
+    	
+</beans>

@@ -1,6 +1,7 @@
 package evoter.server.http.request;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,29 +10,85 @@ import org.json.simple.JSONArray;
 import com.sun.net.httpserver.HttpExchange;
 
 import evoter.server.dao.BeanDAOFactory;
+import evoter.server.http.URIRequest;
+import evoter.server.http.URIUtils;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
-import evoter.server.http.URIUtils;
+import evoter.share.model.Question;
 import evoter.share.model.Session;
 import evoter.share.model.SessionUser;
+import evoter.share.model.Subject;
+import evoter.share.utils.UserValidation;
 
+/**
+ * Process all {@link Session} requests sent by client applications </br> 
+ * 
+ * @author btdiem
+ *
+ */
 public class SessionRequest {
 
+	/**
+	 * This method will select all {@link Session} of a specific {@link Subject} </br>
+	 * and the result will be added to response to client application </br>
+	 * There are two kind of requests. One is sent by teacher user and the other is sent by student user </br>
+	 * The first selection is made from session table. if a null or empty value is returned, that means </br>
+	 * the request is coming from student user application. So try to select all session in session_user table </br>
+	 * and get all session object from returned value above </br>
+	 * 
+	 * @param httpExchange {@link HttpExchange} communicates between server client application </br>
+	 * @param parameters contains : </br>
+	 * 	</li> SessionDAO.SUBJECT_ID
+	 * 	</li> {@link UserDAO#USER_KEY}
+	 */
 	@SuppressWarnings("unchecked")
 	public static void doGetAll(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
-		long subjectId = Long.parseLong((String)parameters.get(SessionDAO.SUBJECT_ID));
-		SessionDAO sesDao = (SessionDAO)BeanDAOFactory.getBean(SessionDAO.BEAN_NAME);
-		List<Session> sessions = sesDao.findBySubjectId(subjectId);
-		JSONArray jsArray = new JSONArray();
-		for (Session ses : sessions){
-			jsArray.add(ses.toJSON().toJSONString());
+		try{
+			
+			long subjectId = Long.parseLong((String)parameters.get(SessionDAO.SUBJECT_ID));
+			long userId = Long.valueOf(UserValidation.getUserIdFromUserKey((String)parameters.get(UserDAO.USER_KEY)));
+			
+			SessionDAO sessionDAO = (SessionDAO)BeanDAOFactory.getBean(SessionDAO.BEAN_NAME);
+			List<Session> sessions = sessionDAO.findByProperty(
+					new String[]{SessionDAO.SUBJECT_ID, SessionDAO.USER_ID}, 
+					new Long[]{subjectId, userId});
+			
+			//this is request sent by student user
+			if (sessions == null || sessions.isEmpty()){
+				sessions = new ArrayList<Session>();
+				//select all session id of this user from session_user table
+				SessionUserDAO sessionUserDAO = (SessionUserDAO)BeanDAOFactory.getBean(SessionUserDAO.BEAN_NAME);
+				List<SessionUser> sessionUsers = sessionUserDAO.findByUserId(userId);
+				for (SessionUser sessionUser : sessionUsers){
+					sessions.addAll(sessionDAO.findById(sessionUser.getSessionId()));
+				}//for
+				//select all session object in session table 
+			}
+			
+	/**		List<Session> sessions = sesDAO.findBySubjectId(subjectId);*/
+			JSONArray jsArray = new JSONArray();
+			for (Session ses : sessions){
+				jsArray.add(ses.toJSON().toJSONString());
+			}
+			URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			URIUtils.writeFailureResponse(httpExchange);
 		}
-		URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
+
 	}
 
+	/**
+	 * Response client a {@link Session}  when receiving {@link URIRequest#VIEW_SESSION} request </br>
+	 * 
+	 * @param httpExchange {@link HttpExchange} communicates between server client application </br>
+	 * @param parameters request parameter map contains </br>
+	 * 	</li> SessionDAO.ID
+	 */
 	@SuppressWarnings("unchecked")
 	public static void doView(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
@@ -46,7 +103,15 @@ public class SessionRequest {
 		URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
 	}
 
-
+	/**
+	 * Change the status of {@link Session} to inactive </br>
+	 * when receiving {@link URIRequest#ACTIVE_SESSION}</br>
+	 * 
+	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
+	 * @param parameters contains : </br>
+	 *  </li> SessionDAO.ID
+	 *  </li> {@link UserDAO#USER_KEY}
+	 */
 	public static void doActive(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
@@ -58,7 +123,7 @@ public class SessionRequest {
 		
 		long sessionId = Long.parseLong((String)parameters.get(SessionUserDAO.SESSION_ID));
 		String userKey = (String)parameters.get(UserDAO.USER_KEY);
-		Long userId = Long.valueOf(URIUtils.getUserIdFromUserKey(userKey));
+		Long userId = Long.valueOf(UserValidation.getUserIdFromUserKey(userKey));
 		
 		SessionUserDAO sesUserDao = (SessionUserDAO)BeanDAOFactory.getBean(SessionUserDAO.BEAN_NAME);
 		List<SessionUser> sessUserList = sesUserDao.findByProperty(new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, new Object[]{sessionId, userId});
@@ -76,17 +141,21 @@ public class SessionRequest {
 	}
 
 	/**
-	 * Now only update delete_indicator of SESSION_USER table </br>
+	 * Update delete_indicator field of SESSION_USER table </br>
+	 * when receiving {@link URIRequest#DELETE_SESSION} request from client application</br>
+	 * to mark that this session is deleted by a user </br>
 	 * 
-	 * @param httpExchange
-	 * @param parameters
+	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
+	 * @param parameters contains : </br>
+	 * 	</li> SessionUserDAO.SESSION_ID
+	 *  </li> UserDAO.USER_KEY
 	 */
 	public static void doDelete(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
 		long sessionId = Long.parseLong((String)parameters.get(SessionUserDAO.SESSION_ID));
 		String userKey = (String)parameters.get(UserDAO.USER_KEY);
-		Long userId = Long.valueOf(URIUtils.getUserIdFromUserKey(userKey));
+		Long userId = Long.valueOf(UserValidation.getUserIdFromUserKey(userKey));
 		SessionUserDAO sesUserDao = (SessionUserDAO)BeanDAOFactory.getBean(SessionUserDAO.BEAN_NAME);
 		List<SessionUser> sessUserList = sesUserDao.findByProperty(new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, new Object[]{sessionId, userId});
 		if (sessUserList != null && !sessUserList.isEmpty()){
@@ -103,15 +172,18 @@ public class SessionRequest {
 	}
 
 	/**
-	 * Insert new {@link Session} object to Session table
-	 * Insert new {@link SessionUser} object to SessionUser table
-	 * @param httpExchange
+	 * Create a new {@link Question} object when receiving {@link URIRequest#CREATE_SESSION} </br>
+	 * The order of steps are: </br>
+	 * </li>Create a new {@link Session} and insert to SESSION table </br>
+	 * </li>Create a new {@link SessionUser}  and insert to SESSION_USER table </br>
+	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
 	 * @param parameters contains 
 	 * 		</li> {@link SessionDAO#CREATION_DATE}
 	 * 		</li> {@link SessionDAO#IS_ACTIVE}
 	 * 		</li> {@link SessionDAO#NAME}
 	 * 		</li> {@link SessionDAO#SUBJECT_ID}
 	 * 		</li> {@link UserDAO#USER_KEY}
+	 * 		</li> 
 	 */
 	public static void doCreate(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
@@ -120,17 +192,19 @@ public class SessionRequest {
 		String isActive = (String)parameters.get(SessionDAO.IS_ACTIVE);
 		String sessionName = (String)parameters.get(SessionDAO.NAME);
 		String subjectId = (String)parameters.get(SessionDAO.SUBJECT_ID);
+		long userId = Long.valueOf(UserValidation.getUserIdFromUserKey((String)parameters.get(UserDAO.USER_KEY)));
 		Session session = new Session(Long.valueOf(subjectId), 
 										sessionName, 
 										Date.valueOf(creattionDate), 
-										Boolean.valueOf(isActive));
+										Boolean.valueOf(isActive),
+										userId);
 		SessionDAO sessionDAO = (SessionDAO)BeanDAOFactory.getBean(SessionDAO.BEAN_NAME);
 		try{
 		
 			long sessionId = sessionDAO.insert(session);
 			//create SessionUser object and insert to Database
-			String userKey = (String)parameters.get(UserDAO.USER_KEY);
-			Long userId = URIUtils.getUserIdFromUserKey(userKey);
+//			String userKey = (String)parameters.get(UserDAO.USER_KEY);
+			//Long userId = UserValidation.getUserIdFromUserKey(userKey);
 			SessionUser sessionUser = new SessionUser(userId, sessionId, false, false);
 			SessionUserDAO sessionUserDAO = (SessionUserDAO)BeanDAOFactory.getBean(SessionUserDAO.BEAN_NAME);
 			sessionUserDAO.insert(sessionUser);
@@ -145,8 +219,10 @@ public class SessionRequest {
 	}
 
 	/**
+	 * Change the status of {@link Session} to inactive </br>
+	 * when receiving {@link URIRequest#INACTIVE_SESSION}</br>
 	 * 
-	 * @param httpExchange
+	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
 	 * @param parameters contains: </br>
 	 * 		</li> {@link SessionDAO#ID}
 	 * 		</li> {@link UserDAO#USER_KEY}
@@ -159,9 +235,10 @@ public class SessionRequest {
 	}
 	
 	/**
+	 * Update the session status when session changes from active to inactive or </br>
+	 * from inactive to active </br>
 	 * 
-	 * @param httpExchange
-	 * @param parameters
+	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
 	 * @param parameters contains: </br>
 	 * 		</li> {@link SessionDAO#ID}
 	 * 		</li> {@link UserDAO#USER_KEY}
@@ -192,8 +269,10 @@ public class SessionRequest {
 
 	
 	/**
+	 * Update {@link SessionDAO#NAME} of {@link Session} </br> 
+	 * when receiving {@link URIRequest#UPDATE_SESSION} </br>
 	 * 
-	 * @param httpExchange
+	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
 	 * @param parameters contains </br>
 	 * 		</li> {@link SessionDAO#NAME}
 	 * 		</li> {@link SessionDAO#ID} 
@@ -219,9 +298,5 @@ public class SessionRequest {
 		
 	}
 	
-	
-	
-	
-
 
 }

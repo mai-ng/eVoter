@@ -9,11 +9,15 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import evoter.server.model.mapper.SessionRowMapper;
 import evoter.share.dao.SessionDAO;
 import evoter.share.model.Session;
-import evoter.server.model.mapper.SessionRowMapper;
 
-
+/**
+ * 
+ * @author btdiem
+ *
+ */
 public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 
 	@Override
@@ -23,8 +27,9 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 				"(" + SUBJECT_ID 
 				+ "," + NAME + "," 
 				+ CREATION_DATE + "," 
-				+ IS_ACTIVE + ")" 
-				+ " VALUES(?,?,?,?)";
+				+ IS_ACTIVE + "," 
+				+ USER_ID + ")" 
+				+ " VALUES(?,?,?,?,?)";
 		
 		 KeyHolder keyHolder = new GeneratedKeyHolder();
 		 getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -37,6 +42,7 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 		            ps.setString(2, session.getName());
 		            ps.setDate(3, session.getCreationDate());
 		            ps.setBoolean(4, session.isActive());
+		            ps.setLong(5, session.getUserId());
 		            return ps;
 
 				}
@@ -159,12 +165,23 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 						+ " , " + IS_ACTIVE + "=" + session.isActive()
 						+ " , " + NAME + "='" + session.getName()+"'"
 						+ " , " + SUBJECT_ID + "=" + session.getSubjectId()
+						+ " , " + USER_ID + "=" + session.getUserId()
 						+ " WHERE " + ID + "=" + session.getId();
 		
 		return getJdbcTemplate().update(sql);
 		
 					
 		
+	}
+
+	@Override
+	public List<Session> findBySessionUserId(long userId) {
+		return findByProperty(new String[]{USER_ID}, new Long[]{userId});
+	}
+
+	@Override
+	public void deleteByUserId(long userId) {
+		deleteByProperty(new String[]{USER_ID}, new Long[]{userId});
 	}
 
 

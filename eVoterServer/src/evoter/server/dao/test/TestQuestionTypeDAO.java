@@ -1,8 +1,8 @@
 package evoter.server.dao.test;
 
 import evoter.server.dao.BeanDAOFactory;
-import evoter.share.dao.QuestionTypeDAO;
 
+import evoter.share.dao.QuestionTypeDAO;
 import evoter.share.model.QuestionType;
 
 public class TestQuestionTypeDAO {

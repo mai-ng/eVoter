@@ -14,7 +14,7 @@ import org.apache.commons.io.IOUtils;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.dao.BeanDAOFactory;
+import evoter.server.dao.impl.BeanDAOFactory;
 
 public class URIUtils {
 	

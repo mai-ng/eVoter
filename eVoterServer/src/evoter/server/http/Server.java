@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 
-import evoter.server.dao.BeanDAOFactory;
+import evoter.server.dao.impl.BeanDAOFactory;
 
 public class Server {
 

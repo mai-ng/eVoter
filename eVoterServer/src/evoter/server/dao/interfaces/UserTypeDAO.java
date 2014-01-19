@@ -1,9 +1,8 @@
-package evoter.server.dao;
+package evoter.server.dao.interfaces;
 
 import java.util.List;
 
 import evoter.server.model.UserType;
-import evoter.share.model.User;
 
 public interface UserTypeDAO {
 
@@ -12,8 +11,8 @@ public interface UserTypeDAO {
 	public static final String TABLE_NAME = "USER_TYPE";
 	public static final String BEAN_NAME = "userTypeDAO";
 	
-	public List<User> findAll();
-	public int insert(User userType); 
+	public List<UserType> findAll();
+	public int insert(UserType userType); 
 	public List<UserType> findById(long id);
 	public List<UserType> findByUserTypeValue(String userTypeValue);
 	public List<UserType> findByProperty(String[] propertyNames, Object[] propertyValues);

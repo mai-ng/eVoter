@@ -1,6 +1,6 @@
 package evoter.server.http.test;
 
-import evoter.server.dao.BeanDAOFactory;
+import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.server.http.HttpConnection;
 
 public class HttpConnectionTest {

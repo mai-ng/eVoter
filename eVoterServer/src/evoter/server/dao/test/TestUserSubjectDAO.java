@@ -1,6 +1,6 @@
 package evoter.server.dao.test;
 
-import evoter.server.dao.BeanDAOFactory;
+import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.share.dao.UserSubjectDAO;
 import evoter.share.model.UserSubject;
 

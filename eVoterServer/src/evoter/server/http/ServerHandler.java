@@ -6,10 +6,7 @@ import java.util.Map;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import evoter.server.http.request.QuestionRequest;
-import evoter.server.http.request.SessionRequest;
-import evoter.server.http.request.SubjectRequest;
-import evoter.server.http.request.AccountRequest;
+import evoter.server.http.request.RequestFactory;
 import evoter.server.http.request.interfaces.IAccountRequest;
 import evoter.server.http.request.interfaces.IQuestionRequest;
 import evoter.server.http.request.interfaces.ISessionRequest;
@@ -41,10 +38,10 @@ public class ServerHandler implements HttpHandler {
 			Map<String,Object> parameters = URIUtils.getParameters(httpExchange);			
 			System.out.println("parameters: " + parameters);
 			
-			IAccountRequest accountRequest = AccountRequest.getInstance();
-			ISubjectRequest subjectRequest = SubjectRequest.getInstance();
-			ISessionRequest sessionRequest = SessionRequest.getInstance();
-			IQuestionRequest questionRequest = QuestionRequest.getInstance();
+			IAccountRequest accountRequest = RequestFactory.getAccountRequest();
+			ISubjectRequest subjectRequest = RequestFactory.getSubjectRequest();
+			ISessionRequest sessionRequest = RequestFactory.getSessionRequest();
+			IQuestionRequest questionRequest = RequestFactory.getQuestionRequest();
 			//ISubjectRequest subjectQuestion = SubjectRequest
 			
 			if (URIUtils.isLoginRequest(uri)){

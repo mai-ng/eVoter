@@ -1,7 +1,7 @@
 package evoter.server.dao.test;
 
 
-import evoter.server.dao.BeanDAOFactory;
+import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.share.dao.UserDAO;
 
 public class TestUserDAO {

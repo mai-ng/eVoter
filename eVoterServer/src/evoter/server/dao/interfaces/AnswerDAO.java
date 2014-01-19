@@ -1,4 +1,4 @@
-package evoter.server.dao;
+package evoter.server.dao.interfaces;
 
 import java.util.List;
 

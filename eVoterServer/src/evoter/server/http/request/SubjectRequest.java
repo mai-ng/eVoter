@@ -6,13 +6,19 @@ import java.util.Map;
 import org.json.simple.JSONArray;
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.dao.BeanDAOFactory;
+import evoter.server.dao.impl.BeanDAOFactory;
+
 import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
 import evoter.server.http.request.interfaces.ISubjectRequest;
+import evoter.share.dao.QuestionSessionDAO;
+import evoter.share.dao.SessionDAO;
+import evoter.share.dao.SessionUserDAO;
+import evoter.share.dao.StatisticsDAO;
 import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.dao.UserSubjectDAO;
+import evoter.share.model.Session;
 import evoter.share.model.Subject;
 import evoter.share.model.UserSubject;
 import evoter.share.utils.UserValidation;
@@ -29,14 +35,10 @@ public class SubjectRequest implements ISubjectRequest{
 	
 	private SubjectRequest(){}
 	
-	
-	/**
-	 * Response client a {@link Subject} object when receiving {@link URIRequest#VIEW_SUBJECT} </br>
-	 * 
-	 * @param exchange {@link HttpExchange} communicates between server and client </br>
-	 * @param parameters contains : </br>
-	 *  </li> SubjectDAO.ID
-	 *  </li> {@link UserDAO#USER_KEY}
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISubjectRequest#doView(com.sun.net.httpserver.HttpExchange, java.util.Map)
 	 */
 	public  void doView(HttpExchange exchange, Map<String,Object> parameters){
 		
@@ -45,12 +47,10 @@ public class SubjectRequest implements ISubjectRequest{
 		URIUtils.writeResponse(subject.toJSON().toJSONString(), exchange);
 		
 	}
-	
-	/**
-	 * Response client all {@link Subject} of user when receiving {@link URIRequest#VIEW_SUBJECT} </br>
-	 * @param exchange {@link HttpExchange} communicates between client and server </br>
-	 * @param parameters contains : </br>
-	 *  </li> UserDAO.USER_KEY
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISubjectRequest#doGetAll(com.sun.net.httpserver.HttpExchange, java.util.Map)
 	 */
 	@SuppressWarnings("unchecked")
 	public  void doGetAll(HttpExchange exchange, Map<String,Object> parameters){
@@ -85,20 +85,44 @@ public class SubjectRequest implements ISubjectRequest{
 	 * 
 	 * @param exchange {@link HttpExchange} communicates between client and server </br>
 	 * @param parameters contains </br>
-	 *  </li> SubjectDAO.ID
+	 *  </li> {@link SubjectDAO.ID}
 	 *  </li> {@link UserDAO#USER_KEY}
 	 */
 	public  void doDelete(HttpExchange exchange, Map<String,Object> parameters){
 		
-
 		try{
-		long subjectId = Long.valueOf((String)parameters.get(SubjectDAO.ID));
-		SubjectDAO subjectDao = (SubjectDAO)BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME);
-		
-			subjectDao.deleteById(subjectId);
-			URIUtils.writeSuccessResponse(exchange);
 			
+			long subjectId = Long.valueOf((String)parameters.get(SubjectDAO.ID));
+			SubjectDAO subjectDAO = (SubjectDAO)BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME);
+			UserSubjectDAO userSubjectDAO = (UserSubjectDAO)BeanDAOFactory.getBean(UserSubjectDAO.BEAN_NAME);
+			SessionDAO sessionDAO = (SessionDAO)BeanDAOFactory.getBean(SessionDAO.BEAN_NAME);
+			SessionUserDAO sessionUserDAO = (SessionUserDAO)BeanDAOFactory.getBean(SessionUserDAO.BEAN_NAME);
+			QuestionSessionDAO questionSessionDAO = (QuestionSessionDAO)BeanDAOFactory.getBean(QuestionSessionDAO.BEAN_NAME);
+			StatisticsDAO statisticsDAO = (StatisticsDAO)BeanDAOFactory.getBean(StatisticsDAO.BEAN_NAME);
+			
+//			List<UserSubject> userSubjectList = userSubjectDAO.findBySubjectId(subjectId);
+//			for (UserSubject userSubject : userSubjectList){
+			//get all session of subject in SESSION table
+			List<Session> sessionList = sessionDAO.findBySubjectId(subjectId);
+			for (Session session : sessionList){
+				// for each session
+				//    delete all session records in SESSION_USER table
+				//    delete all session records in STATISTICS table
+				//    delete all session records in SESSION_QUESTION table
+				//  
+				sessionUserDAO.deleteBySessionId(session.getId());
+				statisticsDAO.deleteBySessionId(session.getId());
+				questionSessionDAO.deleteBySessionId(session.getId());
+			}
+			sessionDAO.deleteBySubjectId(subjectId);
+			//remove session records in USER_SUBJECT table ==>ok
+			userSubjectDAO.deleteBySubjectId(subjectId);	
+			subjectDAO.deleteById(subjectId);
+			
+			URIUtils.writeSuccessResponse(exchange);
+				
 		}catch(Exception e){
+		
 			System.out.println("delete subject error : " + e);
 			URIUtils.writeSuccessResponse(exchange);
 		}

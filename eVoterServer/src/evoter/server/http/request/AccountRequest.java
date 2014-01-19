@@ -8,7 +8,7 @@ import org.json.simple.JSONObject;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.dao.BeanDAOFactory;
+import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
 import evoter.server.http.request.interfaces.IAccountRequest;

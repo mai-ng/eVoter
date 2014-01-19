@@ -17,6 +17,17 @@ public class Session extends ItemData implements Serializable {
 	private long subjectId;
 	private Date creationDate;
 	private boolean isActive;
+	private long userId;
+	
+	
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
 
 	/**
 	 * @param id
@@ -24,13 +35,15 @@ public class Session extends ItemData implements Serializable {
 	 * @param name
 	 * @param creationDate
 	 * @param isActive
+	 * @param userId user creates the session </br>
 	 */
 	public Session(long id, long subjectId, String name, Date creationDate,
-			boolean isActive) {
+			boolean isActive, long userId) {
 		super(id, name);
 		this.subjectId = subjectId;
 		this.creationDate = creationDate;
 		this.isActive = isActive;
+		this.userId = userId;
 	}
 
 	/**
@@ -41,6 +54,7 @@ public class Session extends ItemData implements Serializable {
 		this.subjectId = cp.getSubjectId();
 		this.creationDate = cp.getCreationDate();
 		this.isActive = cp.isActive();
+		this.userId = cp.getUserId();
 	}
 
 	/**
@@ -56,11 +70,12 @@ public class Session extends ItemData implements Serializable {
 	}
 
 	public Session(long subjectId, String name, Date creationDate,
-			boolean isActive) {
+			boolean isActive, long userId) {
 		this.subjectId = subjectId;
 		this.title = name;
 		this.creationDate = creationDate;
 		this.isActive = isActive;
+		this.userId = userId;
 	}
 
 	public boolean isActive() {
@@ -112,15 +127,17 @@ public class Session extends ItemData implements Serializable {
 		obj.put(SessionDAO.IS_ACTIVE, isActive);
 		obj.put(SessionDAO.NAME, title);
 		obj.put(SessionDAO.SUBJECT_ID, subjectId);
+		obj.put(SessionDAO.USER_ID, userId);
 		return obj;
 
 	}
 
 	@Override
 	public String toString() {
-		return "Session [id=" + id + ", subjectId=" + subjectId + ", name="
-				+ title + ", creationDate=" + creationDate + ", isActive="
-				+ isActive + "]";
+		return "Session [subjectId=" + subjectId + ", creationDate="
+				+ creationDate + ", isActive=" + isActive + ", userId="
+				+ userId + "]";
 	}
+
 
 }

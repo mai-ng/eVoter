@@ -14,7 +14,8 @@ public interface SessionDAO {
 	public static final String NAME = "NAME";
 	public static final String SUBJECT_ID = "SUBJECT_ID";
 	public static final String CREATION_DATE = "CREATION_DATE";
-	public static final String IS_ACTIVE = "is_active";
+	public static final String IS_ACTIVE = "IS_ACTIVE";
+	public static final String USER_ID = "USER_ID";
 	
 	public static final String TABLE_NAME = "SESSION";
 	public static final String BEAN_NAME = "sessionDAO";
@@ -35,6 +36,7 @@ public interface SessionDAO {
 	public List<Session> findByName(String name);
 	public List<Session> findByCreationDate(String date);
 	public List<Session> findBySessionIsActive(boolean isActive);
+	public List<Session> findBySessionUserId(long userId);
 	/**
 	 * 
 	 * Delete {@link Session} objects in the database by input properties and their values </br> 
@@ -49,4 +51,5 @@ public interface SessionDAO {
 	public void deleteByName(String name);
 	public void deleteByCreationDate(String date);
 	public void deleteBySessionIsActive(boolean isActive);
+	public void deleteByUserId(long userId);
 }

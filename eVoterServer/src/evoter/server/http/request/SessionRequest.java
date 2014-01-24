@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import com.sun.net.httpserver.HttpExchange;
 
@@ -20,6 +21,7 @@ import evoter.share.model.Question;
 import evoter.share.model.Session;
 import evoter.share.model.SessionUser;
 import evoter.share.model.Subject;
+import evoter.share.model.User;
 import evoter.share.utils.UserValidation;
 
 /**
@@ -43,8 +45,8 @@ public class SessionRequest implements ISessionRequest{
 	 * 
 	 * @param httpExchange {@link HttpExchange} communicates between server client application </br>
 	 * @param parameters contains : </br>
-	 * 	</li> SessionDAO.SUBJECT_ID
-	 * 	</li> {@link UserDAO#USER_KEY}
+	 * 	</li> SessionDAO.SUBJECT_ID </br>
+	 * 	</li> {@link UserDAO#USER_KEY} </br>
 	 */
 	@SuppressWarnings("unchecked")
 	public  void doGetAll(HttpExchange httpExchange,
@@ -60,7 +62,7 @@ public class SessionRequest implements ISessionRequest{
 					new String[]{SessionDAO.SUBJECT_ID, SessionDAO.USER_ID}, 
 					new Long[]{subjectId, userId});
 			
-			//this is request sent by student user
+			//this is request is sent by student user
 			if (sessions == null || sessions.isEmpty()){
 				sessions = new ArrayList<Session>();
 				//select all session id of this user from session_user table
@@ -74,10 +76,17 @@ public class SessionRequest implements ISessionRequest{
 			
 	/**		List<Session> sessions = sesDAO.findBySubjectId(subjectId);*/
 			JSONArray jsArray = new JSONArray();
+			UserDAO userDAO = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
+			//find session creator
 			for (Session ses : sessions){
-				jsArray.add(ses.toJSON().toJSONString());
+				User creator = userDAO.findById(ses.getUserId()).get(0);
+				JSONObject object = ses.toJSON(); 
+				object.put("CREATOR", creator.getUserName());
+				jsArray.add(object);
+				
 			}
 			URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
+			System.out.println("sessions: " + jsArray);
 			
 		}catch(Exception e){
 			e.printStackTrace();

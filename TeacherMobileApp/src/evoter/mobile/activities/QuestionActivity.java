@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -21,24 +22,23 @@ import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.QuestionAdapter;
 import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
+import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.ItemData;
 import evoter.share.model.Question;
 import evoter.share.model.UserType;
 
 /**
- * Updated by @author luongnv89 on 18-Jan-2014
- * <br>
- * <li> Add 2 seekbar for difficult and bored value of session - only add when usertype is student and session is active 
- * 
- * {@link QuestionActivity} extend from {@link ItemDataActivity} manages
- * questions in a session.
- * 
- * Created by luongnv89 on 06/12/13.
+ * Updated by @author luongnv89 on 18-Jan-2014 <br>
+ * <li>Add 2 seekbar for difficult and bored value of session - only add when
+ * usertype is student and session is active {@link QuestionActivity} extend
+ * from {@link ItemDataActivity} manages questions in a session. Created by
+ * luongnv89 on 06/12/13.
  */
 public class QuestionActivity extends ItemDataActivity {
 	
@@ -47,9 +47,9 @@ public class QuestionActivity extends ItemDataActivity {
 		//Set titlebar of current activity is the name of current session
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentSessionName());
-		this.menuDialog.enableQuestionActivityMenu();
+		this.menuDialog.setMenuQuestionActivity();
 		
-		if (RuntimeEVoterManager.getCurrentUserType() == UserType.STUDENT && RuntimeEVoterManager.getCurrentSessionStatus()) {
+		if (RuntimeEVoterManager.getCurrentUserType() == UserType.STUDENT && RuntimeEVoterManager.currentSessionIsActive()) {
 			//Setup seekbar
 			tbSessionValue.setVisibility(View.VISIBLE);
 			sbBored.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
@@ -106,25 +106,76 @@ public class QuestionActivity extends ItemDataActivity {
 				Question selectQuestion = (Question) parent
 						.getItemAtPosition(position);
 				RuntimeEVoterManager.setCurrentQuestion(selectQuestion);
-				Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);
-				startActivity(detailQuestion);
+				//TODO: REQUEST GET STATISTIC OF QUESTION. IF THE QUESTION HASNOT STATISTIC YET, AND CURRENT SESSION IS RUNNING, SHOW QUESTIONDETAIL
+				if (RuntimeEVoterManager.currentSessionIsActive()) {
+					Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);
+					startActivity(detailQuestion);
+				} else {
+					//TODO: SHOW STATISTIC OF QUESTION
+				}
 			}
 		});
 		
-		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				Question selectQuestion = (Question) parent
-						.getItemAtPosition(position);
-				Toast.makeText(
-						QuestionActivity.this,
-						"Process item long clicked for item: "
-								+ selectQuestion.getTitle(), Toast.LENGTH_SHORT)
-						.show();
-				return true;
-			}
-		});
+		if (RuntimeEVoterManager.getCurrentUserType() == UserType.TEACHER) {
+			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					final Question selectQuestion = (Question) parent
+							.getItemAtPosition(position);
+					final DialogInfor dialog = new DialogInfor(
+							QuestionActivity.this, "Question");
+					dialog.setMessageContent(selectQuestion.getTitle());
+					dialog.getBtOK().setText("Edit");
+					dialog.getBtOK().setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							//TODO: START EDIT SESSION
+							Log.i("QUESTION LONG ITEM CLICK", "Edit question" + selectQuestion.getTitle());
+							dialog.dismiss();
+						}
+					});
+					
+					dialog.getBtKO().setText("Delete");
+					dialog.getBtKO().setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							RequestParams params = new RequestParams();
+							params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
+							params.add(SessionUserDAO.SESSION_ID, String.valueOf(selectQuestion.getId()));
+							client.post(Configuration.get_urlDeleteSession(), params, new AsyncHttpResponseHandler() {
+								@Override
+								public void onSuccess(String response) {
+									if (response.contains("SUCCESS")) {
+										EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+												"Deleted question: " + selectQuestion.getTitle());
+										adapter.deleteItem(selectQuestion.getId());
+										adapter.notifyDataSetChanged();
+									}
+									else {
+										EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+												"Cannot delete session: " + response);
+									}
+								}
+								
+								@Override
+								public void onFailure(Throwable error, String content)
+								{
+									EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+											"FAILURE: " + error.toString());
+									Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+								}
+							});
+							dialog.dismiss();
+						}
+					});
+					dialog.show();
+					return true;
+				}
+			});
+		}
 		
 	}
 	

@@ -27,7 +27,6 @@ import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.ItemData;
 import evoter.share.model.Subject;
-import evoter.share.model.UserType;
 
 /**
  * Updated by @author luongnv89 on 19-Jun-2014:<br>
@@ -44,17 +43,7 @@ public class SubjectActivity extends ItemDataActivity {
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentUserName());
 		
-		menuDialog.enableSubjectActivityMenu();
-		menuDialog.getBtListUsers().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				menuDialog.dismiss();
-				//TODO: REQUEST GET ALL USER OF A SUBJECT
-				EVoterMobileUtils.showeVoterToast(SubjectActivity.this, "Show all user of subject");
-			}
-		});
-		
+		menuDialog.setMenuSubjectActivity();
 		adapter = new SubjectAdapter(SubjectActivity.this);
 		listView.setAdapter(adapter);
 		

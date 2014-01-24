@@ -88,7 +88,6 @@ public class EVoterActivity extends Activity {
 		tvTitleBarContent = (TextView) findViewById(R.id.tvTitleBar);
 		ivTitleBarRefresh.setVisibility(View.GONE);
 		client = new AsyncHttpClient(Configuration.TIME_OUT);
-		menuDialog = new MenuDialog(this);
 		
 		ivTitleBarIcon.setOnClickListener(new OnClickListener() {
 			
@@ -97,6 +96,15 @@ public class EVoterActivity extends Activity {
 				menuDialog.show();
 			}
 		});
+		
+		setupMainMenu();
+	}
+	
+	/**
+	 * 
+	 */
+	private void setupMainMenu() {
+		menuDialog = new MenuDialog(this);
 		
 		menuDialog.getBtExit().setOnClickListener(new OnClickListener() {
 			
@@ -119,6 +127,7 @@ public class EVoterActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.i("Main menu", "Request accepted user of a session");
+				//TODO: REQUEST ACCEPT USER
 				menuDialog.dismiss();
 			}
 		});
@@ -127,6 +136,7 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+				//TODO: REQUEST ALL QUESTION
 				Log.i("Main menu", "Show list all questions");
 				menuDialog.dismiss();
 			}
@@ -136,6 +146,7 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+				//TODO: REQUEST ALL USER OF SUBJECT
 				Log.i("Main menu", "Request all user of a subject");
 				menuDialog.dismiss();
 				
@@ -146,6 +157,7 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+				//TODO: REQUEST CREATE NEW QUESTION
 				Log.i("Main menu", "Create new question");
 				menuDialog.dismiss();
 				
@@ -156,10 +168,12 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+				//TODO: REQUEST CREATE NEW SESSION
 				Log.i("Main menu", "Create new session");
 				menuDialog.dismiss();
 			}
 		});
+		
 	}
 	
 	/**

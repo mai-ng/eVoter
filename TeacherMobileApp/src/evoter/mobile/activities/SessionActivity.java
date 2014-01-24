@@ -11,38 +11,43 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.SessionAdapter;
 import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.SessionDAO;
+import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.ItemData;
 import evoter.share.model.Session;
 
 /**
+ * Update by @author luongnv89 on 24-Jan-2014
+ * <br>
+ * <li> Edited Session constructor method - add creatorName
  * Created by luongnv89 on 06/12/13.
  */
 public class SessionActivity extends ItemDataActivity {
-
+	
 	public void onCreate(Bundle savedInstanceState) {
-
+		
 		super.onCreate(savedInstanceState);
 		// Set title bar content is the subject of session
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentSubjectName());
 		
-		menuDialog.enableSessionActivityMenu();
+		menuDialog.setMenuSessionActivity();
 		
 		adapter = new SessionAdapter(SessionActivity.this);
 		listView.setAdapter(adapter);
-
+		
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -58,24 +63,69 @@ public class SessionActivity extends ItemDataActivity {
 				startActivity(new Intent("android.intent.action.SESSIONVIEW"));
 			}
 		});
-
+		
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Session selectedSession = (Session) parent
+				final Session selectedSession = (Session) parent
 						.getItemAtPosition(position);
-				Toast.makeText(
-						SessionActivity.this,
-						"Process item long clicked for item: "
-								+ selectedSession.getTitle(),
-						Toast.LENGTH_SHORT).show();
+				
+				final DialogInfor dialog = new DialogInfor(
+						SessionActivity.this, "Session");
+				dialog.setMessageContent(selectedSession.getTitle());
+				dialog.getBtOK().setText("Edit");
+				dialog.getBtOK().setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						//TODO: START EDIT SESSION
+						Log.i("SESSION LONG ITEM CLICK", "Edit session" + selectedSession.getTitle());
+						dialog.dismiss();
+					}
+				});
+				
+				dialog.getBtKO().setText("Delete");
+				dialog.getBtKO().setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						RequestParams params = new RequestParams();
+						params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
+						params.add(SessionUserDAO.SESSION_ID, String.valueOf(selectedSession.getId()));
+						client.post(Configuration.get_urlDeleteSession(), params, new AsyncHttpResponseHandler() {
+							@Override
+							public void onSuccess(String response) {
+								if (response.contains("SUCCESS")) {
+									EVoterMobileUtils.showeVoterToast(SessionActivity.this,
+											"Deleted session: " + selectedSession.getTitle());
+									adapter.deleteItem(selectedSession.getId());
+									adapter.notifyDataSetChanged();
+								}
+								else {
+									EVoterMobileUtils.showeVoterToast(SessionActivity.this,
+											"Cannot delete session: " + response);
+								}
+							}
+							
+							@Override
+							public void onFailure(Throwable error, String content)
+							{
+								EVoterMobileUtils.showeVoterToast(SessionActivity.this,
+										"FAILURE: " + error.toString());
+								Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+							}
+						});
+						dialog.dismiss();
+					}
+				});
+				dialog.show();
 				return true;
 			}
 		});
-
+		
 	}
-
+	
 	protected void loadListItemData() {
 		RequestParams params = new RequestParams();
 		params.add(SessionDAO.SUBJECT_ID,
@@ -85,10 +135,9 @@ public class SessionActivity extends ItemDataActivity {
 				String.valueOf(RuntimeEVoterManager.getCurrentSubjectID()));
 		client.post(Configuration.get_urlGetAllSession(), params,
 				new AsyncHttpResponseHandler() {
-
+					
 					/*
 					 * (non-Javadoc)
-					 * 
 					 * @see
 					 * com.loopj.android.http.AsyncHttpResponseHandler#onStart()
 					 */
@@ -99,10 +148,9 @@ public class SessionActivity extends ItemDataActivity {
 						tvLoadingStatus.setText("Loading...");
 						dialogLoading.show();
 					}
-
+					
 					/*
 					 * (non-Javadoc)
-					 * 
 					 * @see
 					 * com.loopj.android.http.AsyncHttpResponseHandler#onFinish
 					 * ()
@@ -114,7 +162,7 @@ public class SessionActivity extends ItemDataActivity {
 						tvLoadingStatus.setText("Finished");
 						dialogLoading.dismiss();
 					}
-
+					
 					@Override
 					public void onSuccess(String response) {
 						try {
@@ -128,13 +176,13 @@ public class SessionActivity extends ItemDataActivity {
 								String sString = array.get(i).toString();
 								JSONObject s = new JSONObject(sString);
 								Session session = new Session(Long.parseLong(s
-										.getString("ID")), Long.parseLong(s
-										.getString("SUBJECT_ID")), s
-										.getString("NAME"), EVoterMobileUtils
+										.getString(SessionDAO.ID)), Long.parseLong(s
+										.getString(SessionDAO.SUBJECT_ID)), s
+										.getString(SessionDAO.NAME), EVoterMobileUtils
 										.convertToDate(s
-												.getString("CREATION_DATE")),
+												.getString(SessionDAO.CREATION_DATE)),
 										Boolean.parseBoolean(s
-												.getString("is_active")));
+												.getString(SessionDAO.IS_ACTIVE)), Long.parseLong(s.getString(SessionDAO.USER_ID)), s.getString("CREATOR"));
 								listSession.add(session);
 							}
 							if (listSession.isEmpty()) {
@@ -154,13 +202,13 @@ public class SessionActivity extends ItemDataActivity {
 						}
 						Log.i("Get All Session Test", "response : " + response);
 					}
-
+					
 					@Override
 					public void onFailure(Throwable error, String content) {
 						Log.e("Get All Session Test", "onFailure error : "
 								+ error.toString() + "content : " + content);
 					}
 				});
-
+		
 	}
 }

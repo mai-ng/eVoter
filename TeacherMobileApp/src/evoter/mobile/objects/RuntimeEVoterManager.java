@@ -127,7 +127,7 @@ public class RuntimeEVoterManager {
 	/**
 	 * @return the currentSessionStatus
 	 */
-	public static boolean getCurrentSessionStatus() {
+	public static boolean currentSessionIsActive() {
 		return currentSessionStatus;
 	}
 

@@ -10,8 +10,8 @@ import android.widget.Filterable;
 import android.widget.TextView;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.RuntimeEVoterManager;
-import evoter.share.model.Session;
 import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.model.Session;
 
 /**
  * Created by luongnv89 on 06/12/13.
@@ -59,7 +59,7 @@ public class SessionAdapter extends ItemDataAdapter implements Filterable {
 
 		holder.title = detail(convertView, R.id.tvSesName, listItemDataToPublic
 				.get(position).getTitle());
-		holder.teacherName = detail(convertView, R.id.tvTeacher, "Unknown");
+		holder.teacherName = detail(convertView, R.id.tvTeacher, ((Session) listItemDataToPublic.get(position)).getCreatorName());
 		if(RuntimeEVoterManager.getCurrentUserType()==3){
 			
 		}

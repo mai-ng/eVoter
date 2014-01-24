@@ -80,28 +80,28 @@ public class MenuDialog extends Dialog {
 		}
 	}
 	
-	public void enableSubjectActivityMenu(){
+	public void setMenuSubjectActivity(){
 		subjectActivityMenu.setVisibility(View.VISIBLE);
 		sessionActivityMenu.setVisibility(View.GONE);
 		questionActivityMenu.setVisibility(View.GONE);
 		questionDetailActivityMenu.setVisibility(View.GONE);
 	}
 	
-	public void enableSessionActivityMenu(){
+	public void setMenuSessionActivity(){
 		sessionActivityMenu.setVisibility(View.VISIBLE);
 		subjectActivityMenu.setVisibility(View.GONE);
 		questionActivityMenu.setVisibility(View.GONE);
 		questionDetailActivityMenu.setVisibility(View.GONE);
 	}
 	
-	public void enableQuestionActivityMenu(){
+	public void setMenuQuestionActivity(){
 		questionActivityMenu.setVisibility(View.VISIBLE);
 		subjectActivityMenu.setVisibility(View.GONE);
 		sessionActivityMenu.setVisibility(View.GONE);
 		questionDetailActivityMenu.setVisibility(View.GONE);
 	}
 	
-	public void enableQuestionDetailActivityMenu(){
+	public void setMenuQuestionDetailActivity(){
 		questionDetailActivityMenu.setVisibility(View.VISIBLE);
 		subjectActivityMenu.setVisibility(View.GONE);
 		sessionActivityMenu.setVisibility(View.GONE);

@@ -15,6 +15,7 @@ public interface StatisticsDAO {
 	public static final String QUESTION_ID = "QUESTION_ID";
 	public static final String STATISTICS_VALUE = "STATISTICS_VALUE";
 	public static final String TABLE_NAME = "STATISTICS";
+	public static final String BEAN_NAME = "";
 	
 	public int insert (Statistics Statistics);
 	public List<Statistics> findAll();

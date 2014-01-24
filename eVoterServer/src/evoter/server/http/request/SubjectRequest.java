@@ -44,7 +44,7 @@ public class SubjectRequest implements ISubjectRequest{
 		
 		long id = Long.valueOf((String)parameters.get(SubjectDAO.ID));
 		Subject subject = (Subject)((SubjectDAO) BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME)).findById(id).get(0);
-		URIUtils.writeResponse(subject.toJSON().toJSONString(), exchange);
+		URIUtils.writeResponse(subject.toJSON(), exchange);
 		
 	}
 
@@ -64,7 +64,7 @@ public class SubjectRequest implements ISubjectRequest{
 		JSONArray jsArray = new JSONArray();
 		for (UserSubject us : usList){
 			Subject subject = (Subject)((SubjectDAO) BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME)).findById(us.getSubjectId()).get(0);
-			jsArray.add(subject.toJSON().toJSONString());
+			jsArray.add(subject.toJSON());
 		}
 		System.out.println("SUBJECT : " + jsArray.toJSONString());
 		URIUtils.writeResponse(jsArray.toJSONString(), exchange);
@@ -124,7 +124,7 @@ public class SubjectRequest implements ISubjectRequest{
 		}catch(Exception e){
 		
 			System.out.println("delete subject error : " + e);
-			URIUtils.writeSuccessResponse(exchange);
+			URIUtils.writeFailureResponse(exchange);
 		}
 		
 		
@@ -136,8 +136,9 @@ public class SubjectRequest implements ISubjectRequest{
 	 * 
 	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
 	 * @param parameters contains </br>
-	 *  </li> {@link SubjectDAO#TITLE}
-	 *  </li> {@link SubjectDAO#CREATION_DATE}
+	 *  </li> {@link SubjectDAO#TITLE} </br>
+	 *  </li> {@link SubjectDAO#CREATION_DATE} </br>
+	 *  </li> {@link UserDAO#USER_KEY} </br>
 	 */
 	@SuppressWarnings("unchecked")
 	public  void doSearch(HttpExchange httpExchange,
@@ -147,7 +148,7 @@ public class SubjectRequest implements ISubjectRequest{
 		List<Subject> subjects = subjectDao.findByProperty(parameters.keySet().toArray(new String[]{}), parameters.values().toArray());
 		JSONArray jsArray = new JSONArray();
 		for (Subject subject : subjects){
-			jsArray.add(subject.toJSON().toJSONString());
+			jsArray.add(subject.toJSON());
 		}
 		URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
 	}

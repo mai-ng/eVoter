@@ -15,7 +15,7 @@ import evoter.server.http.request.interfaces.IAccountRequest;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.User;
 /**
- * Process all user account requests sent by client applications
+ * Process all user account requests sent by client applications </br>
  * 
  * @author btdiem
  *
@@ -68,7 +68,7 @@ public class AccountRequest implements IAccountRequest{
 	
 	/**
 	 * 
-	 * @param parameters contaisn {@link UserDAO#USER_KEY} </br>
+	 * @param parameters contain {@link UserDAO#USER_KEY} </br>
 	 * @return true if {@link UserDAO#USER_KEY} exists, otherwise return false </br>
 	 */
 	public  boolean hasUserKey(Map<String,Object> parameters){
@@ -120,10 +120,10 @@ public class AccountRequest implements IAccountRequest{
 	 * 
 	 * @param httpExchange {@link HttpExchange} communicates between clients and server </br>
 	 * @param parameters contains: </br>
-	 * 		</li> {@link UserDAO#USER_NAME}
-	 * 		</li> {@link UserDAO#EMAIL}
-	 * 		</li> {@link UserDAO#PASSWORD}
-	 * 		</li> {@link UserDAO#USER_TYPE_ID}
+	 * 		</li> {@link UserDAO#USER_NAME} </br>
+	 * 		</li> {@link UserDAO#EMAIL} </br>
+	 * 		</li> {@link UserDAO#PASSWORD} </br>
+	 * 		</li> {@link UserDAO#USER_TYPE_ID} </br>
 	 * 
 	 */
 	public  void doRegister(HttpExchange httpExchange,

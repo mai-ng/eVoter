@@ -45,8 +45,8 @@ public class QuestionRequest implements IQuestionRequest{
 	 * 
 	 * @param httpExchange </br>
 	 * @param parameters contains : </br>
-	 * 	</li> QuestionSessionDAO.SESSION_ID
-	 *  </li> {@link UserDAO#USER_KEY}
+	 * 	</li> QuestionSessionDAO.SESSION_ID </br>
+	 *  </li> {@link UserDAO#USER_KEY} </br>
 	 */
 	@SuppressWarnings("unchecked")
 	public  void doGetAll(HttpExchange httpExchange,
@@ -94,21 +94,26 @@ public class QuestionRequest implements IQuestionRequest{
 	public  void doView(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
-		long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
-		QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
-		List<Question> questionList = questionDao.findById(questionId);
-		if (questionList != null && !questionList.isEmpty()){
+		try{
+			long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
+			QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
+			List<Question> questionList = questionDao.findById(questionId);
 			JSONArray jsArray = new JSONArray();
-			for (Question question : questionList){
-				//JSONObject jsObject = question.toJSON();
-				question.toJSON().put("answers", getAnswersOfQuestion(question.getId()));
-				jsArray.add(question.toJSON().toJSONString());
+			if (questionList != null && !questionList.isEmpty()){
+				
+				for (Question question : questionList){
+					//JSONObject jsObject = question.toJSON();
+					question.toJSON().put("answers", getAnswersOfQuestion(question.getId()));
+					jsArray.add(question.toJSON());
+				}
 			}
-			URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
+			URIUtils.writeResponse(jsArray, httpExchange);
 			
-		}else{
+		}catch(Exception e){
+			System.err.println(e);
 			URIUtils.writeFailureResponse(httpExchange);
-		}		
+		}
+		
 	}
 
 	/**
@@ -141,12 +146,12 @@ public class QuestionRequest implements IQuestionRequest{
 	 * 
 	 * @param httpExchange
 	 * @param parameters contains: </br>
-	 * 	</li> {@link QuestionDAO#QUESTION_TEXT} is a string array
-	 * 	</li> {@link QuestionDAO#QUESTION_TYPE_ID}
-	 *  </li> {@link QuestionDAO#CREATION_DATE} 
-	 *  </li> {@link UserDAO#USER_KEY}
-	 *  </li> {@link QuestionSessionDAO#SESSION_ID};
-	 *  </li> {@link AnswerDAO#ANSWER_TEXT}  is a string array
+	 * 	</li> {@link QuestionDAO#QUESTION_TEXT} is a string array </br>
+	 * 	</li> {@link QuestionDAO#QUESTION_TYPE_ID} </br>
+	 *  </li> {@link QuestionDAO#CREATION_DATE} </br>
+	 *  </li> {@link UserDAO#USER_KEY} </br>
+	 *  </li> {@link QuestionSessionDAO#SESSION_ID} </br>
+	 *  </li> {@link AnswerDAO#ANSWER_TEXT}  is a string array </br>
 	 *  
 	 */
 	public  void doCreate(HttpExchange httpExchange,
@@ -283,15 +288,25 @@ public class QuestionRequest implements IQuestionRequest{
 	public  void doGetLatest(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
-		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
-		if (mapSentQuestion.containsKey(sessionId)){
-			long questionId = mapSentQuestion.get(sessionId);
-			QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
-			Question question = questionDao.findById(questionId).get(0);
-			//RE-WORK 
-			question.toJSON().put("answers", getAnswersOfQuestion(question.getId()));
-			URIUtils.writeResponse(question.toJSON().toJSONString(), httpExchange);
-		}else{
+		try{
+			
+			JSONArray response = new JSONArray();
+			long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
+			if (mapSentQuestion.containsKey(sessionId)){
+				long questionId = mapSentQuestion.get(sessionId);
+				QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
+				Question question = questionDao.findById(questionId).get(0);
+				//RE-WORK 
+				JSONObject object = question.toJSON();
+				object.put("answers", getAnswersOfQuestion(question.getId()));
+				response.add(object);
+				
+			}
+			
+			URIUtils.writeResponse(response, httpExchange);
+			
+		}catch(Exception e){
+			System.err.println(e);
 			URIUtils.writeFailureResponse(httpExchange);
 		}
 		

@@ -33,6 +33,7 @@ import evoter.share.utils.UserValidation;
 public class SessionRequest implements ISessionRequest{
 
 	private static ISessionRequest _this;
+	public static final String CREATOR = "CREATOR";
 	
 	private SessionRequest(){}
 	/**
@@ -58,6 +59,7 @@ public class SessionRequest implements ISessionRequest{
 			long userId = Long.valueOf(UserValidation.getUserIdFromUserKey((String)parameters.get(UserDAO.USER_KEY)));
 			
 			SessionDAO sessionDAO = (SessionDAO)BeanDAOFactory.getBean(SessionDAO.BEAN_NAME);
+			//select all sessions in SESSION table 
 			List<Session> sessions = sessionDAO.findByProperty(
 					new String[]{SessionDAO.SUBJECT_ID, SessionDAO.USER_ID}, 
 					new Long[]{subjectId, userId});
@@ -81,7 +83,7 @@ public class SessionRequest implements ISessionRequest{
 			for (Session ses : sessions){
 				User creator = userDAO.findById(ses.getUserId()).get(0);
 				JSONObject object = ses.toJSON(); 
-				object.put("CREATOR", creator.getUserName());
+				object.put(CREATOR, creator.getUserName());
 				jsArray.add(object);
 				
 			}
@@ -100,7 +102,8 @@ public class SessionRequest implements ISessionRequest{
 	 * 
 	 * @param httpExchange {@link HttpExchange} communicates between server client application </br>
 	 * @param parameters request parameter map contains </br>
-	 * 	</li> SessionDAO.ID
+	 * 	</li> SessionDAO.ID </br>
+	 *  </li> {@link UserDAO#USER_KEY} </br>
 	 */
 	@SuppressWarnings("unchecked")
 	public  void doView(HttpExchange httpExchange,
@@ -109,9 +112,13 @@ public class SessionRequest implements ISessionRequest{
 		long id = Long.parseLong((String)parameters.get(SessionDAO.ID));
 		SessionDAO sesDao = (SessionDAO)BeanDAOFactory.getBean(SessionDAO.BEAN_NAME);
 		List<Session> sessions = sesDao.findById(id);
+		UserDAO userDAO = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
 		JSONArray jsArray = new JSONArray();
 		for (Session ses : sessions){
-			jsArray.add(ses.toJSON().toJSONString());
+			User creator = userDAO.findById(ses.getUserId()).get(0);
+			JSONObject object = ses.toJSON();
+			object.put(CREATOR, creator.getUserName());
+			jsArray.add(object);
 		}
 		URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
 	}

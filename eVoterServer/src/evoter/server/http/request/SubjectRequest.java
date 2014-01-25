@@ -42,9 +42,17 @@ public class SubjectRequest implements ISubjectRequest{
 	 */
 	public  void doView(HttpExchange exchange, Map<String,Object> parameters){
 		
-		long id = Long.valueOf((String)parameters.get(SubjectDAO.ID));
-		Subject subject = (Subject)((SubjectDAO) BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME)).findById(id).get(0);
-		URIUtils.writeResponse(subject.toJSON(), exchange);
+		try{
+			
+			long id = Long.valueOf((String)parameters.get(SubjectDAO.ID));
+			Subject subject = (Subject)((SubjectDAO) BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME)).findById(id).get(0);
+			URIUtils.writeResponse(subject.toJSON(), exchange);
+			
+		}catch(Exception e){
+			System.err.println(e);
+			URIUtils.writeFailureResponse(exchange);
+		}
+
 		
 	}
 
@@ -55,24 +63,32 @@ public class SubjectRequest implements ISubjectRequest{
 	@SuppressWarnings("unchecked")
 	public  void doGetAll(HttpExchange exchange, Map<String,Object> parameters){
 		
-		//long id = Long.valueOf(parameters.get(UserSubjectDAO.USER_ID));
-		String userKey = (String)parameters.get(UserDAO.USER_KEY);
-		Long id = UserValidation.getUserIdFromUserKey(userKey);
-		UserSubjectDAO userSubjectDao = (UserSubjectDAO)BeanDAOFactory.getBean(UserSubjectDAO.BEAN_NAME);
-		List<UserSubject> usList = userSubjectDao.findByUserId(id);
-		
-		JSONArray jsArray = new JSONArray();
-		for (UserSubject us : usList){
-			Subject subject = (Subject)((SubjectDAO) BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME)).findById(us.getSubjectId()).get(0);
-			jsArray.add(subject.toJSON());
+		try{
+			
+			//long id = Long.valueOf(parameters.get(UserSubjectDAO.USER_ID));
+			String userKey = (String)parameters.get(UserDAO.USER_KEY);
+			Long id = UserValidation.getUserIdFromUserKey(userKey);
+			UserSubjectDAO userSubjectDao = (UserSubjectDAO)BeanDAOFactory.getBean(UserSubjectDAO.BEAN_NAME);
+			List<UserSubject> usList = userSubjectDao.findByUserId(id);
+			
+			JSONArray jsArray = new JSONArray();
+			for (UserSubject us : usList){
+				Subject subject = (Subject)((SubjectDAO) BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME)).findById(us.getSubjectId()).get(0);
+				jsArray.add(subject.toJSON());
+			}
+			System.out.println("SUBJECT : " + jsArray.toJSONString());
+			URIUtils.writeResponse(jsArray.toJSONString(), exchange);
+			
+		}catch(Exception e){
+			System.err.println(e);
+			URIUtils.writeFailureResponse(exchange);
 		}
-		System.out.println("SUBJECT : " + jsArray.toJSONString());
-		URIUtils.writeResponse(jsArray.toJSONString(), exchange);
+
 		
 	}
 	
 	/**
-	 * When delete a subject: </br>
+	 * When deleting a subject: </br>
 	 *  </li> delete subject in SUBJECT table </br>
 	 *  </li> delete subject in USER_SUBJECT table </br>
 	 *  </li> delete all sessions of this subject in SESSION table </br>
@@ -87,6 +103,7 @@ public class SubjectRequest implements ISubjectRequest{
 	 * @param parameters contains </br>
 	 *  </li> {@link SubjectDAO.ID}
 	 *  </li> {@link UserDAO#USER_KEY}
+	 *  TESTED
 	 */
 	public  void doDelete(HttpExchange exchange, Map<String,Object> parameters){
 		
@@ -127,7 +144,6 @@ public class SubjectRequest implements ISubjectRequest{
 			URIUtils.writeFailureResponse(exchange);
 		}
 		
-		
 	}
 
 	/**
@@ -143,14 +159,21 @@ public class SubjectRequest implements ISubjectRequest{
 	@SuppressWarnings("unchecked")
 	public  void doSearch(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
-
-		SubjectDAO subjectDao = (SubjectDAO)BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME);
-		List<Subject> subjects = subjectDao.findByProperty(parameters.keySet().toArray(new String[]{}), parameters.values().toArray());
-		JSONArray jsArray = new JSONArray();
-		for (Subject subject : subjects){
-			jsArray.add(subject.toJSON());
+		try{
+			
+			SubjectDAO subjectDao = (SubjectDAO)BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME);
+			List<Subject> subjects = subjectDao.findByProperty(parameters.keySet().toArray(new String[]{}), parameters.values().toArray());
+			JSONArray jsArray = new JSONArray();
+			for (Subject subject : subjects){
+				jsArray.add(subject.toJSON());
+			}
+			URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
+			
+		}catch(Exception e){
+			URIUtils.writeFailureResponse(httpExchange);
+			System.err.println(e);
 		}
-		URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
+
 	}
 	
 	public static ISubjectRequest getInstance(){

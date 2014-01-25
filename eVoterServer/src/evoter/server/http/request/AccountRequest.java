@@ -23,8 +23,10 @@ import evoter.share.model.User;
 public class AccountRequest implements IAccountRequest{
 	
 	 List<String> userKeys = new ArrayList<String>();
+	 //It is used for testing requests that have not yet implemented
+	 String userKeyemp = "temp";
 	 private static IAccountRequest _this;
-	 private AccountRequest(){}
+	 private AccountRequest(){userKeys.add(userKeyemp);}
 //	private  final String USER_KEY = "userkey";
 	
 	/**
@@ -56,7 +58,7 @@ public class AccountRequest implements IAccountRequest{
 			}
 			JSONObject object = new JSONObject();
 			object.put(UserDAO.USER_KEY, userKey);
-			URIUtils.writeResponse(object.toJSONString(), exchange);
+			URIUtils.writeResponse(object, exchange);
 			
 		}catch(Exception e){
 			e.printStackTrace();
@@ -101,13 +103,21 @@ public class AccountRequest implements IAccountRequest{
 	public  void doResetPassword(HttpExchange httpExchange,
 			Map<String, Object> parameters) {
 		
-		String email = (String)parameters.get(UserDAO.EMAIL);
-		UserDAO userDAO = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
-		
-		List<User> userList = userDAO.findByEmail(email);
-		if (userList != null && !userList.isEmpty()){
-			URIUtils.writeSuccessResponse(httpExchange);
-		}else{
+		try{
+
+			String email = (String)parameters.get(UserDAO.EMAIL);
+			UserDAO userDAO = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
+			
+			List<User> userList = userDAO.findByEmail(email);
+			if (userList != null && !userList.isEmpty()){
+				URIUtils.writeResponse(URIRequest.EMAIL_EXIST_MESSAGE, httpExchange);
+				
+			}else{
+				URIUtils.writeResponse(URIRequest.EMAIL_NOT_EXIST_MESSAGE, httpExchange);
+			}
+			
+		}catch(Exception e){
+			
 			URIUtils.writeFailureResponse(httpExchange);
 		}
 		
@@ -129,38 +139,41 @@ public class AccountRequest implements IAccountRequest{
 	public  void doRegister(HttpExchange httpExchange,
 			Map<String, Object> parameters) {
 		
-		String username = (String)parameters.get(UserDAO.USER_NAME);
-		String email = (String)parameters.get(UserDAO.EMAIL);
-		long userTypeId = Long.valueOf((String)parameters.get(UserDAO.USER_TYPE_ID));
-		
-		UserDAO userDAO = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
-		//search database if this username exist
-		List<User> checkUsername = userDAO.findByProperty(new String[]{UserDAO.USER_NAME, UserDAO.USER_TYPE_ID}
-														, new Object[]{username, userTypeId});
-		if (checkUsername != null && !checkUsername.isEmpty()){
-			URIUtils.writeResponse(URIRequest.USER_EXIST_MESSAGE, httpExchange);
-			return;
-		}
-		
-		//search database if this email exists
-		List<User> checkEmail = userDAO.findByProperty(new String[]{UserDAO.EMAIL, UserDAO.USER_TYPE_ID}
-													, new Object[]{email, userTypeId});
-		if (checkEmail != null && !checkEmail.isEmpty()){
-			URIUtils.writeResponse(URIRequest.EMAIL_EXIST_MESSAGE, httpExchange);
-			return;
-		}
-		
-		//create User object and insert to database
-		String password = (String)parameters.get(UserDAO.PASSWORD);
-		User user = new User(username, password, email, userTypeId);
 		try{
+			
+			String username = (String)parameters.get(UserDAO.USER_NAME);
+			String email = (String)parameters.get(UserDAO.EMAIL);
+			long userTypeId = Long.valueOf((String)parameters.get(UserDAO.USER_TYPE_ID));
+			
+			UserDAO userDAO = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
+			//search database if this username exist
+			List<User> checkUsername = userDAO.findByProperty(new String[]{UserDAO.USER_NAME, UserDAO.USER_TYPE_ID}
+															, new Object[]{username, userTypeId});
+			if (checkUsername != null && !checkUsername.isEmpty()){
+				URIUtils.writeResponse(URIRequest.USER_EXIST_MESSAGE, httpExchange);
+				return;
+			}
+			
+			//search database if this email exists
+			List<User> checkEmail = userDAO.findByProperty(new String[]{UserDAO.EMAIL, UserDAO.USER_TYPE_ID}
+														, new Object[]{email, userTypeId});
+			if (checkEmail != null && !checkEmail.isEmpty()){
+				URIUtils.writeResponse(URIRequest.EMAIL_EXIST_MESSAGE, httpExchange);
+				return;
+			}
+			
+			//create User object and insert to database
+			String password = (String)parameters.get(UserDAO.PASSWORD);
+			User user = new User(username, password, email, userTypeId);
 			userDAO.insert(user);
+
 			URIUtils.writeSuccessResponse(httpExchange);
-			
+				
 		}catch(Exception e){
-			
-			e.printStackTrace();
+
+			System.err.println(e);
 			URIUtils.writeFailureResponse(httpExchange);
+			
 		}
 		
 	}

@@ -19,8 +19,8 @@ public interface ISubjectRequest {
 	 * 
 	 * @param exchange {@link HttpExchange} communicates between server and client </br>
 	 * @param parameters contains : </br>
-	 *  </li> SubjectDAO.ID
-	 *  </li> {@link UserDAO#USER_KEY}
+	 *  </li> {@link SubjectDAO.ID} </br>
+	 *  </li> {@link UserDAO#USER_KEY} </br>
 	 */
 	public void doView(HttpExchange exchange, Map<String,Object> parameters);
 	
@@ -28,7 +28,7 @@ public interface ISubjectRequest {
 	 * Response client all {@link Subject} of user when receiving {@link URIRequest#VIEW_SUBJECT} </br>
 	 * @param exchange {@link HttpExchange} communicates between client and server </br>
 	 * @param parameters contains : </br>
-	 *  </li> UserDAO.USER_KEY
+	 *  </li> {@link UserDAO.USER_KEY} </br>
 	 */
 	public  void doGetAll(HttpExchange exchange, Map<String,Object> parameters);
 	
@@ -46,8 +46,8 @@ public interface ISubjectRequest {
 	 * 
 	 * @param exchange {@link HttpExchange} communicates between client and server </br>
 	 * @param parameters contains </br>
-	 *  </li> SubjectDAO.ID
-	 *  </li> {@link UserDAO#USER_KEY}
+	 *  </li> {@link SubjectDAO.ID} </br>
+	 *  </li> {@link UserDAO#USER_KEY} </br>
 	 */
 	public void doDelete(HttpExchange exchange, Map<String,Object> parameters);
 	/**
@@ -56,8 +56,8 @@ public interface ISubjectRequest {
 	 * 
 	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
 	 * @param parameters contains </br>
-	 *  </li> {@link SubjectDAO#TITLE}
-	 *  </li> {@link SubjectDAO#CREATION_DATE}
+	 *  </li> {@link SubjectDAO#TITLE} </br>
+	 *  </li> {@link SubjectDAO#CREATION_DATE} </br>
 	 */
 	public void doSearch(HttpExchange httpExchange, Map<String,Object> parameters);
 	

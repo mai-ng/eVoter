@@ -19,7 +19,9 @@ public class URIRequest {
 	public static final String SUCCESS_MESSAGE = "SUCCESS";
 	public static final String FAILURE_MESSAGE = "FAILURE";
 	public static final String USER_EXIST_MESSAGE = "USER EXISTS ALREADY";
-	public static final String EMAIL_EXIST_MESSAGE = "EMAIL EXISTS ALREADY";
+	public static final String EMAIL_EXIST_MESSAGE = "EMAIL EXISTS ";
+	public static final String EMAIL_NOT_EXIST_MESSAGE = "EMAIL DOES NOT EXIST.";
+
 	
 	//for login
 	/**

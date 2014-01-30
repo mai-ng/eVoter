@@ -28,7 +28,8 @@ import evoter.share.dao.UserDAO;
 import evoter.share.model.ItemData;
 import evoter.share.model.Subject;
 
-/**
+/**Updated by @author luongnv89 on 30-Jan-2014:<br>
+ * <li> Updated back button press -> call {@link EVoterActivity#exit()} method
  * Updated by @author luongnv89 on 26-Jan-2014:<br>
  * <li> Updated back button press -> show dialog to confirm exiting application. 
  * Updated by @author luongnv89 on 19-Jun-2014:<br>
@@ -216,27 +217,7 @@ public class SubjectActivity extends ItemDataActivity {
 	 */
 	@Override
 	public void onBackPressed() {
-		final DialogInfor dialogExit = new DialogInfor(SubjectActivity.this, "Do you really want to exit application?");
-		dialogExit.setMessageContent("");
-		dialogExit.getBtOK().setText("Exit");
-		dialogExit.getBtOK().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				EVoterMobileUtils.showeVoterToast(SubjectActivity.this, "Goodbye....");
-				exit();
-			}
-		});
-		dialogExit.getBtKO().setText("Cancel");
-		dialogExit.getBtKO().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				dialogExit.dismiss();
-				
-			}
-		});
-		dialogExit.show();
+		exit();
 	}
 	
 }

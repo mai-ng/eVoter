@@ -7,41 +7,22 @@
     android:padding="10dp" >
 
     <LinearLayout
-        android:id="@+id/mainMenuLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <Button
-            android:id="@+id/btExit"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Exit" />
-
-        <Button
-            android:id="@+id/btLogout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Logout" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/subjectMenuLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <Button
-            android:id="@+id/btSubjectUser"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="List Users" />
-
-        <Button
             android:id="@+id/btNewSession"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="New session" />
+
+        <Button
+            android:id="@+id/btSubjectUser"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="List Users" />
 
     </LinearLayout>
 
@@ -86,5 +67,24 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="All question" />
+
+    <LinearLayout
+        android:id="@+id/mainMenuLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btLogout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout" />
+
+        <Button
+            android:id="@+id/btExit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Exit" />
+    </LinearLayout>
 
 </LinearLayout>

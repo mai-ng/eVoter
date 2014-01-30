@@ -19,14 +19,15 @@ import com.loopj.android.http.AsyncHttpClient;
 
 import evoter.mobile.main.R;
 import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.MenuDialog;
 import evoter.mobile.objects.OfflineEVoterManager;
+import evoter.mobile.utils.EVoterMobileUtils;
 
 /**
- * Update by @author luongnv89 on Thu 30-Jan-2014:
- * <br>
- * <li> Add constructor for {@link OfflineEVoterManager}
- * On Sat - 18/01/2014 - modified by luongnv89: <br>
+ * Update by @author luongnv89 on Thu 30-Jan-2014: <br>
+ * <li>Add constructor for {@link OfflineEVoterManager} On Sat - 18/01/2014 -
+ * modified by luongnv89: <br>
  * Add {@link EVoterActivity#exit()} - to exit application from anywhere when
  * the application has error, exception,... avoid stuck phone
  * {@link EVoterActivity} is a parent class of all activity of eVoterMobile
@@ -180,9 +181,37 @@ public class EVoterActivity extends Activity {
 	}
 	
 	/**
-	 * This method to exit application from anywhere in application
+	 * exit application from anywhere in application
+	 * <br> Show a dialog to confirm exiting application
 	 */
 	public void exit() {
+		final DialogInfor dialogExit = new DialogInfor(EVoterActivity.this, "Do you really want to exit application?");
+		dialogExit.setMessageContent("");
+		dialogExit.getBtOK().setText("Exit");
+		dialogExit.getBtOK().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Goodbye....");
+				exitApplication();
+			}
+		});
+		dialogExit.getBtKO().setText("Cancel");
+		dialogExit.getBtKO().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				dialogExit.dismiss();
+				
+			}
+		});
+		dialogExit.show();
+	};
+	
+	/**
+	 * Exit application
+	 */
+	public void exitApplication() {
 		Intent exitIntent = new Intent(this, StartActivity.class);
 		exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		exitIntent.putExtra("Exit application", true);

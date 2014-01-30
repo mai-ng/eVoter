@@ -19,8 +19,10 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 
-import eVoter.web.test.Configuration;
-import eVoter.web.test.EVoterHttpClient;
+import web.util.Configuration;
+import web.util.EVoterHTTPRequest;
+import web.util.EVoterHttpClient;
+
 import evoter.share.dao.UserDAO;
 import evoter.share.utils.UserValidation;
 
@@ -47,11 +49,12 @@ public class Login extends JPanel {
 	private JButton btnRegister;
 
 	GridBagConstraints c;
-
+	
 	/**
 	 * Create the panel.
 	 */
 	public Login() {
+//		this.password = password;
 
 		initComponents();
 		actionPerformed();
@@ -146,8 +149,8 @@ public class Login extends JPanel {
 
 				//get input
 				List<NameValuePair> loginParams = new ArrayList<NameValuePair>();
-				loginParams.add(new BasicNameValuePair(UserDAO.USER_NAME,
-						i_Usrname));
+				loginParams.add(new BasicNameValuePair(UserDAO.USER_NAME,i_Usrname
+						));
 				loginParams.add(new BasicNameValuePair(UserDAO.PASSWORD,
 						i_Password));
 
@@ -162,29 +165,36 @@ public class Login extends JPanel {
 				} else if (!UserValidation.isValidPassword(i_Password)) {
 					lblError.setText("Input password is not valid");
 				} else {
-					int reponseStatus = client.post(
-							Configuration.get_urlLogin(), loginParams);
-					System.out.println(reponseStatus);
+					
+					//Using HttpURLConnection
+					String response = EVoterHTTPRequest.excutePost(Configuration.get_urlLogin(), loginParams);
+					if(response!=null) lblError.setText(response);
+					else lblError.setText("Response is null!");
+					
+					//Using HttpClient
+//					int reponseStatus = client.post(
+//							Configuration.get_urlLogin(), loginParams);
+//					System.out.println(reponseStatus);
 					
 					//change to the page if "View list of subjects" if login succeeded
-					if (reponseStatus == 200) {
-						String content = client.getResponseContent();
-						System.out.println(content);
-						try {
-//							JSONObject item = new JSONObject(content);
-//							USER_KEY = item.getString(UserDAO.USER_KEY);
-							Login.this.removeAll();
-							ViewListSubject listOfSubjects = new ViewListSubject();
-							Login.this.add(listOfSubjects);
-							Login.this.revalidate();
-							Login.this.repaint();
-						} catch (JSONException e1) {
-							e1.printStackTrace();
-							lblError.setText("No account with input username and password");
-						}
-					} else {
-						lblError.setText("Connect to server failed!");
-					}
+//					if (reponseStatus == 200) {
+//						String content = client.getResponseContent();
+//						System.out.println(content);
+//						try {
+////							JSONObject item = new JSONObject(content);
+////							USER_KEY = item.getString(UserDAO.USER_KEY);
+//							Login.this.removeAll();
+//							ViewListSubject listOfSubjects = new ViewListSubject();
+//							Login.this.add(listOfSubjects);
+//							Login.this.revalidate();
+//							Login.this.repaint();
+//						} catch (JSONException e1) {
+//							e1.printStackTrace();
+//							lblError.setText("No account with input username and password");
+//						}
+//					} else {
+//						lblError.setText("Connect to server failed!");
+//					}
 				}
 
 			}

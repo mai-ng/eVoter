@@ -172,8 +172,8 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				//TODO: REQUEST CREATE NEW SESSION
-				Log.i("Main menu", "Create new session");
+				Intent newSessionIntent = new Intent(EVoterActivity.this,NewSessionActivity.class);
+				startActivity(newSessionIntent);
 				menuDialog.dismiss();
 			}
 		});

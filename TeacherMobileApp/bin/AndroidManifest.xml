@@ -97,6 +97,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="evoter.mobile.activities.NewSessionActivity"
+            android:screenOrientation="portrait"
+            android:label="New Session" >
+            <intent-filter>
+                <action android:name="android.intent.action.NEWSESSION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

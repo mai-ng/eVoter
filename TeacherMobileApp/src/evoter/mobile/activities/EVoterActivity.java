@@ -23,6 +23,9 @@ import evoter.mobile.objects.MenuDialog;
 import evoter.mobile.objects.OfflineEVoterManager;
 
 /**
+ * Update by @author luongnv89 on Thu 30-Jan-2014:
+ * <br>
+ * <li> Add constructor for {@link OfflineEVoterManager}
  * On Sat - 18/01/2014 - modified by luongnv89: <br>
  * Add {@link EVoterActivity#exit()} - to exit application from anywhere when
  * the application has error, exception,... avoid stuck phone
@@ -88,7 +91,8 @@ public class EVoterActivity extends Activity {
 		tvTitleBarContent = (TextView) findViewById(R.id.tvTitleBar);
 		ivTitleBarRefresh.setVisibility(View.GONE);
 		client = new AsyncHttpClient(Configuration.TIME_OUT);
-		
+		offlineEVoterManager = new OfflineEVoterManager(this);
+		setupMainMenu();
 		ivTitleBarIcon.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -97,7 +101,6 @@ public class EVoterActivity extends Activity {
 			}
 		});
 		
-		setupMainMenu();
 	}
 	
 	/**

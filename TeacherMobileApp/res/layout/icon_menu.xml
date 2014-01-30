@@ -7,7 +7,7 @@
     android:padding="10dp" >
 
     <LinearLayout
-        android:id="@+id/mainMenu"
+        android:id="@+id/mainMenuLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
@@ -26,7 +26,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/subjectActivityMenu"
+        android:id="@+id/subjectMenuLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
@@ -37,30 +37,16 @@
             android:layout_height="wrap_content"
             android:text="List Users" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/sessionActivityMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
         <Button
             android:id="@+id/btNewSession"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="New session" />
 
-        <Button
-            android:id="@+id/btAcceptedUser"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Accepted User" />
-
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/questionActivityMenu"
+        android:id="@+id/sessionMenuLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
@@ -71,10 +57,24 @@
             android:layout_height="wrap_content"
             android:text="New Question" />
 
+        <Button
+            android:id="@+id/btAcceptedUser"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Accepted User" />
+
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/questionDetailActivityMenu"
+        android:id="@+id/questionMenuLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/questionDetailMenuLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >

@@ -8,7 +8,7 @@ package evoter.mobile.objects;
  * 
  */
 public class Configuration {
-	private static String IPAddress ="192.168.0.13";
+	private static String IPAddress ="192.168.0.12";
 	private static int portNumber = 1000;
 	public static int TIME_OUT=1000;
 	// for testing only

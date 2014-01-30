@@ -29,10 +29,13 @@ import evoter.share.model.ItemData;
 import evoter.share.model.Subject;
 
 /**
+ * Updated by @author luongnv89 on 26-Jan-2014:<br>
+ * <li> Updated back button press -> show dialog to confirm exiting application. 
  * Updated by @author luongnv89 on 19-Jun-2014:<br>
  * <li>Using {@link DialogInfor} for long click event instead of {@link Dialog}
- * Created by @author nvluong on 05-Dec-2013</br> Updated by @author btdiem on
- * 08-Jan-2014 : </br></li>update loadListSubjects() method: </li>remove
+ * Created by @author nvluong on 05-Dec-2013</br> 
+ * Updated by @author btdiem on 08-Jan-2014 : </br>
+ * </li>update loadListSubjects() method: </li>remove
  * parameters </li>add userKey to parameter map when sending request to server
  */
 public class SubjectActivity extends ItemDataActivity {
@@ -43,7 +46,7 @@ public class SubjectActivity extends ItemDataActivity {
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentUserName());
 		
-		menuDialog.setMenuSubjectActivity();
+		
 		adapter = new SubjectAdapter(SubjectActivity.this);
 		listView.setAdapter(adapter);
 		
@@ -213,11 +216,27 @@ public class SubjectActivity extends ItemDataActivity {
 	 */
 	@Override
 	public void onBackPressed() {
-		Intent exitIntent = new Intent(this, StartActivity.class);
-		exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		exitIntent.putExtra("Exit application", true);
-		startActivity(exitIntent);
-		finish();
+		final DialogInfor dialogExit = new DialogInfor(SubjectActivity.this, "Do you really want to exit application?");
+		dialogExit.setMessageContent("");
+		dialogExit.getBtOK().setText("Exit");
+		dialogExit.getBtOK().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				EVoterMobileUtils.showeVoterToast(SubjectActivity.this, "Goodbye....");
+				exit();
+			}
+		});
+		dialogExit.getBtKO().setText("Cancel");
+		dialogExit.getBtKO().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				dialogExit.dismiss();
+				
+			}
+		});
+		dialogExit.show();
 	}
 	
 }

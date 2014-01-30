@@ -25,7 +25,9 @@ import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.*;
 import evoter.share.utils.*;
 
-/**
+/**Update by @author luongnv89 on Thu 30-Jan-2014:
+ * <br>
+ * <li> remove constructor for {@link OfflineEVoterManager} to {@link EVoterActivity}
  * Updated by @author luongnv89 on 19-Jan-2014:<br>
  * <li> Deleted start new LoginActivity in case "username and password is incorrect!"
  * <br>Just notify for user and user can try again
@@ -55,7 +57,6 @@ public class LoginActivity extends EVoterActivity {
 		
 		this.ivTitleBarIcon.setEnabled(false);
 		
-		offlineEVoterManager = new OfflineEVoterManager(this);
 		
 		etUsrName = (EditText) findViewById(R.id.usrname);
 		if (RuntimeEVoterManager.getCurrentUserName() != null) {

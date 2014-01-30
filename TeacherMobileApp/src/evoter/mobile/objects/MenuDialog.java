@@ -18,21 +18,21 @@ import evoter.share.model.UserType;
  */
 public class MenuDialog extends Dialog {
 	
-	LinearLayout mainMenu;
+	LinearLayout lo_mainMenu;
 	Button btExit;
 	Button btLogout;
 	
-	LinearLayout subjectActivityMenu;
+	LinearLayout lo_subjectActivityMenu;
 	Button btListUsers;
 	
-	LinearLayout sessionActivityMenu;
+	LinearLayout lo_sessionActivityMenu;
 	Button btNewSession;
 	Button btAcceptUsers;
 	
-	LinearLayout questionActivityMenu;
+	LinearLayout lo_questionActivityMenu;
 	Button btNewQuestion;
 	
-	LinearLayout questionDetailActivityMenu;
+	LinearLayout lo_questionDetailActivityMenu;
 
 	Button btAllQuestion;
 	
@@ -49,29 +49,29 @@ public class MenuDialog extends Dialog {
 		layoutParameters.height = WindowManager.LayoutParams.WRAP_CONTENT;
 		this.getWindow().setAttributes(layoutParameters);
 		
-		mainMenu = (LinearLayout) findViewById(R.id.mainMenu);
+		lo_mainMenu = (LinearLayout) findViewById(R.id.mainMenuLayout);
 		btExit = (Button) findViewById(R.id.btExit);
 		btLogout = (Button) findViewById(R.id.btLogout);
 		
-		subjectActivityMenu = (LinearLayout) findViewById(R.id.subjectActivityMenu);
+		lo_subjectActivityMenu = (LinearLayout) findViewById(R.id.subjectMenuLayout);
 		btListUsers = (Button) findViewById(R.id.btSubjectUser);
 		
-		sessionActivityMenu = (LinearLayout) findViewById(R.id.sessionActivityMenu);
+		lo_sessionActivityMenu = (LinearLayout) findViewById(R.id.sessionMenuLayout);
 		btNewSession = (Button) findViewById(R.id.btNewSession);
 		btNewSession.setVisibility(View.GONE);
 		btAcceptUsers = (Button) findViewById(R.id.btAcceptedUser);
 		
-		questionActivityMenu = (LinearLayout) findViewById(R.id.questionActivityMenu);
+		lo_questionActivityMenu = (LinearLayout) findViewById(R.id.questionMenuLayout);
 		btNewQuestion = (Button) findViewById(R.id.btNewQuestion);
 		btNewQuestion.setVisibility(View.GONE);
 		
-		questionDetailActivityMenu = (LinearLayout) findViewById(R.id.questionDetailActivityMenu);
+		lo_questionDetailActivityMenu = (LinearLayout) findViewById(R.id.questionDetailMenuLayout);
 		
 		btAllQuestion = (Button) findViewById(R.id.btAllQuestion);
-		subjectActivityMenu.setVisibility(View.GONE);
-		sessionActivityMenu.setVisibility(View.GONE);
-		questionActivityMenu.setVisibility(View.GONE);
-		questionDetailActivityMenu.setVisibility(View.GONE);
+		lo_subjectActivityMenu.setVisibility(View.GONE);
+		lo_sessionActivityMenu.setVisibility(View.GONE);
+		lo_questionActivityMenu.setVisibility(View.GONE);
+		lo_questionDetailActivityMenu.setVisibility(View.GONE);
 		btAllQuestion.setVisibility(View.GONE);
 		if(RuntimeEVoterManager.getCurrentUserType()==UserType.TEACHER){
 			btAllQuestion.setVisibility(View.VISIBLE);
@@ -81,38 +81,38 @@ public class MenuDialog extends Dialog {
 	}
 	
 	public void setMenuSubjectActivity(){
-		subjectActivityMenu.setVisibility(View.VISIBLE);
-		sessionActivityMenu.setVisibility(View.GONE);
-		questionActivityMenu.setVisibility(View.GONE);
-		questionDetailActivityMenu.setVisibility(View.GONE);
+		lo_subjectActivityMenu.setVisibility(View.VISIBLE);
+		lo_sessionActivityMenu.setVisibility(View.GONE);
+		lo_questionActivityMenu.setVisibility(View.GONE);
+		lo_questionDetailActivityMenu.setVisibility(View.GONE);
 	}
 	
 	public void setMenuSessionActivity(){
-		sessionActivityMenu.setVisibility(View.VISIBLE);
-		subjectActivityMenu.setVisibility(View.GONE);
-		questionActivityMenu.setVisibility(View.GONE);
-		questionDetailActivityMenu.setVisibility(View.GONE);
+		lo_sessionActivityMenu.setVisibility(View.VISIBLE);
+		lo_subjectActivityMenu.setVisibility(View.GONE);
+		lo_questionActivityMenu.setVisibility(View.GONE);
+		lo_questionDetailActivityMenu.setVisibility(View.GONE);
 	}
 	
 	public void setMenuQuestionActivity(){
-		questionActivityMenu.setVisibility(View.VISIBLE);
-		subjectActivityMenu.setVisibility(View.GONE);
-		sessionActivityMenu.setVisibility(View.GONE);
-		questionDetailActivityMenu.setVisibility(View.GONE);
+		lo_questionActivityMenu.setVisibility(View.VISIBLE);
+		lo_subjectActivityMenu.setVisibility(View.GONE);
+		lo_sessionActivityMenu.setVisibility(View.GONE);
+		lo_questionDetailActivityMenu.setVisibility(View.GONE);
 	}
 	
 	public void setMenuQuestionDetailActivity(){
-		questionDetailActivityMenu.setVisibility(View.VISIBLE);
-		subjectActivityMenu.setVisibility(View.GONE);
-		sessionActivityMenu.setVisibility(View.GONE);
-		questionActivityMenu.setVisibility(View.GONE);
+		lo_questionDetailActivityMenu.setVisibility(View.VISIBLE);
+		lo_subjectActivityMenu.setVisibility(View.GONE);
+		lo_sessionActivityMenu.setVisibility(View.GONE);
+		lo_questionActivityMenu.setVisibility(View.GONE);
 	}
 	
 	/**
 	 * @return the mainMenu
 	 */
 	public LinearLayout getMainMenu() {
-		return mainMenu;
+		return lo_mainMenu;
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class MenuDialog extends Dialog {
 	 * @return the subjectActivityMenu
 	 */
 	public LinearLayout getSubjectActivityMenu() {
-		return subjectActivityMenu;
+		return lo_subjectActivityMenu;
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class MenuDialog extends Dialog {
 	 * @return the sessionActivityMenu
 	 */
 	public LinearLayout getSessionActivityMenu() {
-		return sessionActivityMenu;
+		return lo_sessionActivityMenu;
 	}
 
 	/**
@@ -168,7 +168,7 @@ public class MenuDialog extends Dialog {
 	 * @return the questionActivityMenu
 	 */
 	public LinearLayout getQuestionActivityMenu() {
-		return questionActivityMenu;
+		return lo_questionActivityMenu;
 	}
 
 	/**
@@ -182,7 +182,7 @@ public class MenuDialog extends Dialog {
 	 * @return the questionDetailActivityMenu
 	 */
 	public LinearLayout getQuestionDetailActivityMenu() {
-		return questionDetailActivityMenu;
+		return lo_questionDetailActivityMenu;
 	}
 
 	/**

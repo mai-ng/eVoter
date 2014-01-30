@@ -41,7 +41,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		this.tvTitleBarContent.setText(RuntimeEVoterManager.getCurrentSessionName());
 		this.ivTitleBarRefresh.setVisibility(View.GONE);
 		this.menuDialog.setMenuQuestionDetailActivity();
-		
+		this.menuDialog.setMenuQuestionActivity();
 		currentQuestion = RuntimeEVoterManager.getCurrentQuestion();
 		
 		tvQuestionText = (TextView) findViewById(R.id.tvQuestionText);

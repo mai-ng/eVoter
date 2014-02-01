@@ -3,6 +3,8 @@ package evoter.server.dao.impl;
 import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.model.mapper.SessionUserRowMapper;
 import evoter.share.dao.SessionUserDAO;
@@ -11,6 +13,8 @@ import evoter.share.model.SessionUser;
 
 public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO {
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public int insert(SessionUser sessionUser) {
 		
@@ -23,6 +27,8 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<SessionUser> findAll() {
 		
@@ -31,6 +37,8 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<SessionUser> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {
@@ -47,24 +55,32 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<SessionUser> findByUserId(long userId) {
 		
 		return findByProperty(new String[]{USER_ID}, new Long[]{userId});
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<SessionUser> findBySessionId(long sessionId) {
 		
 		return findByProperty(new String[]{SESSION_ID}, new Long[]{sessionId});
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<SessionUser> findByDeleteIndicator(boolean deleteIndicator) {
 		
 		return findByProperty(new String[]{DELETE_INDICATOR}, new Boolean[]{deleteIndicator});
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<SessionUser> findByAcceptSession(boolean acceptSession) {
 	
@@ -72,6 +88,8 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByProperty(String[] propertyNames, Object[] propertyValues) {
 		
@@ -87,6 +105,8 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByUserId(long userId) {
 		
@@ -94,6 +114,8 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteBySessionId(long sessionId) {
 		
@@ -101,6 +123,8 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByDeleteIndicator(boolean deleteIndicator) {
 		
@@ -108,6 +132,8 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByAcceptSession(boolean acceptSession) {
 		
@@ -115,6 +141,8 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public int update(SessionUser sessUser) {
 		

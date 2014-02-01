@@ -3,6 +3,8 @@ package evoter.server.dao.impl;
 import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.model.mapper.StatisticsRowMapper;
 import evoter.share.dao.StatisticsDAO;
@@ -10,6 +12,8 @@ import evoter.share.model.Statistics;
 
 public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public int insert(Statistics statistics) {
 
@@ -21,6 +25,8 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 							statistics.getStatisticValue()});
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Statistics> findAll() {
 
@@ -29,6 +35,8 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 	
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Statistics> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {
@@ -44,24 +52,32 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 		return getJdbcTemplate().query(sql, propertyValues, new StatisticsRowMapper());
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Statistics> findBySessionId(long sessionId) {
 		
 		return findByProperty(new String[]{SESSION_ID}, new Long[]{sessionId});
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Statistics> findByStatisticsValue(String statisticsValue) {
 
 		return findByProperty(new String[]{STATISTICS_VALUE}, new String[]{statisticsValue});
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Statistics> findByQuestionId(long questionId) {
 
 		return findByProperty(new String[]{QUESTION_ID}, new Long[]{questionId});
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByProperty(String[] propertyNames, Object[] propertyValues) {
 		
@@ -76,6 +92,8 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteBySessionId(long sessionId) {
 		
@@ -83,6 +101,8 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByQuestionId(long questionId) {
 
@@ -90,6 +110,8 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByStatisticsValue(String statisticsValue) {
 		

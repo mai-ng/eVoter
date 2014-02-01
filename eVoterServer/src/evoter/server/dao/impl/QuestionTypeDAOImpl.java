@@ -3,6 +3,8 @@ package evoter.server.dao.impl;
 import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.model.mapper.QuestionTypeRowMapper;
 import evoter.share.dao.QuestionTypeDAO;
@@ -14,6 +16,8 @@ import evoter.share.model.QuestionType;
  */
 public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeDAO {
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<QuestionType> findAll() {
 		
@@ -22,6 +26,8 @@ public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeD
 
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public int insert(QuestionType questionType) {
 		
@@ -31,18 +37,24 @@ public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeD
 		
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<QuestionType> findById(long id) {
 
 		return findByProperty(new String[]{ID}, new Long[]{id});
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<QuestionType> findByQuestionTypeValue(String questionTypeValue) {
 		
 		return findByProperty(new String[]{QUESTION_TYPE_VALUE}, new String[]{questionTypeValue});
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<QuestionType> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {
@@ -58,6 +70,8 @@ public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeD
 		return (List<QuestionType>)getJdbcTemplate().query(sql, propertyValues, new QuestionTypeRowMapper());
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByProperty(String[] propertyNames, Object[] propertyValues) {
 		
@@ -73,6 +87,8 @@ public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeD
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteById(long id) {
 		
@@ -80,6 +96,8 @@ public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeD
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByQuestionTypeValue(String questionTypeValue) {
 		

@@ -9,6 +9,9 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import evoter.server.model.mapper.QuestionRowMapper;
 import evoter.share.dao.QuestionDAO;
@@ -21,9 +24,12 @@ import evoter.share.model.Question;
  */
 public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 
+	
+	@Transactional
+	@Rollback(true)
 	@Override
 	public long insert(final Question question) {
-		
+
 		final String sql = "INSERT INTO " + TABLE_NAME + "(" 
 		+ USER_ID 
 		+ "," + QUESTION_TYPE_ID 
@@ -58,6 +64,8 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 //								question.getParentId()});
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Question> findAll() {
 		
@@ -65,7 +73,9 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		return getJdbcTemplate().query(sql, new QuestionRowMapper());
 
 	}
-
+	
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Question> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {
@@ -81,13 +91,17 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		return getJdbcTemplate().query(sql, propertyValues, new QuestionRowMapper());
 		
 	}
-
+	
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Question> findById(long id) {
 		
 		return findByProperty(new String[]{ID}, new Long[]{id});
 	}
-
+	
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Question> findByUserId(long userId) {
 		
@@ -95,6 +109,8 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Question> findByQuestionText(String questionText) {
 		
@@ -102,6 +118,8 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Question> findByQuestionTypeId(long questionTypeId) {
 		
@@ -109,6 +127,8 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByProperty(String[] propertyNames, Object[] propertyValues) {
 		
@@ -122,16 +142,22 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		getJdbcTemplate().update(sql, propertyValues);
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteById(long id) {
 		deleteByProperty(new String[]{ID}, new Long[]{id});
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByUserId(long userId) {
 		deleteByProperty(new String[]{USER_ID}, new Long[]{userId});
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByQuestionText(String questionText) {
 		
@@ -139,6 +165,8 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByQuestionTypeId(long questionTypeId) {
 		
@@ -146,12 +174,16 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Question> findByCreationDate(Date creationDate) {
 		
 		return findByProperty(new String[]{CREATION_DATE}, new Object[]{creationDate});
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByCreationDate(Date creationDate) {
 		
@@ -159,12 +191,16 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		
 	}
 
+	@Transactional
+	@Rollback(false)
 	@Override
 	public List<Question> findByParentId(long parentId) {
 		
 		return findByProperty(new String[]{PARENT_ID}, new Long[]{parentId});
 	}
 
+	@Transactional
+	@Rollback(true)
 	@Override
 	public void deleteByParentId(long parentId) {
 		

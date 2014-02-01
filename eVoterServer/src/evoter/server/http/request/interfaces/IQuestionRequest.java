@@ -22,6 +22,7 @@ import evoter.share.model.QuestionSession;
  */
 public interface IQuestionRequest {
 
+	public static final String BEAN_NAME = "questionRequest";
 	/**
 	 * This method will response a list of {@link Question} and {@link Answer} when server </br>
 	 * receives request {@link URIRequest#GET_ALL_QUESTION} </br>

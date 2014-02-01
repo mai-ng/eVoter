@@ -13,6 +13,7 @@ import evoter.share.dao.UserDAO;
  */
 public interface IAccountRequest {
 
+	public static final String BEAN_NAME = "accountRequest";
 	/**
 	 * Response clients a userkey generated from {@link UserDAO#USER_NAME} </br>
 	 * and {@link UserDAO#PASSWORD} if username and password exist in database </br> 
@@ -20,7 +21,7 @@ public interface IAccountRequest {
 	 * or response a @ {@link URIRequest#FAILURE_MESSAGE } if there is an{@link Exception} </br>    
 	 * 
 	 * @param exchange {@link HttpExchange} communicates between server and clients </br>
-	 * @param parameters contains UserDAO.USER_NAME and UserDAO.PASSWORD </br>
+	 * @param parameters contains {@link UserDAO.USER_NAME} and {@link UserDAO.PASSWORD} </br>
 	 */
 	public void doLogin(HttpExchange exchange, Map<String,Object> parameters);	
 

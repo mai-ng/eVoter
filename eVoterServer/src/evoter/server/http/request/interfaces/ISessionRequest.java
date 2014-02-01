@@ -20,6 +20,7 @@ import evoter.share.model.Subject;
  */
 public interface ISessionRequest {
 
+	public static final String BEAN_NAME = "sessionRequest";
 	/**
 	 * This method will select all {@link Session} of a specific {@link Subject} </br>
 	 * and the result will be added to response to client application </br>

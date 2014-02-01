@@ -9,7 +9,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
 import evoter.server.http.request.interfaces.IQuestionRequest;
@@ -32,9 +31,51 @@ import evoter.share.utils.UserValidation;
 
 public class QuestionRequest implements IQuestionRequest{
 	
-	private static IQuestionRequest _this;
+	private AnswerDAO answerDAO;
+	private QuestionDAO questionDAO;
+	private QuestionSessionDAO questionSessionDAO;
+	private QuestionTypeDAO questionTypeDAO;
+	private UserDAO userDAO;
 	
-	private QuestionRequest(){}
+	public AnswerDAO getAnswerDAO() {
+		return answerDAO;
+	}
+
+	public void setAnswerDAO(AnswerDAO answerDAO) {
+		this.answerDAO = answerDAO;
+	}
+
+	public QuestionDAO getQuestionDAO() {
+		return questionDAO;
+	}
+
+	public void setQuestionDAO(QuestionDAO questionDAO) {
+		this.questionDAO = questionDAO;
+	}
+
+	public QuestionSessionDAO getQuestionSessionDAO() {
+		return questionSessionDAO;
+	}
+
+	public void setQuestionSessionDAO(QuestionSessionDAO questionSessionDAO) {
+		this.questionSessionDAO = questionSessionDAO;
+	}
+
+	public QuestionTypeDAO getQuestionTypeDAO() {
+		return questionTypeDAO;
+	}
+
+	public void setQuestionTypeDAO(QuestionTypeDAO questionTypeDAO) {
+		this.questionTypeDAO = questionTypeDAO;
+	}
+
+	public UserDAO getUserDAO() {
+		return userDAO;
+	}
+
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
 
 	//This value is updated when receiving a /send_question request 
 	private  Map<Long,Long> mapSentQuestion = new HashMap<Long, Long>();
@@ -53,15 +94,11 @@ public class QuestionRequest implements IQuestionRequest{
 			Map<String,Object> parameters) {
 		
 		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
-		
-		QuestionSessionDAO quesSesDao = (QuestionSessionDAO)BeanDAOFactory.getBean(QuestionSessionDAO.BEAN_NAME);
-		
-		List<QuestionSession> questionSessionList = quesSesDao.findBySessionId(sessionId);
-		QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
+		List<QuestionSession> questionSessionList = questionSessionDAO.findBySessionId(sessionId);
 		JSONArray jsArray = new JSONArray();
 		
 		for (QuestionSession questionSession : questionSessionList){
-			List<Question> questionList = questionDao.findByProperty(new String[]{QuestionDAO.ID, QuestionDAO.PARENT_ID}, new Object[]{questionSession.getQuestionId(), 0});//questionDao.findById(questionSession.getQuestionId());
+			List<Question> questionList = questionDAO.findByProperty(new String[]{QuestionDAO.ID, QuestionDAO.PARENT_ID}, new Object[]{questionSession.getQuestionId(), 0});//questionDao.findById(questionSession.getQuestionId());
 			for (Question question : questionList){
 				
 				JSONObject object = question.toJSON();
@@ -69,7 +106,7 @@ public class QuestionRequest implements IQuestionRequest{
 				
 				JSONArray answers = getAnswersOfQuestion(question.getId());
 				
-				List<Question> subQuestionList = questionDao.findByParentId(question.getId());
+				List<Question> subQuestionList = questionDAO.findByParentId(question.getId());
 				if (subQuestionList != null && !subQuestionList.isEmpty()){
 					JSONArray jsPart1 = new JSONArray();
 					for (Question subQuestion : subQuestionList){
@@ -96,8 +133,7 @@ public class QuestionRequest implements IQuestionRequest{
 		
 		try{
 			long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
-			QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
-			List<Question> questionList = questionDao.findById(questionId);
+			List<Question> questionList = questionDAO.findById(questionId);
 			JSONArray jsArray = new JSONArray();
 			if (questionList != null && !questionList.isEmpty()){
 				
@@ -124,8 +160,7 @@ public class QuestionRequest implements IQuestionRequest{
 	@SuppressWarnings("unchecked")
 	public  JSONArray getAnswersOfQuestion(long questionId){
 		
-		List<Answer> answers = (List<Answer>) ((AnswerDAO)BeanDAOFactory.getBean(AnswerDAO.BEAN_NAME))
-				.findByQuestionId(questionId);
+		List<Answer> answers = (List<Answer>)answerDAO.findByQuestionId(questionId);
 		if (answers != null && !answers.isEmpty()){
 			JSONArray arrays = new JSONArray();
 			for (Answer answer : answers){
@@ -167,7 +202,6 @@ public class QuestionRequest implements IQuestionRequest{
 		
 		try{
 			
-			QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
 			Question question = null;
 			long parentId = 0;
 			int index = 0;
@@ -179,7 +213,7 @@ public class QuestionRequest implements IQuestionRequest{
 					questionTexts[index++], 
 					creationDate, 
 					parentId);
-			questionId =  questionDao.insert(question);
+			questionId =  questionDAO.insert(question);
 			/**
 			 * if this is match type question, the inserted question id is parent id </br>
 			 * continue inserting the sub questions to the database </br>
@@ -192,13 +226,12 @@ public class QuestionRequest implements IQuestionRequest{
 							questionTexts[index++], 
 							creationDate, 
 							parentId);
-					questionId =  questionDao.insert(question);
+					questionId =  questionDAO.insert(question);
 				}
 			}
 			/**
 			 * Create Answer object and insert it to ANSWER table
 			 */
-			AnswerDAO answerDAO = (AnswerDAO)BeanDAOFactory.getBean(AnswerDAO.BEAN_NAME);
 			for (String answerText : answerTexts){
 				Answer answer = new Answer(questionId, answerText);
 				answerDAO.insert(answer);
@@ -207,7 +240,6 @@ public class QuestionRequest implements IQuestionRequest{
 			 * Create SessionQuestion object and insert it to QUESTION_SESSION table
 			 */
 			QuestionSession questionSession = new QuestionSession(questionId, sessionId);
-			QuestionSessionDAO questionSessionDAO = (QuestionSessionDAO)BeanDAOFactory.getBean(QuestionSessionDAO.BEAN_NAME);
 			questionSessionDAO.insert(questionSession);
 			
 		}catch(Exception e){
@@ -236,11 +268,6 @@ public class QuestionRequest implements IQuestionRequest{
 		long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
 		
 		try{
-			
-			QuestionDAO questionDAO = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
-			AnswerDAO answerDAO = (AnswerDAO)BeanDAOFactory.getBean(AnswerDAO.BEAN_NAME);
-			QuestionSessionDAO questionSessionDAO = (QuestionSessionDAO)BeanDAOFactory.getBean(QuestionSessionDAO.TABLE_NAME);
-			
 			// ANSWER table
 			answerDAO.deleteByQuestionId(questionId);
 			// QUESTION_SESSION table
@@ -294,8 +321,7 @@ public class QuestionRequest implements IQuestionRequest{
 			long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
 			if (mapSentQuestion.containsKey(sessionId)){
 				long questionId = mapSentQuestion.get(sessionId);
-				QuestionDAO questionDao = (QuestionDAO)BeanDAOFactory.getBean(QuestionDAO.BEAN_NAME);
-				Question question = questionDao.findById(questionId).get(0);
+				Question question = questionDAO.findById(questionId).get(0);
 				//RE-WORK 
 				JSONObject object = question.toJSON();
 				object.put("answers", getAnswersOfQuestion(question.getId()));
@@ -327,12 +353,6 @@ public class QuestionRequest implements IQuestionRequest{
 		URIUtils.writeSuccessResponse(httpExchange);
 	}
 
-	public static IQuestionRequest getInstance() {
-		if (_this == null){
-			_this = new QuestionRequest();
-		}
-		return _this;
-	} 
 
 	
 	

@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
-
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
 import evoter.server.http.request.interfaces.IAccountRequest;
@@ -25,8 +23,16 @@ public class AccountRequest implements IAccountRequest{
 	 List<String> userKeys = new ArrayList<String>();
 	 //It is used for testing requests that have not yet implemented
 	 String userKeyemp = "temp";
-	 private static IAccountRequest _this;
 	 private AccountRequest(){userKeys.add(userKeyemp);}
+	 private UserDAO userDAO;
+	 
+	 public void setUserDAO(UserDAO userDAO){
+		 this.userDAO = userDAO;
+	 }
+	 public UserDAO getUserDAO(){
+		 return this.userDAO;
+	 }
+	 
 //	private  final String USER_KEY = "userkey";
 	
 	/**
@@ -36,7 +42,9 @@ public class AccountRequest implements IAccountRequest{
 	 * or response a @ {@link URIRequest#FAILURE_MESSAGE } if there is an{@link Exception} </br>    
 	 * 
 	 * @param exchange {@link HttpExchange} communicates between server and clients </br>
-	 * @param parameters contains UserDAO.USER_NAME and UserDAO.PASSWORD </br>
+	 * @param parameters contains </br> 
+	 * 	UserDAO.USER_NAME </br> 
+	 *  UserDAO.PASSWORD </br>
 	 */
 	@SuppressWarnings("unchecked")
 	public  void doLogin(HttpExchange exchange, Map<String,Object> parameters){
@@ -46,8 +54,7 @@ public class AccountRequest implements IAccountRequest{
 
 		try{
 			
-			UserDAO userDao = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
-			List<User> users = userDao.findByProperty(new String[]{UserDAO.USER_NAME, UserDAO.PASSWORD}, 
+			List<User> users = userDAO.findByProperty(new String[]{UserDAO.USER_NAME, UserDAO.PASSWORD}, 
 					new Object[]{username, password});
 			String userKey = null;
 			if (users != null && !users.isEmpty()){
@@ -106,7 +113,7 @@ public class AccountRequest implements IAccountRequest{
 		try{
 
 			String email = (String)parameters.get(UserDAO.EMAIL);
-			UserDAO userDAO = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
+			//UserDAO userDAO = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
 			
 			List<User> userList = userDAO.findByEmail(email);
 			if (userList != null && !userList.isEmpty()){
@@ -145,7 +152,6 @@ public class AccountRequest implements IAccountRequest{
 			String email = (String)parameters.get(UserDAO.EMAIL);
 			long userTypeId = Long.valueOf((String)parameters.get(UserDAO.USER_TYPE_ID));
 			
-			UserDAO userDAO = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
 			//search database if this username exist
 			List<User> checkUsername = userDAO.findByProperty(new String[]{UserDAO.USER_NAME, UserDAO.USER_TYPE_ID}
 															, new Object[]{username, userTypeId});
@@ -178,11 +184,5 @@ public class AccountRequest implements IAccountRequest{
 		
 	}
 	
-	public static IAccountRequest getInstance(){
-		if (_this == null){
-			_this = new AccountRequest();
-		}
-		return _this;
-	}
 
 }

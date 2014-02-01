@@ -6,8 +6,6 @@ import java.util.Map;
 import org.json.simple.JSONArray;
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.dao.impl.BeanDAOFactory;
-
 import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
 import evoter.server.http.request.interfaces.ISubjectRequest;
@@ -31,10 +29,72 @@ import evoter.share.utils.UserValidation;
  */
 public class SubjectRequest implements ISubjectRequest{
 	
-	private static ISubjectRequest _this;
+
+	private QuestionSessionDAO questionSessionDAO;
+	private SessionDAO sessionDAO;
+	private SessionUserDAO sessionUserDAO;
+	private StatisticsDAO statisticsDAO;
+	private SubjectDAO subjectDAO;
+	private UserDAO userDAO;
+	private UserSubjectDAO userSubjectDAO;
 	
-	private SubjectRequest(){}
 	
+
+	public QuestionSessionDAO getQuestionSessionDAO() {
+		return questionSessionDAO;
+	}
+
+	public void setQuestionSessionDAO(QuestionSessionDAO questionSessionDAO) {
+		this.questionSessionDAO = questionSessionDAO;
+	}
+
+	public SessionDAO getSessionDAO() {
+		return sessionDAO;
+	}
+
+	public void setSessionDAO(SessionDAO sessionDAO) {
+		this.sessionDAO = sessionDAO;
+	}
+
+	public SessionUserDAO getSessionUserDAO() {
+		return sessionUserDAO;
+	}
+
+	public void setSessionUserDAO(SessionUserDAO sessionUserDAO) {
+		this.sessionUserDAO = sessionUserDAO;
+	}
+
+	public StatisticsDAO getStatisticsDAO() {
+		return statisticsDAO;
+	}
+
+	public void setStatisticsDAO(StatisticsDAO statisticsDAO) {
+		this.statisticsDAO = statisticsDAO;
+	}
+
+	public SubjectDAO getSubjectDAO() {
+		return subjectDAO;
+	}
+
+	public void setSubjectDAO(SubjectDAO subjectDAO) {
+		this.subjectDAO = subjectDAO;
+	}
+
+	public UserDAO getUserDAO() {
+		return userDAO;
+	}
+
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
+
+	public UserSubjectDAO getUserSubjectDAO() {
+		return userSubjectDAO;
+	}
+
+	public void setUserSubjectDAO(UserSubjectDAO userSubjectDAO) {
+		this.userSubjectDAO = userSubjectDAO;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -45,7 +105,7 @@ public class SubjectRequest implements ISubjectRequest{
 		try{
 			
 			long id = Long.valueOf((String)parameters.get(SubjectDAO.ID));
-			Subject subject = (Subject)((SubjectDAO) BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME)).findById(id).get(0);
+			Subject subject = (Subject)subjectDAO.findById(id).get(0);
 			URIUtils.writeResponse(subject.toJSON(), exchange);
 			
 		}catch(Exception e){
@@ -68,12 +128,11 @@ public class SubjectRequest implements ISubjectRequest{
 			//long id = Long.valueOf(parameters.get(UserSubjectDAO.USER_ID));
 			String userKey = (String)parameters.get(UserDAO.USER_KEY);
 			Long id = UserValidation.getUserIdFromUserKey(userKey);
-			UserSubjectDAO userSubjectDao = (UserSubjectDAO)BeanDAOFactory.getBean(UserSubjectDAO.BEAN_NAME);
-			List<UserSubject> usList = userSubjectDao.findByUserId(id);
+			List<UserSubject> usList = userSubjectDAO.findByUserId(id);
 			
 			JSONArray jsArray = new JSONArray();
 			for (UserSubject us : usList){
-				Subject subject = (Subject)((SubjectDAO) BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME)).findById(us.getSubjectId()).get(0);
+				Subject subject = (Subject)subjectDAO.findById(us.getSubjectId()).get(0);
 				jsArray.add(subject.toJSON());
 			}
 			System.out.println("SUBJECT : " + jsArray.toJSONString());
@@ -110,12 +169,6 @@ public class SubjectRequest implements ISubjectRequest{
 		try{
 			
 			long subjectId = Long.valueOf((String)parameters.get(SubjectDAO.ID));
-			SubjectDAO subjectDAO = (SubjectDAO)BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME);
-			UserSubjectDAO userSubjectDAO = (UserSubjectDAO)BeanDAOFactory.getBean(UserSubjectDAO.BEAN_NAME);
-			SessionDAO sessionDAO = (SessionDAO)BeanDAOFactory.getBean(SessionDAO.BEAN_NAME);
-			SessionUserDAO sessionUserDAO = (SessionUserDAO)BeanDAOFactory.getBean(SessionUserDAO.BEAN_NAME);
-			QuestionSessionDAO questionSessionDAO = (QuestionSessionDAO)BeanDAOFactory.getBean(QuestionSessionDAO.BEAN_NAME);
-			StatisticsDAO statisticsDAO = (StatisticsDAO)BeanDAOFactory.getBean(StatisticsDAO.BEAN_NAME);
 			
 //			List<UserSubject> userSubjectList = userSubjectDAO.findBySubjectId(subjectId);
 //			for (UserSubject userSubject : userSubjectList){
@@ -161,8 +214,7 @@ public class SubjectRequest implements ISubjectRequest{
 			Map<String,Object> parameters) {
 		try{
 			
-			SubjectDAO subjectDao = (SubjectDAO)BeanDAOFactory.getBean(SubjectDAO.BEAN_NAME);
-			List<Subject> subjects = subjectDao.findByProperty(parameters.keySet().toArray(new String[]{}), parameters.values().toArray());
+			List<Subject> subjects = subjectDAO.findByProperty(parameters.keySet().toArray(new String[]{}), parameters.values().toArray());
 			JSONArray jsArray = new JSONArray();
 			for (Subject subject : subjects){
 				jsArray.add(subject.toJSON());
@@ -176,11 +228,4 @@ public class SubjectRequest implements ISubjectRequest{
 
 	}
 	
-	public static ISubjectRequest getInstance(){
-		if(_this==null){
-			_this = new SubjectRequest();
-		}
-		return _this;
-	}
-
 }

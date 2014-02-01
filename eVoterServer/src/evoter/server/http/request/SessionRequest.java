@@ -10,7 +10,6 @@ import org.json.simple.JSONObject;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
 import evoter.server.http.request.interfaces.ISessionRequest;
@@ -32,10 +31,37 @@ import evoter.share.utils.UserValidation;
  */
 public class SessionRequest implements ISessionRequest{
 
-	private static ISessionRequest _this;
 	public static final String CREATOR = "CREATOR";
 	
-	private SessionRequest(){}
+	private SessionDAO sessionDAO;
+	private SessionUserDAO sessionUserDAO;
+	private UserDAO userDAO;
+	
+	
+	public SessionDAO getSessionDAO() {
+		return sessionDAO;
+	}
+
+	public void setSessionDAO(SessionDAO sessionDAO) {
+		this.sessionDAO = sessionDAO;
+	}
+
+	public SessionUserDAO getSessionUserDAO() {
+		return sessionUserDAO;
+	}
+
+	public void setSessionUserDAO(SessionUserDAO sessionUserDAO) {
+		this.sessionUserDAO = sessionUserDAO;
+	}
+
+	public UserDAO getUserDAO() {
+		return userDAO;
+	}
+
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
+
 	/**
 	 * This method will select all {@link Session} of a specific {@link Subject} </br>
 	 * and the result will be added to response to client application </br>
@@ -58,7 +84,6 @@ public class SessionRequest implements ISessionRequest{
 			long subjectId = Long.parseLong((String)parameters.get(SessionDAO.SUBJECT_ID));
 			long userId = Long.valueOf(UserValidation.getUserIdFromUserKey((String)parameters.get(UserDAO.USER_KEY)));
 			
-			SessionDAO sessionDAO = (SessionDAO)BeanDAOFactory.getBean(SessionDAO.BEAN_NAME);
 			//select all sessions in SESSION table 
 			List<Session> sessions = sessionDAO.findByProperty(
 					new String[]{SessionDAO.SUBJECT_ID, SessionDAO.USER_ID}, 
@@ -68,7 +93,6 @@ public class SessionRequest implements ISessionRequest{
 			if (sessions == null || sessions.isEmpty()){
 				sessions = new ArrayList<Session>();
 				//select all session id of this user from session_user table
-				SessionUserDAO sessionUserDAO = (SessionUserDAO)BeanDAOFactory.getBean(SessionUserDAO.BEAN_NAME);
 				List<SessionUser> sessionUsers = sessionUserDAO.findByUserId(userId);
 				for (SessionUser sessionUser : sessionUsers){
 					sessions.addAll(sessionDAO.findById(sessionUser.getSessionId()));
@@ -78,7 +102,6 @@ public class SessionRequest implements ISessionRequest{
 			
 	/**		List<Session> sessions = sesDAO.findBySubjectId(subjectId);*/
 			JSONArray jsArray = new JSONArray();
-			UserDAO userDAO = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
 			//find session creator
 			for (Session ses : sessions){
 				User creator = userDAO.findById(ses.getUserId()).get(0);
@@ -110,9 +133,7 @@ public class SessionRequest implements ISessionRequest{
 			Map<String,Object> parameters) {
 		
 		long id = Long.parseLong((String)parameters.get(SessionDAO.ID));
-		SessionDAO sesDao = (SessionDAO)BeanDAOFactory.getBean(SessionDAO.BEAN_NAME);
-		List<Session> sessions = sesDao.findById(id);
-		UserDAO userDAO = (UserDAO)BeanDAOFactory.getBean(UserDAO.BEAN_NAME);
+		List<Session> sessions = sessionDAO.findById(id);
 		JSONArray jsArray = new JSONArray();
 		for (Session ses : sessions){
 			User creator = userDAO.findById(ses.getUserId()).get(0);
@@ -145,13 +166,12 @@ public class SessionRequest implements ISessionRequest{
 		String userKey = (String)parameters.get(UserDAO.USER_KEY);
 		Long userId = Long.valueOf(UserValidation.getUserIdFromUserKey(userKey));
 		
-		SessionUserDAO sesUserDao = (SessionUserDAO)BeanDAOFactory.getBean(SessionUserDAO.BEAN_NAME);
-		List<SessionUser> sessUserList = sesUserDao.findByProperty(new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, new Object[]{sessionId, userId});
+		List<SessionUser> sessUserList = sessionUserDAO.findByProperty(new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, new Object[]{sessionId, userId});
 		if (sessUserList != null && !sessUserList.isEmpty()){
 			
 			for (SessionUser sessUser : sessUserList){
 				sessUser.setAcceptSession(true);
-				sesUserDao.update(sessUser);
+				sessionUserDAO.update(sessUser);
 			}
 			URIUtils.writeSuccessResponse(httpExchange);
 		}else{
@@ -176,13 +196,12 @@ public class SessionRequest implements ISessionRequest{
 		long sessionId = Long.parseLong((String)parameters.get(SessionUserDAO.SESSION_ID));
 		String userKey = (String)parameters.get(UserDAO.USER_KEY);
 		Long userId = Long.valueOf(UserValidation.getUserIdFromUserKey(userKey));
-		SessionUserDAO sesUserDao = (SessionUserDAO)BeanDAOFactory.getBean(SessionUserDAO.BEAN_NAME);
-		List<SessionUser> sessUserList = sesUserDao.findByProperty(new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, new Object[]{sessionId, userId});
+		List<SessionUser> sessUserList = sessionUserDAO.findByProperty(new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, new Object[]{sessionId, userId});
 		if (sessUserList != null && !sessUserList.isEmpty()){
 			
 			for (SessionUser sessUser : sessUserList){
 				sessUser.setDeleteIndicator(true);
-				sesUserDao.update(sessUser);
+				sessionUserDAO.update(sessUser);
 			}
 			URIUtils.writeSuccessResponse(httpExchange);
 		}else{
@@ -218,7 +237,6 @@ public class SessionRequest implements ISessionRequest{
 										Date.valueOf(creattionDate), 
 										Boolean.valueOf(isActive),
 										userId);
-		SessionDAO sessionDAO = (SessionDAO)BeanDAOFactory.getBean(SessionDAO.BEAN_NAME);
 		try{
 		
 			long sessionId = sessionDAO.insert(session);
@@ -226,7 +244,6 @@ public class SessionRequest implements ISessionRequest{
 //			String userKey = (String)parameters.get(UserDAO.USER_KEY);
 			//Long userId = UserValidation.getUserIdFromUserKey(userKey);
 			SessionUser sessionUser = new SessionUser(userId, sessionId, false, false);
-			SessionUserDAO sessionUserDAO = (SessionUserDAO)BeanDAOFactory.getBean(SessionUserDAO.BEAN_NAME);
 			sessionUserDAO.insert(sessionUser);
 			
 		}catch(Exception e){
@@ -268,7 +285,6 @@ public class SessionRequest implements ISessionRequest{
 			Map<String,Object> parameters, boolean isActive){
 		
 		Long sessionId = Long.valueOf((String)parameters.get(SessionDAO.ID));
-		SessionDAO sessionDAO = (SessionDAO)BeanDAOFactory.getBean(SessionDAO.BEAN_NAME);
 		try{
 
 			List<Session> sessions = sessionDAO.findById(sessionId);
@@ -303,7 +319,6 @@ public class SessionRequest implements ISessionRequest{
 		
 		String sessionName = (String)parameters.get(SessionDAO.NAME);
 		Long sessionId = Long.valueOf((String)parameters.get(SessionDAO.ID));
-		SessionDAO sessionDAO = (SessionDAO)BeanDAOFactory.getBean(SessionDAO.BEAN_NAME);
 		try{
 			List<Session> sessionList = sessionDAO.findById(sessionId);
 			Session session = sessionList.get(0);
@@ -318,13 +333,4 @@ public class SessionRequest implements ISessionRequest{
 		
 	}
 	
-	public static ISessionRequest getInstance(){
-		
-		if(_this == null){
-			_this = new SessionRequest();
-		}
-		return _this;
-	}
-	
-
 }

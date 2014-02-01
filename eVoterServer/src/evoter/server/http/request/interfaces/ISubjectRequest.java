@@ -14,6 +14,7 @@ import evoter.share.model.Subject;
  */
 public interface ISubjectRequest {
 
+	public static final String BEAN_NAME = "subjectRequest";
 	/**
 	 * Response client a {@link Subject} object when receiving {@link URIRequest#VIEW_SUBJECT} </br>
 	 * 

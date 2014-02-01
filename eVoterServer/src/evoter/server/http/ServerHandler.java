@@ -6,7 +6,7 @@ import java.util.Map;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import evoter.server.http.request.RequestFactory;
+import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.server.http.request.interfaces.IAccountRequest;
 import evoter.server.http.request.interfaces.IQuestionRequest;
 import evoter.server.http.request.interfaces.ISessionRequest;
@@ -38,11 +38,10 @@ public class ServerHandler implements HttpHandler {
 			Map<String,Object> parameters = URIUtils.getParameters(httpExchange);			
 			System.out.println("parameters: " + parameters);
 			
-			IAccountRequest accountRequest = RequestFactory.getAccountRequest();
-			ISubjectRequest subjectRequest = RequestFactory.getSubjectRequest();
-			ISessionRequest sessionRequest = RequestFactory.getSessionRequest();
-			IQuestionRequest questionRequest = RequestFactory.getQuestionRequest();
-			//ISubjectRequest subjectQuestion = SubjectRequest
+			IAccountRequest accountRequest = (IAccountRequest)BeanDAOFactory.getBean(IAccountRequest.BEAN_NAME);
+			ISubjectRequest subjectRequest = (ISubjectRequest)BeanDAOFactory.getBean(ISubjectRequest.BEAN_NAME);
+			ISessionRequest sessionRequest = (ISessionRequest)BeanDAOFactory.getBean(ISessionRequest.BEAN_NAME);
+			IQuestionRequest questionRequest = (IQuestionRequest)BeanDAOFactory.getBean(IQuestionRequest.BEAN_NAME);
 			
 			if (URIUtils.isLoginRequest(uri)){
 				accountRequest.doLogin(httpExchange, parameters);

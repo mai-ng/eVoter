@@ -26,7 +26,7 @@ public class BeanDAOFactory {
 
 		if (beanFactory == null) {
 
-			File f = new File(".\\resources\\applicationContext.xml");
+			File f = new File("./resources/applicationContext.xml");
 			System.out.println("read application-context");
 			try {
 				String OS_NAME = System.getProperty("os.name").toLowerCase();

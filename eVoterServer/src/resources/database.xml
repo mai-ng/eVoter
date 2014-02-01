@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<dataset>
-
-<!--user_type Table -->
-<user_type id="1" user_type_value="Secretary"/>
-<user_type id="2" user_type_value="Teacher"/>
-<user_type id="3" user_type_value="Student"/>
-
-</dataset>

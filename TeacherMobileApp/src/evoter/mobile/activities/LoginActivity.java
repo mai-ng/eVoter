@@ -102,7 +102,7 @@ public class LoginActivity extends EVoterActivity {
 								// Request successfully - client receive a response
 								@Override
 								public void onSuccess(String response) {
-									
+									Log.i("Response", response);
 									String userKey = null;
 									try {
 										
@@ -114,12 +114,11 @@ public class LoginActivity extends EVoterActivity {
 									} catch (JSONException e) {
 										e.printStackTrace();
 										EVoterMobileUtils.showeVoterToast(LoginActivity.this, "Error! Cannot get user information");
-										exit();
 									}
-									Log.i("USER_KEY", userKey);
+									
 									//Got the userkey
 									if (userKey != null && userKey != "null") {
-										
+										Log.i("USER_KEY", userKey);
 										offlineEVoterManager
 												.rememberCurrentUser(i_Usrname,
 														userKey);

@@ -63,6 +63,10 @@ public class EVoterActivity extends Activity {
 	 */
 	protected Dialog dialogLoading;
 	/**
+	 * The status of loading data process: loading,...finished,...
+	 */
+	protected TextView tvLoadingStatus;
+	/**
 	 * The progressbar show the progress of data loading process
 	 */
 	protected ProgressBar progressBar;
@@ -131,8 +135,9 @@ public class EVoterActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.i("Main menu", "Request accepted user of a session");
-				//TODO: REQUEST ACCEPT USER
 				menuDialog.dismiss();
+				Intent acceptedStudents = new Intent(EVoterActivity.this, AcceptedStudents.class);
+				startActivity(acceptedStudents);
 			}
 		});
 		
@@ -140,9 +145,10 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				//TODO: REQUEST ALL QUESTION
 				Log.i("Main menu", "Show list all questions");
 				menuDialog.dismiss();
+				Intent allQuestion = new Intent(EVoterActivity.this, AllQuestionActivity.class);
+				startActivity(allQuestion);
 			}
 		});
 		
@@ -150,10 +156,10 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				//TODO: REQUEST ALL USER OF SUBJECT
 				Log.i("Main menu", "Request all user of a subject");
 				menuDialog.dismiss();
-				
+				Intent subjectUserActivity = new Intent(EVoterActivity.this, SubjectUserActivity.class);
+				startActivity(subjectUserActivity);
 			}
 		});
 		
@@ -161,9 +167,10 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				//TODO: REQUEST CREATE NEW QUESTION
 				Log.i("Main menu", "Create new question");
 				menuDialog.dismiss();
+				Intent newQuestion = new Intent(EVoterActivity.this, NewQuestionActivity.class);
+				startActivity(newQuestion);
 				
 			}
 		});
@@ -172,7 +179,7 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Intent newSessionIntent = new Intent(EVoterActivity.this,NewSessionActivity.class);
+				Intent newSessionIntent = new Intent(EVoterActivity.this, NewSessionActivity.class);
 				startActivity(newSessionIntent);
 				menuDialog.dismiss();
 			}
@@ -181,8 +188,8 @@ public class EVoterActivity extends Activity {
 	}
 	
 	/**
-	 * exit application from anywhere in application
-	 * <br> Show a dialog to confirm exiting application
+	 * exit application from anywhere in application <br>
+	 * Show a dialog to confirm exiting application
 	 */
 	public void exit() {
 		final DialogInfor dialogExit = new DialogInfor(EVoterActivity.this, "Do you really want to exit application?");

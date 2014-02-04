@@ -29,10 +29,11 @@ import evoter.share.model.ItemData;
 import evoter.share.model.Session;
 
 /**
- * Update by @author luongnv89 on 24-Jan-2014
- * <br>
- * <li> Edited Session constructor method - add creatorName
- * Created by luongnv89 on 06/12/13.
+ * Update by @author luongnv89 on 04-Feb-2014 <br>
+ * <li> Add edit session activity
+ * Update by @author luongnv89 on 24-Jan-2014 <br>
+ * <li>Edited Session constructor method - add creatorName Created by luongnv89
+ * on 06/12/13.
  */
 public class SessionActivity extends ItemDataActivity {
 	
@@ -42,7 +43,6 @@ public class SessionActivity extends ItemDataActivity {
 		// Set title bar content is the subject of session
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentSubjectName());
-		
 		
 		menuDialog.setMenuSubjectActivity();
 		adapter = new SessionAdapter(SessionActivity.this);
@@ -60,6 +60,7 @@ public class SessionActivity extends ItemDataActivity {
 						.isActive());
 				RuntimeEVoterManager.setCurrentSessionName(selectedSession
 						.getTitle());
+				RuntimeEVoterManager.setCurrentSession(selectedSession);
 				startActivity(new Intent("android.intent.action.SESSIONVIEW"));
 			}
 		});
@@ -79,9 +80,10 @@ public class SessionActivity extends ItemDataActivity {
 					
 					@Override
 					public void onClick(View v) {
-						//TODO: START EDIT SESSION
 						Log.i("SESSION LONG ITEM CLICK", "Edit session" + selectedSession.getTitle());
 						dialog.dismiss();
+						Intent editSession = new Intent(SessionActivity.this, EditSessionActivity.class);
+						startActivity(editSession);
 					}
 				});
 				

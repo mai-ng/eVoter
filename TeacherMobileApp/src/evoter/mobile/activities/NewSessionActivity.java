@@ -50,6 +50,7 @@ public class NewSessionActivity extends EVoterActivity {
 			
 			@Override
 			public void onClick(View v) {
+				finish();
 			}
 		});
 	}

@@ -17,12 +17,9 @@ import javax.swing.JTextField;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
 
 import web.util.Configuration;
 import web.util.EVoterHTTPRequest;
-import web.util.EVoterHttpClient;
-
 import evoter.share.dao.UserDAO;
 import evoter.share.utils.UserValidation;
 
@@ -57,8 +54,6 @@ public class Login extends JPanel {
 //		this.password = password;
 
 		initComponents();
-		actionPerformed();
-
 		// design user's interface
 		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		GridBagLayout gridbag = new GridBagLayout();
@@ -130,30 +125,23 @@ public class Login extends JPanel {
 
 		// create buttons
 		btnSignIn = new JButton(SIGNIN);
-		btnRegister = new JButton(REGISTER);
-
-	}
-
-	/**
-	 * create events for buttons
-	 */
-	private void actionPerformed() {
 		btnSignIn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 //				String USER_KEY = null;
-				EVoterHttpClient client = new EVoterHttpClient();
+				lblError.setText("After clicked button");
+//				EVoterHttpClient client = new EVoterHttpClient();
 				final String i_Usrname = getTxtUserName().getText();
 				final String i_Password = getTxtPassword().getText();
-
+				lblError.setText("Before prepare parameters");
 				//get input
 				List<NameValuePair> loginParams = new ArrayList<NameValuePair>();
 				loginParams.add(new BasicNameValuePair(UserDAO.USER_NAME,i_Usrname
 						));
 				loginParams.add(new BasicNameValuePair(UserDAO.PASSWORD,
 						i_Password));
-
+				lblError.setText("Before validate");
 				// Check validation of inputs
 				if (i_Usrname.equals("")) {
 					System.out.print("username " + i_Usrname);
@@ -165,11 +153,11 @@ public class Login extends JPanel {
 				} else if (!UserValidation.isValidPassword(i_Password)) {
 					lblError.setText("Input password is not valid");
 				} else {
-					
+					lblError.setText("Before send request");
 					//Using HttpURLConnection
 					String response = EVoterHTTPRequest.excutePost(Configuration.get_urlLogin(), loginParams);
-					if(response!=null) lblError.setText(response);
-					else lblError.setText("Response is null!");
+					if(!response.contains("Exeption")) lblError.setText(response);
+					else lblError.setText("Exeption: "+ response);
 					
 					//Using HttpClient
 //					int reponseStatus = client.post(
@@ -199,6 +187,8 @@ public class Login extends JPanel {
 
 			}
 		});
+		btnRegister = new JButton(REGISTER);
+
 	}
 
 	/**

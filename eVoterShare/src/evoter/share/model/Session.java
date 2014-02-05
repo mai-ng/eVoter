@@ -7,6 +7,14 @@ import org.json.simple.JSONObject;
 
 import evoter.share.dao.SessionDAO;
 
+/**
+ * Update by @author luongnv89 on 24-Jan-2014
+ * <br>
+ * <li> Add {@link Session#creatorName} and new constructor method {@link Session#Session(long, long, String, Date, boolean, long, String)}
+ * <br>{@link Session#creatorName} : name of teacher who created the session
+ * @author btdiem
+ *
+ */
 public class Session extends ItemData implements Serializable {
 
 	/**
@@ -18,8 +26,23 @@ public class Session extends ItemData implements Serializable {
 	private Date creationDate;
 	private boolean isActive;
 	private long userId;
+	private String creatorName;
 	
 	
+
+	/**
+	 * @param creatorName the creatorName to set
+	 */
+	public void setCreatorName(String creatorName) {
+		this.creatorName = creatorName;
+	}
+
+	/**
+	 * @return the creatorName
+	 */
+	public String getCreatorName() {
+		return creatorName;
+	}
 
 	public long getUserId() {
 		return userId;
@@ -44,6 +67,26 @@ public class Session extends ItemData implements Serializable {
 		this.creationDate = creationDate;
 		this.isActive = isActive;
 		this.userId = userId;
+	}
+	
+	
+	/**
+	 * @param id
+	 * @param subjectId
+	 * @param name
+	 * @param creationDate
+	 * @param isActive
+	 * @param userId
+	 * @param creatorName
+	 */
+	public Session(long id, long subjectId, String name, Date creationDate,
+			boolean isActive, long userId,String creatorName) {
+		super(id, name);
+		this.subjectId = subjectId;
+		this.creationDate = creationDate;
+		this.isActive = isActive;
+		this.userId = userId;
+		this.creatorName = creatorName;
 	}
 
 	/**

@@ -5,7 +5,7 @@ xmlns:context="http://www.springframework.org/schema/context"
 xmlns:tx="http://www.springframework.org/schema/tx"
 xsi:schemaLocation=
 		
-		"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 		
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 		
@@ -144,8 +144,13 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
  
      
     <context:property-placeholder location="jdbc.properties, connection.properties"/>
-      <!--
+      
     <tx:annotation-driven transaction-manager="txManager" order="200"/>
-    -->
-    	
+    
+     <bean
+		id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	   	
 </beans>

@@ -111,12 +111,12 @@
 	<version>5.0.8</version>
 </dependency>
 
-<!--  spring-beans  
+<!--  spring-beans  -->
 <dependency>
 	<groupId>org.springframework</groupId>
 	<artifactId>spring-beans</artifactId>
 	<version>4.0.0.RELEASE</version>
-</dependency>-->
+</dependency>
   
 <!--  spring-web -->
 <dependency>
@@ -150,13 +150,13 @@
 	<version>2.5.6</version>
 </dependency>
             -->
-<!--    
+<!-- spring-test -->    
 <dependency>
 	<groupId>org.springframework</groupId>
 	<artifactId>spring-test</artifactId>
 	<version>3.0.5.RELEASE</version>
 </dependency>
--->
+
 
 <!--  spring-tx               
 <dependency>

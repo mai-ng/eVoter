@@ -19,7 +19,6 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import evoter.mobile.adapters.ItemDataAdapter;
 import evoter.mobile.main.R;
-import evoter.mobile.objects.OfflineEVoterManager;
 
 /**
  * {@link ItemDataActivity} is the abstract class of all the item activity of
@@ -45,10 +44,6 @@ public abstract class ItemDataActivity extends EVoterActivity {
 	 * Each activity will have an edit text to search item by name
 	 */
 	protected EditText etSearch;
-	/**
-	 * The status of loading data process: loading,...finished,...
-	 */
-	protected TextView tvLoadingStatus;
 	
 	protected SeekBar sbDifficult;
 	
@@ -90,7 +85,7 @@ public abstract class ItemDataActivity extends EVoterActivity {
 				.findViewById(R.id.progressRefresh);
 		progressBar.setProgress(0);
 		
-		offlineEVoterManager = new OfflineEVoterManager(this);
+//		offlineEVoterManager = new OfflineEVoterManager(this);
 		
 		context = this;
 		listView = (ListView) findViewById(R.id.lvItemData);

@@ -4,6 +4,7 @@
 package evoter.mobile.objects;
 
 import evoter.share.model.Question;
+import evoter.share.model.Session;
 
 /**
  * {@link RuntimeEVoterManager} manage the parameters of eVoter application 
@@ -48,6 +49,21 @@ public class RuntimeEVoterManager {
 	
 	private static Question currentQuestion;
 	
+	private static Session currentSession;
+	
+	/**
+	 * @return the currentSession
+	 */
+	public static Session getCurrentSession() {
+		return currentSession;
+	}
+
+	/**
+	 * @param currentSession the currentSession to set
+	 */
+	public static void setCurrentSession(Session currentSession) {
+		RuntimeEVoterManager.currentSession = currentSession;
+	}
 
 	/**
 	 * @return the currentUserName

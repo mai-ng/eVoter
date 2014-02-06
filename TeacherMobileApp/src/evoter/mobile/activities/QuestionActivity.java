@@ -111,7 +111,8 @@ public class QuestionActivity extends ItemDataActivity {
 					Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);
 					startActivity(detailQuestion);
 				} else {
-					//TODO: SHOW STATISTIC OF QUESTION
+					Intent statisticActivity = new Intent(QuestionActivity.this,QuestionStatisticActivity.class);
+					startActivity(statisticActivity);
 				}
 			}
 		});
@@ -131,9 +132,10 @@ public class QuestionActivity extends ItemDataActivity {
 						
 						@Override
 						public void onClick(View v) {
-							//TODO: START EDIT SESSION
 							Log.i("QUESTION LONG ITEM CLICK", "Edit question" + selectQuestion.getTitle());
 							dialog.dismiss();
+							Intent editQuestion = new Intent(QuestionActivity.this, EditQuestionActivity.class);
+							startActivity(editQuestion);
 						}
 					});
 					

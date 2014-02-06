@@ -15,12 +15,11 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/CustomTheme" 
-        >
+        android:theme="@style/CustomTheme" >
         <activity
             android:name="evoter.mobile.activities.StartActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,8 +28,8 @@
         </activity>
         <activity
             android:name="evoter.mobile.activities.LoginActivity"
-            android:screenOrientation="portrait"
-            android:label="Login" >
+            android:label="Login"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.LOGIN" />
 
@@ -39,8 +38,8 @@
         </activity>
         <activity
             android:name="evoter.mobile.activities.SubjectActivity"
-            android:screenOrientation="portrait"
-            android:label="Subject" >
+            android:label="Subject"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.SUBJECT" />
 
@@ -49,8 +48,8 @@
         </activity>
         <activity
             android:name="evoter.mobile.activities.ResetPasswordActivity"
-            android:screenOrientation="portrait"
-            android:label="Recover Password" >
+            android:label="Recover Password"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.RECOVERPASSWORD" />
 
@@ -59,8 +58,8 @@
         </activity>
         <activity
             android:name="evoter.mobile.activities.RegisterActivity"
-            android:screenOrientation="portrait"
-            android:label="Register" >
+            android:label="Register"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.REGISTER" />
 
@@ -69,8 +68,8 @@
         </activity>
         <activity
             android:name="evoter.mobile.activities.SessionActivity"
-            android:screenOrientation="portrait"
-            android:label="Session" >
+            android:label="Session"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.SESSION" />
 
@@ -79,8 +78,8 @@
         </activity>
         <activity
             android:name="evoter.mobile.activities.QuestionActivity"
-            android:screenOrientation="portrait"
-            android:label="Session View" >
+            android:label="Session View"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.SESSIONVIEW" />
 
@@ -89,8 +88,8 @@
         </activity>
         <activity
             android:name="evoter.mobile.activities.QuestionDetailActivity"
-            android:screenOrientation="portrait"
-            android:label="Question detail" >
+            android:label="Question detail"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.QUESTIONDETAIL" />
 
@@ -99,10 +98,81 @@
         </activity>
         <activity
             android:name="evoter.mobile.activities.NewSessionActivity"
-            android:screenOrientation="portrait"
-            android:label="New Session" >
+            android:label="New Session"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.NEWSESSION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="evoter.mobile.activities.SubjectUserActivity"
+            android:label="New Session"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.SUBJECTUSER" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="evoter.mobile.activities.AllQuestionActivity"
+            android:label="New Session"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.ALLQUESTION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="evoter.mobile.activities.EditSessionActivity"
+            android:label="New Session"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.EDITSESSION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="evoter.mobile.activities.AcceptedStudents"
+            android:label="Edit Session"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.ACCEPTEDSTUDENTS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="evoter.mobile.activities.NewQuestionActivity"
+            android:label="New Question"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.NEWQUESTION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="evoter.mobile.activities.EditQuestionActivity"
+            android:label="Edit question"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.EDITQUESTION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+         <activity
+            android:name="evoter.mobile.activities.QuestionStatisticActivity"
+            android:label="Question Statistic"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.STATISTICQUESTION" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

@@ -1,5 +1,6 @@
 package evoter.share.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import evoter.share.model.Session;
@@ -22,6 +23,7 @@ public interface SessionDAO {
 	
 	public long insert (Session session);
 	public List<Session> findAll();
+	
 	public int update(Session session);
 	/**
 	 * Search {@link Session} object in the database by input properties and their values </br> 
@@ -34,7 +36,7 @@ public interface SessionDAO {
 	public List<Session> findById(long id);
 	public List<Session> findBySubjectId(long subjectId);
 	public List<Session> findByName(String name);
-	public List<Session> findByCreationDate(String date);
+	public List<Session> findByCreationDate(Timestamp date);
 	public List<Session> findBySessionIsActive(boolean isActive);
 	public List<Session> findBySessionUserId(long userId);
 	/**
@@ -49,7 +51,7 @@ public interface SessionDAO {
 	public void deleteById(long id);
 	public void deleteBySubjectId(long subjectId);
 	public void deleteByName(String name);
-	public void deleteByCreationDate(String date);
+	public void deleteByCreationDate(Timestamp date);
 	public void deleteBySessionIsActive(boolean isActive);
 	public void deleteByUserId(long userId);
 }

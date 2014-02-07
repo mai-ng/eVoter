@@ -14,7 +14,7 @@ public class SessionRowMapper implements RowMapper<Session> {
 	@Override
 	public Session mapRow(ResultSet rs, int rowIndex) throws SQLException {
 		Session session = new Session();
-		session.setCreationDate(rs.getDate(SessionDAO.CREATION_DATE));
+		session.setCreationDate(rs.getTimestamp(SessionDAO.CREATION_DATE));
 		session.setId(rs.getLong(SessionDAO.ID));
 		session.setName(rs.getString(SessionDAO.NAME));
 		session.setSubjectId(rs.getLong(SessionDAO.SUBJECT_ID));

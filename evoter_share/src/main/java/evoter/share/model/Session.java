@@ -1,7 +1,7 @@
 package evoter.share.model;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import org.json.simple.JSONObject;
 
@@ -15,7 +15,7 @@ public class Session extends ItemData implements Serializable {
 	private static final long serialVersionUID = -9112405387599457550L;
 
 	private long subjectId;
-	private Date creationDate;
+	private Timestamp creationDate;
 	private boolean isActive;
 	private long userId;
 	
@@ -37,7 +37,7 @@ public class Session extends ItemData implements Serializable {
 	 * @param isActive
 	 * @param userId user creates the session </br>
 	 */
-	public Session(long id, long subjectId, String name, Date creationDate,
+	public Session(long id, long subjectId, String name, Timestamp creationDate,
 			boolean isActive, long userId) {
 		super(id, name);
 		this.subjectId = subjectId;
@@ -69,7 +69,7 @@ public class Session extends ItemData implements Serializable {
 	public Session() {
 	}
 
-	public Session(long subjectId, String name, Date creationDate,
+	public Session(long subjectId, String name, Timestamp creationDate,
 			boolean isActive, long userId) {
 		this.subjectId = subjectId;
 		this.title = name;
@@ -110,11 +110,11 @@ public class Session extends ItemData implements Serializable {
 		this.title = name;
 	}
 
-	public Date getCreationDate() {
+	public Timestamp getCreationDate() {
 		return creationDate;
 	}
 
-	public void setCreationDate(Date creationDate) {
+	public void setCreationDate(Timestamp creationDate) {
 		this.creationDate = creationDate;
 	}
 

@@ -1,6 +1,6 @@
 package evoter.share.dao;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import evoter.share.model.Question;
@@ -70,7 +70,7 @@ public interface QuestionDAO {
 	 * @return {@link List} of {@link Question} </br>
 	 */
 	public List<Question> findByQuestionTypeId(long questionTypeId);
-	public List<Question> findByCreationDate(Date creationDate);
+	public List<Question> findByCreationDate(Timestamp creationDate);
 	public List<Question> findByParentId(long parentId);
 	/**
 	 * 
@@ -95,7 +95,7 @@ public interface QuestionDAO {
 	 * Remove {@link Question} out the database that has the creation date matching the input value </br>
 	 * @param creationDate value of creation date of {@link Question} </br>
 	 */
-	public void deleteByCreationDate(Date creationDate);
+	public void deleteByCreationDate(Timestamp creationDate);
 	/**
 	 * Remove {@link Question} out the database that has the question text matching the input value </br>
 	 * @param questionText value of {@link Question} content </br>

@@ -29,10 +29,10 @@ public interface QuestionTypeDAO {
 	/**
 	 * 
 	 * @param questionType value of {@link QuestionType} </br>
-	 * @return a positive integer if {@link QuestionType} is added successfully </br>
+	 * @return a generated id if {@link QuestionType} is added successfully </br>
 	 * @return a negative integer if {@link QuestionType} is not added failure </br>
 	 */
-	public int insert(QuestionType questionType);
+	public long insert(QuestionType questionType);
 	/**
 	 * 
 	 * @param id value of {@link QuestionType} id </br>

@@ -1,7 +1,8 @@
 package evoter.share.model;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
+
 import org.json.simple.JSONObject;
 
 import evoter.share.dao.QuestionDAO;
@@ -20,7 +21,7 @@ public class Question extends ItemData implements Serializable {
 
 	private long questionTypeId;
 	private long userId;
-	private Date creationDate;
+	private Timestamp creationDate;
 	private long parentId;
 	private long sessionID;
 	public static final String COL1 = "column1";
@@ -37,8 +38,9 @@ public class Question extends ItemData implements Serializable {
 	 * @param answerColumn2
 	 */
 	public Question(long id, String questionText, long questionTypeId,
-			long userId, Date creationDate, long parentId,long sessionID,
+			long userId, Timestamp creationDate, long parentId,long sessionID,
 			String answerColumn1, String answerColumn2) {
+		
 		super(id, questionText);
 		this.questionTypeId = questionTypeId;
 		this.userId = userId;
@@ -56,7 +58,7 @@ public class Question extends ItemData implements Serializable {
 	}
 
 	public Question(long questionTypeId, long userId, String questionText,
-			Date creationDate, long parentId) {
+			Timestamp creationDate, long parentId) {
 
 		this.questionTypeId = questionTypeId;
 		this.userId = userId;
@@ -127,11 +129,11 @@ public class Question extends ItemData implements Serializable {
 		this.userId = userId;
 	}
 
-	public Date getCreationDate() {
+	public Timestamp getCreationDate() {
 		return creationDate;
 	}
 
-	public void setCreationDate(Date creationDate) {
+	public void setCreationDate(Timestamp creationDate) {
 		this.creationDate = creationDate;
 	}
 

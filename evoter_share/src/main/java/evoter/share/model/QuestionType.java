@@ -24,6 +24,12 @@ public class QuestionType implements Serializable {
 	private long id;
 	private String questionTypeValue;
 	
+	public QuestionType(){}
+	
+	public QuestionType(String questionTypeValue){
+		this.questionTypeValue = questionTypeValue;
+	}
+	
 	public long getId() {
 		return id;
 	}

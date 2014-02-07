@@ -100,7 +100,7 @@ public class TestQuestionDAO {
 
 	}
 	/**
-	 * Test {@link QuestionDAO#findByCreationDate(long)} </br>
+	 * Test {@link QuestionDAO#findByCreationDate(Timestamp)} </br>
 	 * Case 1: Expect returning 1 List of {@link Question} object </br>
 	 * Case 2: Expect returning a empty list </br>
 	 * @throws ParseException 

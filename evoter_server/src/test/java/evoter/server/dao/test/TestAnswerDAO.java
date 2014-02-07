@@ -121,7 +121,17 @@ public class TestAnswerDAO {
 		assertTrue("testDeleteByAnswerText", count > answers.size());		
 	}
 	
-
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testInsert(){
+		List<Answer> answers = answerDAO.findAll();
+		int count = answers.size();
+		Answer answer = new Answer(4, "answer data for test");
+		answerDAO.insert(answer);
+		answers = answerDAO.findAll();
+		assertTrue("testInsert", count+1 == answers.size());
+	}
 
 //	/**
 //	 * @param args

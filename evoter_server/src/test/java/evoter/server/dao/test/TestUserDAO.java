@@ -1,6 +1,5 @@
 package evoter.server.dao.test;
 
-
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.dao.impl.UserDAOImpl;
 import evoter.share.dao.UserDAO;
-import evoter.share.dao.UserTypeDAO;
 import evoter.share.model.User;
 /**
  * Make test cases for {@link UserDAO} and {@link UserDAOImpl} </br>
@@ -31,14 +29,16 @@ public class TestUserDAO {
 	
 	
 	@Test
+	@Transactional
+	@Rollback(false)
 	public void testFindAll(){
 		List<User> users = userDAO.findAll();
 		assertTrue("testFindAll", users.size() > 0);
 	}
 
 	/**
-	 * Test {@link UserTypeDAO#findById(long)} </br>
-	 * Search {@link User} by {@link UserTypeDAO#ID} </br>
+	 * Test {@link UserDAO#findById(long)} </br>
+	 * Search {@link User} by {@link UserDAO#ID} </br>
 	 * Expect returning a not null value </br>
 	 * 
 	 */
@@ -50,7 +50,7 @@ public class TestUserDAO {
 		assertTrue("testFindById", users.size() == 1);
 	}
 	/**
-	 * Test for {@link UserTypeDAO#findByUserName(String)} </br>
+	 * Test for {@link UserDAO#findByUserName(String)} </br>
 	 */
 	@Test
 	@Transactional
@@ -60,7 +60,7 @@ public class TestUserDAO {
 		assertTrue("testFindByUserName", users.size() == 1);
 	}
 	/**
-	 * Test for {@link UserTypeDAO#findByUserTypeId(Long)} </br>
+	 * Test for {@link UserDAO#findByUserTypeId(Long)} </br>
 	 */
 	@Test
 	@Transactional
@@ -70,7 +70,7 @@ public class TestUserDAO {
 		assertTrue("testFindByUserTypeId", users.size() > 0);
 	}
 	/**
-	 * Test for {@link UserTypeDAO#findByEmail(Long)} </br>
+	 * Test for {@link UserDAO#findByEmail(Long)} </br>
 	 */
 	@Test
 	@Transactional
@@ -80,7 +80,7 @@ public class TestUserDAO {
 		assertTrue("testFindByEmail", users.size() == 1);
 	}
 	/**
-	 * Test for {@link UserTypeDAO#findByFullName(Long)} </br>
+	 * Test for {@link UserDAO#findByFullName(Long)} </br>
 	 */
 	@Test
 	@Transactional
@@ -90,7 +90,7 @@ public class TestUserDAO {
 		assertTrue("testFindByFullname", users.size() == 1);
 	}
 	/**
-	 * Test for {@link UserTypeDAO#findByApproved(Boolean)} </br>
+	 * Test for {@link UserDAO#findByApproved(Boolean)} </br>
 	 */
 	@Test
 	@Transactional
@@ -101,7 +101,7 @@ public class TestUserDAO {
 	}
 	
 	/**
-	 * Test {@link UserTypeDAO#findByProperty(String[], Object[])} </br>
+	 * Test {@link UserDAO#findByProperty(String[], Object[])} </br>
 	 * Search {@link User} by {@link UserDAO#ID} and {@link UserDAO.USER_TYPE_ID} </br>
 	 * Expect returning a not null value </br>
 	 * 
@@ -117,7 +117,7 @@ public class TestUserDAO {
 		assertTrue("testFindByProperty", users.size() == 1);
 	}
 	/**
-	 * Test {@link UserTypeDAO#deleteByProperty(String[], Object[])} </br>
+	 * Test {@link UserDAO#deleteByProperty(String[], Object[])} </br>
 	 * 
 	 */
 	@Test
@@ -136,7 +136,7 @@ public class TestUserDAO {
 		assertTrue("testDeleteByProperty", users.size() == 0);
 	}	
 	/**
-	 * Test {@link UserTypeDAO#deleteById(long)} </br>
+	 * Test {@link UserDAO#deleteById(long)} </br>
 	 */
 	@Test
 	@Transactional
@@ -148,7 +148,7 @@ public class TestUserDAO {
 		assertTrue("testDeleteById", users.size() == 0);
 	}
 	/**
-	 * Test {@link UserTypeDAO#deleteByUserTypeId(long)} </br>
+	 * Test {@link UserDAO#deleteByUserTypeId(long)} </br>
 	 */
 	@Test
 	@Transactional
@@ -160,7 +160,7 @@ public class TestUserDAO {
 		assertTrue("testDeleteById", users.size() == 0);
 	}	
 	/**
-	 * Test {@link UserTypeDAO#deleteByEmail(String)} </br>
+	 * Test {@link UserDAO#deleteByEmail(String)} </br>
 	 */
 	@Test
 	@Transactional
@@ -172,7 +172,7 @@ public class TestUserDAO {
 		assertTrue("testDeleteByEmail", users.size() == 0);
 	}	
 	/**
-	 * Test {@link UserTypeDAO#deleteByFullName(String)} </br>
+	 * Test {@link UserDAO#deleteByFullName(String)} </br>
 	 */
 	@Test
 	@Transactional
@@ -184,7 +184,7 @@ public class TestUserDAO {
 		assertTrue("testDeleteByFullName", users.size() == 0);
 	}	
 	/**
-	 * Test {@link UserTypeDAO#deleteByApproved(String)} </br>
+	 * Test {@link UserDAO#deleteByApproved(String)} </br>
 	 */
 	@Test
 	@Transactional
@@ -196,7 +196,7 @@ public class TestUserDAO {
 		assertTrue("testDeleteByApproved", users.size() == 0);
 	}		
 	/**
-	 * Test for {@link UserTypeDAO#deleteByUserName(String)} </br>
+	 * Test for {@link UserDAO#deleteByUserName(String)} </br>
 	 */
 	@Test
 	@Transactional

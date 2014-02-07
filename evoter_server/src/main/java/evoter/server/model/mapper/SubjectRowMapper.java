@@ -17,7 +17,7 @@ public class SubjectRowMapper implements RowMapper<Subject> {
 		Subject sub = new Subject();
 		sub.setId(rs.getLong(SubjectDAO.ID));
 		sub.setTitle(rs.getString(SubjectDAO.TITLE));
-		sub.setCreationDate(rs.getDate(SubjectDAO.CREATION_DATE));
+		sub.setCreationDate(rs.getTimestamp(SubjectDAO.CREATION_DATE));
 		return sub;
 	}
 

@@ -19,7 +19,7 @@ public class QuestionRowMapper implements RowMapper<Question> {
 		qe.setQuestionTypeId(rs.getLong(QuestionDAO.QUESTION_TYPE_ID));
 //		qe.setSessionId(rs.getLong(QuestionDAO.SESSION_ID));
 		qe.setUserId(rs.getLong(QuestionDAO.USER_ID));
-		qe.setCreationDate(rs.getDate(QuestionDAO.CREATION_DATE));
+		qe.setCreationDate(rs.getTimestamp(QuestionDAO.CREATION_DATE));
 		qe.setParentId(rs.getLong(QuestionDAO.PARENT_ID));
 		return qe;
 	}

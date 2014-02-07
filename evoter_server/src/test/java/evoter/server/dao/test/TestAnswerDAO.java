@@ -88,11 +88,10 @@ public class TestAnswerDAO {
 	@Transactional
 	@Rollback(true)
 	public void testDeleteById(){
-		List<Answer> answers = answerDAO.findAll();
-		int count = answers.size();
+
 		answerDAO.deleteById(8);
-		answers = answerDAO.findAll();
-		assertTrue("testDeleteById", count-1 == answers.size());
+		List<Answer> answers = answerDAO.findById(8);
+		assertTrue("testDeleteById", answers.size() == 0);
 	}
 	/**
 	 * Test {@link AnswerDAO#deleteByQuestionId(long)} </br>
@@ -101,11 +100,10 @@ public class TestAnswerDAO {
 	@Transactional
 	@Rollback(true)
 	public void testDeleteByQuestionId(){
-		List<Answer> answers = answerDAO.findAll();
-		int count = answers.size();
+
 		answerDAO.deleteByQuestionId(4);
-		answers = answerDAO.findAll();
-		assertTrue("testDeleteByQuestionId", count > answers.size());
+		List<Answer> answers = answerDAO.findByQuestionId(4);
+		assertTrue("testDeleteByQuestionId", answers.size() == 0);
 	}
 	/**
 	 * Test {@link AnswerDAO#deleteByAnswerText(String)} </br>
@@ -114,23 +112,22 @@ public class TestAnswerDAO {
 	@Transactional
 	@Rollback(true)
 	public void testDeleteByAnswerText(){
-		List<Answer> answers = answerDAO.findAll();
-		int count = answers.size();
-		answerDAO.deleteByAnswerText("My brother");
-		answers = answerDAO.findAll();
-		assertTrue("testDeleteByAnswerText", count > answers.size());		
+
+		String answerText = "My brother";
+		answerDAO.deleteByAnswerText(answerText);
+		List<Answer> answers = answerDAO.findByAnswerText(answerText);
+		assertTrue("testDeleteByAnswerText", 0 == answers.size());		
 	}
 	
 	@Test
 	@Transactional
 	@Rollback(true)
 	public void testInsert(){
-		List<Answer> answers = answerDAO.findAll();
-		int count = answers.size();
+
 		Answer answer = new Answer(4, "answer data for test");
-		answerDAO.insert(answer);
-		answers = answerDAO.findAll();
-		assertTrue("testInsert", count+1 == answers.size());
+		long id = answerDAO.insert(answer);
+		List<Answer> answers = answerDAO.findById(id);
+		assertTrue("testInsert", 1 == answers.size());
 	}
 
 //	/**

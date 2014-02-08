@@ -40,4 +40,10 @@ public interface SubjectDAO {
 	public void deleteById(long id);
 	public void deleteByTitle(String title);
 	public void deleteByCreationDate(Timestamp date);
+	/**
+	 * Update the changed values of {@link Subject} to the database </br> 
+	 * @param subject {@link Subject} is changed
+	 * @return a positive integer if updating successfully </br>
+	 */
+	public int update(Subject subject);
 }

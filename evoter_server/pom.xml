@@ -103,8 +103,8 @@
   <groupId>evoter_share</groupId>
   <artifactId>evoter_share</artifactId>
   <version>0.0.1</version>    
-  <scope>system</scope>
-  <systemPath>${basedir}/lib/evoter_share-0.0.1.jar</systemPath>
+<!--  <scope>system</scope>
+    <systemPath>${basedir}/lib/evoter_share-0.0.1.jar</systemPath> -->
 </dependency>
 
 <dependency>

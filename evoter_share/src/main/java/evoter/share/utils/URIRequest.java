@@ -93,6 +93,10 @@ public class URIRequest {
 	 * 	</li> {@link List} of {@link Subject} 
 	 */
 	public static final String SEARCH_SUBJECT="/search_subject";
+	
+	public static final String UPDATE_SUBJECT = "/update_subject";
+	
+	
 	//for session management
 	/**
 	 * request parameter </br>
@@ -102,6 +106,8 @@ public class URIRequest {
 	 * 	</li> {@link List} of {@link Session}  
 	 */
 	public static final String GET_ALL_SESSION="/get_all_session";
+	
+	
 	/**
 	 * request parameter </br>
 	 * 	</li> user key

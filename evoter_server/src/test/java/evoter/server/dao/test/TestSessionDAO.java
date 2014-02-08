@@ -4,9 +4,7 @@ package evoter.server.dao.test;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.junit.Test;
@@ -86,16 +84,12 @@ public class TestSessionDAO {
 	@Rollback(false)
 	public void testFindByCreationDate() throws ParseException{
 		
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		java.util.Date date = dateFormat.parse("2013-12-28 12:50:24");
-		Timestamp sqlDate = new Timestamp(date.getTime());
-
-		List<Session> sessions = sessionDAO.findByCreationDate(sqlDate);
+		List<Session> sessions = sessionDAO.
+				findByCreationDate(Timestamp.valueOf("2013-12-28 12:50:24"));
 		assertTrue("testFindByCreationDate - Case 1", sessions.size() > 0);
 		
-		date = dateFormat.parse("2014-10-09 22:39:24");
-		sqlDate = new Timestamp(date.getTime());
-		sessions = sessionDAO.findByCreationDate(sqlDate);
+		sessions = sessionDAO.
+				findByCreationDate(Timestamp.valueOf("2014-10-09 22:39:24"));
 		assertTrue("testFindByCreationDate - Case 2", sessions.size() == 0);
 	}	
 	/**
@@ -106,9 +100,7 @@ public class TestSessionDAO {
 	@Rollback(true)
 	public void testDeleteByCreationDate() throws ParseException{
 		
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		java.util.Date date = dateFormat.parse("2013-12-28 12:50:24");
-		Timestamp sqlDate = new Timestamp(date.getTime());
+		Timestamp sqlDate = Timestamp.valueOf("2013-12-28 12:50:24");
 
 		sessionDAO.deleteByCreationDate(sqlDate);
 		List<Session> sessions = sessionDAO.findByCreationDate(sqlDate);

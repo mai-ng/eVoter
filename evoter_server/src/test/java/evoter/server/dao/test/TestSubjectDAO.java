@@ -70,7 +70,8 @@ public class TestSubjectDAO {
 	@Rollback(false)
 	public void testFindByCreationDate(){
 		
-		List<Subject> subjects = subjectDAO.findByCreationDate(Timestamp.valueOf("2013-12-28 12:50:24"));
+		List<Subject> subjects = subjectDAO.
+				findByCreationDate(Timestamp.valueOf("2013-12-28 12:50:24"));
 		assertTrue("testFindByCreationDate", subjects.size() > 1);
 	}
 	/**
@@ -141,7 +142,8 @@ public class TestSubjectDAO {
 	public void testDeleteByCreationDate(){
 		
 		subjectDAO.deleteByCreationDate(Timestamp.valueOf("2013-12-28 12:50:24"));
-		List<Subject> subjects = subjectDAO.findByCreationDate(Timestamp.valueOf("2013-12-28 12:50:24"));
+		List<Subject> subjects = subjectDAO.
+				findByCreationDate(Timestamp.valueOf("2013-12-28 12:50:24"));
 		assertTrue("testDeleteByCreationDate", subjects.size() == 0);
 	}	
 

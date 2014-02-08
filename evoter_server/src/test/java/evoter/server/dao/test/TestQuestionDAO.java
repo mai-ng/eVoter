@@ -4,9 +4,7 @@ package evoter.server.dao.test;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.junit.Test;
@@ -111,16 +109,12 @@ public class TestQuestionDAO {
 	@Rollback(false)
 	public void testFindByCreationDate() throws ParseException{
 		
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		java.util.Date date = dateFormat.parse("2014-01-09 22:39:24");
-		Timestamp sqlDate = new Timestamp(date.getTime());
-
-		List<Question> questions = questionDAO.findByCreationDate(sqlDate);
+		List<Question> questions = questionDAO.
+				findByCreationDate(Timestamp.valueOf("2014-01-09 22:39:24"));
 		assertTrue("testFindByCreationDate - Case 1", questions.size() > 0);
 		
-		date = dateFormat.parse("2014-10-09 22:39:24");
-		sqlDate = new Timestamp(date.getTime());
-		questions = questionDAO.findByCreationDate(sqlDate);
+		questions = questionDAO.
+				findByCreationDate(Timestamp.valueOf("2014-10-09 22:39:24"));
 		assertTrue("testFindByCreationDate - Case 2", questions.size() == 0);
 	}
 	/**
@@ -218,11 +212,10 @@ public class TestQuestionDAO {
 	@Rollback(true)
 	public void testDeleteByCreationDate() throws ParseException{
 		
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		java.util.Date date = dateFormat.parse("2014-01-09 22:39:24");
-		Timestamp sqlDate = new Timestamp(date.getTime());
+		Timestamp sqlDate = Timestamp.valueOf("2014-01-09 22:39:24");
 		
-		List<Question> questions = questionDAO.findByCreationDate(sqlDate);
+		List<Question> questions = questionDAO.
+				findByCreationDate(sqlDate);
 		assertTrue(questions.size() > 0);
 		questionDAO.deleteByCreationDate(sqlDate);
 		questions = questionDAO.findByCreationDate(sqlDate);
@@ -274,15 +267,5 @@ public class TestQuestionDAO {
 		questions = questionDAO.findByQuestionTypeId(parentId);
 		assertTrue(questions.size() == 0);
 	}	
-	/*
-	public static void main(String [] args){
-		
-		//test get DAO object
-		QuestionDAO qeDao = (QuestionDAO)BeanDAOFactory.getBean("questionDAO");
-		//test find all
-		System.out.println(qeDao.findAll());
-		//test find by question id
-		System.out.println(qeDao.findByProperty(new String[]{QuestionDAO.ID, QuestionDAO.QUESTION_TYPE_ID}, new Object[]{2, 3}));
-	}
-*/
+
 }

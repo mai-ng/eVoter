@@ -3,18 +3,30 @@ package evoter.server.http;
 import java.io.IOException;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import evoter.server.dao.impl.BeanDAOFactory;
+//import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.server.http.request.interfaces.IAccountService;
 import evoter.server.http.request.interfaces.IQuestionService;
 import evoter.server.http.request.interfaces.ISessionService;
 import evoter.server.http.request.interfaces.ISubjectService;
 
-
+@Service
 public class ServerHandler implements HttpHandler {
-
+	
+	@Autowired
+	IAccountService accountService; 
+	@Autowired
+	IQuestionService questionService;
+	@Autowired
+	ISubjectService subjectService;
+	@Autowired
+	ISessionService sessionService;
+	
 	@Override
 	public void handle(HttpExchange httpExchange) throws IOException {
 		
@@ -37,73 +49,75 @@ public class ServerHandler implements HttpHandler {
 			String uri = httpExchange.getRequestURI().toString();
 			Map<String,Object> parameters = URIUtils.getParameters(httpExchange);			
 			System.out.println("parameters: " + parameters);
-			
-			IAccountService accountRequest = (IAccountService)BeanDAOFactory.getBean(IAccountService.BEAN_NAME);
-			ISubjectService subjectRequest = (ISubjectService)BeanDAOFactory.getBean(ISubjectService.BEAN_NAME);
-			ISessionService sessionRequest = (ISessionService)BeanDAOFactory.getBean(ISessionService.BEAN_NAME);
-			IQuestionService questionRequest = (IQuestionService)BeanDAOFactory.getBean(IQuestionService.BEAN_NAME);
-			
+/**			
+			IAccountService accountService = (IAccountService)BeanDAOFactory.getBean(IAccountService.BEAN_NAME);
+			ISubjectService subjectService = (ISubjectService)BeanDAOFactory.getBean(ISubjectService.BEAN_NAME);
+			ISessionService sessionService = (ISessionService)BeanDAOFactory.getBean(ISessionService.BEAN_NAME);
+			IQuestionService questionService = (IQuestionService)BeanDAOFactory.getBean(IQuestionService.BEAN_NAME);
+*/			
 			if (URIUtils.isLoginRequest(uri)){
-				accountRequest.doLogin(httpExchange, parameters);
+				accountService.doLogin(httpExchange, parameters);
 			}else if (URIUtils.isLogoutRequest(uri)){
-				accountRequest.doLogout(httpExchange, parameters);
+				accountService.doLogout(httpExchange, parameters);
 			}else if (URIUtils.isResetPassword(uri)){
-				accountRequest.doResetPassword(httpExchange, parameters);
+				accountService.doResetPassword(httpExchange, parameters);
 			}else if (URIUtils.isRegister(uri)){
-				accountRequest.doRegister(httpExchange, parameters);
+				accountService.doRegister(httpExchange, parameters);
 			}
 			
 			
 			else{
 				//verify the user key 1st
-				if (accountRequest.hasUserKey(parameters)){
+				if (accountService.hasUserKey(parameters)){
 					System.out.println("has userKey");
 					if (URIUtils.isViewSubjectRequest(uri)){
-						subjectRequest.doView(httpExchange, parameters);
+						subjectService.doView(httpExchange, parameters);
 					}else if (URIUtils.isGetAllSubjectRequest(uri)){
-						subjectRequest.doGetAll(httpExchange, parameters);
+						subjectService.doGetAll(httpExchange, parameters);
 					}else if (URIUtils.isDeleteSubjectRequest(uri)){
-						subjectRequest.doDelete(httpExchange, parameters);
+						subjectService.doDelete(httpExchange, parameters);
 					}else if (URIUtils.isSearchSubjectRequest(uri)){
-						subjectRequest.doSearch(httpExchange, parameters);
+						subjectService.doSearch(httpExchange, parameters);
+					}else if (URIUtils.isGetAllUserOfSubject(uri)){
+						subjectService.doGetUsersOfSubject(httpExchange, parameters);
 						
 						//start with session management part
 					}else if (URIUtils.isGetAllSessionRequest(uri)){
-						sessionRequest.doGetAll(httpExchange, parameters);
+						sessionService.doGetAll(httpExchange, parameters);
 					}else if (URIUtils.isViewSessionRequest(uri)){
-						sessionRequest.doView(httpExchange, parameters);
+						sessionService.doView(httpExchange, parameters);
 					}else if (URIUtils.isCreateSessionRequest(uri)){
-						sessionRequest.doCreate(httpExchange, parameters);
+						sessionService.doCreate(httpExchange, parameters);
 					}else if (URIUtils.isActiveSessionRequest(uri)){
-						sessionRequest.doActive(httpExchange, parameters);
+						sessionService.doActive(httpExchange, parameters);
 					}else if (URIUtils.isAcceptSessionRequest(uri)){
-						sessionRequest.doAccept(httpExchange, parameters);
+						sessionService.doAccept(httpExchange, parameters);
 					}else if (URIUtils.isDeleteSessionRequest(uri)){
-						sessionRequest.doDelete(httpExchange, parameters);
+						sessionService.doDelete(httpExchange, parameters);
 					}else if (URIUtils.isCreateSessionRequest(uri)){
-						sessionRequest.doCreate(httpExchange, parameters);
+						sessionService.doCreate(httpExchange, parameters);
 					}else if (URIUtils.isActiveSessionRequest(uri)){
-						sessionRequest.doActive(httpExchange, parameters);
+						sessionService.doActive(httpExchange, parameters);
 					}else if (URIUtils.isInActiveSessionRequest(uri)){
-						sessionRequest.doInActive(httpExchange, parameters);
+						sessionService.doInActive(httpExchange, parameters);
 					}else if (URIUtils.isUpdateSessionRequest(uri)){
-						sessionRequest.doUpdate(httpExchange, parameters);
+						sessionService.doUpdate(httpExchange, parameters);
 						
 						//start with question management part
 					}else if (URIUtils.isGetAllQuestionRequest(uri)){
-						questionRequest.doGetAll(httpExchange, parameters);
+						questionService.doGetAll(httpExchange, parameters);
 					}else if (URIUtils.isViewQuestionRequest(uri)){
-						questionRequest.doView(httpExchange, parameters);
+						questionService.doView(httpExchange, parameters);
 					}else if (URIUtils.isCreateQuestionRequest(uri)){
-						questionRequest.doCreate(httpExchange, parameters);
+						questionService.doCreate(httpExchange, parameters);
 					}else if (URIUtils.isDeleteQuestionRequest(uri)){
-						questionRequest.doDelete(httpExchange, parameters);
+						questionService.doDelete(httpExchange, parameters);
 					}else if (URIUtils.isSendQuestionRequest(uri)){
-						questionRequest.doSend(httpExchange, parameters);
+						questionService.doSend(httpExchange, parameters);
 					}else if (URIUtils.isGetLatestQuestionRequest(uri)){
-						questionRequest.doGetLatest(httpExchange, parameters);
+						questionService.doGetLatest(httpExchange, parameters);
 					}else if (URIUtils.isStopSendQuestionRequest(uri)){
-						questionRequest.doStopSend(httpExchange, parameters);
+						questionService.doStopSend(httpExchange, parameters);
 					}
 				}
 

@@ -18,7 +18,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.SessionAdapter;
-import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
@@ -27,6 +27,7 @@ import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.ItemData;
 import evoter.share.model.Session;
+import evoter.share.utils.URIRequest;
 
 /**
  * Update by @author luongnv89 on 04-Feb-2014 <br>
@@ -95,7 +96,7 @@ public class SessionActivity extends ItemDataActivity {
 						RequestParams params = new RequestParams();
 						params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
 						params.add(SessionUserDAO.SESSION_ID, String.valueOf(selectedSession.getId()));
-						client.post(Configuration.get_urlDeleteSession(), params, new AsyncHttpResponseHandler() {
+						client.post(RequestConfig.getURL(URIRequest.DELETE_SESSION), params, new AsyncHttpResponseHandler() {
 							@Override
 							public void onSuccess(String response) {
 								if (response.contains("SUCCESS")) {
@@ -135,7 +136,7 @@ public class SessionActivity extends ItemDataActivity {
 		params.put(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
 		Log.i("SUBJECT_ID",
 				String.valueOf(RuntimeEVoterManager.getCurrentSubjectID()));
-		client.post(Configuration.get_urlGetAllSession(), params,
+		client.post(RequestConfig.getURL(URIRequest.GET_ALL_SESSION), params,
 				new AsyncHttpResponseHandler() {
 					
 					/*

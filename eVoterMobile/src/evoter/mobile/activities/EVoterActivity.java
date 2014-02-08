@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.loopj.android.http.AsyncHttpClient;
 
 import evoter.mobile.main.R;
-import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.MenuDialog;
 import evoter.mobile.objects.OfflineEVoterManager;
@@ -95,7 +95,7 @@ public class EVoterActivity extends Activity {
 		ivTitleBarRefresh = (ImageView) findViewById(R.id.ivRefreshTitleBar);
 		tvTitleBarContent = (TextView) findViewById(R.id.tvTitleBar);
 		ivTitleBarRefresh.setVisibility(View.GONE);
-		client = new AsyncHttpClient(Configuration.TIME_OUT);
+		client = new AsyncHttpClient(RequestConfig.TIME_OUT);
 		offlineEVoterManager = new OfflineEVoterManager(this);
 		setupMainMenu();
 		ivTitleBarIcon.setOnClickListener(new OnClickListener() {

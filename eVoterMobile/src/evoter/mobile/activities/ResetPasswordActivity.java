@@ -11,9 +11,10 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
-import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.UserDAO;
+import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
 /**
@@ -48,7 +49,7 @@ public class ResetPasswordActivity extends EVoterActivity {
 				} else {
 					RequestParams params = new RequestParams();
 					params.put(UserDAO.EMAIL, i_email);
-					client.post(Configuration.get_urlResetPassword(), params, new AsyncHttpResponseHandler() {
+					client.post(RequestConfig.getURL(URIRequest.RESET_PASSWORD), params, new AsyncHttpResponseHandler() {
 						
 						@Override
 						public void onSuccess(String response) {

@@ -11,11 +11,12 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
-import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.UserType;
+import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
 /**Update by @author luongnv89 on 19-Jan-2014
@@ -86,7 +87,7 @@ public class RegisterActivity extends EVoterActivity {
 					params.put(UserDAO.USER_NAME, i_usrname);
 					params.put(UserDAO.USER_TYPE_ID, String.valueOf(UserType.STUDENT));
 					
-					client.post(Configuration.get_urlRegister(), params, new AsyncHttpResponseHandler() {
+					client.post(RequestConfig.getURL(URIRequest.REGISTER), params, new AsyncHttpResponseHandler() {
 						
 						@Override
 						public void onSuccess(String response) {

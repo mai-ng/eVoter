@@ -18,7 +18,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
-import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.OfflineEVoterManager;
 import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
@@ -97,7 +97,7 @@ public class LoginActivity extends EVoterActivity {
 					RequestParams params = new RequestParams();
 					params.add(UserDAO.USER_NAME, i_Usrname);
 					params.add(UserDAO.PASSWORD, i_Password);
-					client.post(Configuration.get_urlLogin(), params,
+					client.post(RequestConfig.getURL(URIRequest.LOGIN), params,
 							new AsyncHttpResponseHandler() {
 								// Request successfully - client receive a response
 								@Override

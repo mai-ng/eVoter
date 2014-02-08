@@ -21,7 +21,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.QuestionAdapter;
-import evoter.mobile.objects.Configuration;
+import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
@@ -32,6 +32,7 @@ import evoter.share.dao.UserDAO;
 import evoter.share.model.ItemData;
 import evoter.share.model.Question;
 import evoter.share.model.UserType;
+import evoter.share.utils.URIRequest;
 
 /**
  * @author luongnv89
@@ -65,7 +66,7 @@ public class AllQuestionActivity extends ItemDataActivity {
 					Intent detailQuestion = new Intent(AllQuestionActivity.this, QuestionDetailActivity.class);
 					startActivity(detailQuestion);
 				} else {
-					Intent statisticActivity = new Intent(AllQuestionActivity.this,QuestionStatisticActivity.class);
+					Intent statisticActivity = new Intent(AllQuestionActivity.this, QuestionStatisticActivity.class);
 					startActivity(statisticActivity);
 				}
 			}
@@ -101,7 +102,7 @@ public class AllQuestionActivity extends ItemDataActivity {
 							RequestParams params = new RequestParams();
 							params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
 							params.add(SessionUserDAO.SESSION_ID, String.valueOf(selectQuestion.getId()));
-							client.post(Configuration.get_urlDeleteSession(), params, new AsyncHttpResponseHandler() {
+							client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
 								@Override
 								public void onSuccess(String response) {
 									if (response.contains("SUCCESS")) {
@@ -112,7 +113,7 @@ public class AllQuestionActivity extends ItemDataActivity {
 									}
 									else {
 										EVoterMobileUtils.showeVoterToast(AllQuestionActivity.this,
-												"Cannot delete session: " + response);
+												"Cannot delete question: " + response);
 									}
 								}
 								
@@ -132,7 +133,7 @@ public class AllQuestionActivity extends ItemDataActivity {
 				}
 			});
 		}
-//		loadListItemData();
+		//		loadListItemData();
 	}
 	
 	/*
@@ -142,11 +143,11 @@ public class AllQuestionActivity extends ItemDataActivity {
 	@Override
 	protected void loadListItemData() {
 		RequestParams params = new RequestParams();
-//		params.add(QuestionSessionDAO.SESSION_ID,
-//				String.valueOf(RuntimeEVoterManager.getCurrentSessionID()));
+		//		params.add(QuestionSessionDAO.SESSION_ID,
+		//				String.valueOf(RuntimeEVoterManager.getCurrentSessionID()));
 		params.put(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
 		
-		client.post(Configuration.get_urlGetAllQuestion(), params,
+		client.post(RequestConfig.getURL(URIRequest.GET_ALL_QUESTION), params,
 				new AsyncHttpResponseHandler() {
 					
 					/*

@@ -132,4 +132,20 @@ public class SubjectDAOImpl extends JdbcDaoSupport implements SubjectDAO {
 		
 	}
 
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SubjectDAO#update(evoter.share.model.Subject)
+	 */
+	@Override
+	public int update(Subject subject) {
+		
+		String sql = "UPDATE " + TABLE_NAME + 
+				" SET " + CREATION_DATE +"='" + subject.getCreationDate()+"'" 
+					+ " , " + TITLE + "='" + subject.getTitle()+"'"
+					+ " WHERE " + ID + "=" + subject.getId();
+		
+		return getJdbcTemplate().update(sql);
+	}
+
 }

@@ -7,10 +7,10 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import evoter.server.dao.impl.BeanDAOFactory;
-import evoter.server.http.request.interfaces.IAccountRequest;
-import evoter.server.http.request.interfaces.IQuestionRequest;
-import evoter.server.http.request.interfaces.ISessionRequest;
-import evoter.server.http.request.interfaces.ISubjectRequest;
+import evoter.server.http.request.interfaces.IAccountService;
+import evoter.server.http.request.interfaces.IQuestionService;
+import evoter.server.http.request.interfaces.ISessionService;
+import evoter.server.http.request.interfaces.ISubjectService;
 
 
 public class ServerHandler implements HttpHandler {
@@ -38,10 +38,10 @@ public class ServerHandler implements HttpHandler {
 			Map<String,Object> parameters = URIUtils.getParameters(httpExchange);			
 			System.out.println("parameters: " + parameters);
 			
-			IAccountRequest accountRequest = (IAccountRequest)BeanDAOFactory.getBean(IAccountRequest.BEAN_NAME);
-			ISubjectRequest subjectRequest = (ISubjectRequest)BeanDAOFactory.getBean(ISubjectRequest.BEAN_NAME);
-			ISessionRequest sessionRequest = (ISessionRequest)BeanDAOFactory.getBean(ISessionRequest.BEAN_NAME);
-			IQuestionRequest questionRequest = (IQuestionRequest)BeanDAOFactory.getBean(IQuestionRequest.BEAN_NAME);
+			IAccountService accountRequest = (IAccountService)BeanDAOFactory.getBean(IAccountService.BEAN_NAME);
+			ISubjectService subjectRequest = (ISubjectService)BeanDAOFactory.getBean(ISubjectService.BEAN_NAME);
+			ISessionService sessionRequest = (ISessionService)BeanDAOFactory.getBean(ISessionService.BEAN_NAME);
+			IQuestionService questionRequest = (IQuestionService)BeanDAOFactory.getBean(IQuestionService.BEAN_NAME);
 			
 			if (URIUtils.isLoginRequest(uri)){
 				accountRequest.doLogin(httpExchange, parameters);

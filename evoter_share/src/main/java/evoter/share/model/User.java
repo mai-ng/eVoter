@@ -1,6 +1,12 @@
 package evoter.share.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.simple.JSONObject;
+
+import evoter.share.dao.UserDAO;
 
 public class User implements Serializable{
 
@@ -100,6 +106,21 @@ public class User implements Serializable{
 
 	public String generateUserKey(long responseTime){
 		return responseTime+"_"+id+"_"+userTypeId; 
+	}
+
+	@SuppressWarnings("unchecked")
+	public JSONObject toJSON() {
+		
+		JSONObject res = new JSONObject();
+		res.put(UserDAO.ID, id);
+		res.put(UserDAO.USER_NAME, userName);
+		res.put(UserDAO.PASSWORD, passWord);
+		res.put(UserDAO.USER_TYPE_ID, userTypeId);
+		res.put(UserDAO.EMAIL, email);
+		res.put(UserDAO.FULL_NAME, fullName);
+		res.put(UserDAO.IS_APPROVED, isApproved);
+		
+		return res;
 	}
 	
 	

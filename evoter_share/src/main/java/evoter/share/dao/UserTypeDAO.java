@@ -16,7 +16,7 @@ public interface UserTypeDAO {
 	public static final String BEAN_NAME = "userTypeDAO";
 	
 	public List<UserType> findAll();
-	public int insert(UserType userType); 
+	public long insert(UserType userType); 
 	public List<UserType> findById(long id);
 	public List<UserType> findByUserTypeValue(String userTypeValue);
 	public List<UserType> findByProperty(String[] propertyNames, Object[] propertyValues);

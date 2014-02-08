@@ -15,7 +15,7 @@ public interface UserSubjectDAO {
 	public static final String TABLE_NAME = "USER_SUBJECT";
 	public static final String BEAN_NAME = "userSubjectDAO";
 	
-	public int insert(UserSubject us);
+	public long insert(UserSubject us);
 	public List<UserSubject> findAll();
 	public List<UserSubject> findByProperty(String[] propertyNames, Object[] propertyValues);
 	public List<UserSubject> findByUserId(long userId);

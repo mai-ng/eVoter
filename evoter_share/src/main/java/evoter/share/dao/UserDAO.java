@@ -27,7 +27,7 @@ public interface UserDAO {
 	public List<User> findByUserName(String userName);
 	public List<User> findByUserTypeId(long userTypeId);
 	public List<User> findByEmail(String email);
-	public List<User> findByPassword(String password);
+//	public List<User> findByPassword(String password);
 	public List<User> findByFullName(String fullName);
 	public List<User> findByApproved(boolean isApproved);
 	public List<User> findByProperty(String[] propertyNames, Object[] propertyValues);
@@ -36,7 +36,7 @@ public interface UserDAO {
 	public void deleteByUserName(String userName);
 	public void deleteByUserTypeId(long userTypeId);
 	public void deleteByEmail(String email);
-	public void deleteByPassword(String password);
+	//public void deleteByPassword(String password);
 	public void deleteByFullName(String fullName);
 	public void deleteByApproved(boolean isApproved);
 	

@@ -1,4 +1,5 @@
 package evoter.share.dao;
+import java.sql.Timestamp;
 import java.util.List;
 import evoter.share.model.Subject;
 /**
@@ -14,7 +15,7 @@ public interface SubjectDAO {
 	public static final String TABLE_NAME = "SUBJECT";
 	public static final String BEAN_NAME = "subjectDAO";
 	
-	public int insert (Subject subject);
+	public long insert (Subject subject);
 	public List<Subject> findAll();
 	/**
 	 * Search {@link Subject} object in the database by input properties and their values </br> 
@@ -26,7 +27,7 @@ public interface SubjectDAO {
 	public List<Subject> findByProperty(String[] propertyName, Object[] propertyValue);
 	public List<Subject> findById(long id);
 	public List<Subject> findByTitle(String title);
-	public List<Subject> findByCreationDate(String date);
+	public List<Subject> findByCreationDate(Timestamp date);
 	/**
 	 * 
 	 * Delete {@link Subject} objects in the database by input properties and their values </br> 
@@ -38,5 +39,5 @@ public interface SubjectDAO {
 	public void deleteByProperty(String[] propertyNames, Object [] propertyValues);
 	public void deleteById(long id);
 	public void deleteByTitle(String title);
-	public void deleteByCreationDate(String date);
+	public void deleteByCreationDate(Timestamp date);
 }

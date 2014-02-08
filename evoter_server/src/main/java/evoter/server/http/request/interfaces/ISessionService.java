@@ -3,15 +3,18 @@
  */
 package evoter.server.http.request.interfaces;
 
+import java.util.List;
 import java.util.Map;
 import com.sun.net.httpserver.HttpExchange;
 
 import evoter.share.dao.SessionDAO;
+import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Question;
 import evoter.share.model.Session;
 import evoter.share.model.SessionUser;
 import evoter.share.model.Subject;
+import evoter.share.model.User;
 import evoter.share.utils.URIRequest;
 
 /**
@@ -108,4 +111,14 @@ public interface ISessionService {
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 */
 	public  void doUpdate(HttpExchange httpExchange, Map<String,Object> parameters) ;
+	
+	/**
+	 * Response clients a {@link List} of {@link User} accepted or not accept {@link Session} </br>
+	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
+	 * @param parameters contains: </br>
+	 * </li> {@link UserDAO#USER_KEY} </br>
+	 * </li> {@link SessionUserDAO#ACCEPT_SESSION} </br>
+	 * </li> {@link SessionUserDAO#SESSION_ID} </br>
+	 */
+	public void doGetStudentsOfSession(HttpExchange httpExchange, Map<String, Object> parameters);
 }

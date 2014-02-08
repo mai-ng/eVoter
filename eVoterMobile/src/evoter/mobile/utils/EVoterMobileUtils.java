@@ -1,6 +1,6 @@
 package evoter.mobile.utils;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,17 +25,16 @@ public class EVoterMobileUtils {
 	}
 	
 	@SuppressLint("SimpleDateFormat")
-	public static Date convertToDate(String date) throws ParseException {
+	public static Timestamp convertToDate(String date) throws ParseException {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date utilDate = dateFormat.parse(date);
-		
-		return new java.sql.Date(utilDate.getTime());
+		return new Timestamp(utilDate.getTime());
 	}
 	
 	@SuppressLint("SimpleDateFormat")
-	public static String convertToString(Date date) {
+	public static String convertToString(Timestamp creationDate) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		return dateFormat.format(date);
+		return dateFormat.format(creationDate);
 	}
 	
 	/**
@@ -63,5 +62,4 @@ public class EVoterMobileUtils {
 		t.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 		t.show();
 	}
-	
 }

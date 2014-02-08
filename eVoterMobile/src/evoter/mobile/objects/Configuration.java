@@ -3,6 +3,8 @@
  */
 package evoter.mobile.objects;
 
+import evoter.share.utils.URIRequest;
+
 /**
  * @author luongnv89
  * 
@@ -58,7 +60,7 @@ public class Configuration {
 	 * @return the _urlLogin
 	 */
 	public static String get_urlLogin() {
-		return "http://"+getIPAddress()+":"+getPortNumber()+_urlLogin;
+		return "http://"+getIPAddress()+":"+getPortNumber()+"/evoter"+URIRequest.LOGIN;
 	}
 	/**
 	 * @return the _urlViewSubject

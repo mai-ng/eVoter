@@ -1,5 +1,8 @@
 package evoter.server.http;
 
+import org.springframework.stereotype.Repository;
+
+@Repository("httpConnection")
 public class HttpConnection {
 	
 	private String context;

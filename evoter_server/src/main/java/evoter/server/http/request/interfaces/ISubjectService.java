@@ -3,10 +3,11 @@ package evoter.server.http.request.interfaces;
 import java.util.Map;
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.http.URIRequest;
 import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Subject;
+import evoter.share.model.User;
+import evoter.share.utils.URIRequest;
 
 /**
  * @author btdiem
@@ -61,5 +62,14 @@ public interface ISubjectService {
 	 *  </li> {@link SubjectDAO#CREATION_DATE} </br>
 	 */
 	public void doSearch(HttpExchange httpExchange, Map<String,Object> parameters);
+	
+	/**
+	 * Response client a list of {@link User} of a {@link Subject} </br>
+	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
+	 * @param parameters contains: </br>
+	 * </li> {@link UserDAO#USER_KEY} </br>
+	 * </li> {@link SubjectDAO#ID} </br>
+	 */
+	public void doGetUsersOfSubject(HttpExchange httpExchange, Map<String, Object> parameters);
 	
 }

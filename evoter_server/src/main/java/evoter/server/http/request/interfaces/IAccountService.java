@@ -3,8 +3,8 @@ package evoter.server.http.request.interfaces;
 import java.util.Map;
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.http.URIRequest;
 import evoter.share.dao.UserDAO;
+import evoter.share.utils.URIRequest;
 
 /**
  * 

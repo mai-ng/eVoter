@@ -7,7 +7,6 @@ import java.util.Map;
 import org.json.simple.JSONArray;
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.http.URIRequest;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
@@ -15,6 +14,7 @@ import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
 import evoter.share.model.Question;
 import evoter.share.model.QuestionSession;
+import evoter.share.utils.URIRequest;
 
 /**
  * @author btdiem

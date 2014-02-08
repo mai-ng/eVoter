@@ -6,13 +6,13 @@ package evoter.server.http.request.interfaces;
 import java.util.Map;
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.http.URIRequest;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Question;
 import evoter.share.model.Session;
 import evoter.share.model.SessionUser;
 import evoter.share.model.Subject;
+import evoter.share.utils.URIRequest;
 
 /**
  * @author btdiem

@@ -3,21 +3,25 @@ package evoter.server.dao.impl;
 import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-//import org.springframework.test.annotation.Rollback;
-//import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 import evoter.server.model.mapper.UserSubjectRowMapper;
 import evoter.share.dao.UserSubjectDAO;
 import evoter.share.model.UserSubject;
-
+/**
+ * 
+ * @author btdiem
+ *
+ */
+@Repository("userSubjectDAO")
 public class UserSubjectDAOImpl extends JdbcDaoSupport implements UserSubjectDAO {
 
 	
 	
 	@Override
-	public int insert(UserSubject us) {
+	public long insert(final UserSubject us) {
 		
-		String sql = "INSERT INTO " + TABLE_NAME + "(" + USER_ID + "," + SUBJECT_ID +") VALUES(?,?)";
+		final String sql = "INSERT INTO " + TABLE_NAME + "(" + USER_ID + "," + SUBJECT_ID +") VALUES(?,?)";
 		return getJdbcTemplate().update(sql, new Object[]{us.getUserId(), us.getSubjectId()});
 	}
 	

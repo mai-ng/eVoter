@@ -3,6 +3,7 @@ package evoter.server.dao.impl;
 import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.stereotype.Repository;
 //import org.springframework.test.annotation.Rollback;
 //import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +11,7 @@ import evoter.server.model.mapper.SessionUserRowMapper;
 import evoter.share.dao.SessionUserDAO;
 import evoter.share.model.SessionUser;
 
-
+@Repository("sessionUserDAO")
 public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO {
 
 	
@@ -150,8 +151,8 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 				" SET " + ACCEPT_SESSION +"=" +sessUser.isAcceptSession() 
 					+ " , " + DELETE_INDICATOR + "=" + sessUser.isDeleteIndicator()
 					+ " WHERE " + SESSION_ID + "=" + sessUser.getSessionId()
-					+ " AND " + USER_ID + " = " + sessUser.getSessionId();
-	
+					+ " AND " + USER_ID + " = " + sessUser.getUserId();
+
 		return getJdbcTemplate().update(sql);
 		
 	}

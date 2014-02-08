@@ -2,12 +2,14 @@ package evoter.server.dao.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 //import org.springframework.test.annotation.Rollback;
 //import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ import evoter.share.model.Session;
  * @author btdiem
  *
  */
+@Repository("sessionDAO")
 public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 
 	
@@ -44,7 +47,7 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 		            PreparedStatement ps = connection.prepareStatement(sql);
 		            ps.setLong(1, session.getSubjectId());
 		            ps.setString(2, session.getName());
-		            ps.setDate(3, session.getCreationDate());
+		            ps.setTimestamp(3, session.getCreationDate());
 		            ps.setBoolean(4, session.isActive());
 		            ps.setLong(5, session.getUserId());
 		            return ps;
@@ -113,9 +116,9 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	
 	
 	@Override
-	public List<Session> findByCreationDate(String date) {
+	public List<Session> findByCreationDate(Timestamp date) {
 		
-		return findByProperty(new String[]{CREATION_DATE}, new String[]{date});
+		return findByProperty(new String[]{CREATION_DATE}, new Object[]{date});
 	}
 
 	
@@ -164,9 +167,9 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	
 	
 	@Override
-	public void deleteByCreationDate(String date) {
+	public void deleteByCreationDate(Timestamp date) {
 
-		deleteByProperty(new String[]{CREATION_DATE}, new String[]{date});
+		deleteByProperty(new String[]{CREATION_DATE}, new Object[]{date});
 		
 	}
 
@@ -175,7 +178,7 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	@Override
 	public List<Session> findBySessionIsActive(boolean isActive) {
 
-		return findBySessionIsActive(isActive);
+		return findByProperty(new String[]{IS_ACTIVE}, new Object[]{isActive});
 	}
 
 	
@@ -183,7 +186,7 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	@Override
 	public void deleteBySessionIsActive(boolean isActive) {
 
-		deleteBySessionIsActive(isActive);
+		deleteByProperty(new String[]{IS_ACTIVE}, new Object[]{isActive});
 		
 	}
 

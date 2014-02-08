@@ -1,8 +1,14 @@
 package evoter.server.dao.impl;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 //import org.springframework.test.annotation.Rollback;
 //import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +20,7 @@ import evoter.share.model.QuestionType;
  * @author btdiem
  *
  */
+@Repository("questionTypeDAO")
 public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeDAO {
 
 	
@@ -29,11 +36,31 @@ public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeD
 	
 	
 	@Override
-	public int insert(QuestionType questionType) {
+	public long insert(final QuestionType questionType) {
 		
-		String sql = "INSERT INTO " + TABLE_NAME +
+		final String sql = "INSERT INTO " + TABLE_NAME +
 				"("+QUESTION_TYPE_VALUE + ") VALUES (?)";
-		return getJdbcTemplate().update(sql, new Object[]{questionType.getQuestionTypeValue()});
+
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		 getJdbcTemplate().update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(
+						java.sql.Connection connection) throws SQLException {
+					
+		            PreparedStatement ps = connection.prepareStatement(sql);
+		            ps.setString(1, questionType.getQuestionTypeValue());
+		            return ps;
+
+				}
+		    }, keyHolder);
+		
+//		return getJdbcTemplate().update(sql, 
+//				new Object[]{answer.getQuestionId(),
+//								answer.getAnswerText()});
+		
+		 return keyHolder.getKey().longValue();
+		//getJdbcTemplate().
+		//return getJdbcTemplate().getMaxRows();
 		
 	}
 

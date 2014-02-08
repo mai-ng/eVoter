@@ -1,14 +1,15 @@
 package evoter.server.dao.impl;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 //import org.springframework.test.annotation.Rollback;
 //import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import evoter.share.model.Question;
  * @author btdiem
  *
  */
+@Repository("questionDAO")
 public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 
 	
@@ -47,7 +49,7 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		            ps.setLong(1, question.getUserId());
 		            ps.setLong(2, question.getQuestionTypeId());
 		            ps.setString(3, question.getQuestionText());
-		            ps.setDate(4, question.getCreationDate());
+		            ps.setTimestamp(4, question.getCreationDate());
 		            ps.setLong(5, question.getParentId());
 		            return ps;
 
@@ -177,7 +179,7 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 	
 	
 	@Override
-	public List<Question> findByCreationDate(Date creationDate) {
+	public List<Question> findByCreationDate(Timestamp creationDate) {
 		
 		return findByProperty(new String[]{CREATION_DATE}, new Object[]{creationDate});
 	}
@@ -185,7 +187,7 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 	
 	
 	@Override
-	public void deleteByCreationDate(Date creationDate) {
+	public void deleteByCreationDate(Timestamp creationDate) {
 		
 		deleteByProperty(new String[]{CREATION_DATE}, new Object[]{creationDate});
 		

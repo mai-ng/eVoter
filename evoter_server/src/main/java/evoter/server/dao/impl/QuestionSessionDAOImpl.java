@@ -3,6 +3,7 @@ package evoter.server.dao.impl;
 import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.stereotype.Repository;
 //import org.springframework.test.annotation.Rollback;
 //import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import evoter.share.model.QuestionSession;
  * @author btdiem
  *
  */
+@Repository("questionSessionDAO")
 public class QuestionSessionDAOImpl extends JdbcDaoSupport implements
 		QuestionSessionDAO {
 

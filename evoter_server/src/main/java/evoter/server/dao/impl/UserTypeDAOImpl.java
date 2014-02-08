@@ -1,15 +1,21 @@
 package evoter.server.dao.impl;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 //import org.springframework.test.annotation.Rollback;
 //import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.model.mapper.UserTypeRowMapper;
 import evoter.share.dao.UserTypeDAO;
 import evoter.share.model.UserType;
-
+@Repository("userTypeDAO")
 public class UserTypeDAOImpl extends JdbcDaoSupport implements UserTypeDAO {
 
 	
@@ -87,11 +93,25 @@ public class UserTypeDAOImpl extends JdbcDaoSupport implements UserTypeDAO {
 	
 	
 	@Override
-	public int insert(UserType userType) {
+	public long insert(final UserType userType) {
 		
-		String sql = "INSERT INTO " + TABLE_NAME +
+		final String sql = "INSERT INTO " + TABLE_NAME +
 				"("+USER_TYPE_VALUE + ") VALUES (?)";
-		return getJdbcTemplate().update(sql, new Object[]{userType.getUserTypeValue()});
+		
+		 KeyHolder keyHolder = new GeneratedKeyHolder();
+		 getJdbcTemplate().update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(
+						java.sql.Connection connection) throws SQLException {
+					
+		            PreparedStatement ps = connection.prepareStatement(sql);
+		            ps.setString(1, userType.getUserTypeValue());
+		            return ps;
+
+				}
+		    }, keyHolder);
+		
+		return keyHolder.getKey().longValue();
 	}
 
 }

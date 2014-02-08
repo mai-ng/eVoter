@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 //import org.springframework.test.annotation.Rollback;
 //import org.springframework.transaction.annotation.Transactional;
 //import org.springframework.test.context.ContextConfiguration;
@@ -25,7 +26,7 @@ import evoter.share.model.Answer;
  *
  */
 //@ContextConfiguration(locations = {"/resources/applicationContext.xml"})
-
+@Repository("answerDAO")
 public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 
 //	@Autowired

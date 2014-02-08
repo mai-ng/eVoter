@@ -3,13 +3,14 @@ package evoter.server.dao.impl;
 import java.util.List;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.stereotype.Repository;
 //import org.springframework.test.annotation.Rollback;
 //import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.model.mapper.StatisticsRowMapper;
 import evoter.share.dao.StatisticsDAO;
 import evoter.share.model.Statistics;
-
+@Repository("statisticsDAO")
 public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 
 	

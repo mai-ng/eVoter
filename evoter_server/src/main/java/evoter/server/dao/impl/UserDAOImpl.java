@@ -3,13 +3,14 @@ package evoter.server.dao.impl;
 
 import java.util.List;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.stereotype.Repository;
 //import org.springframework.test.annotation.Rollback;
 //import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.model.mapper.UserRowMapper;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.User;
-
+@Repository("userDAO")
 public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 
 	
@@ -73,12 +74,12 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 	}
 	
 	
-	@Override
-	public List<User> findByPassword(String password) {
-
-		return findByProperty(new String[]{PASSWORD}, new String[]{password});
-
-	}
+//	@Override
+//	public List<User> findByPassword(String password) {
+//
+//		return findByProperty(new String[]{PASSWORD}, new String[]{password});
+//
+//	}
 	
 	
 	@Override
@@ -143,11 +144,11 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 	}
 	
 	
-	@Override
-	public void deleteByPassword(String password) {
-		
-		deleteByProperty(new String[]{PASSWORD}, new String[]{password});
-	}
+//	@Override
+//	public void deleteByPassword(String password) {
+//		
+//		deleteByProperty(new String[]{PASSWORD}, new String[]{password});
+//	}
 
 
 	@Override

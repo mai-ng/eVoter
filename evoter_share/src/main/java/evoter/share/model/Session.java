@@ -18,7 +18,11 @@ public class Session extends ItemData implements Serializable {
 	private Timestamp creationDate;
 	private boolean isActive;
 	private long userId;
+	private String creatorName;
 	
+	public String getCreatorName(){
+		return creatorName;
+	}
 	
 
 	public long getUserId() {
@@ -38,6 +42,24 @@ public class Session extends ItemData implements Serializable {
 	 * @param userId user creates the session </br>
 	 */
 	public Session(long id, long subjectId, String name, Timestamp creationDate,
+			boolean isActive, long userId, String creatorName) {
+		super(id, name);
+		this.subjectId = subjectId;
+		this.creationDate = creationDate;
+		this.isActive = isActive;
+		this.userId = userId;
+		this.creatorName = creatorName;
+	}
+
+   /**
+	 * @param id
+	 * @param subjectId
+	 * @param name
+	 * @param creationDate
+	 * @param isActive
+	 * @param userId user creates the session </br>
+	 */
+	public Session(long id, long subjectId, String name, Timestamp creationDate,
 			boolean isActive, long userId) {
 		super(id, name);
 		this.subjectId = subjectId;
@@ -45,6 +67,7 @@ public class Session extends ItemData implements Serializable {
 		this.isActive = isActive;
 		this.userId = userId;
 	}
+
 
 	/**
 	 * @param cp

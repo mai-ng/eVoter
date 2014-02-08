@@ -80,6 +80,9 @@ public class ServerHandler implements HttpHandler {
 						subjectService.doSearch(httpExchange, parameters);
 					}else if (URIUtils.isGetAllUserOfSubject(uri)){
 						subjectService.doGetUsersOfSubject(httpExchange, parameters);
+					}else if (URIUtils.isUpdateSubject(uri)){
+						subjectService.doEdit(httpExchange, parameters);
+						
 						
 						//start with session management part
 					}else if (URIUtils.isGetAllSessionRequest(uri)){

@@ -71,5 +71,15 @@ public interface ISubjectService {
 	 * </li> {@link SubjectDAO#ID} </br>
 	 */
 	public void doGetUsersOfSubject(HttpExchange httpExchange, Map<String, Object> parameters);
+	/**
+	 * Update a {@link Subject} to database </br>
+	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
+	 * @param parameters contains: </br>
+	 * </li> {@link UserDAO#USER_KEY} </br>
+	 * </li> {@link SubjectDAO#ID} </br>
+	 * </li> {@link SubjectDAO#TITLE} </br>
+	 * </li> {@link SubjectDAO#CREATION_DATE} </br>
+	 */
+	public void doEdit(HttpExchange httpExchange, Map<String, Object> parameters);
 	
 }

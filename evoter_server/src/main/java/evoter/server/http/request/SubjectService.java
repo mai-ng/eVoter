@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
 import evoter.server.http.request.interfaces.ISubjectService;
 import evoter.share.dao.QuestionSessionDAO;
@@ -20,7 +19,9 @@ import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.dao.UserSubjectDAO;
 import evoter.share.model.Subject;
+import evoter.share.model.User;
 import evoter.share.model.UserSubject;
+import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
 /**
@@ -236,5 +237,38 @@ public class SubjectService implements ISubjectService{
 		}
 
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISubjectService#doGetUsersOfSubject(com.sun.net.httpserver.HttpExchange, java.util.Map)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public void doGetUsersOfSubject(HttpExchange httpExchange,
+			Map<String, Object> parameters) {
+		
+		JSONArray response = new JSONArray();
+		try{
+			
+			long subjectId = Long.valueOf(parameters.get(SubjectDAO.ID).toString());
+			List<UserSubject> userSubjectList = userSubjectDAO.findBySubjectId(subjectId);
+			for (UserSubject userSubject : userSubjectList){
+				List<User> userList = userDAO.findById(userSubject.getUserId());
+				if (userList != null && !userList.isEmpty()){
+					response.add(userList.get(0).toJSON());
+				}
+			}
+			URIUtils.writeResponse(response, httpExchange);
+			
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			URIUtils.writeFailureResponse(httpExchange);
+		}
+
+		
+	}
+	
+	
 	
 }

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
 import evoter.server.http.request.interfaces.IQuestionService;
 import evoter.share.dao.AnswerDAO;
@@ -25,6 +24,7 @@ import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
 import evoter.share.model.Question;
 import evoter.share.model.QuestionSession;
+import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
 /**

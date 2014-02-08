@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.http.URIRequest;
 import evoter.server.http.URIUtils;
 import evoter.server.http.request.interfaces.IAccountService;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.User;
+import evoter.share.utils.URIRequest;
 /**
  * Process all user account requests sent by client applications </br>
  * 

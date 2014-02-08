@@ -1,5 +1,6 @@
 package evoter.server.http.request;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -265,9 +266,36 @@ public class SubjectService implements ISubjectService{
 			e.printStackTrace();
 			URIUtils.writeFailureResponse(httpExchange);
 		}
-
 		
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISubjectService#doEdit(com.sun.net.httpserver.HttpExchange, java.util.Map)
+	 */
+	@Override
+	public void doEdit(HttpExchange httpExchange, Map<String, Object> parameters) {
+		
+		try{
+			
+			long subjectId = Long.valueOf(parameters.get(SubjectDAO.ID).toString());
+			String title = parameters.get(SubjectDAO.TITLE).toString();
+			Timestamp creationDate = Timestamp.valueOf(parameters.get(SubjectDAO.CREATION_DATE).toString());
+			
+			Subject subject = new Subject(subjectId, title, creationDate);
+			subjectDAO.update(subject);
+			
+			URIUtils.writeSuccessResponse(httpExchange);
+			
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			URIUtils.writeFailureResponse(httpExchange);
+		}
+
+	}
+	
+	
 	
 	
 	

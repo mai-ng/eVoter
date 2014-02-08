@@ -1,8 +1,7 @@
 package evoter.share.model;
 
 import java.io.Serializable;
-import java.sql.Date;
-
+import java.sql.Timestamp;
 import org.json.simple.JSONObject;
 
 import evoter.share.dao.SubjectDAO;
@@ -19,7 +18,7 @@ public class Subject extends ItemData implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Date creationDate;
+	private Timestamp creationDate;
 
 	public Subject() {
 	}
@@ -29,7 +28,7 @@ public class Subject extends ItemData implements Serializable {
 	 * @param title
 	 * @param creationDate
 	 */
-	public Subject(long id, String title, Date creationDate) {
+	public Subject(long id, String title, Timestamp creationDate) {
 		super(id, title);
 		this.creationDate = creationDate;
 	}
@@ -51,11 +50,11 @@ public class Subject extends ItemData implements Serializable {
 		super(id, title);
 	}
 
-	public Date getCreationDate() {
+	public Timestamp getCreationDate() {
 		return creationDate;
 	}
 
-	public void setCreationDate(Date creationDate) {
+	public void setCreationDate(Timestamp creationDate) {
 		this.creationDate = creationDate;
 	}
 

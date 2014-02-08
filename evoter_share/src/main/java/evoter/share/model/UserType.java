@@ -24,6 +24,12 @@ public class UserType implements Serializable{
 	public static final long STUDENT =3;
 	private long id;
 	private String userTypeValue;
+	
+	public UserType(){}
+	
+	public UserType(String userTypeValue){
+		this.userTypeValue = userTypeValue;
+	}
 	public long getId() {
 		return id;
 	}

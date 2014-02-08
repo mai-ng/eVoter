@@ -1,7 +1,11 @@
 package evoter.share.model;
 
 import java.io.Serializable;
-
+/**
+ * 
+ * @author btdiem
+ *
+ */
 public class SessionUser implements Serializable {
 
 	/**

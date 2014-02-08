@@ -66,8 +66,7 @@ public class Session extends ItemData implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Session() {
-	}
+	public Session() {}
 
 	public Session(long subjectId, String name, Timestamp creationDate,
 			boolean isActive, long userId) {

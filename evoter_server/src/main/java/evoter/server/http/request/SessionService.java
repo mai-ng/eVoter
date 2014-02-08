@@ -22,6 +22,7 @@ import evoter.share.model.Session;
 import evoter.share.model.SessionUser;
 import evoter.share.model.Subject;
 import evoter.share.model.User;
+import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
@@ -336,7 +337,46 @@ public class SessionService implements ISessionService{
 			ex.printStackTrace();
 			URIUtils.writeFailureResponse(httpExchange);
 		}
-		
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISessionService#doGetStudentsOfSession(com.sun.net.httpserver.HttpExchange, java.util.Map)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public void doGetStudentsOfSession(HttpExchange httpExchange,
+			Map<String, Object> parameters) {
+		
+		JSONArray response = new JSONArray();
+		try{
+			
+			long sessionId = Long.valueOf(parameters.get(SessionUserDAO.SESSION_ID).toString());
+			boolean acceptSession = Boolean.valueOf(parameters.get(SessionUserDAO.ACCEPT_SESSION).toString());
+
+			List<SessionUser> sessionUserList = sessionUserDAO.findByProperty(
+					new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.ACCEPT_SESSION}, 
+					new Object[]{sessionId, acceptSession});
+			
+			for (SessionUser sessionUser : sessionUserList){
+				List<User> userList = userDAO.findByProperty(
+						new String[]{UserDAO.ID, UserDAO.USER_TYPE_ID}, 
+						new Object[]{sessionUser.getUserId(), UserType.STUDENT});
+				for (User user : userList){
+					response.add(user.toJSON());
+				}
+				
+			}//for
+			URIUtils.writeResponse(response, httpExchange);
+			
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			URIUtils.writeFailureResponse(httpExchange);
+		}
+
+	}
+	
+	
 	
 }

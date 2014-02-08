@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS `answer` (
   `answer_text` char(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `answer_FKIndex1` (`question_id`),
-  CONSTRAINT `FK_answer_question` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+  CONSTRAINT `FK_answer_question` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.answer: ~10 rows (approximately)
 DELETE FROM `answer`;
@@ -53,9 +53,9 @@ CREATE TABLE IF NOT EXISTS `question` (
   PRIMARY KEY (`id`),
   KEY `FK_question_user` (`user_id`),
   KEY `FK_question_question_type` (`question_type_id`),
-  CONSTRAINT `FK_question_question_type` FOREIGN KEY (`question_type_id`) REFERENCES `question_type` (`id`),
-  CONSTRAINT `FK_question_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+  CONSTRAINT `FK_question_question_type` FOREIGN KEY (`question_type_id`) REFERENCES `question_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_question_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.question: ~8 rows (approximately)
 DELETE FROM `question`;
@@ -77,9 +77,9 @@ CREATE TABLE IF NOT EXISTS `question_type` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `question_type_value` char(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter.question_type: ~5 rows (approximately)
+-- Dumping data for table evoter.question_type: ~6 rows (approximately)
 DELETE FROM `question_type`;
 /*!40000 ALTER TABLE `question_type` DISABLE KEYS */;
 INSERT INTO `question_type` (`id`, `question_type_value`) VALUES
@@ -103,8 +103,8 @@ CREATE TABLE IF NOT EXISTS `session` (
   PRIMARY KEY (`id`),
   KEY `session_FKIndex1` (`subject_id`),
   KEY `FK_session_user` (`user_id`),
-  CONSTRAINT `FK_session_subject` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`id`),
-  CONSTRAINT `FK_session_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `FK_session_subject` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_session_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.session: ~9 rows (approximately)
@@ -129,8 +129,8 @@ CREATE TABLE IF NOT EXISTS `session_question` (
   `session_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`question_id`,`session_id`),
   KEY `FK_session_question_session` (`session_id`),
-  CONSTRAINT `FK_session_question_question` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`),
-  CONSTRAINT `FK_session_question_session` FOREIGN KEY (`session_id`) REFERENCES `session` (`id`)
+  CONSTRAINT `FK_session_question_question` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_session_question_session` FOREIGN KEY (`session_id`) REFERENCES `session` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.session_question: ~4 rows (approximately)
@@ -153,8 +153,8 @@ CREATE TABLE IF NOT EXISTS `session_user` (
   PRIMARY KEY (`user_id`,`session_id`),
   KEY `session_user_FKIndex1` (`session_id`),
   KEY `session_user_FKIndex2` (`user_id`),
-  CONSTRAINT `FK_session_user_session` FOREIGN KEY (`session_id`) REFERENCES `session` (`id`),
-  CONSTRAINT `FK_session_user_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `FK_session_user_session` FOREIGN KEY (`session_id`) REFERENCES `session` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_session_user_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.session_user: ~8 rows (approximately)
@@ -180,8 +180,8 @@ CREATE TABLE IF NOT EXISTS `statistics` (
   PRIMARY KEY (`question_id`,`session_id`),
   KEY `statistics_FKIndex1` (`question_id`),
   KEY `statistics_FKIndex2` (`session_id`),
-  CONSTRAINT `FK_statistics_question` FOREIGN KEY (`question_id`) REFERENCES `session_question` (`question_id`),
-  CONSTRAINT `FK_statistics_session` FOREIGN KEY (`session_id`) REFERENCES `session_question` (`session_id`)
+  CONSTRAINT `FK_statistics_question` FOREIGN KEY (`question_id`) REFERENCES `session_question` (`question_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_statistics_session` FOREIGN KEY (`session_id`) REFERENCES `session_question` (`session_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.statistics: ~0 rows (approximately)
@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS `subject` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter.subject: ~15 rows (approximately)
+-- Dumping data for table evoter.subject: ~12 rows (approximately)
 DELETE FROM `subject`;
 /*!40000 ALTER TABLE `subject` DISABLE KEYS */;
 INSERT INTO `subject` (`id`, `title`, `creation_date`) VALUES
@@ -228,7 +228,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `approved` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `user_FKIndex1` (`user_type_id`),
-  CONSTRAINT `FK_user_user_type` FOREIGN KEY (`user_type_id`) REFERENCES `user_type` (`id`)
+  CONSTRAINT `FK_user_user_type` FOREIGN KEY (`user_type_id`) REFERENCES `user_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.user: ~8 rows (approximately)
@@ -253,8 +253,8 @@ CREATE TABLE IF NOT EXISTS `user_subject` (
   PRIMARY KEY (`subject_id`,`user_id`),
   KEY `user_subject_FKIndex1` (`subject_id`),
   KEY `FK_user_subject_user` (`user_id`),
-  CONSTRAINT `FK_user_subject_subject` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`id`),
-  CONSTRAINT `FK_user_subject_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `FK_user_subject_subject` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_subject_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.user_subject: ~9 rows (approximately)
@@ -278,9 +278,9 @@ CREATE TABLE IF NOT EXISTS `user_type` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_type_value` char(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter.user_type: ~12 rows (approximately)
+-- Dumping data for table evoter.user_type: ~13 rows (approximately)
 DELETE FROM `user_type`;
 /*!40000 ALTER TABLE `user_type` DISABLE KEYS */;
 INSERT INTO `user_type` (`id`, `user_type_value`) VALUES

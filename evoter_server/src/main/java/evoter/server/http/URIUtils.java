@@ -15,6 +15,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
 import evoter.server.dao.impl.BeanDAOFactory;
+import evoter.share.utils.URIRequest;
 
 /**
  * 
@@ -292,6 +293,13 @@ public class URIUtils {
 				&& URIString.contains(((HttpConnection)BeanDAOFactory.getBean("httpConnection")).getContext()) 
 				&& URIString.endsWith(URIRequest.REGISTER); 
 	}
+	
+	public static boolean isGetAllUserOfSubject(String URIString) {
+		return (URIString != null) 
+				&& URIString.contains(((HttpConnection)BeanDAOFactory.getBean("httpConnection")).getContext()) 
+				&& URIString.endsWith(URIRequest.GET_ALL_USERS_OF_SUBJECT); 
+	}
+	
 	
 	
 }

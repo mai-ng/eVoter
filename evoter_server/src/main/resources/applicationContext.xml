@@ -25,6 +25,8 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
 		http://www.springframework.org/schema/aop/spring-aop-2.0.xsd	
 	-->
     
+   
+       
     <bean id="userDAO" class="evoter.server.dao.impl.UserDAOImpl" lazy-init="true">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
@@ -69,25 +71,26 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
-    <bean id="accountRequest" class="evoter.server.http.request.AccountRequest" lazy-init="true">
+    <bean id="accountService" class="evoter.server.http.request.AccountService" lazy-init="true">
 		<property name="userDAO" ref="userDAO" />
 	</bean>    
 
-    <bean id="questionRequest" class="evoter.server.http.request.QuestionRequest" lazy-init="true">
-		<property name="userDAO" ref="userDAO" />
+    <bean id="questionService" class="evoter.server.http.request.QuestionService" lazy-init="true">
+
+        <property name="userDAO" ref="userDAO" />
 		<property name="questionTypeDAO" ref="questionTypeDAO" />
 		<property name="questionSessionDAO" ref="questionSessionDAO" />
 		<property name="questionDAO" ref="questionDAO" />
 		<property name="answerDAO" ref="answerDAO" />
 	</bean>
 
-    <bean id="sessionRequest" class="evoter.server.http.request.SessionRequest" lazy-init="true">
+    <bean id="sessionService" class="evoter.server.http.request.SessionService" lazy-init="true">
 		<property name="userDAO" ref="userDAO" />
 		<property name="sessionDAO" ref="sessionDAO" />
 		<property name="sessionUserDAO" ref="sessionUserDAO" />		
 	</bean>    
     	    
-    <bean id="subjectRequest" class="evoter.server.http.request.SubjectRequest" lazy-init="true">
+    <bean id="subjectService" class="evoter.server.http.request.SubjectService" lazy-init="true">
 		<property name="questionSessionDAO" ref="questionSessionDAO" />
 		<property name="sessionDAO" ref="sessionDAO" />
 		<property name="sessionUserDAO" ref="sessionUserDAO" />		
@@ -122,8 +125,6 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
      
 </bean>
 -->
-     
-  
     <bean id="httpConnection" class="evoter.server.http.HttpConnection" lazy-init="true">
 		<property name="context" value="${connection.context}"/>
 		<property name="port" value="${connection.port}"/>
@@ -142,12 +143,11 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
         <property name="password" value="${jdbc.password}"/>
      </bean>
  
-     
     <context:property-placeholder location="jdbc.properties, connection.properties"/>
       
     <tx:annotation-driven transaction-manager="txManager" order="200"/>
     
-     <bean
+    <bean
 		id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />

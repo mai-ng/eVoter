@@ -34,23 +34,23 @@ import evoter.share.utils.UserValidation;
 @Service
 public class SubjectService implements ISubjectService{
 	
-	@Autowired
+	//@Autowired
 	private QuestionSessionDAO questionSessionDAO;
-	@Autowired
+	//@Autowired
 	private SessionDAO sessionDAO;
-	@Autowired
+	//@Autowired
 	private SessionUserDAO sessionUserDAO;
-	@Autowired
+	//@Autowired
 	private StatisticsDAO statisticsDAO;
-	@Autowired
+	//@Autowired
 	private SubjectDAO subjectDAO;
-	@Autowired
+	//@Autowired
 	private UserDAO userDAO;
-	@Autowired
+	//@Autowired
 	private UserSubjectDAO userSubjectDAO;
 	
 	
-
+	
 	public QuestionSessionDAO getQuestionSessionDAO() {
 		return questionSessionDAO;
 	}
@@ -106,7 +106,9 @@ public class SubjectService implements ISubjectService{
 	public void setUserSubjectDAO(UserSubjectDAO userSubjectDAO) {
 		this.userSubjectDAO = userSubjectDAO;
 	}
-
+	
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * @see evoter.server.http.request.interfaces.ISubjectRequest#doView(com.sun.net.httpserver.HttpExchange, java.util.Map)
@@ -293,6 +295,17 @@ public class SubjectService implements ISubjectService{
 			URIUtils.writeFailureResponse(httpExchange);
 		}
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISubjectService#doCreate(com.sun.net.httpserver.HttpExchange, java.util.Map)
+	 */
+	@Override
+	public void doCreate(HttpExchange httpExchange,
+			Map<String, Object> parameters) {
+		
+		
 	}
 	
 	

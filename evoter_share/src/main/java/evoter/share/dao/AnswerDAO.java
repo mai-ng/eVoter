@@ -84,6 +84,12 @@ public interface AnswerDAO {
 	 * @param answerText {@link Answer} content </br>
 	 */
 	public void deleteByAnswerText(String answerText);
+	/**
+	 * Update the changes of {@link Answer} to the database </br>
+	 * @param answer {@link Answer}
+	 * @return a positive integer if updating successfully </br>
+	 */
+	public int update(Answer answer);
 
 
 }

@@ -86,41 +86,48 @@ public class SessionService implements ISessionService{
 	public  void doGetAll(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
+		JSONArray response = new JSONArray();
+		
 		try{
 			
 			long subjectId = Long.parseLong((String)parameters.get(SessionDAO.SUBJECT_ID));
-			long userId = Long.valueOf(UserValidation.getUserIdFromUserKey((String)parameters.get(UserDAO.USER_KEY)));
+			long userId = Long.valueOf(UserValidation.
+					getUserIdFromUserKey((String)parameters.get(UserDAO.USER_KEY)));
 			
-			//select all sessions in SESSION table 
+			//select all sessions in SESSION table in case user is teacher
 			List<Session> sessions = sessionDAO.findByProperty(
 					new String[]{SessionDAO.SUBJECT_ID, SessionDAO.USER_ID}, 
 					new Long[]{subjectId, userId});
 			
 			//this is request is sent by student user
 			if (sessions == null || sessions.isEmpty()){
-				sessions = new ArrayList<Session>();
-				//select all session id of this user from session_user table
-				List<SessionUser> sessionUsers = sessionUserDAO.findByUserId(userId);
-				for (SessionUser sessionUser : sessionUsers){
-					sessions.addAll(sessionDAO.findById(sessionUser.getSessionId()));
-				}//for
-				//select all session object in session table 
+				
+				List<Session> sessionList = sessionDAO.findBySubjectId(subjectId);
+				for (Session session : sessionList){
+					List<SessionUser> sessionUsers = sessionUserDAO.
+							findByProperty(new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, 
+											new Object[]{session.getId(), userId});
+					
+					if (sessionUsers != null && !sessionUsers.isEmpty())
+						//get this session
+						sessions.add(session);
+				
+				}
 			}
 			
-	/**		List<Session> sessions = sesDAO.findBySubjectId(subjectId);*/
-			JSONArray jsArray = new JSONArray();
 			//find session creator
 			for (Session ses : sessions){
 				User creator = userDAO.findById(ses.getUserId()).get(0);
 				JSONObject object = ses.toJSON(); 
 				object.put(CREATOR, creator.getUserName());
-				jsArray.add(object);
+				response.add(object);
 				
 			}
-			URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
-			System.out.println("sessions: " + jsArray);
+			URIUtils.writeResponse(response, httpExchange);
+			System.out.println("sessions: " + response);
 			
 		}catch(Exception e){
+			
 			e.printStackTrace();
 			URIUtils.writeFailureResponse(httpExchange);
 		}

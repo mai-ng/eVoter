@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import evoter.server.dao.impl.BeanDAOFactory;
 //import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.server.http.request.interfaces.IAccountService;
 import evoter.server.http.request.interfaces.IQuestionService;
@@ -46,15 +47,23 @@ public class ServerHandler implements HttpHandler {
 		@Override
 		public void run() {
 		
+			
 			String uri = httpExchange.getRequestURI().toString();
 			Map<String,Object> parameters = URIUtils.getParameters(httpExchange);			
 			System.out.println("parameters: " + parameters);
-/**			
+			
+			
 			IAccountService accountService = (IAccountService)BeanDAOFactory.getBean(IAccountService.BEAN_NAME);
 			ISubjectService subjectService = (ISubjectService)BeanDAOFactory.getBean(ISubjectService.BEAN_NAME);
 			ISessionService sessionService = (ISessionService)BeanDAOFactory.getBean(ISessionService.BEAN_NAME);
 			IQuestionService questionService = (IQuestionService)BeanDAOFactory.getBean(IQuestionService.BEAN_NAME);
-*/			
+			
+			System.out.println("accountService: " + accountService);
+			System.out.println("subjectService: " + subjectService);
+			System.out.println("sessionService: " + sessionService);
+			System.out.println("questionService: " + questionService);
+
+			
 			if (URIUtils.isLoginRequest(uri)){
 				accountService.doLogin(httpExchange, parameters);
 			}else if (URIUtils.isLogoutRequest(uri)){

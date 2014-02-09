@@ -22,7 +22,7 @@ import evoter.share.utils.URIRequest;
  */
 public interface IQuestionService {
 
-	public static final String BEAN_NAME = "questionRequest";
+	public static final String BEAN_NAME = "questionService";
 	/**
 	 * This method will response a list of {@link Question} and {@link Answer} when server </br>
 	 * receives request {@link URIRequest#GET_ALL_QUESTION} </br>

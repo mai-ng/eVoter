@@ -50,7 +50,7 @@ public class SubjectService implements ISubjectService{
 	private UserSubjectDAO userSubjectDAO;
 	
 	
-/*
+
 	public QuestionSessionDAO getQuestionSessionDAO() {
 		return questionSessionDAO;
 	}
@@ -106,7 +106,7 @@ public class SubjectService implements ISubjectService{
 	public void setUserSubjectDAO(UserSubjectDAO userSubjectDAO) {
 		this.userSubjectDAO = userSubjectDAO;
 	}
-*/
+
 	/*
 	 * (non-Javadoc)
 	 * @see evoter.server.http.request.interfaces.ISubjectRequest#doView(com.sun.net.httpserver.HttpExchange, java.util.Map)

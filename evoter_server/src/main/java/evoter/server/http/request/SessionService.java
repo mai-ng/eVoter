@@ -44,7 +44,7 @@ public class SessionService implements ISessionService{
 	@Autowired
 	private UserDAO userDAO;
 	
-/*	
+	
 	public SessionDAO getSessionDAO() {
 		return sessionDAO;
 	}
@@ -68,7 +68,7 @@ public class SessionService implements ISessionService{
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
-*/
+
 	/**
 	 * This method will select all {@link Session} of a specific {@link Subject} </br>
 	 * and the result will be added to response to client application </br>

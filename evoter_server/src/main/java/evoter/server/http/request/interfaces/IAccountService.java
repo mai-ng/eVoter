@@ -13,7 +13,7 @@ import evoter.share.utils.URIRequest;
  */
 public interface IAccountService {
 
-	public static final String BEAN_NAME = "accountRequest";
+	public static final String BEAN_NAME = "accountService";
 	/**
 	 * Response clients a userkey generated from {@link UserDAO#USER_NAME} </br>
 	 * and {@link UserDAO#PASSWORD} if username and password exist in database </br> 

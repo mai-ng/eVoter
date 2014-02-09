@@ -23,7 +23,7 @@ import evoter.share.utils.URIRequest;
  */
 public interface ISessionService {
 
-	public static final String BEAN_NAME = "sessionRequest";
+	public static final String BEAN_NAME = "sessionService";
 	/**
 	 * This method will select all {@link Session} of a specific {@link Subject} </br>
 	 * and the result will be added to response to client application </br>

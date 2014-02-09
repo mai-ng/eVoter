@@ -46,7 +46,7 @@ public class QuestionService implements IQuestionService{
 	private QuestionTypeDAO questionTypeDAO;
 	@Autowired
 	private UserDAO userDAO;
-/*	
+	
 	public AnswerDAO getAnswerDAO() {
 		return answerDAO;
 	}
@@ -86,7 +86,7 @@ public class QuestionService implements IQuestionService{
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
-*/
+
 	//This value is updated when receiving a /send_question request 
 	private  Map<Long,Long> mapSentQuestion = new HashMap<Long, Long>();
 

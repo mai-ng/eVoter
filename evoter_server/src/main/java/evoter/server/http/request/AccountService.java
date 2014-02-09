@@ -34,14 +34,14 @@ public class AccountService implements IAccountService{
 	 @Autowired
 	 private UserDAO userDAO;
 
-/**	 
+	 
 	 public void setUserDAO(UserDAO userDAO){
 		 this.userDAO = userDAO;
 	 }
 	 public UserDAO getUserDAO(){
 		 return this.userDAO;
 	 }
-	 */
+	 
 //	private  final String USER_KEY = "userkey";
 	
 	/**

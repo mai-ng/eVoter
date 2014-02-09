@@ -111,5 +111,11 @@ public interface QuestionDAO {
 	 * @param parentId value of parent question id
 	 */
 	public void deleteByParentId(long parentId);
+	/**
+	 * Update the changes values of {@link Question} to the database </br>
+	 * @param question {@link Question} object that is needed to update </br>
+	 * @return a positive integer if updating successfully </br>
+	 */
+	public int update(Question question);
 
 }

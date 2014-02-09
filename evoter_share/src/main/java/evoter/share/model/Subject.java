@@ -90,7 +90,7 @@ public class Subject extends ItemData implements Serializable {
 		JSONObject obj = new JSONObject();
 		obj.put(SubjectDAO.ID, id);
 		obj.put(SubjectDAO.TITLE, title);
-		obj.put(SubjectDAO.CREATION_DATE, creationDate.toString());
+		obj.put(SubjectDAO.CREATION_DATE, "'" + creationDate + "'");
 		return obj;
 
 	}

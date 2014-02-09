@@ -47,7 +47,7 @@ public interface IQuestionService {
 	 * Insert {@link Answer} object to ANSWER table </br>
 	 * 
 	 * 
-	 * @param httpExchange
+	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
 	 * @param parameters contains: </br>
 	 * 	</li> {@link QuestionDAO#QUESTION_TEXT} is a string array
 	 * 	</li> {@link QuestionDAO#QUESTION_TYPE_ID}
@@ -95,9 +95,18 @@ public interface IQuestionService {
 	 * This method is called when teacher sends the request </br>
 	 * {@link URIRequest#STOP_SEND_QUESTION} to server </br>
 	 *  
-	 * @param httpExchange </br>
+	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
 	 * @param parameters contains : </br>
 	 * 	</li> QuestionSessionDAO.SESSION_ID
 	 */
 	public void doStopSend(HttpExchange httpExchange, Map<String,Object> parameters) ;
+	/**
+	 * This method will update new values of {@link Question} and {@link Answer} </br>
+	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
+	 * @param parameters contains: </br>
+	 * </li> {@link UserDAO#USER_KEY} </br>
+	 * </li> {@link QuestionDAO#ID} </br>
+	 * 	</li> {@link QuestionDAO#QUESTION_TEXT} is a string array </br>
+	 */
+	public void doEdit(HttpExchange httpExchange, Map<String, Object> parameters);
 }

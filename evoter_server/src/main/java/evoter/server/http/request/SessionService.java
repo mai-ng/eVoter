@@ -1,7 +1,6 @@
 package evoter.server.http.request;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -37,11 +36,11 @@ public class SessionService implements ISessionService{
 
 	public static final String CREATOR = "CREATOR";
 	
-	@Autowired
+	//@Autowired
 	private SessionDAO sessionDAO;
-	@Autowired
+	//@Autowired
 	private SessionUserDAO sessionUserDAO;
-	@Autowired
+	//@Autowired
 	private UserDAO userDAO;
 	
 	
@@ -68,7 +67,8 @@ public class SessionService implements ISessionService{
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
-
+	
+	
 	/**
 	 * This method will select all {@link Session} of a specific {@link Subject} </br>
 	 * and the result will be added to response to client application </br>
@@ -176,20 +176,31 @@ public class SessionService implements ISessionService{
 	public  void doAccept(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		
-		long sessionId = Long.parseLong((String)parameters.get(SessionUserDAO.SESSION_ID));
-		String userKey = (String)parameters.get(UserDAO.USER_KEY);
-		Long userId = Long.valueOf(UserValidation.getUserIdFromUserKey(userKey));
-		
-		List<SessionUser> sessUserList = sessionUserDAO.findByProperty(new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, new Object[]{sessionId, userId});
-		if (sessUserList != null && !sessUserList.isEmpty()){
+		try{
 			
-			for (SessionUser sessUser : sessUserList){
-				sessUser.setAcceptSession(true);
-				sessionUserDAO.update(sessUser);
+			long sessionId = Long.parseLong((String)parameters.get(SessionUserDAO.SESSION_ID));
+			String userKey = (String)parameters.get(UserDAO.USER_KEY);
+			Long userId = Long.valueOf(UserValidation.getUserIdFromUserKey(userKey));
+			
+			List<SessionUser> sessUserList = sessionUserDAO.
+					findByProperty(new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, 
+									new Object[]{sessionId, userId});
+			if (sessUserList != null && !sessUserList.isEmpty()){
+				
+				for (SessionUser sessUser : sessUserList){
+					sessUser.setAcceptSession(true);
+					sessionUserDAO.update(sessUser);
+				}
+				
 			}
+
 			URIUtils.writeSuccessResponse(httpExchange);
-		}else{
+			
+		}catch(Exception e){
+			
+			e.printStackTrace();
 			URIUtils.writeFailureResponse(httpExchange);
+			
 		}
 	
 	}

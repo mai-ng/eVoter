@@ -107,7 +107,10 @@ public class AccountService implements IAccountService{
 	public  void doLogout(HttpExchange exchange, Map<String,Object> parameters) {
 		
 		if (hasUserKey(parameters)){
+			
+			userKeys.remove(parameters.get(UserDAO.USER_KEY));
 			URIUtils.writeSuccessResponse(exchange);
+			
 		}else{
 			URIUtils.writeFailureResponse(exchange);
 		}

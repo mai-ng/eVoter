@@ -202,11 +202,35 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#deleteByParentId(long)
+	 */
 	@Override
 	public void deleteByParentId(long parentId) {
 		
 		deleteByProperty(new String[]{PARENT_ID}, new Long[]{parentId});
 	}
 
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#update(evoter.share.model.Question)
+	 */
+	@Override
+	public int update(Question question) {
+		
+		final String sql = "UPDATE " + TABLE_NAME 
+		+ " SET " 
+		+ USER_ID + "=" +  question.getUserId()
+		+ "," + QUESTION_TYPE_ID + "=" + question.getQuestionTypeId()
+		+ ","+ QUESTION_TEXT + "='" + question.getQuestionText() + "'"
+		+ "," + CREATION_DATE + "=" + question.getCreationDate()
+		+ "," + PARENT_ID + "=" + question.getParentId()
+		+ " WHERE " + ID + "=" + question.getId();
+		
+		return getJdbcTemplate().update(sql);
+	}
+
+	
 }

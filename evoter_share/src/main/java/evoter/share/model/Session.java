@@ -145,7 +145,7 @@ public class Session extends ItemData implements Serializable {
 
 		JSONObject obj = new JSONObject();
 		obj.put(SessionDAO.ID, id);
-		obj.put(SessionDAO.CREATION_DATE, "'" + creationDate + "'");
+		obj.put(SessionDAO.CREATION_DATE, "" + creationDate + "");
 		obj.put(SessionDAO.IS_ACTIVE, isActive);
 		obj.put(SessionDAO.NAME, title);
 		obj.put(SessionDAO.SUBJECT_ID, subjectId);

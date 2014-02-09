@@ -179,7 +179,7 @@ public class Question extends ItemData implements Serializable {
 		object.put(QuestionDAO.QUESTION_TEXT, title);
 		object.put(QuestionDAO.QUESTION_TYPE_ID, questionTypeId);
 		object.put(QuestionDAO.USER_ID, userId);
-		object.put(QuestionDAO.CREATION_DATE, "'" + creationDate + "'");
+		object.put(QuestionDAO.CREATION_DATE, "" + creationDate + "");
 		object.put(QuestionDAO.PARENT_ID, parentId);
 		return object;
 	}

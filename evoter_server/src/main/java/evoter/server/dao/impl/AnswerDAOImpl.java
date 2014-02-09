@@ -191,6 +191,23 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 		deleteByProperty(new String[]{ANSWER_TEXT}, new String[]{answerText});
 		
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.AnswerDAO#update(evoter.share.model.Answer)
+	 */
+	@Override
+	public int update(Answer answer) {
+		
+		final String sql = 
+				"UPDATE " + TABLE_NAME 
+				+ " SET " 
+				+ QUESTION_ID + "=" + answer.getQuestionId() 
+				+ "," + ANSWER_TEXT +"='" + answer.getAnswerText() + "'" 
+				+ " WHERE " + ID + "=" + answer.getId();
+
+		return getJdbcTemplate().update(sql);
+	}
 	
 	
 

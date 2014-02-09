@@ -17,29 +17,27 @@ import web.gui.secretary.EditTeacher;
 
 /**
  * @author maint<br>
- * present a line in the list of Teachers, Students, or Subjects.
- * Each item contains:
- * <li> title: teacher's name, student's name, or title of a subject
- * <li> button: edit
- * <li> button: delete
- * <li> button: view detail <br>
- * Display: "Title------btnEdit---btnDelete---btnDetail"
+ *         present a line in the list of Teachers, Students, or Subjects.
+ *         Each item contains: <li>title: teacher's name, student's name, or
+ *         title of a subject <li>button: edit <li>button: delete <li>button:
+ *         view detail <br>
+ *         Display: "Title------btnEdit---btnDelete---btnDetail"
  */
 public class ItemOfListView extends JPanel {
-
-private static final long serialVersionUID = 1L;
-
+	
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * type = 1 if this item is a teacher.
 	 */
-	private static int TYPE_TEACHER = 1;
+	public static int TYPE_TEACHER = 1;
 	/**
 	 * type = 2 if it is a subject.
 	 */
-	private static int TYPE_SUBJECT = 2;
+	public static int TYPE_SUBJECT = 2;
 	
-	private int itemID;
-
+	private long itemID;
+	
 	private JLabel itemName;
 	
 	private JButton btnEdite;
@@ -50,14 +48,15 @@ private static final long serialVersionUID = 1L;
 	
 	private int type;
 	
-
 	/**
 	 * display an item in the list of items (Teachers, Students, Subject).
-	 * The type of this item is defined by {@link #TYPE_TEACHER}, or {@link #TYPE_SUBJECT}.
+	 * The type of this item is defined by {@link #TYPE_TEACHER}, or
+	 * {@link #TYPE_SUBJECT}.
+	 * 
 	 * @param label
 	 * @param id
 	 */
-	public ItemOfListView(String label,int id, int type) {
+	public ItemOfListView(String label, long id, int type) {
 		this.itemID = id;
 		initComponents(label);
 		editButton();
@@ -88,18 +87,15 @@ private static final long serialVersionUID = 1L;
 		c.gridx = 3;
 		this.add(btnDetail, c);
 		
-
 	}
-
+	
 	/**
-	 * initialize all components:
-	 * <li> label of the item
-	 * <li> button "Edit"
-	 * <li> button "Delete"
-	 * <li> button "Detail"
+	 * initialize all components: <li>label of the item <li>button "Edit" <li>
+	 * button "Delete" <li>button "Detail"
+	 * 
 	 * @param label
 	 */
-	public void initComponents(String label){
+	public void initComponents(String label) {
 		itemName = new JLabel(label);
 		
 		btnEdite = new JButton("Edit");
@@ -110,16 +106,16 @@ private static final long serialVersionUID = 1L;
 	/**
 	 * @return id if this item
 	 */
-	public int getItemID() {
+	public long getItemID() {
 		return itemID;
 	}
 	
 	/**
-	 * click button "Edit". 
+	 * click button "Edit".
 	 * Appear a frame of information of this item in order to edit it.
 	 * The frame can be {@link EditSubject}, or {@link EditTeacher}.
 	 */
-	public void editButton(){
+	public void editButton() {
 		btnEdite.addActionListener(new ActionListener() {
 			
 			@Override
@@ -127,18 +123,18 @@ private static final long serialVersionUID = 1L;
 				try {
 					//item is a subject
 					if (type == TYPE_SUBJECT) {
-//						EditSubject editSub = new EditSubject();
+						//						EditSubject editSub = new EditSubject();
 						AddSubject editSub = new AddSubject();
 						editSub.setSize(800, 600);
 						editSub.setLocationRelativeTo(null);
-//						editSub.getTxtTitle().setText(itemName.getText());
+						//						editSub.getTxtTitle().setText(itemName.getText());
 						editSub.setVisible(true);
 					}
 					
 					//item is a teacher
-					if ( type == TYPE_TEACHER){
+					if (type == TYPE_TEACHER) {
 						EditTeacher editTeacher = new EditTeacher();
-//						ViewTeacher editTeacher = new ViewTeacher();
+						//						ViewTeacher editTeacher = new ViewTeacher();
 						editTeacher.setSize(600, 400);
 						editTeacher.setLocationRelativeTo(null);
 						editTeacher.getTxtEmail().setText(itemName.getText());
@@ -151,4 +147,14 @@ private static final long serialVersionUID = 1L;
 			}
 		});
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "ItemOfListView [itemID=" + itemID + ", itemName=" + itemName.getText() + ", type=" + type + "]";
+	}
+	
+	
 }

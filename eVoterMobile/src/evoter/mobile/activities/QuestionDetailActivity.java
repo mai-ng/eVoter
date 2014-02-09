@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -27,8 +28,10 @@ import evoter.share.model.Question;
 import evoter.share.model.QuestionType;
 import evoter.share.model.UserType;
 
-/**
- * Created by @author luongnv89 on 18-Jan-2014 <br>
+/**<br> Update by @author luongnv89 on 09-Feb-2014:<br>
+ * <li> Parser answer for Multi-choice question
+ * <li> Parser answer for input answer question
+ * <br> Created by @author luongnv89 on 18-Jan-2014 <br>
  * {@link QuestionDetailActivity} manage a question <li>With teacher: <br>
  * - Delete send question to student <br>
  * - Edit question <br>
@@ -78,10 +81,23 @@ public class QuestionDetailActivity extends EVoterActivity {
 				answerArea.addView(groups);
 				break;
 			case QuestionType.MULTI_RADIOBUTTON:
-				
+				RadioGroup groupMultiRadioBox = new RadioGroup(this);
+				groupMultiRadioBox.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+				for (int i = 0; i < column1.size(); i++) {
+					RadioButton ans = new RadioButton(this);
+					ans.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+					ans.setText(column1.get(i).getAnswerText());
+					groupMultiRadioBox.addView(ans);
+				}
+				answerArea.addView(groupMultiRadioBox);
 				break;
 			case QuestionType.MULTI_CHECKBOX:
-				
+				for (int i = 0; i < column1.size(); i++) {
+					CheckBox ans = new CheckBox(this);
+					ans.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+					ans.setText(column1.get(i).getAnswerText());
+					answerArea.addView(ans);
+				}
 				break;
 			case QuestionType.SLIDER:
 				SeekBar seekbar = new SeekBar(this);
@@ -122,11 +138,13 @@ public class QuestionDetailActivity extends EVoterActivity {
 			JSONArray listAnswer1 = new JSONArray(answerColumn1);
 			for (int i = 0; i < listAnswer1.length(); i++) {
 				Answer answer = parserJSONObjectToAnswer(listAnswer1.getJSONObject(i));
+				if (answer != null) listAnswers.add(answer);
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return listAnswers;
 	}
 	
 	/**

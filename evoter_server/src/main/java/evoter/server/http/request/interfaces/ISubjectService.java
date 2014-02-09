@@ -78,8 +78,22 @@ public interface ISubjectService {
 	 * </li> {@link UserDAO#USER_KEY} </br>
 	 * </li> {@link SubjectDAO#ID} </br>
 	 * </li> {@link SubjectDAO#TITLE} </br>
-	 * </li> {@link SubjectDAO#CREATION_DATE} </br>
+	 *  {@link SubjectDAO#STUDENT_EMAIL_LIST} : an array of student email </br>
+	 *  {@link SubjectDAO#TEACHER_EMAIL_LIST} : an array of teacher email </br>
+	 * 
 	 */
 	public void doEdit(HttpExchange httpExchange, Map<String, Object> parameters);
+	/**
+	 * Create a {@link Subject} </br> 
+	 * @param httpExchange {@link HttpExchange} communicates between server and clients </br>
+	 * @param parameters contains: </br>
+	 *  {@link UserDAO#USER_KEY} </br>
+	 *  {@link SubjectDAO#TITLE} </br>
+	 *  {@link SubjectDAO#CREATION_DATE} </br>
+	 *  {@link SubjectDAO#STUDENT_EMAIL_LIST} : an array of student email </br>
+	 *  {@link SubjectDAO#TEACHER_EMAIL_LIST} : an array of teacher email </br>
+	 */
+	public void doCreate(HttpExchange httpExchange, Map<String, Object> parameters);
+	
 	
 }

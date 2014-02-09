@@ -20,6 +20,7 @@ public class QuestionStatisticActivity extends EVoterActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.question_statistic);
+		mainMenu.setQuestionActivityMenu();
 	}
 	
 }

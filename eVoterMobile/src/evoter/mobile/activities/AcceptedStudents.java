@@ -5,14 +5,15 @@ package evoter.mobile.activities;
 
 import evoter.mobile.main.R;
 import android.os.Bundle;
+import android.view.View;
 
 /**
  * @author luongnv89
- *
  */
 public class AcceptedStudents extends EVoterActivity {
-
-	/* (non-Javadoc)
+	
+	/*
+	 * (non-Javadoc)
 	 * @see evoter.mobile.activities.EVoterActivity#onCreate(android.os.Bundle)
 	 */
 	@Override
@@ -20,8 +21,8 @@ public class AcceptedStudents extends EVoterActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.subject_users);
+		mainMenu.setQuestionActivityMenu();
+		mainMenu.getBtAcceptUsers().setVisibility(View.GONE);
 	}
-	
-	
 	
 }

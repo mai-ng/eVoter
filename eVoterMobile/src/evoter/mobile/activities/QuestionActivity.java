@@ -49,7 +49,7 @@ public class QuestionActivity extends ItemDataActivity {
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentSessionName());
 		
-		menuDialog.setMenuSessionActivity();
+		mainMenu.setQuestionActivityMenu();
 		if (RuntimeEVoterManager.getCurrentUserType() == UserType.STUDENT && RuntimeEVoterManager.currentSessionIsActive()) {
 			//Setup seekbar
 			tbSessionValue.setVisibility(View.VISIBLE);
@@ -237,7 +237,12 @@ public class QuestionActivity extends ItemDataActivity {
 								// long userId, Date creationDate, long
 								// sessionID, long parentId,
 								// String answerColumn1, String answerColumn2
+								String answerColumn1 = "null";
 								String answerColumn2 = "null";
+								if (s.toString().contains(Question.COL1)) {
+									answerColumn1 = s
+											.getString(Question.COL1);
+								}
 								if (s.toString().contains(Question.COL2)) {
 									answerColumn2 = s
 											.getString(Question.COL2);
@@ -256,7 +261,7 @@ public class QuestionActivity extends ItemDataActivity {
 												.getString(QuestionSessionDAO.SESSION_ID)),
 										Long.parseLong(s
 												.getString(QuestionDAO.PARENT_ID)),
-										s.getString(Question.COL1), answerColumn2);
+										answerColumn1,answerColumn2);
 								listQuestion.add(question);
 							}
 							if (listQuestion.isEmpty()) {

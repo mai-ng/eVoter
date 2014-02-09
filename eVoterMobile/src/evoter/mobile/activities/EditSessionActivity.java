@@ -27,7 +27,7 @@ public class EditSessionActivity extends NewSessionActivity {
 		super.onCreate(savedInstanceState);
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentSessionName());
-		menuDialog.setMenuSubjectActivity();
+		mainMenu.setSessionActivityMenu();
 		
 		etTitle = (EditText)findViewById(R.id.etNewSessionName);
 		etTitle.setText(RuntimeEVoterManager.getCurrentSessionName());

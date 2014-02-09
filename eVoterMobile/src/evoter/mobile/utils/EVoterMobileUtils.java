@@ -16,7 +16,10 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 /**
- * Created by luongnv89 on 05/12/13.
+ * <br>Update by @author luongnv89 on Sun - 09-Feb-2014:
+ * <br>
+ * <li> Change java.sql.Date to using java.sql.Timestamp
+ * <br>Created by luongnv89 on 05/12/13.
  */
 public class EVoterMobileUtils {
 	

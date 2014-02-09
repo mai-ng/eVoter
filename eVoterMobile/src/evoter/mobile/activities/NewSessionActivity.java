@@ -39,7 +39,8 @@ public class NewSessionActivity extends EVoterActivity {
 		
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentSubjectName());
-		menuDialog.setMenuSubjectActivity();
+		mainMenu.setSessionActivityMenu();
+		mainMenu.getBtNewSession().setVisibility(View.GONE);
 		
 		etTitle = (EditText)findViewById(R.id.etNewSessionName);
 		listView = (ListView)findViewById(R.id.lvNewSessionQuestion);

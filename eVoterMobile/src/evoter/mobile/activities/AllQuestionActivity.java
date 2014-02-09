@@ -51,7 +51,7 @@ public class AllQuestionActivity extends ItemDataActivity {
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentUserName());
 		
-		menuDialog.setMenuSessionActivity();
+		mainMenu.setTopMenu();
 		adapter = new QuestionAdapter(AllQuestionActivity.this);
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

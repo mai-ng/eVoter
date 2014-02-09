@@ -3,6 +3,12 @@
  */
 package evoter.mobile.activities;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
@@ -15,6 +21,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.share.dao.AnswerDAO;
+import evoter.share.model.Answer;
 import evoter.share.model.Question;
 import evoter.share.model.QuestionType;
 import evoter.share.model.UserType;
@@ -40,8 +48,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		setContentView(R.layout.question_view_detail);
 		this.tvTitleBarContent.setText(RuntimeEVoterManager.getCurrentSessionName());
 		this.ivTitleBarRefresh.setVisibility(View.GONE);
-		this.menuDialog.setMenuQuestionDetailActivity();
-		this.menuDialog.setMenuQuestionActivity();
+		mainMenu.setQuestionActivityMenu();
 		currentQuestion = RuntimeEVoterManager.getCurrentQuestion();
 		
 		tvQuestionText = (TextView) findViewById(R.id.tvQuestionText);
@@ -50,6 +57,11 @@ public class QuestionDetailActivity extends EVoterActivity {
 		answerArea = (LinearLayout) findViewById(R.id.loAnswerArea);
 		
 		int type = (int) currentQuestion.getQuestionTypeId();
+		
+		//Parser the answer of question
+		ArrayList<Answer> column1 = parserAnswer(currentQuestion.getAnswerColumn1());
+		ArrayList<Answer> column2 = parserAnswer(currentQuestion.getAnswerColumn2());
+		
 		//		type = 1;
 		switch (type) {
 			case QuestionType.YES_NO:
@@ -98,6 +110,37 @@ public class QuestionDetailActivity extends EVoterActivity {
 			btSend.setText("Submit");
 		}
 		
+	}
+	
+	/**
+	 * @param answerColumn1
+	 * @return
+	 */
+	private ArrayList<Answer> parserAnswer(String answerColumn1) {
+		ArrayList<Answer> listAnswers = new ArrayList<Answer>();
+		try {
+			JSONArray listAnswer1 = new JSONArray(answerColumn1);
+			for (int i = 0; i < listAnswer1.length(); i++) {
+				Answer answer = parserJSONObjectToAnswer(listAnswer1.getJSONObject(i));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * @param jsonObject
+	 * @return
+	 */
+	private Answer parserJSONObjectToAnswer(JSONObject jsonObject) {
+		try {
+			return new Answer(jsonObject.getLong(AnswerDAO.QUESTION_ID), jsonObject.getString(AnswerDAO.ANSWER_TEXT));
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 }

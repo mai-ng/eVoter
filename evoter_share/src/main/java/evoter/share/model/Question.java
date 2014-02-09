@@ -8,7 +8,13 @@ import org.json.simple.JSONObject;
 import evoter.share.dao.QuestionDAO;
 
 /**
- * Updated by @author luongnv89 on 18-Jan-2014: <br>
+ * <br> Updated by @author luongnv89 on 09-Feb-2014: <br>
+ * <li>Update {@link Question#Question(long, String, long, long, Timestamp, long, long, String, String)}
+ * <br>add: <br> if(answerColumn1.equals("null")) 
+			this.answerColumn1="";
+		else
+			this.answerColumn1 = answerColumn1;
+ * <br> Updated by @author luongnv89 on 18-Jan-2014: <br>
  * <li>Updated for eVoterMobile
  * 
  * 
@@ -47,7 +53,10 @@ public class Question extends ItemData implements Serializable {
 		this.creationDate = creationDate;
 		this.sessionID = sessionID;
 		this.parentId = parentId;
-		this.answerColumn1 = answerColumn1;
+		if(answerColumn1.equals("null")) 
+			this.answerColumn1="";
+		else
+			this.answerColumn1 = answerColumn1;
 		if(answerColumn2.equals("null")) 
 			this.answerColumn2="";
 		else

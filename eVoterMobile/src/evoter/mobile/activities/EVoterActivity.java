@@ -20,20 +20,23 @@ import com.loopj.android.http.AsyncHttpClient;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.DialogInfor;
-import evoter.mobile.objects.MenuDialog;
+import evoter.mobile.objects.MainMenu;
 import evoter.mobile.objects.OfflineEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 
-/**
+
+/**Update by @author luongnv89 on 09-Feb-2014: <br>
+ * <li> Change the name of {@link MainMenu} variable to mainMenu
+ * <br>
  * Update by @author luongnv89 on Thu 30-Jan-2014: <br>
- * <li>Add constructor for {@link OfflineEVoterManager} On Sat - 18/01/2014 -
+ * <li>Add constructor for {@link OfflineEVoterManager} <br>On Sat - 18/01/2014 -
  * modified by luongnv89: <br>
  * Add {@link EVoterActivity#exit()} - to exit application from anywhere when
  * the application has error, exception,... avoid stuck phone
  * {@link EVoterActivity} is a parent class of all activity of eVoterMobile
  * application
  * 
- * @author luongnv89
+ * <br> @author luongnv89
  */
 public class EVoterActivity extends Activity {
 	/**
@@ -77,7 +80,7 @@ public class EVoterActivity extends Activity {
 	
 	protected AsyncHttpClient client;
 	
-	protected MenuDialog menuDialog;
+	protected MainMenu mainMenu;
 	
 	/*
 	 * (non-Javadoc)
@@ -102,7 +105,7 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				menuDialog.show();
+				mainMenu.show();
 			}
 		});
 		
@@ -112,9 +115,9 @@ public class EVoterActivity extends Activity {
 	 * 
 	 */
 	private void setupMainMenu() {
-		menuDialog = new MenuDialog(this);
+		mainMenu = new MainMenu(this);
 		
-		menuDialog.getBtExit().setOnClickListener(new OnClickListener() {
+		mainMenu.getBtExit().setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -122,7 +125,7 @@ public class EVoterActivity extends Activity {
 			}
 		});
 		
-		menuDialog.getBtLogout().setOnClickListener(new OnClickListener() {
+		mainMenu.getBtLogout().setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -130,58 +133,58 @@ public class EVoterActivity extends Activity {
 			}
 		});
 		
-		menuDialog.getBtAcceptUsers().setOnClickListener(new OnClickListener() {
+		mainMenu.getBtAcceptUsers().setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				Log.i("Main menu", "Request accepted user of a session");
-				menuDialog.dismiss();
+				mainMenu.dismiss();
 				Intent acceptedStudents = new Intent(EVoterActivity.this, AcceptedStudents.class);
 				startActivity(acceptedStudents);
 			}
 		});
 		
-		menuDialog.getBtAllQuestion().setOnClickListener(new OnClickListener() {
+		mainMenu.getBtAllQuestion().setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				Log.i("Main menu", "Show list all questions");
-				menuDialog.dismiss();
+				mainMenu.dismiss();
 				Intent allQuestion = new Intent(EVoterActivity.this, AllQuestionActivity.class);
 				startActivity(allQuestion);
 			}
 		});
 		
-		menuDialog.getBtListUsers().setOnClickListener(new OnClickListener() {
+		mainMenu.getBtListUsers().setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				Log.i("Main menu", "Request all user of a subject");
-				menuDialog.dismiss();
+				mainMenu.dismiss();
 				Intent subjectUserActivity = new Intent(EVoterActivity.this, SubjectUserActivity.class);
 				startActivity(subjectUserActivity);
 			}
 		});
 		
-		menuDialog.getBtNewQuestion().setOnClickListener(new OnClickListener() {
+		mainMenu.getBtNewQuestion().setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				Log.i("Main menu", "Create new question");
-				menuDialog.dismiss();
+				mainMenu.dismiss();
 				Intent newQuestion = new Intent(EVoterActivity.this, NewQuestionActivity.class);
 				startActivity(newQuestion);
 				
 			}
 		});
 		
-		menuDialog.getBtNewSession().setOnClickListener(new OnClickListener() {
+		mainMenu.getBtNewSession().setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				Intent newSessionIntent = new Intent(EVoterActivity.this, NewSessionActivity.class);
 				startActivity(newSessionIntent);
-				menuDialog.dismiss();
+				mainMenu.dismiss();
 			}
 		});
 		

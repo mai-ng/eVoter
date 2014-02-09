@@ -28,14 +28,13 @@ public class SubjectUserActivity extends EVoterActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.subject_users);
 		this.ivTitleBarRefresh.setVisibility(View.VISIBLE);
-		
 		// When the refresh icon is click, the data of listview will be reloaded
 		this.ivTitleBarRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				loadListItemData();
 			}
-
+			
 		});
 		
 		//Setup dialog which is show the loading process
@@ -55,9 +54,12 @@ public class SubjectUserActivity extends EVoterActivity {
 		progressBar.setProgress(0);
 		this.tvTitleBarContent.setText(RuntimeEVoterManager
 				.getCurrentUserName());
+		
+		//Set menu
+		mainMenu.setSessionActivityMenu();
+		mainMenu.getBtListUsers().setVisibility(View.GONE);
 	}
 	
-
 	private void loadListItemData() {
 		// TODO Auto-generated method stub
 		

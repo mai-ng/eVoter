@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 import org.apache.http.NameValuePair;
 
@@ -34,32 +35,37 @@ public class EVoterHTTPRequest {
 			URL url = new URL(targetURL);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
-			// connection.setRequestProperty("Content-Type",
-			// "application/x-www-form-urlencoded");
-			connection.setRequestProperty("Content-Language", "en-US");
+			//			connection.setRequestProperty("Content-Type",
+			//					"application/json; charset=ISO-8859-1");
+			//			connection.setRequestProperty("Content-Language", "en-US");
+			//			connection.setRequestProperty("Content-Encoding", "gzip");
 			connection.setUseCaches(false);
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 			OutputStream os = connection.getOutputStream();
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-					os, "UTF-8"));
+					os, "ISO-8859-1"));
 			writer.write(getQuery(params));
 			writer.flush();
 			writer.close();
 			connection.connect();
+			
+//			System.out.println("Content encoding: " + connection.getContentEncoding());
+//			System.out.println("Content type: " + connection.getContentType());
+//			System.out.println("Response code: " + connection.getResponseCode());
 			InputStream is = connection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+			GZIPInputStream zippedInputStream = new GZIPInputStream(is);
+			BufferedReader rd = new BufferedReader(new InputStreamReader(zippedInputStream));
 			StringBuffer response = new StringBuffer();
 			String line;
 			while ((line = rd.readLine()) != null) {
-				response.append(line);
+				response.append(line + "\n");
 			}
 			rd.close();
-			String str1 = response.toString();
-			return str1;
+			return response.toString();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Exeption: " + e.toString();
+			return null;
 		} finally {
 			if (connection != null)
 				connection.disconnect();

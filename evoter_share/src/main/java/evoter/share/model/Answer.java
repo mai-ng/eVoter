@@ -7,6 +7,11 @@ import org.json.simple.JSONObject;
 import evoter.share.dao.AnswerDAO;
 
 
+/**
+ * <br>Update by @author luongnv89 on 09-Feb-2014:<br>
+ * <li> Add {@link Answer#Answer(long, long, String)} constructor
+ *
+ */
 public class Answer extends ItemData implements Serializable {
 
 	/**
@@ -23,6 +28,12 @@ public class Answer extends ItemData implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 	public Answer(){}
+	
+	public Answer(long id, long questionId, String answerText){
+		super(id, answerText);
+		this.questionId = questionId;
+	}
+	
 	public Answer(long questionId, String answerText){
 		this.questionId = questionId;
 		this.title = answerText;

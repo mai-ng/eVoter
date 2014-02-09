@@ -18,6 +18,7 @@ public class EditQuestionActivity extends NewQuestionActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		mainMenu.setQuestionActivityMenu();
 	}
 	
 }

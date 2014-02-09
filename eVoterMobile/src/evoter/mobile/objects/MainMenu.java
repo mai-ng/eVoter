@@ -9,14 +9,17 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import evoter.mobile.activities.SessionActivity;
 import evoter.mobile.main.R;
 import evoter.share.model.UserType;
 
 /**
+ * Update by @author luongnv89 on 09-Feb-2014:<br>
+ * <li> Change the classname from MenuDialog to MainMenu
  * Created by @author luongnv89 on 19-Jan-2014:<br>
  * Manage main menu of eVoterMobile.
  */
-public class MenuDialog extends Dialog {
+public class MainMenu extends Dialog {
 	
 	LinearLayout lo_mainMenu;
 	Button btExit;
@@ -39,7 +42,7 @@ public class MenuDialog extends Dialog {
 	/**
 	 * @param context
 	 */
-	public MenuDialog(Context context) {
+	public MainMenu(Context context) {
 		super(context);
 		this.setTitle("MAIN MENU");
 		setContentView(R.layout.icon_menu);
@@ -80,14 +83,30 @@ public class MenuDialog extends Dialog {
 		}
 	}
 	
-	public void setMenuSubjectActivity(){
+	/**
+	 * Set top menu, which is show in all activity of application
+	 */
+	public void setTopMenu(){
+		lo_subjectActivityMenu.setVisibility(View.GONE);
+		lo_sessionActivityMenu.setVisibility(View.GONE);
+		lo_questionActivityMenu.setVisibility(View.GONE);
+		lo_questionDetailActivityMenu.setVisibility(View.GONE);
+		btAllQuestion.setVisibility(View.GONE);
+	}
+	
+	/**
+	 * Set main menu for {@link SessionActivity}:<br>
+	 * <li> 
+	 */
+	public void setSessionActivityMenu(){
 		lo_subjectActivityMenu.setVisibility(View.VISIBLE);
+		btAllQuestion.setVisibility(View.VISIBLE);
 		lo_sessionActivityMenu.setVisibility(View.GONE);
 		lo_questionActivityMenu.setVisibility(View.GONE);
 		lo_questionDetailActivityMenu.setVisibility(View.GONE);
 	}
 	
-	public void setMenuSessionActivity(){
+	public void setQuestionActivityMenu(){
 		lo_sessionActivityMenu.setVisibility(View.VISIBLE);
 		lo_subjectActivityMenu.setVisibility(View.GONE);
 		lo_questionActivityMenu.setVisibility(View.GONE);

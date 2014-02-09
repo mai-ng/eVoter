@@ -36,15 +36,15 @@ import evoter.share.utils.UserValidation;
 @Service
 public class QuestionService implements IQuestionService{
 	
-	@Autowired
+	//@Autowired
 	private AnswerDAO answerDAO;
-	@Autowired
+	//@Autowired
 	private QuestionDAO questionDAO;
-	@Autowired
+	//@Autowired
 	private QuestionSessionDAO questionSessionDAO;
-	@Autowired
+	//@Autowired
 	private QuestionTypeDAO questionTypeDAO;
-	@Autowired
+	//@Autowired
 	private UserDAO userDAO;
 	
 	public AnswerDAO getAnswerDAO() {
@@ -194,12 +194,12 @@ public class QuestionService implements IQuestionService{
 	 * 
 	 * @param httpExchange
 	 * @param parameters contains: </br>
-	 * 	</li> {@link QuestionDAO#QUESTION_TEXT} is a string array </br>
+	 * 	</li> {@link QuestionDAO#QUESTION_TEXT} is a string [] </br>
 	 * 	</li> {@link QuestionDAO#QUESTION_TYPE_ID} </br>
 	 *  </li> {@link QuestionDAO#CREATION_DATE} </br>
 	 *  </li> {@link UserDAO#USER_KEY} </br>
 	 *  </li> {@link QuestionSessionDAO#SESSION_ID} </br>
-	 *  </li> {@link AnswerDAO#ANSWER_TEXT}  is a string array </br>
+	 *  </li> {@link AnswerDAO#ANSWER_TEXT}  is a string[] </br>
 	 *  
 	 */
 	@Override
@@ -229,10 +229,12 @@ public class QuestionService implements IQuestionService{
 					parentId);
 			questionId =  questionDAO.insert(question);
 			/**
-			 * if this is match type question, the inserted question id is parent id </br>
+			 * if this is match type question, this question is a parent </br>
 			 * continue inserting the sub questions to the database </br>
 			 */
+			
 			if (questionTypeId == QuestionTypeDAO.MATCH){
+				
 				parentId = questionId;
 				for (; index < questionTexts.length; index++){
 					question = new Question(questionTypeId, 
@@ -240,7 +242,7 @@ public class QuestionService implements IQuestionService{
 							questionTexts[index++], 
 							creationDate, 
 							parentId);
-					questionId =  questionDAO.insert(question);
+					questionDAO.insert(question);
 				}
 			}
 			/**
@@ -367,13 +369,46 @@ public class QuestionService implements IQuestionService{
 	 * 	</li> QuestionSessionDAO.SESSION_ID
 	 */
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IQuestionService#doStopSend(com.sun.net.httpserver.HttpExchange, java.util.Map)
+	 */
 	@Override
 	public  void doStopSend(HttpExchange httpExchange,
 			Map<String,Object> parameters) {
 		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
 		mapSentQuestion.remove(sessionId);
 		URIUtils.writeSuccessResponse(httpExchange);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IQuestionService#doEdit(com.sun.net.httpserver.HttpExchange, java.util.Map)
+	 */
+	@Override
+	public void doEdit(HttpExchange httpExchange, Map<String, Object> parameters) {
+		
+		String questionText = (String)parameters.get(QuestionDAO.QUESTION_TEXT);
+		long questionId = Long.valueOf((String)parameters.get(QuestionDAO.ID));
+		
+		try{
+			
+			List<Question> questions = questionDAO.findById(questionId);
+			if (questions != null && !questions.isEmpty()){
+				
+				Question question = questions.get(0);
+				question.setQuestionText(questionText);
+				questionDAO.update(question);
+			}
+			URIUtils.writeSuccessResponse(httpExchange);
+			
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			URIUtils.writeFailureResponse(httpExchange);
+		}
+		
+		
 	}
 
 

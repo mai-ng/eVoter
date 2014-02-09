@@ -19,7 +19,7 @@ import java.util.zip.GZIPInputStream;
 import org.apache.http.NameValuePair;
 
 /**
- * @author luongnv89
+ * @author maint
  */
 public class EVoterHTTPRequest {
 	/**

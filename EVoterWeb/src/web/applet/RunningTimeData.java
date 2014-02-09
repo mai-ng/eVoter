@@ -8,6 +8,7 @@ package web.applet;
  *
  */
 public class RunningTimeData {
+	
 	private static String currentUserName;
 	
 	private static String currentUserKey;

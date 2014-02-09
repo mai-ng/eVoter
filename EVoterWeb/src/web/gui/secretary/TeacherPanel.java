@@ -7,32 +7,26 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import web.gui.secretary.subcomponents.ItemOfListView;
-import web.gui.secretary.subcomponents.MenuBarTop;
 
-public class ViewListTeacher extends JPanel {
+public class TeacherPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private MenuBarTop menuBarTop;
 	private JPanel teacherList;
 	
 	
 	/**
 	 * Create the panel.
 	 */
-	public ViewListTeacher() {
+	public TeacherPanel() {
 		initComponents();
 
 		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		this.setLayout(new BorderLayout());
 
-		this.add(menuBarTop, BorderLayout.PAGE_START);
-		
 		this.add(teacherList, BorderLayout.PAGE_END);
 	}
 
 	public void initComponents(){
-		menuBarTop = new MenuBarTop();
-		
 		teacherList = new JPanel();
 		for( int i = 0; i < 10; i++){
 			ItemOfListView item = new ItemOfListView("Teacher "+i, i, 1);

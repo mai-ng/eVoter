@@ -8,6 +8,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sun.net.httpserver.HttpExchange;
 
@@ -32,6 +35,8 @@ import evoter.share.utils.UserValidation;
  *
  */
 @Service
+@Transactional
+@TransactionConfiguration(defaultRollback=true)
 public class SessionService implements ISessionService{
 
 	public static final String CREATOR = "CREATOR";
@@ -83,8 +88,9 @@ public class SessionService implements ISessionService{
 	 * 	</li> {@link UserDAO#USER_KEY} </br>
 	 */
 	@SuppressWarnings("unchecked")
-	public  void doGetAll(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	@Override
+	@Rollback(false)
+	public  Object doGetAll(Map<String,Object> parameters) {
 		
 		JSONArray response = new JSONArray();
 		
@@ -123,13 +129,16 @@ public class SessionService implements ISessionService{
 				response.add(object);
 				
 			}
-			URIUtils.writeResponse(response, httpExchange);
+			
+			//URIUtils.writeResponse(response, httpExchange);
 			System.out.println("sessions: " + response);
+			return response;
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			URIUtils.writeFailureResponse(httpExchange);
+			//URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 
 	}
@@ -142,20 +151,30 @@ public class SessionService implements ISessionService{
 	 * 	</li> SessionDAO.ID </br>
 	 *  </li> {@link UserDAO#USER_KEY} </br>
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	public  void doView(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
-		
-		long id = Long.parseLong((String)parameters.get(SessionDAO.ID));
-		List<Session> sessions = sessionDAO.findById(id);
-		JSONArray jsArray = new JSONArray();
-		for (Session ses : sessions){
-			User creator = userDAO.findById(ses.getUserId()).get(0);
-			JSONObject object = ses.toJSON();
-			object.put(CREATOR, creator.getUserName());
-			jsArray.add(object);
+	@Rollback(false)
+	public  Object doView(Map<String,Object> parameters) {
+		try{
+			
+			long id = Long.parseLong((String)parameters.get(SessionDAO.ID));
+			List<Session> sessions = sessionDAO.findById(id);
+			JSONArray response = new JSONArray();
+			for (Session ses : sessions){
+				User creator = userDAO.findById(ses.getUserId()).get(0);
+				JSONObject object = ses.toJSON();
+				object.put(CREATOR, creator.getUserName());
+				response.add(object);
+			}
+			//URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
+			return response;
+			
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			return URIRequest.FAILURE_MESSAGE;
 		}
-		URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
+
 	}
 
 	/**
@@ -167,14 +186,14 @@ public class SessionService implements ISessionService{
 	 *  </li> SessionDAO.ID
 	 *  </li> {@link UserDAO#USER_KEY}
 	 */
-	public  void doActive(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	@Override
+	public  Object doActive(Map<String,Object> parameters) {
 		
-		updateStatus(httpExchange, parameters, true);
+		return updateStatus(parameters, true);
 	}
-
-	public  void doAccept(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	
+	@Override
+	public  Object doAccept(Map<String,Object> parameters) {
 		
 		try{
 			
@@ -193,13 +212,14 @@ public class SessionService implements ISessionService{
 				}
 				
 			}
-
-			URIUtils.writeSuccessResponse(httpExchange);
+			return URIRequest.SUCCESS_MESSAGE;
+			//URIUtils.writeSuccessResponse(httpExchange);
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			URIUtils.writeFailureResponse(httpExchange);
+			//URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 			
 		}
 	
@@ -215,23 +235,35 @@ public class SessionService implements ISessionService{
 	 * 	</li> SessionUserDAO.SESSION_ID
 	 *  </li> UserDAO.USER_KEY
 	 */
-	public  void doDelete(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	@Override
+	public  Object doDelete(Map<String,Object> parameters) {
 		
-		long sessionId = Long.parseLong((String)parameters.get(SessionUserDAO.SESSION_ID));
-		String userKey = (String)parameters.get(UserDAO.USER_KEY);
-		Long userId = Long.valueOf(UserValidation.getUserIdFromUserKey(userKey));
-		List<SessionUser> sessUserList = sessionUserDAO.findByProperty(new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, new Object[]{sessionId, userId});
-		if (sessUserList != null && !sessUserList.isEmpty()){
+		try{
 			
-			for (SessionUser sessUser : sessUserList){
-				sessUser.setDeleteIndicator(true);
-				sessionUserDAO.update(sessUser);
+			long sessionId = Long.parseLong((String)parameters.get(SessionUserDAO.SESSION_ID));
+			String userKey = (String)parameters.get(UserDAO.USER_KEY);
+			Long userId = Long.valueOf(UserValidation.getUserIdFromUserKey(userKey));
+			List<SessionUser> sessUserList = sessionUserDAO.findByProperty(
+					new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, 
+					new Object[]{sessionId, userId});
+			
+			if (sessUserList != null && !sessUserList.isEmpty()){
+				
+				for (SessionUser sessUser : sessUserList){
+					sessUser.setDeleteIndicator(true);
+					sessionUserDAO.update(sessUser);
+				}
+				//URIUtils.writeSuccessResponse(httpExchange);
+				return URIRequest.SUCCESS_MESSAGE;
 			}
-			URIUtils.writeSuccessResponse(httpExchange);
-		}else{
-			URIUtils.writeFailureResponse(httpExchange);
+			
+			return URIRequest.FAILURE_MESSAGE;
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			return URIRequest.FAILURE_MESSAGE;
 		}
+
 
 	}
 
@@ -249,8 +281,8 @@ public class SessionService implements ISessionService{
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 * 		</li> 
 	 */
-	public  void doCreate(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	@Override
+	public  Object doCreate(Map<String,Object> parameters) {
 		
 		String creattionDate = (String)parameters.get(SessionDAO.CREATION_DATE);
 		String isActive = (String)parameters.get(SessionDAO.IS_ACTIVE);
@@ -273,10 +305,10 @@ public class SessionService implements ISessionService{
 			
 		}catch(Exception e){
 			e.printStackTrace();
-			URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 		
-		URIUtils.writeSuccessResponse(httpExchange);
+		return URIRequest.SUCCESS_MESSAGE;
 		
 	}
 
@@ -289,10 +321,10 @@ public class SessionService implements ISessionService{
 	 * 		</li> {@link SessionDAO#ID}
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 */
-	public  void doInActive(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	@Override
+	public  Object doInActive(Map<String,Object> parameters) {
 		
-		updateStatus(httpExchange, parameters, false);
+		return updateStatus(parameters, false);
 		
 	}
 	
@@ -306,23 +338,24 @@ public class SessionService implements ISessionService{
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 * @param isActive true if the current session is activated. False if the current value is in-activated </br>
 	 */
-	public  void updateStatus(HttpExchange httpExchange,
-			Map<String,Object> parameters, boolean isActive){
+	public  Object updateStatus(Map<String,Object> parameters, boolean isActive){
 		
-		Long sessionId = Long.valueOf((String)parameters.get(SessionDAO.ID));
+		
 		try{
-
+			Long sessionId = Long.valueOf((String)parameters.get(SessionDAO.ID));
 			List<Session> sessions = sessionDAO.findById(sessionId);
 			Session session = sessions.get(0);
 			session.setActive(isActive);
 			sessionDAO.update(session);
 			
-			URIUtils.writeSuccessResponse(httpExchange);
+			return URIRequest.SUCCESS_MESSAGE;
+			//URIUtils.writeSuccessResponse(httpExchange);
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			URIUtils.writeFailureResponse(httpExchange);
+			//URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 			
 		}
 		
@@ -339,21 +372,24 @@ public class SessionService implements ISessionService{
 	 * 		</li> {@link SessionDAO#ID} 
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 */
-	public  void doUpdate(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	@Override
+	public  Object doUpdate(Map<String,Object> parameters) {
 		
-		String sessionName = (String)parameters.get(SessionDAO.NAME);
-		Long sessionId = Long.valueOf((String)parameters.get(SessionDAO.ID));
 		try{
+			String sessionName = (String)parameters.get(SessionDAO.NAME);
+			Long sessionId = Long.valueOf((String)parameters.get(SessionDAO.ID));
+
 			List<Session> sessionList = sessionDAO.findById(sessionId);
 			Session session = sessionList.get(0);
 			session.setName(sessionName);
 			sessionDAO.update(session);
 			
-			URIUtils.writeSuccessResponse(httpExchange);
+			//URIUtils.writeSuccessResponse(httpExchange);
+			return URIRequest.SUCCESS_MESSAGE;
 		}catch(Exception ex){
+			
 			ex.printStackTrace();
-			URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 	}
 
@@ -363,12 +399,12 @@ public class SessionService implements ISessionService{
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void doGetStudentsOfSession(HttpExchange httpExchange,
-			Map<String, Object> parameters) {
+	@Rollback(false)
+	public Object doGetStudentsOfSession(Map<String, Object> parameters) {
 		
-		JSONArray response = new JSONArray();
+		
 		try{
-			
+			JSONArray response = new JSONArray();
 			long sessionId = Long.valueOf(parameters.get(SessionUserDAO.SESSION_ID).toString());
 			boolean acceptSession = Boolean.valueOf(parameters.get(SessionUserDAO.ACCEPT_SESSION).toString());
 
@@ -385,12 +421,14 @@ public class SessionService implements ISessionService{
 				}
 				
 			}//for
-			URIUtils.writeResponse(response, httpExchange);
+			//URIUtils.writeResponse(response, httpExchange);
+			return response;
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			URIUtils.writeFailureResponse(httpExchange);
+			//URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 
 	}

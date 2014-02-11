@@ -30,12 +30,17 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 				"(" + USER_TYPE_ID + "," + 
 				EMAIL + "," +
 				USER_NAME + "," +
-				PASSWORD + ") VALUES (?, ?, ?, ?)";
+				PASSWORD + "," +
+				FULL_NAME + "," +
+				IS_APPROVED + 
+				") VALUES (?, ?, ?, ?, ?, ?)";
 				 
 		return	getJdbcTemplate().update(sql, new Object[] { user.getUserTypeId(),
 														user.getEmail(),
 														user.getUserName(),
-														user.getPassWord()});
+														user.getPassWord(),
+														user.getFullName(),
+														user.isApproved()});
 		
 	}
 	

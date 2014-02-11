@@ -37,7 +37,7 @@ public interface ISessionService {
 	 * 	</li> SessionDAO.SUBJECT_ID
 	 * 	</li> {@link UserDAO#USER_KEY}
 	 */
-	public void doGetAll(HttpExchange httpExchange, Map<String,Object> parameters) ;
+	public Object doGetAll(Map<String,Object> parameters) ;
 
 	/**
 	 * Response client a {@link Session}  when receiving {@link URIRequest#VIEW_SESSION} request </br>
@@ -46,7 +46,7 @@ public interface ISessionService {
 	 * @param parameters request parameter map contains </br>
 	 * 	</li> SessionDAO.ID
 	 */
-	public void doView(HttpExchange httpExchange, Map<String,Object> parameters) ; 
+	public Object doView(Map<String,Object> parameters) ; 
 
 	/**
 	 * Change the status of {@link Session} to inactive </br>
@@ -57,9 +57,9 @@ public interface ISessionService {
 	 *  </li> SessionDAO.ID
 	 *  </li> {@link UserDAO#USER_KEY}
 	 */
-	public void doActive(HttpExchange httpExchange, Map<String,Object> parameters) ;
+	public Object doActive(Map<String,Object> parameters) ;
 	
-	public void doAccept(HttpExchange httpExchange, Map<String,Object> parameters); 
+	public Object doAccept(Map<String,Object> parameters); 
 
 	/**
 	 * Update delete_indicator field of SESSION_USER table </br>
@@ -71,7 +71,7 @@ public interface ISessionService {
 	 * 	</li> SessionUserDAO.SESSION_ID
 	 *  </li> UserDAO.USER_KEY
 	 */
-	public void doDelete(HttpExchange httpExchange, Map<String,Object> parameters);
+	public Object doDelete(Map<String,Object> parameters);
 	/**
 	 * Create a new {@link Question} object when receiving {@link URIRequest#CREATE_SESSION} </br>
 	 * The order of steps are: </br>
@@ -86,7 +86,7 @@ public interface ISessionService {
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 * 		</li> 
 	 */
-	public void doCreate(HttpExchange httpExchange, Map<String,Object> parameters); 
+	public Object doCreate(Map<String,Object> parameters); 
 
 	/**
 	 * Change the status of {@link Session} to inactive </br>
@@ -97,7 +97,7 @@ public interface ISessionService {
 	 * 		</li> {@link SessionDAO#ID}
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 */
-	public void doInActive(HttpExchange httpExchange, Map<String,Object> parameters) ;
+	public Object doInActive(Map<String,Object> parameters) ;
 	
 	
 	/**
@@ -110,7 +110,7 @@ public interface ISessionService {
 	 * 		</li> {@link SessionDAO#ID} 
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 */
-	public  void doUpdate(HttpExchange httpExchange, Map<String,Object> parameters) ;
+	public  Object doUpdate(Map<String,Object> parameters) ;
 	
 	/**
 	 * Response clients a {@link List} of {@link User} accepted or not accept {@link Session} </br>
@@ -120,5 +120,5 @@ public interface ISessionService {
 	 * </li> {@link SessionUserDAO#ACCEPT_SESSION} </br>
 	 * </li> {@link SessionUserDAO#SESSION_ID} </br>
 	 */
-	public void doGetStudentsOfSession(HttpExchange httpExchange, Map<String, Object> parameters);
+	public Object doGetStudentsOfSession(Map<String, Object> parameters);
 }

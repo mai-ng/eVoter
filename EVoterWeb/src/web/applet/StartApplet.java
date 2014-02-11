@@ -15,7 +15,7 @@ public class StartApplet extends JApplet {
 
 	@Override
 	public void init() {
-		setSize(600, 600);
+		setSize(800, 600);
 		mainpage = new MainPage();
 		LoginPanel login = new LoginPanel(mainpage);
 		mainpage.setContent(login);

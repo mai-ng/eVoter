@@ -1,5 +1,6 @@
 package web.gui.secretary;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -43,9 +44,11 @@ public class MainPage extends JPanel {
 
 		c.insets = new Insets(5, 1, 1, 5);
 		c.gridwidth = 1;
+		c.anchor=GridBagConstraints.NORTHEAST;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		this.add(menu, c);
 
-		c.gridx = 1;
+		c.gridy = 1;
 		c.gridwidth = 4;
 		this.add(content, c);
 
@@ -58,10 +61,11 @@ public class MainPage extends JPanel {
 		menu = new JPanel();
 		content = new JPanel();
 		if (RunningTimeData.getCurrentUserName() == null) {
-			accountName = new JLabel("Guess");
+			accountName = new JLabel("User: Guess");
 		} else {
-			accountName = new JLabel(RunningTimeData.getCurrentUserName());
+			accountName = new JLabel("User: " + RunningTimeData.getCurrentUserName());
 		}
+		accountName.setForeground(Color.YELLOW);
 		// initialize buttons
 		// btnHome = new JButton("Home");
 		// btnHome.addActionListener(new ActionListener() {
@@ -111,10 +115,8 @@ public class MainPage extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JPanel home = new JPanel();
-				home.add(new JLabel(
-						"Welcome to eVoter System! This is Teacher page"));
-				setContent(home);
+				TeacherPanel teacher = new TeacherPanel();
+				setContent(teacher);
 
 			}
 		});
@@ -123,13 +125,13 @@ public class MainPage extends JPanel {
 
 	// create a menu
 	private void menuGUI() {
-		menu.setLayout(new GridLayout(0, 1, 10, 0));
+		menu.setLayout(new GridLayout(1, 0, 10, 0));
 		menu.add(accountName);
 		menu.add(btnSubject);
 		menu.add(btnTeacher);
 		menu.add(btnStudent);
 		menu.add(btnLogout);
-
+		menu.setBackground(Color.BLUE);
 	}
 
 	// create content of page

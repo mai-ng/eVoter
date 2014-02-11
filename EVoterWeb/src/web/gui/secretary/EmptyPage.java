@@ -16,5 +16,6 @@ public class EmptyPage extends JPanel {
 		JLabel welcomeText = new JLabel(contentMessage);
 		this.add(welcomeText);
 	}
+	
 
 }

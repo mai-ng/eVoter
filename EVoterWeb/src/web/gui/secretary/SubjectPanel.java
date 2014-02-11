@@ -90,6 +90,8 @@ public class SubjectPanel extends JPanel {
 
 		subjectPanel = new JPanel();
 		for (int i = 0; i < listSubjects.size(); i++) {
+//			listSubjects.get(i).setAlignmentX(CENTER_ALIGNMENT);
+//			listSubjects.get(i).setSize(subjectPanel.getWidth(), btnNewSubject.getHeight());
 			subjectPanel.add(listSubjects.get(i));
 		}
 		subjectPanel.add(btnNewSubject);

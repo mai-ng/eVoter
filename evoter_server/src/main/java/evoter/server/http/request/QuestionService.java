@@ -7,14 +7,14 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 //import org.springframework.test.annotation.Rollback;
 //import org.springframework.transaction.annotation.Transactional;
 
-import com.sun.net.httpserver.HttpExchange;
-
-import evoter.server.http.URIUtils;
 import evoter.server.http.request.interfaces.IQuestionService;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
@@ -34,6 +34,8 @@ import evoter.share.utils.UserValidation;
  *
  */
 @Service
+@Transactional
+@TransactionConfiguration(defaultRollback=true)
 public class QuestionService implements IQuestionService{
 	
 	//@Autowired
@@ -102,65 +104,81 @@ public class QuestionService implements IQuestionService{
 	
 	
 	@SuppressWarnings("unchecked")
-	public  void doGetAll(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	@Override
+	@Rollback(false)
+	public  Object doGetAll(Map<String,Object> parameters) {
 		
-		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
-		List<QuestionSession> questionSessionList = questionSessionDAO.findBySessionId(sessionId);
-		JSONArray jsArray = new JSONArray();
-		
-		for (QuestionSession questionSession : questionSessionList){
-			List<Question> questionList = questionDAO.findByProperty(new String[]{QuestionDAO.ID, QuestionDAO.PARENT_ID}, new Object[]{questionSession.getQuestionId(), 0});//questionDao.findById(questionSession.getQuestionId());
-			for (Question question : questionList){
-				
-				JSONObject object = question.toJSON();
-				object.put(QuestionSessionDAO.SESSION_ID, questionSession.getSessionId());
-				
-				JSONArray answers = getAnswersOfQuestion(question.getId());
-				
-				List<Question> subQuestionList = questionDAO.findByParentId(question.getId());
-				if (subQuestionList != null && !subQuestionList.isEmpty()){
-					JSONArray jsPart1 = new JSONArray();
-					for (Question subQuestion : subQuestionList){
-						jsPart1.add(subQuestion.toJSON());
-					}
-					object.put(Question.COL1, jsPart1);
-					object.put(Question.COL2,  answers);
-					
-				}else{ //if
-					object.put(Question.COL1,  answers);
-				}
-				jsArray.add(object);
-			}
+		try{
 			
+			long sessionId = (Long)parameters.get(QuestionSessionDAO.SESSION_ID);
+			List<QuestionSession> questionSessionList = questionSessionDAO.findBySessionId(sessionId);
+			JSONArray response = new JSONArray();
+			
+			for (QuestionSession questionSession : questionSessionList){
+				List<Question> questionList = questionDAO.
+						findByProperty(
+								new String[]{QuestionDAO.ID, QuestionDAO.PARENT_ID}, 
+								new Object[]{questionSession.getQuestionId(), 0});//questionDao.findById(questionSession.getQuestionId());
+				for (Question question : questionList){
+					
+					JSONObject object = question.toJSON();
+					object.put(QuestionSessionDAO.SESSION_ID, questionSession.getSessionId());
+					
+					JSONArray answers = getAnswersOfQuestion(question.getId());
+					
+					List<Question> subQuestionList = questionDAO.findByParentId(question.getId());
+					if (subQuestionList != null && !subQuestionList.isEmpty()){
+						JSONArray jsPart1 = new JSONArray();
+						for (Question subQuestion : subQuestionList){
+							jsPart1.add(subQuestion.toJSON());
+						}
+						object.put(Question.COL1, jsPart1);
+						object.put(Question.COL2,  answers);
+						
+					}else{ //if
+						object.put(Question.COL1,  answers);
+					}
+					response.add(object);
+				}
+				
+			}
+			System.out.println("QUESTION : " + response.toJSONString());
+			//URIUtils.writeResponse(jsArray, httpExchange);
+			return response;
+			
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			//URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
-		System.out.println("QUESTION : " + jsArray.toJSONString());
-		URIUtils.writeResponse(jsArray, httpExchange);
 		
 	}
 	
-	
+	@Override
 	@SuppressWarnings("unchecked")
-	public  void doView(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	@Rollback(false)
+	public  Object doView(Map<String,Object> parameters) {
 		
 		try{
-			long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
+			long questionId = (Long)parameters.get(QuestionDAO.ID);
 			List<Question> questionList = questionDAO.findById(questionId);
-			JSONArray jsArray = new JSONArray();
+			JSONArray response = new JSONArray();
 			if (questionList != null && !questionList.isEmpty()){
 				
 				for (Question question : questionList){
 					//JSONObject jsObject = question.toJSON();
 					question.toJSON().put("answers", getAnswersOfQuestion(question.getId()));
-					jsArray.add(question.toJSON());
+					response.add(question.toJSON());
 				}
 			}
-			URIUtils.writeResponse(jsArray, httpExchange);
+			//URIUtils.writeResponse(jsArray, httpExchange);
+			return response;
 			
 		}catch(Exception e){
 			System.err.println(e);
-			URIUtils.writeFailureResponse(httpExchange);
+			//URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 		
 	}
@@ -170,18 +188,21 @@ public class QuestionService implements IQuestionService{
 	 * @param questionId
 	 * @return a {@link JSONArray} 
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
+	@Rollback(false)
 	public  JSONArray getAnswersOfQuestion(long questionId){
 		
+		JSONArray arrays = new JSONArray();
 		List<Answer> answers = (List<Answer>)answerDAO.findByQuestionId(questionId);
 		if (answers != null && !answers.isEmpty()){
-			JSONArray arrays = new JSONArray();
+			
 			for (Answer answer : answers){
 				arrays.add(answer.toJSON());
 			}
-			return arrays;
+			
 		}
-		return null;
+		return arrays;
 		
 		
 	}
@@ -203,18 +224,17 @@ public class QuestionService implements IQuestionService{
 	 *  
 	 */
 	@Override
-	public  void doCreate(HttpExchange httpExchange,
-			Map<String, Object> parameters) {
-		
-		String[] questionTexts = (String[])parameters.get(QuestionDAO.QUESTION_TEXT);
-		long questionTypeId = Long.valueOf((String)parameters.get(QuestionDAO.QUESTION_TYPE_ID));
-		Timestamp creationDate = Timestamp.valueOf((String)parameters.get(QuestionDAO.CREATION_DATE));
-		String userKey = (String)parameters.get(UserDAO.USER_KEY);
-		long userId = UserValidation.getUserIdFromUserKey(userKey);
-		long sessionId = Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID));
-		String[] answerTexts = (String[])parameters.get(AnswerDAO.ANSWER_TEXT);
+	public  Object doCreate(Map<String, Object> parameters) {
 		
 		try{
+			
+			String[] questionTexts = (String[])parameters.get(QuestionDAO.QUESTION_TEXT);
+			long questionTypeId = (Long)parameters.get(QuestionDAO.QUESTION_TYPE_ID);
+			Timestamp creationDate = Timestamp.valueOf((String)parameters.get(QuestionDAO.CREATION_DATE));
+			String userKey = (String)parameters.get(UserDAO.USER_KEY);
+			long userId = UserValidation.getUserIdFromUserKey(userKey);
+			long sessionId = (Long)parameters.get(QuestionSessionDAO.SESSION_ID);
+			String[] answerTexts = (String[])parameters.get(AnswerDAO.ANSWER_TEXT);
 			
 			Question question = null;
 			long parentId = 0;
@@ -261,10 +281,12 @@ public class QuestionService implements IQuestionService{
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			URIUtils.writeFailureResponse(httpExchange);
+			//URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 		
-		URIUtils.writeSuccessResponse(httpExchange);
+		return URIRequest.SUCCESS_MESSAGE;
+		//URIUtils.writeSuccessResponse(httpExchange);
 		
 	}
 
@@ -281,10 +303,9 @@ public class QuestionService implements IQuestionService{
 	
 	
 	@Override
-	public  void doDelete(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	public  Object doDelete(Map<String,Object> parameters) {
 		
-		long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
+		long questionId = (Long)parameters.get(QuestionDAO.ID);
 		
 		try{
 			// ANSWER table
@@ -294,11 +315,13 @@ public class QuestionService implements IQuestionService{
 			// QUESTION table
 			questionDAO.deleteById(questionId);
 			
-			URIUtils.writeSuccessResponse(httpExchange);
+			return URIRequest.SUCCESS_MESSAGE;
+			//URIUtils.writeSuccessResponse(httpExchange);
 			
 		}catch(Exception e){
 			e.printStackTrace();
-			URIUtils.writeFailureResponse(httpExchange);
+			//URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 		
 	}
@@ -313,12 +336,23 @@ public class QuestionService implements IQuestionService{
 	 * 	</li> {@link QuestionSessionDAO#SESSION_ID} : current session ID
 	 * 	</li> {@link UserDAO#USER_KEY}
 	 */
-	public  void doSend(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	@Override
+	@Rollback(false)
+	public  Object doSend(Map<String,Object> parameters) {
 		
-		long questionId = Long.parseLong((String)parameters.get(QuestionDAO.ID));
-		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
-		mapSentQuestion.put(sessionId, questionId);
+		try{
+			
+			long questionId = (Long)parameters.get(QuestionDAO.ID);
+			long sessionId = (Long)parameters.get(QuestionSessionDAO.SESSION_ID);
+			//mapSentQuestion.put(sessionId, questionId);
+			addSentQuestion(sessionId, questionId);
+			return URIRequest.SUCCESS_MESSAGE;
+			
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			return URIRequest.FAILURE_MESSAGE;
+		}
 	}
 
 	/**
@@ -334,14 +368,15 @@ public class QuestionService implements IQuestionService{
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public  void doGetLatest(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	@Rollback(false)
+	public  Object doGetLatest(Map<String, Object> parameters) {
 		
 		try{
 			
 			JSONArray response = new JSONArray();
-			long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
-			if (mapSentQuestion.containsKey(sessionId)){
+			long sessionId = (Long)parameters.get(QuestionSessionDAO.SESSION_ID);
+			//if (mapSentQuestion.containsKey(sessionId)){
+			if (canSendQuestion(sessionId)){
 				long questionId = mapSentQuestion.get(sessionId);
 				Question question = questionDAO.findById(questionId).get(0);
 				//RE-WORK 
@@ -351,11 +386,13 @@ public class QuestionService implements IQuestionService{
 				
 			}
 			
-			URIUtils.writeResponse(response, httpExchange);
+			//URIUtils.writeResponse(response, httpExchange);
+			return response;
 			
 		}catch(Exception e){
 			System.err.println(e);
-			URIUtils.writeFailureResponse(httpExchange);
+			//URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 		
 	}
@@ -374,11 +411,21 @@ public class QuestionService implements IQuestionService{
 	 * @see evoter.server.http.request.interfaces.IQuestionService#doStopSend(com.sun.net.httpserver.HttpExchange, java.util.Map)
 	 */
 	@Override
-	public  void doStopSend(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
-		long sessionId = Long.parseLong((String)parameters.get(QuestionSessionDAO.SESSION_ID));
-		mapSentQuestion.remove(sessionId);
-		URIUtils.writeSuccessResponse(httpExchange);
+	@Rollback(false)
+	public  Object doStopSend(Map<String,Object> parameters) {
+		try{
+			
+			long sessionId = (Long)parameters.get(QuestionSessionDAO.SESSION_ID);
+			//mapSentQuestion.remove(sessionId);
+			removeSentQuestion(sessionId);
+			//URIUtils.writeSuccessResponse(httpExchange);
+			return URIRequest.SUCCESS_MESSAGE;
+
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			return URIRequest.FAILURE_MESSAGE;
+		}
 	}
 
 	/*
@@ -386,10 +433,10 @@ public class QuestionService implements IQuestionService{
 	 * @see evoter.server.http.request.interfaces.IQuestionService#doEdit(com.sun.net.httpserver.HttpExchange, java.util.Map)
 	 */
 	@Override
-	public void doEdit(HttpExchange httpExchange, Map<String, Object> parameters) {
+	public Object doEdit(Map<String, Object> parameters) {
 		
 		String questionText = (String)parameters.get(QuestionDAO.QUESTION_TEXT);
-		long questionId = Long.valueOf((String)parameters.get(QuestionDAO.ID));
+		long questionId = (Long)parameters.get(QuestionDAO.ID);
 		
 		try{
 			
@@ -400,15 +447,46 @@ public class QuestionService implements IQuestionService{
 				question.setQuestionText(questionText);
 				questionDAO.update(question);
 			}
-			URIUtils.writeSuccessResponse(httpExchange);
+			//URIUtils.writeSuccessResponse(httpExchange);
+			return URIRequest.SUCCESS_MESSAGE;
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
+			//URIUtils.writeFailureResponse(httpExchange);
 		}
 		
 		
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IQuestionService#addSentQuestion(long, long)
+	 */
+	@Override
+	public void addSentQuestion(long sessionId, long questionId) {
+		
+		mapSentQuestion.put(sessionId, questionId);
+		
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IQuestionService#removeSentQuestion(long)
+	 */
+	@Override
+	public void removeSentQuestion(long sessionId) {
+		
+		mapSentQuestion.remove(sessionId);
+		
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IQuestionService#canSendQuestion(long)
+	 */
+	@Override
+	public boolean canSendQuestion(long sessionId) {
+		
+		return mapSentQuestion.containsKey(sessionId);
 	}
 
 

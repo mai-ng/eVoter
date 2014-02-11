@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.dao.impl.SessionDAOImpl;
@@ -25,6 +26,8 @@ import evoter.share.model.Session;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+@Transactional
+@TransactionConfiguration(defaultRollback=true)
 public class TestSessionDAO {
 	
 	@Autowired
@@ -34,7 +37,6 @@ public class TestSessionDAO {
 	 * Test for {@link SessionDAO#findAll()} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindAll(){
 		List<Session> sessions = sessionDAO.findAll(); 
@@ -44,7 +46,6 @@ public class TestSessionDAO {
 	 * Test for {@link SessionDAO#findById(long)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindById(){
 		
@@ -55,7 +56,6 @@ public class TestSessionDAO {
 	 * Test for {@link SessionDAO#findBySubjectId(long)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindBySubjectId(){
 		
@@ -66,7 +66,6 @@ public class TestSessionDAO {
 	 * Test for {@link SessionDAO#findById(long)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByName(){
 		
@@ -80,7 +79,6 @@ public class TestSessionDAO {
 	 * @throws ParseException 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByCreationDate() throws ParseException{
 		
@@ -96,8 +94,6 @@ public class TestSessionDAO {
 	 * Test {@link SessionDAO#deleteByCreationDate(Timestamp)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByCreationDate() throws ParseException{
 		
 		Timestamp sqlDate = Timestamp.valueOf("2013-12-28 12:50:24");
@@ -111,7 +107,6 @@ public class TestSessionDAO {
 	 * Test {@link SessionDAO#findBySessionIsActive(Boolean)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindBySessionIsActive(){
 		
@@ -128,8 +123,6 @@ public class TestSessionDAO {
 	 * Test {@link SessionDAO#deleteBySessionIsActive(Boolean)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteBySessionIsActive(){
 		
 		boolean isActive = true;
@@ -141,8 +134,6 @@ public class TestSessionDAO {
 	 * Test for {@link SessionDAO#deleteByProperty(String[], Object[])} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByProperty(){
 		
 		sessionDAO.deleteByProperty(
@@ -159,7 +150,6 @@ public class TestSessionDAO {
 	 * Test {@link SessionDAO#findBySessionUserId(Long)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByUserId(){
 		
@@ -170,8 +160,6 @@ public class TestSessionDAO {
 	 * Test {@link SessionDAO#deleteByUserId(Long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByUserId(){
 		
 		sessionDAO.deleteByUserId(1);
@@ -184,7 +172,6 @@ public class TestSessionDAO {
 	 * Test for {@link SessionDAO#findByProperty(String[],Object[])} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByByProperty(){
 		
@@ -198,8 +185,6 @@ public class TestSessionDAO {
 	 * Test for {@link SessionDAO#deleteById(long id)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteById(){
 		
 		sessionDAO.deleteById(2);
@@ -210,8 +195,6 @@ public class TestSessionDAO {
 	 * Test for {@link SessionDAO#deleteBySubjectId(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteBySubjectId(){
 		
 		sessionDAO.deleteBySubjectId(2);
@@ -222,8 +205,6 @@ public class TestSessionDAO {
 	 * Test for {@link SessionDAO#deleteByName(String)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByName(){
 		
 		String sessionName = "subject_2_session_4";

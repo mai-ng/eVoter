@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.dao.impl.SubjectDAOImpl;
@@ -24,6 +25,8 @@ import evoter.share.model.Subject;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+@Transactional
+@TransactionConfiguration(defaultRollback=true)
 public class TestSubjectDAO {
 
 	@Autowired
@@ -32,7 +35,6 @@ public class TestSubjectDAO {
 	 * Test for {@link SubjectDAO#findAll()} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindAll(){
 		List<Subject> subjects = subjectDAO.findAll();
@@ -46,7 +48,6 @@ public class TestSubjectDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindById(){
 		List<Subject> subjects = subjectDAO.findById(2);
@@ -56,7 +57,6 @@ public class TestSubjectDAO {
 	 * Test for {@link subjectDAO#findByTitle(String)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByTitle(){
 		List<Subject> subjects = subjectDAO.findByTitle("Object Oriented Programming");
@@ -66,8 +66,6 @@ public class TestSubjectDAO {
 	 * Test for {@link SubjectDAO#findByCreationDate(Timestamp)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(false)
 	public void testFindByCreationDate(){
 		
 		List<Subject> subjects = subjectDAO.
@@ -81,7 +79,6 @@ public class TestSubjectDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByProperty(){
 		List<Subject> subjects = subjectDAO.findByProperty(
@@ -95,8 +92,6 @@ public class TestSubjectDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByProperty(){
 		
 		subjectDAO.deleteByProperty(
@@ -113,8 +108,6 @@ public class TestSubjectDAO {
 	 * Test {@link SubjectDAO#deleteById(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteById(){
 		
 		subjectDAO.deleteById(1);
@@ -125,8 +118,6 @@ public class TestSubjectDAO {
 	 * Test {@link SubjectDAO#deleteByTitle(String)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByTitle(){
 		
 		subjectDAO.deleteByTitle("Testing Metrics");
@@ -137,8 +128,6 @@ public class TestSubjectDAO {
 	 * Test {@link SubjectDAO#deleteByCreationDate(Timestamp)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByCreationDate(){
 		
 		subjectDAO.deleteByCreationDate(Timestamp.valueOf("2013-12-28 12:50:24"));

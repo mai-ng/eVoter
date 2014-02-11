@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.dao.impl.QuestionTypeDAOImpl;
@@ -24,6 +25,8 @@ import evoter.share.model.QuestionType;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+@Transactional
+@TransactionConfiguration(defaultRollback=true)
 public class TestQuestionTypeDAO {
 
 	@Autowired
@@ -33,7 +36,6 @@ public class TestQuestionTypeDAO {
 	 * Test for {@link QuestionTypeDAO#findAll()} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindAll(){
 		List<QuestionType> types = questionTypeDAO.findAll(); 
@@ -43,7 +45,6 @@ public class TestQuestionTypeDAO {
 	 * Test for {@link QuestionTypeDAO#findById(long)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindById(){
 		
@@ -54,7 +55,6 @@ public class TestQuestionTypeDAO {
 	 * Test for {@link QuestionTypeDAO#findByQuestionTypeValue(String)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByQuestionTypeValue(){
 		
@@ -65,7 +65,6 @@ public class TestQuestionTypeDAO {
 	 * Test for {@link QuestionTypeDAO#findByProperty(String[],Object[])} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByByProperty(){
 		
@@ -79,8 +78,6 @@ public class TestQuestionTypeDAO {
 	 * Test for {@link QuestionTypeDAO#deleteByProperty(String[], Object[])} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByByProperty(){
 		
 		questionTypeDAO.deleteByProperty(
@@ -97,8 +94,6 @@ public class TestQuestionTypeDAO {
 	 * Test for {@link QuestionTypeDAO#deleteById(long id)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteById(){
 		
 		questionTypeDAO.deleteById(2);
@@ -109,8 +104,6 @@ public class TestQuestionTypeDAO {
 	 * Test for {@link QuestionTypeDAO#deleteByQuestionTypeValue(String)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByQuestionTypeValue(){
 		
 		String text = "Multi Radio Button";
@@ -122,8 +115,6 @@ public class TestQuestionTypeDAO {
 	 * Test for {@link QuestionTypeDAO#insert()} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testInsert(){
 		
 		QuestionType questionType = new QuestionType("question type for test");

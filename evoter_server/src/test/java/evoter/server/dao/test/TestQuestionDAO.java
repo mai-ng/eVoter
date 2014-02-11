@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -27,6 +28,8 @@ import evoter.share.model.Question;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+@Transactional
+@TransactionConfiguration(defaultRollback=true)
 public class TestQuestionDAO {
 	
 	@Autowired
@@ -36,7 +39,6 @@ public class TestQuestionDAO {
 	 * Expect returning a list of {@link Question} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindAll(){
 		List<Question> questions = questionDAO.findAll();
@@ -47,7 +49,6 @@ public class TestQuestionDAO {
 	 * Expect returning a list of {@link Question} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByProperty(){
 		List<Question> questions = questionDAO.findByProperty(
@@ -60,7 +61,6 @@ public class TestQuestionDAO {
 	 * Case 2: Expect returning a empty list </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindById(){
 		List<Question> questions = questionDAO.findById(1);
@@ -74,7 +74,6 @@ public class TestQuestionDAO {
 	 * Case 2: Expect returning a empty list </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByUserId(){
 		List<Question> questions = questionDAO.findByUserId(1);
@@ -89,7 +88,6 @@ public class TestQuestionDAO {
 	 * Case 2: Expect returning a empty list </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByQuestionTypeId(){
 		List<Question> questions = questionDAO.findByQuestionTypeId(6);
@@ -105,7 +103,6 @@ public class TestQuestionDAO {
 	 * @throws ParseException 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByCreationDate() throws ParseException{
 		
@@ -123,7 +120,6 @@ public class TestQuestionDAO {
 	 * Case 2: Expect returning a empty list </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByParentId(){
 		List<Question> questions = questionDAO.findByParentId(0);
@@ -138,7 +134,6 @@ public class TestQuestionDAO {
 	 * Case 2: Expect returning a empty list </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByQuestionText(){
 		List<Question> questions = questionDAO.findByQuestionText("Who are you waiting for?");
@@ -152,8 +147,6 @@ public class TestQuestionDAO {
 	 * Expect the number of records of QUESTION table inscreasing 1 </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testInsert(){
 		Question question = new Question(2, 1, "question test", new Timestamp(System.currentTimeMillis()), 0);
 		long id = questionDAO.insert(question);
@@ -164,8 +157,6 @@ public class TestQuestionDAO {
 	 * Test for {@link QuestionDAO#deleteByProperty(String[], Object[])} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByProperty(){
 		questionDAO.deleteByProperty(new String[]{
 				QuestionDAO.ID, QuestionDAO.QUESTION_TYPE_ID}, 
@@ -179,8 +170,6 @@ public class TestQuestionDAO {
 	 * Test for {@link QuestionDAO#findById(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteById(){
 		Question question = new Question(2, 1, "question test", 
 				new Timestamp(System.currentTimeMillis()), 0);
@@ -196,8 +185,6 @@ public class TestQuestionDAO {
 	 * Test for {@link QuestionDAO#deleteByUserId(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByUserId(){
 		questionDAO.deleteByUserId(2);
 		List<Question> questions = questionDAO.findByUserId(2);
@@ -208,8 +195,6 @@ public class TestQuestionDAO {
 	 * @throws ParseException 
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByCreationDate() throws ParseException{
 		
 		Timestamp sqlDate = Timestamp.valueOf("2014-01-09 22:39:24");
@@ -226,8 +211,6 @@ public class TestQuestionDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByQuestionText(){
 		
 		String questionText = "Interface can implement an interface?";
@@ -241,8 +224,6 @@ public class TestQuestionDAO {
 	 * Test for {@link QuestionDAO#deleteByQuestionTypeId(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByQuestionTypeId(){
 		
 		long questionTypeId = 6;
@@ -256,8 +237,6 @@ public class TestQuestionDAO {
 	 * Test for {@link QuestionDAO#deleteByParentId(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByParentId(){
 		
 		long parentId = 0;
@@ -266,6 +245,10 @@ public class TestQuestionDAO {
 		questionDAO.deleteByQuestionTypeId(parentId);
 		questions = questionDAO.findByQuestionTypeId(parentId);
 		assertTrue(questions.size() == 0);
-	}	
+	}
+	@Test
+	public void testUpdate(){
+		//TO DO
+	}
 
 }

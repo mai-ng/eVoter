@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.dao.impl.UserDAOImpl;
@@ -22,6 +23,8 @@ import evoter.share.model.User;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+@Transactional
+@TransactionConfiguration(defaultRollback=true)
 public class TestUserDAO {
 
 	@Autowired
@@ -29,7 +32,6 @@ public class TestUserDAO {
 	
 	
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindAll(){
 		List<User> users = userDAO.findAll();
@@ -43,7 +45,6 @@ public class TestUserDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindById(){
 		List<User> users = userDAO.findById(2);
@@ -53,7 +54,6 @@ public class TestUserDAO {
 	 * Test for {@link UserDAO#findByUserName(String)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByUserName(){
 		List<User> users = userDAO.findByUserName("paul_gibson");
@@ -63,7 +63,6 @@ public class TestUserDAO {
 	 * Test for {@link UserDAO#findByUserTypeId(Long)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByUserTypeId(){
 		List<User> users = userDAO.findByUserTypeId(2);
@@ -73,7 +72,6 @@ public class TestUserDAO {
 	 * Test for {@link UserDAO#findByEmail(Long)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByEmail(){
 		List<User> users = userDAO.findByEmail("diemth@gmail.com");
@@ -83,7 +81,6 @@ public class TestUserDAO {
 	 * Test for {@link UserDAO#findByFullName(Long)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByFullname(){
 		List<User> users = userDAO.findByFullName("Paul Gibson");
@@ -93,7 +90,6 @@ public class TestUserDAO {
 	 * Test for {@link UserDAO#findByApproved(Boolean)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByApproved(){
 		List<User> users = userDAO.findByApproved(true);
@@ -107,7 +103,6 @@ public class TestUserDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByProperty(){
 		List<User> users = userDAO.findByProperty(
@@ -121,8 +116,6 @@ public class TestUserDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByProperty(){
 		
 		userDAO.deleteByProperty(
@@ -139,8 +132,6 @@ public class TestUserDAO {
 	 * Test {@link UserDAO#deleteById(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteById(){
 		
 		userDAO.deleteById(1);
@@ -151,8 +142,6 @@ public class TestUserDAO {
 	 * Test {@link UserDAO#deleteByUserTypeId(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByUserTypeId(){
 		
 		userDAO.deleteByUserTypeId(2);
@@ -163,8 +152,6 @@ public class TestUserDAO {
 	 * Test {@link UserDAO#deleteByEmail(String)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByEmail(){
 		
 		userDAO.deleteByEmail("diemth@gmail.com");
@@ -175,8 +162,6 @@ public class TestUserDAO {
 	 * Test {@link UserDAO#deleteByFullName(String)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByFullName(){
 		
 		userDAO.deleteByFullName("Paul Gibson");
@@ -187,8 +172,6 @@ public class TestUserDAO {
 	 * Test {@link UserDAO#deleteByApproved(String)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByApproved(){
 		
 		userDAO.deleteByApproved(true);
@@ -199,8 +182,6 @@ public class TestUserDAO {
 	 * Test for {@link UserDAO#deleteByUserName(String)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByUserName(){
 		
 		userDAO.deleteByUserName("btdiem");

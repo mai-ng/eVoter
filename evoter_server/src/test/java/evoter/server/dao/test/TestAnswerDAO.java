@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.model.Answer;
@@ -20,6 +21,8 @@ import evoter.share.model.Answer;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+@Transactional
+@TransactionConfiguration(defaultRollback=true)
 public class TestAnswerDAO {
 	
 	@Autowired
@@ -27,6 +30,7 @@ public class TestAnswerDAO {
 	
 	
 	@Test
+	@Rollback(false)
 	public void testFindAll(){
 		List<Answer> answers = answerDAO.findAll();
 		assertTrue("testFindAll", answers.size()>0);
@@ -39,7 +43,6 @@ public class TestAnswerDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindById(){
 		List<Answer> answers = answerDAO.findById(4);
@@ -52,7 +55,6 @@ public class TestAnswerDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByQuestionId(){
 		List<Answer> answers = answerDAO.findByQuestionId(4);
@@ -61,7 +63,6 @@ public class TestAnswerDAO {
 
 	@Test
 	@Transactional
-	@Rollback(false)
 	public void testFindByAnswerText(){
 		List<Answer> answers = answerDAO.findByAnswerText("Two hours.");
 		assertTrue("testFindByAnswerText", answers.size() > 0);
@@ -75,7 +76,6 @@ public class TestAnswerDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByProperty(){
 		List<Answer> answers = answerDAO.findByProperty(new String[]{AnswerDAO.ID, AnswerDAO.QUESTION_ID}, new Object[]{4,3});
@@ -85,8 +85,6 @@ public class TestAnswerDAO {
 	 * Test {@link AnswerDAO#deleteById(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteById(){
 
 		answerDAO.deleteById(8);
@@ -97,8 +95,6 @@ public class TestAnswerDAO {
 	 * Test {@link AnswerDAO#deleteByQuestionId(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByQuestionId(){
 
 		answerDAO.deleteByQuestionId(4);
@@ -109,8 +105,6 @@ public class TestAnswerDAO {
 	 * Test {@link AnswerDAO#deleteByAnswerText(String)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByAnswerText(){
 
 		String answerText = "My brother";
@@ -120,8 +114,6 @@ public class TestAnswerDAO {
 	}
 	
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testInsert(){
 
 		Answer answer = new Answer(4, "answer data for test");

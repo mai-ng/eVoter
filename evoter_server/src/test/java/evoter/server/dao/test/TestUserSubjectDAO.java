@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import evoter.share.dao.UserSubjectDAO;
@@ -22,6 +23,8 @@ import evoter.share.model.UserSubject;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+@Transactional
+@TransactionConfiguration(defaultRollback=true)
 public class TestUserSubjectDAO {
 
 	@Autowired
@@ -30,7 +33,6 @@ public class TestUserSubjectDAO {
 	 * Test for {@link UserSubjectDAO#findAll()} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindAll(){
 		List<UserSubject> userSubjects = userSubjectDAO.findAll();
@@ -40,8 +42,6 @@ public class TestUserSubjectDAO {
 	 * Test for {@link UserSubjectDAO#insert(UserSubject)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testInsert(){
 		UserSubject userSubject = new UserSubject();
 		userSubject.setUserId(1);
@@ -60,7 +60,6 @@ public class TestUserSubjectDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByUserId(){
 		List<UserSubject> userSubjects = userSubjectDAO.findByUserId(2);
@@ -70,7 +69,6 @@ public class TestUserSubjectDAO {
 	 * Test for {@link UserSubjectDAO#findBySubjectId(Long)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindBySubjectId(){
 		List<UserSubject> userSubjects = userSubjectDAO.findBySubjectId(2);
@@ -82,7 +80,6 @@ public class TestUserSubjectDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByProperty(){
 		List<UserSubject> userSubjects = userSubjectDAO.findByProperty(
@@ -96,8 +93,6 @@ public class TestUserSubjectDAO {
 	 * 
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByProperty(){
 		
 		userSubjectDAO.deleteByProperty(
@@ -114,8 +109,6 @@ public class TestUserSubjectDAO {
 	 * Test {@link UserSubjectDAO#deleteByUserId(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByUserId(){
 		
 		userSubjectDAO.deleteByUserId(1);
@@ -126,8 +119,6 @@ public class TestUserSubjectDAO {
 	 * Test {@link UserSubjectDAO#deleteBySubjectId(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteSubjectId(){
 		
 		userSubjectDAO.deleteBySubjectId(2);

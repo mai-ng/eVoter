@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import evoter.share.dao.SessionUserDAO;
@@ -22,6 +23,8 @@ import evoter.share.model.SessionUser;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+@Transactional
+@TransactionConfiguration(defaultRollback=true)
 public class TestSessionUserDAO {
 
 	@Autowired
@@ -31,7 +34,6 @@ public class TestSessionUserDAO {
 	 * Test for {@link SessionUserDAO#findAll()} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindAll(){
 		List<SessionUser> sessionUsers = sessionUserDAO.findAll(); 
@@ -41,7 +43,6 @@ public class TestSessionUserDAO {
 	 * Test for {@link SessionUserDAO#deleteByProperty(String[], Object[])} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(true)
 	public void testDeleteByProperty(){
 		
@@ -59,7 +60,6 @@ public class TestSessionUserDAO {
 	 * Test {@link SessionUserDAO#findByUserId(Long)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByUserId(){
 		
@@ -70,7 +70,6 @@ public class TestSessionUserDAO {
 	 * Test {@link SessionUserDAO#findBySessionId(Long)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindBySessionId(){
 		
@@ -81,7 +80,6 @@ public class TestSessionUserDAO {
 	 * Test {@link SessionUserDAO#findByDeleteIndicator(Boolean)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByDeleteIndicator(){
 		
@@ -92,8 +90,6 @@ public class TestSessionUserDAO {
 	 * Test {@link SessionUserDAO#deleteByDeleteIndicator(Boolean)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByDeleteIndicator(){
 		
 		sessionUserDAO.deleteByDeleteIndicator(true);
@@ -104,7 +100,6 @@ public class TestSessionUserDAO {
 	 * Test {@link SessionUserDAO#findByAcceptSession(Boolean)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByAcceptSession(){
 		
@@ -115,8 +110,6 @@ public class TestSessionUserDAO {
 	 * Test {@link SessionUserDAO#deleteByAcceptSession(Boolean)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByAcceptSession(){
 		
 		sessionUserDAO.deleteByAcceptSession(false);
@@ -127,8 +120,6 @@ public class TestSessionUserDAO {
 	 * Test {@link SessionUserDAO#deleteByUserId(Long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByUserId(){
 		
 		sessionUserDAO.deleteByUserId(1);
@@ -139,8 +130,6 @@ public class TestSessionUserDAO {
 	 * Test {@link SessionUserDAO#findBySessionId(Long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteBySessionId(){
 		
 		sessionUserDAO.deleteBySessionId(1);
@@ -152,7 +141,6 @@ public class TestSessionUserDAO {
 	 * Test for {@link SessionUserDAO#findByProperty(String[],Object[])} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByByProperty(){
 		
@@ -165,8 +153,6 @@ public class TestSessionUserDAO {
 	 * Test for {@link SessionUserDAO#update(SessionUser)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testUpdate(){
 		
 		List<SessionUser> sessionUsers = sessionUserDAO.findByProperty(

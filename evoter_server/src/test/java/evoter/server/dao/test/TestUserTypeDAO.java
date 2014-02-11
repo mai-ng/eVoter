@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.dao.impl.UserTypeDAOImpl;
@@ -24,6 +25,8 @@ import evoter.share.model.UserType;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+@Transactional
+@TransactionConfiguration(defaultRollback=true)
 public class TestUserTypeDAO{
 
 	@Autowired
@@ -42,7 +45,6 @@ public class TestUserTypeDAO{
 	 * 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindById(){
 		List<UserType> userTypes = userTypeDAO.findById(2);
@@ -52,7 +54,6 @@ public class TestUserTypeDAO{
 	 * Test for {@link UserTypeDAO#findByUserTypeValue(String)} </br>
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByUserTypeValue(){
 		List<UserType> userTypes = userTypeDAO.findByUserTypeValue("Teacher");
@@ -65,7 +66,6 @@ public class TestUserTypeDAO{
 	 * 
 	 */
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void testFindByProperty(){
 		List<UserType> userTypes = userTypeDAO.findByProperty(
@@ -79,8 +79,6 @@ public class TestUserTypeDAO{
 	 * 
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByProperty(){
 		
 		userTypeDAO.deleteByProperty(
@@ -97,8 +95,6 @@ public class TestUserTypeDAO{
 	 * Test {@link UserTypeDAO#deleteById(long)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteById(){
 		
 		userTypeDAO.deleteById(1);
@@ -110,8 +106,6 @@ public class TestUserTypeDAO{
 	 * Test {@link UserTypeDAO#deleteByUserTypeValue(String)} </br>
 	 */
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteByUserTypeValue(){
 		
 		String userTypeValue = "Teacher";
@@ -122,8 +116,6 @@ public class TestUserTypeDAO{
 	}
 	
 	@Test
-	@Transactional
-	@Rollback(true)
 	public void testInsert(){
 		
 		UserType insert = new UserType("user type value for testing");

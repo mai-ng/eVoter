@@ -25,6 +25,10 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
 		http://www.springframework.org/schema/aop/spring-aop-2.0.xsd	
 	-->
     
+   <context:component-scan base-package="evoter.server.dao.impl"/>
+   <context:component-scan base-package="evoter.server.http.request"/>
+   <context:component-scan base-package="evoter.server.dao.test"/>
+   <context:component-scan base-package="evoter.server.http"/>
    
        
     <bean id="userDAO" class="evoter.server.dao.impl.UserDAOImpl" lazy-init="true">
@@ -75,6 +79,10 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
 		<property name="userDAO" ref="userDAO" />
 	</bean>    
 
+    <bean id="userService" class="evoter.server.http.request.UserService" lazy-init="true">
+		<property name="userDAO" ref="userDAO" />
+	</bean>    
+    
     <bean id="questionService" class="evoter.server.http.request.QuestionService" lazy-init="true">
 
         <property name="userDAO" ref="userDAO" />
@@ -100,6 +108,8 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
 		<property name="userSubjectDAO" ref="userSubjectDAO" />
 	</bean> 
 	
+    
+    
     
     <!--    
         <bean id="httpConnection" class="evoter.server.http.HttpConnection" lazy-init="true">

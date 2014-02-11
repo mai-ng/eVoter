@@ -32,9 +32,9 @@ public interface IQuestionService {
 	 * 	</li> QuestionSessionDAO.SESSION_ID
 	 *  </li> {@link UserDAO#USER_KEY}
 	 */
-	public void doGetAll(HttpExchange httpExchange, Map<String,Object> parameters) ;
+	public Object doGetAll(Map<String,Object> parameters) ;
 	
-	public void doView(HttpExchange httpExchange, Map<String,Object> parameters) ;
+	public Object doView(Map<String,Object> parameters) ;
 	/**
 	 * 
 	 * @param questionId
@@ -57,7 +57,7 @@ public interface IQuestionService {
 	 *  </li> {@link AnswerDAO#ANSWER_TEXT}  is a string array
 	 *  
 	 */
-	public void doCreate(HttpExchange httpExchange, Map<String, Object> parameters) ;
+	public Object doCreate(Map<String, Object> parameters) ;
 	/**
 	 * Delete {@link Answer} in ANSWER table </br>
 	 * Delete {@link Statistics} in STATISTICS table </br>
@@ -68,7 +68,7 @@ public interface IQuestionService {
 	 * @param parameters contains: </br>
 	 * 	{@link QuestionDAO#ID}
 	 */
-	public void doDelete(HttpExchange httpExchange, Map<String,Object> parameters) ;
+	public Object doDelete(Map<String,Object> parameters) ;
 	/**
 	 * When receiving {@link URIRequest#SEND_QUESTION} from teacher application </br>
 	 * keep the questionId and sessionId of request and wait for request {@link URIRequest#GET_LATEST_QUESTION} </br>
@@ -79,7 +79,7 @@ public interface IQuestionService {
 	 * 	</li> {@link QuestionSessionDAO#SESSION_ID} : current session ID
 	 * 	</li> {@link UserDAO#USER_KEY}
 	 */
-	public void doSend(HttpExchange httpExchange, Map<String,Object> parameters) ;
+	public Object doSend(Map<String,Object> parameters) ;
 
 	/**
 	 * This request is sent by student application within a certain time </br>
@@ -90,7 +90,7 @@ public interface IQuestionService {
 	 * 	</li> QuestionSessionDAO.SESSION_ID
 	 * 	</li> {@link UserDAO#USER_KEY}
 	 */
-	public void doGetLatest(HttpExchange httpExchange, Map<String,Object> parameters);
+	public Object doGetLatest(Map<String,Object> parameters);
 	/** 
 	 * This method is called when teacher sends the request </br>
 	 * {@link URIRequest#STOP_SEND_QUESTION} to server </br>
@@ -99,7 +99,7 @@ public interface IQuestionService {
 	 * @param parameters contains : </br>
 	 * 	</li> QuestionSessionDAO.SESSION_ID
 	 */
-	public void doStopSend(HttpExchange httpExchange, Map<String,Object> parameters) ;
+	public Object doStopSend(Map<String,Object> parameters) ;
 	/**
 	 * This method will update new values of {@link Question} and {@link Answer} </br>
 	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
@@ -108,5 +108,24 @@ public interface IQuestionService {
 	 * </li> {@link QuestionDAO#ID} </br>
 	 * 	</li> {@link QuestionDAO#QUESTION_TEXT} is a string array </br>
 	 */
-	public void doEdit(HttpExchange httpExchange, Map<String, Object> parameters);
+	public Object doEdit(Map<String, Object> parameters);
+	
+	/**
+	 * Keep question sent to students by teacher</br>
+	 *  When receiving a get latest question, response client request this question </br>
+	 * @param sessionId the current session id</br>
+	 * @param questionId Id question sent to students </br>
+	 */
+	public void addSentQuestion(long sessionId, long questionId);
+	/**
+	 * This question is called when server receive stop sending question request </br>
+	 * @param sessionId
+	 */
+	public void removeSentQuestion(long sessionId);
+	/**
+	 * 
+	 * @param sessionId id of session that is sending the latest question </br>
+	 * @return true if session is till sending the latest question </br>
+	 */
+	public boolean canSendQuestion(long sessionId);
 }

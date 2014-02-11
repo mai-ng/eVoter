@@ -225,7 +225,7 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		+ USER_ID + "=" +  question.getUserId()
 		+ "," + QUESTION_TYPE_ID + "=" + question.getQuestionTypeId()
 		+ ","+ QUESTION_TEXT + "='" + question.getQuestionText() + "'"
-		+ "," + CREATION_DATE + "=" + question.getCreationDate()
+		+ "," + CREATION_DATE + "='" + question.getCreationDate()+"'"
 		+ "," + PARENT_ID + "=" + question.getParentId()
 		+ " WHERE " + ID + "=" + question.getId();
 		

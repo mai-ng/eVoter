@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.http.URIUtils;
+//import evoter.server.http.URIUtils;
 import evoter.server.http.request.interfaces.ISubjectService;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.SessionDAO;
@@ -32,6 +35,8 @@ import evoter.share.utils.UserValidation;
  *
  */
 @Service
+@Transactional
+@TransactionConfiguration(defaultRollback=true)
 public class SubjectService implements ISubjectService{
 	
 	//@Autowired
@@ -113,17 +118,20 @@ public class SubjectService implements ISubjectService{
 	 * (non-Javadoc)
 	 * @see evoter.server.http.request.interfaces.ISubjectRequest#doView(com.sun.net.httpserver.HttpExchange, java.util.Map)
 	 */
-	public  void doView(HttpExchange exchange, Map<String,Object> parameters){
+	@Override
+	public  Object doView(Map<String,Object> parameters){
 		
 		try{
 			
 			long id = Long.valueOf((String)parameters.get(SubjectDAO.ID));
 			Subject subject = (Subject)subjectDAO.findById(id).get(0);
-			URIUtils.writeResponse(subject.toJSON(), exchange);
+			return subject.toJSON();
+			//URIUtils.writeResponse(subject.toJSON(), exchange);
 			
 		}catch(Exception e){
 			System.err.println(e);
-			URIUtils.writeFailureResponse(exchange);
+			return URIRequest.FAILURE_MESSAGE;
+			//URIUtils.writeFailureResponse(exchange);
 		}
 
 		
@@ -134,7 +142,9 @@ public class SubjectService implements ISubjectService{
 	 * @see evoter.server.http.request.interfaces.ISubjectRequest#doGetAll(com.sun.net.httpserver.HttpExchange, java.util.Map)
 	 */
 	@SuppressWarnings("unchecked")
-	public  void doGetAll(HttpExchange exchange, Map<String,Object> parameters){
+	@Override
+	@Rollback(false)
+	public  Object doGetAll(Map<String,Object> parameters){
 		
 		try{
 			
@@ -143,17 +153,19 @@ public class SubjectService implements ISubjectService{
 			Long id = UserValidation.getUserIdFromUserKey(userKey);
 			List<UserSubject> usList = userSubjectDAO.findByUserId(id);
 			
-			JSONArray jsArray = new JSONArray();
+			JSONArray response = new JSONArray();
 			for (UserSubject us : usList){
 				Subject subject = (Subject)subjectDAO.findById(us.getSubjectId()).get(0);
-				jsArray.add(subject.toJSON());
+				response.add(subject.toJSON());
 			}
-			System.out.println("SUBJECT : " + jsArray.toJSONString());
-			URIUtils.writeResponse(jsArray.toJSONString(), exchange);
+			System.out.println("SUBJECT : " + response.toJSONString());
+			//URIUtils.writeResponse(response.toJSONString(), exchange);
+			return response;
 			
 		}catch(Exception e){
 			System.err.println(e);
-			URIUtils.writeFailureResponse(exchange);
+			//URIUtils.writeFailureResponse(exchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 
 		
@@ -177,7 +189,8 @@ public class SubjectService implements ISubjectService{
 	 *  </li> {@link UserDAO#USER_KEY}
 	 *  TESTED
 	 */
-	public  void doDelete(HttpExchange exchange, Map<String,Object> parameters){
+	@Override
+	public  Object doDelete(Map<String,Object> parameters){
 		
 		try{
 			
@@ -202,12 +215,14 @@ public class SubjectService implements ISubjectService{
 */				
 			subjectDAO.deleteById(subjectId);
 			
-			URIUtils.writeSuccessResponse(exchange);
+			return URIRequest.SUCCESS_MESSAGE;
+			//URIUtils.writeSuccessResponse(exchange);
 				
 		}catch(Exception e){
 		
 			System.out.println("delete subject error : " + e);
-			URIUtils.writeFailureResponse(exchange);
+			//URIUtils.writeFailureResponse(exchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 		
 	}
@@ -223,20 +238,21 @@ public class SubjectService implements ISubjectService{
 	 *  </li> {@link UserDAO#USER_KEY} </br>
 	 */
 	@SuppressWarnings("unchecked")
-	public  void doSearch(HttpExchange httpExchange,
-			Map<String,Object> parameters) {
+	public  Object doSearch(Map<String,Object> parameters) {
 		try{
 			
 			List<Subject> subjects = subjectDAO.findByProperty(parameters.keySet().toArray(new String[]{}), parameters.values().toArray());
-			JSONArray jsArray = new JSONArray();
+			JSONArray response = new JSONArray();
 			for (Subject subject : subjects){
-				jsArray.add(subject.toJSON());
+				response.add(subject.toJSON());
 			}
-			URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
+			//URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
+			return response;
 			
 		}catch(Exception e){
-			URIUtils.writeFailureResponse(httpExchange);
+			//URIUtils.writeFailureResponse(httpExchange);
 			System.err.println(e);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 
 	}
@@ -247,8 +263,7 @@ public class SubjectService implements ISubjectService{
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void doGetUsersOfSubject(HttpExchange httpExchange,
-			Map<String, Object> parameters) {
+	public Object doGetUsersOfSubject(Map<String, Object> parameters) {
 		
 		JSONArray response = new JSONArray();
 		try{
@@ -261,12 +276,14 @@ public class SubjectService implements ISubjectService{
 					response.add(userList.get(0).toJSON());
 				}
 			}
-			URIUtils.writeResponse(response, httpExchange);
+			//URIUtils.writeResponse(response, httpExchange);
+			return response;
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			URIUtils.writeFailureResponse(httpExchange);
+			//URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 		
 	}
@@ -276,7 +293,7 @@ public class SubjectService implements ISubjectService{
 	 * @see evoter.server.http.request.interfaces.ISubjectService#doEdit(com.sun.net.httpserver.HttpExchange, java.util.Map)
 	 */
 	@Override
-	public void doEdit(HttpExchange httpExchange, Map<String, Object> parameters) {
+	public Object doEdit(Map<String, Object> parameters) {
 		
 		try{
 			
@@ -287,12 +304,14 @@ public class SubjectService implements ISubjectService{
 			Subject subject = new Subject(subjectId, title, creationDate);
 			subjectDAO.update(subject);
 			
-			URIUtils.writeSuccessResponse(httpExchange);
+			//URIUtils.writeSuccessResponse(httpExchange);
+			return URIRequest.SUCCESS_MESSAGE;
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			URIUtils.writeFailureResponse(httpExchange);
+			//URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
 		}
 
 	}
@@ -302,10 +321,9 @@ public class SubjectService implements ISubjectService{
 	 * @see evoter.server.http.request.interfaces.ISubjectService#doCreate(com.sun.net.httpserver.HttpExchange, java.util.Map)
 	 */
 	@Override
-	public void doCreate(HttpExchange httpExchange,
-			Map<String, Object> parameters) {
+	public Object doCreate(Map<String, Object> parameters) {
 		
-		
+		return null;
 	}
 	
 	

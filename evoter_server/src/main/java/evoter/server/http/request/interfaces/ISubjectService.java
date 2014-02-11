@@ -24,7 +24,7 @@ public interface ISubjectService {
 	 *  </li> {@link SubjectDAO.ID} </br>
 	 *  </li> {@link UserDAO#USER_KEY} </br>
 	 */
-	public void doView(HttpExchange exchange, Map<String,Object> parameters);
+	public Object doView(Map<String,Object> parameters);
 	
 	/**
 	 * Response client all {@link Subject} of user when receiving {@link URIRequest#VIEW_SUBJECT} </br>
@@ -32,7 +32,7 @@ public interface ISubjectService {
 	 * @param parameters contains : </br>
 	 *  </li> {@link UserDAO.USER_KEY} </br>
 	 */
-	public  void doGetAll(HttpExchange exchange, Map<String,Object> parameters);
+	public  Object doGetAll(Map<String,Object> parameters);
 	
 	/**
 	 * When delete a subject: </br>
@@ -51,7 +51,7 @@ public interface ISubjectService {
 	 *  </li> {@link SubjectDAO.ID} </br>
 	 *  </li> {@link UserDAO#USER_KEY} </br>
 	 */
-	public void doDelete(HttpExchange exchange, Map<String,Object> parameters);
+	public Object doDelete(Map<String,Object> parameters);
 	/**
 	 * Response client a list of {@link Subject} matching search conditions when receiving </br>
 	 * {@link URIRequest#SEARCH_SUBJECT} </br>
@@ -61,7 +61,7 @@ public interface ISubjectService {
 	 *  </li> {@link SubjectDAO#TITLE} </br>
 	 *  </li> {@link SubjectDAO#CREATION_DATE} </br>
 	 */
-	public void doSearch(HttpExchange httpExchange, Map<String,Object> parameters);
+	public Object  doSearch(Map<String,Object> parameters);
 	
 	/**
 	 * Response client a list of {@link User} of a {@link Subject} </br>
@@ -70,7 +70,7 @@ public interface ISubjectService {
 	 * </li> {@link UserDAO#USER_KEY} </br>
 	 * </li> {@link SubjectDAO#ID} </br>
 	 */
-	public void doGetUsersOfSubject(HttpExchange httpExchange, Map<String, Object> parameters);
+	public Object doGetUsersOfSubject(Map<String, Object> parameters);
 	/**
 	 * Update a {@link Subject} to database </br>
 	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
@@ -82,7 +82,7 @@ public interface ISubjectService {
 	 *  {@link SubjectDAO#TEACHER_EMAIL_LIST} : an array of teacher email </br>
 	 * 
 	 */
-	public void doEdit(HttpExchange httpExchange, Map<String, Object> parameters);
+	public Object doEdit(Map<String, Object> parameters);
 	/**
 	 * Create a {@link Subject} </br> 
 	 * @param httpExchange {@link HttpExchange} communicates between server and clients </br>
@@ -93,7 +93,7 @@ public interface ISubjectService {
 	 *  {@link SubjectDAO#STUDENT_EMAIL_LIST} : an array of student email </br>
 	 *  {@link SubjectDAO#TEACHER_EMAIL_LIST} : an array of teacher email </br>
 	 */
-	public void doCreate(HttpExchange httpExchange, Map<String, Object> parameters);
+	public Object doCreate(Map<String, Object> parameters);
 	
 	
 }

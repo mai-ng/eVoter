@@ -62,7 +62,7 @@ public class TestQuestionService {
 		"\"QUESTION_TEXT\":\"Abstract can implement an interface?\"," +
 		"\"CREATION_DATE\":\"2014-01-09 10:31:17.0\",\"PARENT_ID\":0}]";
 
-		long sessionId = 4;
+		String sessionId = "4";
 		parameters.put(QuestionSessionDAO.SESSION_ID, sessionId);
 		Object response = questionService.doGetAll(parameters);
 		assertEquals(response.toString(), expected_response);
@@ -82,7 +82,7 @@ public class TestQuestionService {
 		"[{\"USER_ID\":1,\"QUESTION_TYPE_ID\":1,\"ID\":1,\"QUESTION_TEXT\":\"Interface can implement an interface?\"," +
 		"\"CREATION_DATE\":\"2014-01-09 10:31:17.0\",\"PARENT_ID\":0}]";
 		
-		long questionId = 1;
+		String questionId = "1";
 		parameters.put(QuestionDAO.ID, questionId);
 		Object response = questionService.doView(parameters);
 		assertEquals(response.toString(), expected_response);
@@ -104,7 +104,7 @@ public class TestQuestionService {
 		
 		//return an empty array
 		response = questionService.getAnswersOfQuestion(1);
-		assertEquals(response, new JSONArray());
+		assertEquals(response.toString(), "[]");
 	}
 	/**
 	 * Test for {@link IQuestionService#doCreate(Map)} </br>
@@ -115,12 +115,14 @@ public class TestQuestionService {
 	@Rollback(true)
 	public void test_doCreate(){
 		
-		parameters.put(QuestionDAO.QUESTION_TEXT, new String[]{"a new question is created"});
-		parameters.put(QuestionDAO.QUESTION_TYPE_ID, new Long(2));
+		parameters.put(QuestionDAO.QUESTION_TEXT, 
+				new String[]{"a new question is created"});
+		parameters.put(QuestionDAO.QUESTION_TYPE_ID, "2");
 		parameters.put(QuestionDAO.CREATION_DATE, "2014-02-09 22:39:24");
 		parameters.put(UserDAO.USER_KEY, "123456_3_3");
-		parameters.put(QuestionSessionDAO.SESSION_ID, new Long(1));
-		parameters.put(AnswerDAO.ANSWER_TEXT, new String[]{"answer b", "answer b", "answer c"});
+		parameters.put(QuestionSessionDAO.SESSION_ID, "1");
+		parameters.put(AnswerDAO.ANSWER_TEXT, 
+				new String[]{"answer b", "answer b", "answer c"});
 		
 		Object response = questionService.doCreate(parameters);
 		assertEquals(response.toString(), "SUCCESS");
@@ -135,7 +137,7 @@ public class TestQuestionService {
 	@Rollback(true)
 	public void test_doDelete(){
 		
-		parameters.put(QuestionDAO.ID, new Long(1));
+		parameters.put(QuestionDAO.ID, "1");
 		Object response = questionService.doDelete(parameters);
 		assertEquals(response.toString(), "SUCCESS");
 	}
@@ -148,8 +150,8 @@ public class TestQuestionService {
 	@Rollback(false)
 	public void test_doSend(){
 		
-		parameters.put(QuestionDAO.ID, new Long(1));
-		parameters.put(QuestionSessionDAO.SESSION_ID, new Long(1));
+		parameters.put(QuestionDAO.ID, "1");
+		parameters.put(QuestionSessionDAO.SESSION_ID, "1");
 		Object response = questionService.doSend(parameters);
 		assertEquals(response.toString(), "SUCCESS");
 	}
@@ -165,7 +167,7 @@ public class TestQuestionService {
 		long sessionId = 1;
 		long questionId = 1;
 		questionService.addSentQuestion(sessionId, questionId);
-		parameters.put(QuestionSessionDAO.SESSION_ID, sessionId);
+		parameters.put(QuestionSessionDAO.SESSION_ID, String.valueOf(sessionId));
 		String expected_response = "" +
 		"[{\"USER_ID\":1,\"QUESTION_TYPE_ID\":1,\"answers\":[],\"ID\":1,\"QUESTION_TEXT\":\"Interface can implement an interface?\"," +
 		"\"CREATION_DATE\":\"2014-01-09 10:31:17.0\",\"PARENT_ID\":0}]";
@@ -186,12 +188,13 @@ public class TestQuestionService {
 	@Rollback(false)
 	public void test_doGetLatest_2(){
 		
-		long sessionId = 2;
+		String sessionId = "2";
 
 		parameters.put(QuestionSessionDAO.SESSION_ID, sessionId);
 		
 		Object response = questionService.doGetLatest(parameters);
-		assertEquals("doGetLatest returns an empty array" , response, new JSONArray());
+		assertEquals("doGetLatest returns an empty array" , 
+				response.toString(), "[]");
 	}
 	/**
 	 * Test for {@link IQuestionService#doStopSend(Map)} </br>
@@ -205,13 +208,16 @@ public class TestQuestionService {
 		
 		long sessionId = 1;
 		long questionId = 1;
-		parameters.put(QuestionSessionDAO.SESSION_ID, sessionId);
+		parameters.put(QuestionSessionDAO.SESSION_ID, String.valueOf(sessionId));
 		questionService.addSentQuestion(sessionId, questionId);
 		
-		assertTrue("canSendQuestion returns true",questionService.canSendQuestion(sessionId));
+		assertTrue("canSendQuestion returns true",
+				questionService.canSendQuestion(sessionId));
 		Object response = questionService.doStopSend(parameters);
-		assertEquals("doStopSend() returns SUCCESS message", response.toString(), "SUCCESS");
-		assertFalse("canSendQuestion returns false",questionService.canSendQuestion(sessionId));
+		assertEquals("doStopSend() returns SUCCESS message", 
+				response.toString(), "SUCCESS");
+		assertFalse("canSendQuestion returns false",
+				questionService.canSendQuestion(sessionId));
 
 	}
 	
@@ -225,13 +231,14 @@ public class TestQuestionService {
 	@Rollback(true)
 	public void test_doEdit(){
 		
-		long questionId = 1;
+		String questionId = "1";
 		String question_text = "the tested datat";
 		parameters.put(QuestionDAO.ID, questionId);
 		parameters.put(QuestionDAO.QUESTION_TEXT, question_text);
 		
 		Object response = questionService.doEdit(parameters);
-		assertEquals("doEdit() returns SUCCESS message", response.toString(), "SUCCESS");
+		assertEquals("doEdit() returns SUCCESS message", 
+				response.toString(), "SUCCESS");
 
 	}
 

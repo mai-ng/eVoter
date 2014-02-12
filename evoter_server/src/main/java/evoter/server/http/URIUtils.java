@@ -232,14 +232,14 @@ public class URIUtils {
 			while(parameterValueToken.hasMoreTokens()) {
 				
 				 String parameterValue = parameterValueToken.nextToken();
-				 System.out.println("before " + parameterValue);
+				
 				 StringTokenizer value = new StringTokenizer(parameterValue,"=");
 				 String tokenKey = value.nextToken();
 				 String tokenValue = value.nextToken(); 
-				 		
+				 
 				 boolean isArray = isArray(tokenKey);
 				 tokenKey = fixedEncodeKeyParameter(tokenKey);
-				 tokenValue= fixedEncodeKeyParameter(tokenValue);
+				 tokenValue= fixedEncodeValueParameter(tokenValue);
 				 
 				 if (parameters.containsKey(tokenKey)){
 					 //from the second time
@@ -268,7 +268,7 @@ public class URIUtils {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		System.out.println("after " + parameters);
+		//System.out.println("after " + parameters);
 		return parameters;
 		
 	}
@@ -282,17 +282,21 @@ public class URIUtils {
 		return key.contains("%5B%5D");
 	}
 	public static String fixedEncodeKeyParameter(String key){
-		return 	key = key
-				.replace("+", "").replace("%40", "")
-				.replace("%5B", "").replace("%5D", "")
+		return 	key
+				.replace("+", "")
+				.replace("%40", "")
+				.replace("%5B", "")
+				.replace("%5D", "")
 				.replace("%3A", "");
 	}
 
 	public static String fixedEncodeValueParameter(String value){
-		return 	value = value
-				.replace("+", " ").replace("%40", "@")
-				.replace("%5B", "[").replace("%5D", "]")
-				.replace("%3A", ":");
+		return 	value
+				.replace("%40", "@")
+				.replace("%5B", "[")
+				.replace("%5D", "]")
+				.replace("%3A", ":")
+				.replace("+", " ");
 	}
 	public static void writeResponse(Object response, HttpExchange t) {
 		

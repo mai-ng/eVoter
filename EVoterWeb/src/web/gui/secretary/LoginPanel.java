@@ -71,6 +71,7 @@ public class LoginPanel extends JPanel {
 		c.insets = new Insets(1, 1, 1, 1);
 
 		// Row 0: Error alert
+		c.gridy = 0;
 		c.weightx = 0;
 		c.gridx = 1;
 		c.insets = new Insets(5, 15, 5, 0);
@@ -176,8 +177,9 @@ public class LoginPanel extends JPanel {
 							System.out.println(userkey);
 							RunningTimeData.setCurrentUserKey(userkey);
 							main.updateAccountName(i_Usrname);
+							main.createGUI();
 							main.showMenu(true);
-							main.setContent(new EmptyPage("Welcome "
+							main.setContentPanel(new EmptyPage("Welcome "
 									+ i_Usrname + " to eVoter System!"));
 						}
 					} else {

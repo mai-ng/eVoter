@@ -3,20 +3,47 @@
  */
 package evoter.mobile.activities;
 
-import evoter.mobile.main.R;
-import evoter.mobile.objects.RuntimeEVoterManager;
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-/**
- * @author luongnv89
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import evoter.mobile.main.R;
+import evoter.mobile.objects.RequestConfig;
+import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.dao.SubjectDAO;
+import evoter.share.dao.UserDAO;
+import evoter.share.model.UserType;
+import evoter.share.utils.URIRequest;
+
+/**<br>Updated by @author luongnv89 on 12-Feb-2014:<br>
+ * <li> Completed loadListItemData() method
+ *<br>Created by @author luongnv89
  */
 public class SubjectUserActivity extends EVoterActivity {
+	
+	ArrayList<String> listTeachers;
+	ArrayList<String> listStudents;
+	ListView lvTeacher;
+	ListView lvStudent;
+	ArrayAdapter<String> teacherAdapter;
+	ArrayAdapter<String> studentAdapter;
 	
 	/*
 	 * (non-Javadoc)
@@ -32,6 +59,8 @@ public class SubjectUserActivity extends EVoterActivity {
 		this.ivTitleBarRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				listStudents.clear();
+				listTeachers.clear();
 				loadListItemData();
 			}
 			
@@ -58,10 +87,63 @@ public class SubjectUserActivity extends EVoterActivity {
 		//Set menu
 		mainMenu.setSessionActivityMenu();
 		mainMenu.getBtListUsers().setVisibility(View.GONE);
+		listTeachers = new ArrayList<String>();
+		listStudents = new ArrayList<String>();
+		
+		lvTeacher = (ListView) findViewById(R.id.lvSubjectProfessor);
+		teacherAdapter = new ArrayAdapter<String>(SubjectUserActivity.this, R.layout.user_item, listTeachers);
+		lvTeacher.setAdapter(teacherAdapter);
+		lvStudent = (ListView) findViewById(R.id.lvSubjectStudents);
+		studentAdapter = new ArrayAdapter<String>(SubjectUserActivity.this, R.layout.user_item, listStudents);
+		lvStudent.setAdapter(studentAdapter);
+		loadListItemData();
 	}
 	
 	private void loadListItemData() {
-		// TODO Auto-generated method stub
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
+		params.add(SubjectDAO.ID, String.valueOf(RuntimeEVoterManager.getCurrentSubjectID()));
+		
+		client.post(RequestConfig.getURL(URIRequest.GET_ALL_USERS_OF_SUBJECT), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						Log.i("Request all user of subject", response);
+						try {
+							JSONArray array = new JSONArray(response);
+							for (int i = 0; i < array.length(); i++) {
+								JSONObject ob = array.getJSONObject(i);
+								Log.i("Object: " + i, "User type: " + String.valueOf(ob.getLong(UserDAO.USER_TYPE_ID)));
+								if (ob.getLong(UserDAO.USER_TYPE_ID) == UserType.TEACHER) {
+									listTeachers.add((listTeachers.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
+								} else if (ob.getLong(UserDAO.USER_TYPE_ID) == UserType.STUDENT) {
+									listStudents.add((listTeachers.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
+								}
+							}
+							Log.i("Total teachers: ", String.valueOf(listTeachers.size()));
+							Log.i("Total students: ", String.valueOf(listStudents.size()));
+							studentAdapter.notifyDataSetChanged();
+							teacherAdapter.notifyDataSetChanged();
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								SubjectUserActivity.this,
+								"Cannot request to server!");
+						Log.e("LoginTest", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
 		
 	}
 	

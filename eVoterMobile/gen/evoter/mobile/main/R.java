@@ -87,8 +87,6 @@ public final class R {
         public static final int tableRow1=0x7f09001c;
         public static final int tableRow2=0x7f090020;
         public static final int tbSessionValue=0x7f09001b;
-        public static final int textView1=0x7f09002e;
-        public static final int textView2=0x7f090030;
         public static final int tvDialogMessage=0x7f090000;
         public static final int tvForgotPassword=0x7f09002c;
         public static final int tvListProfessors=0x7f09001f;
@@ -106,6 +104,8 @@ public final class R {
         public static final int tvSubname=0x7f090019;
         public static final int tvTeacher=0x7f090016;
         public static final int tvTitleBar=0x7f090006;
+        public static final int tvUserItem_Email=0x7f090030;
+        public static final int tvUserItem_fullName=0x7f09002e;
         public static final int usrname=0x7f090028;
     }
     public static final class layout {
@@ -127,6 +127,7 @@ public final class R {
         public static final int start=0x7f03000f;
         public static final int subject_dialog=0x7f030010;
         public static final int subject_users=0x7f030011;
+        public static final int user_item=0x7f030012;
     }
     public static final class menu {
         public static final int main=0x7f080000;

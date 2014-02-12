@@ -13,28 +13,32 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
-import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.OfflineEVoterManager;
+import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
-import evoter.share.dao.*;
-import evoter.share.utils.*;
+import evoter.share.dao.UserDAO;
+import evoter.share.utils.URIRequest;
+import evoter.share.utils.UserValidation;
 
-/**Update by @author luongnv89 on Thu 30-Jan-2014:
+/**
+ * <br>Update by @author luongnv89 on 12-Feb-2014:
+ * <br>
+ * <li> using {@link EVoterActivity#client} instead of local variable
+ * <br>Update by @author luongnv89 on Thu 30-Jan-2014:
  * <br>
  * <li> remove constructor for {@link OfflineEVoterManager} to {@link EVoterActivity}
- * Updated by @author luongnv89 on 19-Jan-2014:<br>
+ * <br>Updated by @author luongnv89 on 19-Jan-2014:<br>
  * <li> Deleted start new LoginActivity in case "username and password is incorrect!"
  * <br>Just notify for user and user can try again
- * Update by @author luongnv89 on 18-Jan-2014<br>
+ * <br>Update by @author luongnv89 on 18-Jan-2014<br>
  * <li>add comments for class, variable, method, <li>Edited onBackPressed() by
  * using {@link EVoterActivity#exit()} method; <li>Add relogin in case the input username and password is not correct. <br>
- * Created by luongnv89 on 05/12/13 </br> Updated by @author btdiem on
+ * <br>Created by luongnv89 on 05/12/13 </br> Updated by @author btdiem on
  * 08-Jan-2014:</br></li> parse response and store user key sent by server to
  * verify next time
  */
@@ -71,7 +75,6 @@ public class LoginActivity extends EVoterActivity {
 			@Override
 			public void onClick(View v) {
 				// GetData getData = new GetData();
-				AsyncHttpClient client = new AsyncHttpClient(1000);
 				final String i_Usrname = etUsrName.getText().toString();
 				RuntimeEVoterManager
 						.setCurrentUserName(i_Usrname);

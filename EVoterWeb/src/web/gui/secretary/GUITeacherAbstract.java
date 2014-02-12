@@ -78,7 +78,8 @@ public abstract class GUITeacherAbstract extends GUIAbstract{
 		
 		c.gridx = 0;
 		c.weightx = 0;
-		c.insets = new Insets(5, 15, 5, 0);
+		c.gridwidth = 1;
+		c.insets = new Insets(10,10, 5, 10);
 		this.add(lbl1, c);
 
 		c.gridx = 1;
@@ -94,7 +95,8 @@ public abstract class GUITeacherAbstract extends GUIAbstract{
 		
 		c.gridx = 0;
 		c.weightx = 0;
-		c.insets = new Insets(10, 15, 5, 0);
+		c.gridwidth = 1;
+		c.insets = new Insets(10, 10, 5, 10);
 		this.add(lbl2, c);
 
 		c.gridx = 1;
@@ -110,7 +112,8 @@ public abstract class GUITeacherAbstract extends GUIAbstract{
 
 		c.gridx = 0;
 		c.weightx = 0;
-		c.insets = new Insets(10, 15, 5, 0);
+		c.gridwidth = 1;
+		c.insets = new Insets(10, 10, 5, 10);
 		this.add(lblEmail, c);
 
 		c.gridx = 1;
@@ -125,7 +128,8 @@ public abstract class GUITeacherAbstract extends GUIAbstract{
 
 		c.gridx = 0;
 		c.weightx = 0;
-		c.insets = new Insets(10, 15, 5, 0);
+		c.gridwidth = 1;
+		c.insets = new Insets(10, 10, 5, 10);
 		this.add(lblTel, c);
 
 		c.gridx = 1;

@@ -6,20 +6,20 @@ import javax.swing.JApplet;
 import javax.swing.SwingUtilities;
 
 import web.gui.secretary.LoginPanel;
-import web.gui.secretary.MainPage;
+import web.gui.secretary.MainPanel;
 
 public class StartApplet extends JApplet {
 
 	private static final long serialVersionUID = 1L;
 
 	// private Login login;
-	private MainPage mainpage;
+	private MainPanel mainpage;
 	LoginPanel login;
 
 	@Override
 	public void init() {
-		setSize(600, 600);
-		mainpage = new MainPage();
+		setSize(800, 600);
+		mainpage = new MainPanel();
 		mainpage.setLocation(10, 10);
 		login = new LoginPanel(mainpage);
 		try {

@@ -46,7 +46,7 @@ public abstract class GUIAbstract extends JFrame{
 		this.setLayout(gridbag);
 
 		c.fill = GridBagConstraints.BOTH;
-		c.insets = new Insets(5, 1, 1, 5);
+		c.insets = new Insets(10, 20, 1, 5);
 	}
 
 	/**

@@ -39,6 +39,7 @@ public interface UserDAO {
 	//public void deleteByPassword(String password);
 	public void deleteByFullName(String fullName);
 	public void deleteByApproved(boolean isApproved);
+	public int update(User user);
 	
 	
 	

@@ -280,7 +280,26 @@ public class URIRequest {
 	 * Select all users of 1 subject
 	 */
 	public static final String GET_ALL_USERS_OF_SUBJECT="/get_allusers_ofsubject";
-	
+	/**
+	 * Select all users based on the search conditions 
+	 */
+	public static final String GET_ALL_USER="get_all_user";
+	/**
+	 * Create a new user request
+	 */
+	public static final String CREATE_USER="create_user";
+	/**
+	 * Edit an user that exists in the system
+	 */
+	public static final String EDIT_USER="edit_user";
+	/**
+	 * Delete an user that exists in the system
+	 */
+	public static final String DELETE_USER="delete_user";
+	/**
+	 * Change the approved status of user request
+	 */
+	public static final String CHANGE_APPROVE_USER="change_approve_user";
 	
 	
 }

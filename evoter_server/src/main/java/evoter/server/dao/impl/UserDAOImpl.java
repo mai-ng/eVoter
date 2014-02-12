@@ -98,7 +98,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 			if (i<len-1)
 				sql += " AND ";
 		}
-
+//		System.out.println("sql " + sql);
 		return (List<User>)getJdbcTemplate().query(sql, propertyValues, new UserRowMapper());
 
 	}
@@ -183,5 +183,24 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 		deleteByProperty(new String[]{IS_APPROVED}, new Boolean[]{isApproved});
 		
 	}
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#update(evoter.share.model.User)
+	 */
+	@Override
+	public int update(User user) {
+
+		String sql="UPDATE " + TABLE_NAME + " SET "
+		+ EMAIL +"='" + user.getEmail() + "',"
+		+ FULL_NAME + "='" + user.getFullName() + "',"
+		+ IS_APPROVED + "=" + user.isApproved() + ","
+		+ PASSWORD + "='" + user.getPassWord() + "',"
+		+ USER_NAME + "='" + user.getUserName() + "',"
+		+ USER_TYPE_ID + "=" + user.getUserTypeId()
+		+ " WHERE " + ID + "=" + user.getId();
+		return getJdbcTemplate().update(sql);
+	}
+	
+	
 	
 }

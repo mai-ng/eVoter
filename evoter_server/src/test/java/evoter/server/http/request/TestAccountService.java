@@ -82,10 +82,12 @@ public class TestAccountService {
 	public void test_hasUserKey(){
 		String userKey = "1923242434_3_3";
 		accountService.addUserKey(userKey);
-		assertTrue("test_hasUserKey() returns true", accountService.hasUserKey(userKey));
+		assertTrue("test_hasUserKey() returns true", 
+				accountService.hasUserKey(userKey));
 		
 		String userKey1 = "userkey_not_added";
-		assertFalse("test_hasUserKey() returns false", accountService.hasUserKey(userKey1));
+		assertFalse("test_hasUserKey() returns false", 
+				accountService.hasUserKey(userKey1));
 	}
 	/**
 	 * Test for {@link IAccountService#doLogout(Map)} </br>
@@ -133,7 +135,8 @@ public class TestAccountService {
 		parameters.put(UserDAO.EMAIL, email);
 		
 		Object response = accountService.doResetPassword(parameters);
-		assertTrue("doResetPassword() returns a EMAIL EXISTS message", response.equals("EMAIL EXISTS"));
+		assertTrue("doResetPassword() returns a EMAIL EXISTS message", 
+				response.equals("EMAIL EXISTS"));
 		
 	}
 	/**
@@ -149,7 +152,8 @@ public class TestAccountService {
 		
 		Object response = accountService.doResetPassword(parameters);
 		System.out.println(response);
-		assertTrue("doResetPassword() returns a EMAIL DOES NOT EXIST message", response.equals("EMAIL DOES NOT EXIST"));
+		assertTrue("doResetPassword() returns a EMAIL DOES NOT EXIST message",
+				response.equals("EMAIL DOES NOT EXIST"));
 		
 	}	
 	/**
@@ -160,7 +164,7 @@ public class TestAccountService {
 	public void test_doRegister_1(){
 		
 		String username = "btdiem";
-		long userTypeId = 3;
+		String userTypeId = "3";
 		String email = "diem.bt@telecom-sudparis.eu";
 		String password = "12345xyz";
 		parameters.put(UserDAO.USER_NAME, username);
@@ -169,7 +173,8 @@ public class TestAccountService {
 		parameters.put(UserDAO.PASSWORD, password);
 		Object response = accountService.doRegister(parameters);
 		System.out.println(response);
-		assertTrue("doRegister() returns USER EXISTS ALREADY message", response.equals("USER EXISTS ALREADY"));
+		assertTrue("doRegister() returns USER EXISTS ALREADY message",
+				response.equals("USER EXISTS ALREADY"));
 	}
 	/**
 	 * Test for {@link IAccountService#doRegister(Map)} </br>
@@ -179,7 +184,7 @@ public class TestAccountService {
 	public void test_doRegister_2(){
 		
 		String username = "new_user";
-		long userTypeId = 3;
+		String userTypeId = "3";
 		String email = "diem.bt@telecom-sudparis.eu";
 		String password = "12345xyz";
 		parameters.put(UserDAO.USER_NAME, username);
@@ -187,7 +192,8 @@ public class TestAccountService {
 		parameters.put(UserDAO.EMAIL, email);
 		parameters.put(UserDAO.PASSWORD, password);
 		Object response = accountService.doRegister(parameters);
-		assertTrue("doRegister() returns EMAIL EXISTS message", response.equals("EMAIL EXISTS"));
+		assertTrue("doRegister() returns EMAIL EXISTS message", 
+				response.equals("EMAIL EXISTS"));
 
 	}
 	/**
@@ -198,7 +204,7 @@ public class TestAccountService {
 	public void test_doRegister_3(){
 		
 		String username = "new_user";
-		long userTypeId = 3;
+		String userTypeId = "3";
 		String email = "new_email@telecom-sudparis.eu";
 		String password = "12345xyz";
 		parameters.put(UserDAO.USER_NAME, username);
@@ -207,7 +213,8 @@ public class TestAccountService {
 		parameters.put(UserDAO.PASSWORD, password);
 		Object response = accountService.doRegister(parameters);
 		System.out.println(response);
-		assertTrue("doRegister() returns SUCCESS message", response.equals("SUCCESS"));
+		assertTrue("doRegister() returns SUCCESS message",
+				response.equals("SUCCESS"));
 
 	}
 	

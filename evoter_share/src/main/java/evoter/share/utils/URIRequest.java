@@ -21,8 +21,9 @@ public class URIRequest {
 	public static final String FAILURE_MESSAGE = "FAILURE";
 	public static final String USER_EXIST_MESSAGE = "USER EXISTS ALREADY";
 	public static final String USER_NOT_EXIST_MESSAGE = "USER DOES NOT EXIST";
-	public static final String EMAIL_EXIST_MESSAGE = "EMAIL EXISTS ";
-	public static final String EMAIL_NOT_EXIST_MESSAGE = "EMAIL DOES NOT EXIST.";
+	public static final String EMAIL_EXIST_MESSAGE = "EMAIL EXISTS";
+	public static final String EMAIL_NOT_EXIST_MESSAGE = "EMAIL DOES NOT EXIST";
+	public static final String SUBJECT_NOT_EXIST_MESSAGE = "SUBJECT DOES NOT EXIST";
 
 	
 	//for login
@@ -176,6 +177,10 @@ public class URIRequest {
 	 * 	</li> {@link List} of {@link Session}  
 	 */
 	public static final String SEARCH_SESSION="/search_session";
+	/**
+	 * Get all students of a session that accepted or not accepted yet </br>
+	 */
+	public static final String GET_ALL_STUDENT="/get_all_students";
 	//for question management
 	/**
 	 * request parameter </br>
@@ -275,6 +280,7 @@ public class URIRequest {
 	 * Select all users of 1 subject
 	 */
 	public static final String GET_ALL_USERS_OF_SUBJECT="/get_allusers_ofsubject";
+	
 	
 	
 }

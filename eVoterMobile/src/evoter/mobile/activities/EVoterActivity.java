@@ -16,27 +16,36 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
-import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.MainMenu;
 import evoter.mobile.objects.OfflineEVoterManager;
+import evoter.mobile.objects.RequestConfig;
+import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.dao.UserDAO;
+import evoter.share.utils.URIRequest;
 
 
-/**Update by @author luongnv89 on 09-Feb-2014: <br>
+/**
+ * <br>Update by @author luongnv89 on 12-Feb-2014: <br>
+ * <li> add logout request to server
+ * 
+ * <br>Update by @author luongnv89 on 09-Feb-2014: <br>
  * <li> Change the name of {@link MainMenu} variable to mainMenu
  * <br>
- * Update by @author luongnv89 on Thu 30-Jan-2014: <br>
+ * <br>Update by @author luongnv89 on Thu 30-Jan-2014: <br>
  * <li>Add constructor for {@link OfflineEVoterManager} <br>On Sat - 18/01/2014 -
  * modified by luongnv89: <br>
- * Add {@link EVoterActivity#exit()} - to exit application from anywhere when
+ * <br>Add {@link EVoterActivity#exit()} - to exit application from anywhere when
  * the application has error, exception,... avoid stuck phone
  * {@link EVoterActivity} is a parent class of all activity of eVoterMobile
  * application
  * 
- * <br> @author luongnv89
+ * <br>Created by @author luongnv89
  */
 public class EVoterActivity extends Activity {
 	/**
@@ -129,7 +138,36 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+				//TODO: Send logout request to server
 				offlineEVoterManager.logoutUser();
+				RequestParams params = new RequestParams();
+				params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
+				
+				client.post(RequestConfig.getURL(URIRequest.LOGOUT), params,
+						new AsyncHttpResponseHandler() {
+							// Request successfully - client receive a response
+							@Override
+							public void onSuccess(String response) {
+								Log.i("Response", response);
+								if(response.contains(URIRequest.SUCCESS_MESSAGE)){
+									EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Goodbye...!");
+								}else{
+									EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "You are not logged out from system!");
+								}
+							}
+							
+							//Login fail
+							@Override
+							public void onFailure(Throwable error,
+									String content) {
+								EVoterMobileUtils.showeVoterToast(
+										EVoterActivity.this,
+										"Cannot request logout from server!");
+								Log.e("LoginTest", "onFailure error : "
+										+ error.toString() + "content : "
+										+ content);
+							}
+						});
 			}
 		});
 		

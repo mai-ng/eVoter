@@ -15,6 +15,7 @@ import evoter.server.http.request.interfaces.IAccountService;
 import evoter.server.http.request.interfaces.IQuestionService;
 import evoter.server.http.request.interfaces.ISessionService;
 import evoter.server.http.request.interfaces.ISubjectService;
+import evoter.server.http.request.interfaces.IUserService;
 import evoter.share.dao.UserDAO;
 
 @Service
@@ -57,6 +58,7 @@ public class ServerHandler implements HttpHandler {
 			ISubjectService subjectService = (ISubjectService)BeanDAOFactory.getBean(ISubjectService.BEAN_NAME);
 			ISessionService sessionService = (ISessionService)BeanDAOFactory.getBean(ISessionService.BEAN_NAME);
 			IQuestionService questionService = (IQuestionService)BeanDAOFactory.getBean(IQuestionService.BEAN_NAME);
+			IUserService userService = (IUserService)BeanDAOFactory.getBean(IUserService.BEAN_NAME);
 			
 			System.out.println("accountService: " + accountService);
 			System.out.println("subjectService: " + subjectService);
@@ -81,6 +83,7 @@ public class ServerHandler implements HttpHandler {
 						(String)parameters.get(UserDAO.USER_KEY))){
 					
 					System.out.println("has userKey");
+					//subject management
 					if (URIUtils.isViewSubjectRequest(uri)){
 						response = subjectService.doView(parameters);
 					}else if (URIUtils.isGetAllSubjectRequest(uri)){
@@ -134,6 +137,19 @@ public class ServerHandler implements HttpHandler {
 						response = questionService.doGetLatest(parameters);
 					}else if (URIUtils.isStopSendQuestionRequest(uri)){
 						response = questionService.doStopSend(parameters);
+					
+					
+					//user management
+					}else if (URIUtils.isGetAllUserRequest(uri)){
+						response = userService.doGetAll(parameters);
+					}else if (URIUtils.isCreateUserRequest(uri)){
+						response = userService.doCreate(parameters);
+					}else if (URIUtils.isEditUserRequest(uri)){
+						response = userService.doEdit(parameters);
+					}else if (URIUtils.isDeleteUserRequest(uri)){
+						response = userService.doDelete(parameters);
+					}else if (URIUtils.isChangeApproveUserRequest(uri)){
+						response = userService.doChangeApprove(parameters);
 					}
 				}
 

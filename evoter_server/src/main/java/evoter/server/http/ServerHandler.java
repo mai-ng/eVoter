@@ -116,7 +116,9 @@ public class ServerHandler implements HttpHandler {
 						response = sessionService.doInActive(parameters);
 					}else if (URIUtils.isUpdateSessionRequest(uri)){
 						response = sessionService.doUpdate(parameters);
-						
+					}else if (URIUtils.isGetAllStudentOfSession(uri)){
+						response = sessionService.doGetStudentsOfSession(parameters);
+							
 						//start with question management part
 					}else if (URIUtils.isGetAllQuestionRequest(uri)){
 						response = questionService.doGetAll(parameters);

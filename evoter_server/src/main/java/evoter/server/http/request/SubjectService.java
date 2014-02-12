@@ -123,6 +123,7 @@ public class SubjectService implements ISubjectService{
 		
 		try{
 			
+			
 			long id = Long.valueOf((String)parameters.get(SubjectDAO.ID));
 			Subject subject = (Subject)subjectDAO.findById(id).get(0);
 			return subject.toJSON();
@@ -195,7 +196,16 @@ public class SubjectService implements ISubjectService{
 		try{
 			
 			long subjectId = Long.valueOf((String)parameters.get(SubjectDAO.ID));
-			
+			List<Subject> subject = subjectDAO.findById(subjectId);
+			if (subject != null && !subject.isEmpty()){
+				
+				subjectDAO.deleteById(subjectId);
+				return URIRequest.SUCCESS_MESSAGE;
+				
+			}else{
+				
+				return URIRequest.SUBJECT_NOT_EXIST_MESSAGE;
+			}
 			//get all session of subject in SESSION table
 			//this is on delete cascade
 /**			List<Session> sessionList = sessionDAO.findBySubjectId(subjectId);
@@ -213,9 +223,7 @@ public class SubjectService implements ISubjectService{
 			//remove session records in USER_SUBJECT table ==>ok
 			userSubjectDAO.deleteBySubjectId(subjectId);
 */				
-			subjectDAO.deleteById(subjectId);
-			
-			return URIRequest.SUCCESS_MESSAGE;
+
 			//URIUtils.writeSuccessResponse(exchange);
 				
 		}catch(Exception e){
@@ -241,7 +249,11 @@ public class SubjectService implements ISubjectService{
 	public  Object doSearch(Map<String,Object> parameters) {
 		try{
 			
-			List<Subject> subjects = subjectDAO.findByProperty(parameters.keySet().toArray(new String[]{}), parameters.values().toArray());
+			//remove user key out the search condition
+			parameters.remove(UserDAO.USER_KEY);
+			
+			List<Subject> subjects = subjectDAO.
+					findByProperty(parameters.keySet().toArray(new String[]{}), parameters.values().toArray());
 			JSONArray response = new JSONArray();
 			for (Subject subject : subjects){
 				response.add(subject.toJSON());
@@ -269,7 +281,9 @@ public class SubjectService implements ISubjectService{
 		try{
 			
 			long subjectId = Long.valueOf(parameters.get(SubjectDAO.ID).toString());
-			List<UserSubject> userSubjectList = userSubjectDAO.findBySubjectId(subjectId);
+			List<UserSubject> userSubjectList = userSubjectDAO.
+					findBySubjectId(subjectId);
+			
 			for (UserSubject userSubject : userSubjectList){
 				List<User> userList = userDAO.findById(userSubject.getUserId());
 				if (userList != null && !userList.isEmpty()){

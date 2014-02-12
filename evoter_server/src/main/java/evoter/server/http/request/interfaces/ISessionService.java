@@ -58,7 +58,14 @@ public interface ISessionService {
 	 *  </li> {@link UserDAO#USER_KEY}
 	 */
 	public Object doActive(Map<String,Object> parameters) ;
-	
+	/**
+	 * Change status of {@link Session} when an user accepts it </br>
+	 * @param parameters contains:
+	 * {@link UserDAO#USER_KEY} </br>
+	 * {@link SessionDAO#ID} </br>
+	 * @return SUCCESS message if status is updated successfully </br>
+	 * @return FAILURE message if status is updated failed </br>
+	 */
 	public Object doAccept(Map<String,Object> parameters); 
 
 	/**

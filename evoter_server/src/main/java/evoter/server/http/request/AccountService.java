@@ -30,7 +30,11 @@ public class AccountService implements IAccountService{
 	 List<String> userKeys = new ArrayList<String>();
 	 //It is used for testing requests that have not yet implemented
 	 String userKeyemp = "temp";
-	 private AccountService(){userKeys.add(userKeyemp);}
+	 private AccountService(){
+		 userKeys.add(userKeyemp);
+		 userKeys.add("1333_1_2");
+		 userKeys.add("1333_3_3");
+		 }
 	
 	 //@Autowired
 	 private UserDAO userDAO;
@@ -186,7 +190,7 @@ public class AccountService implements IAccountService{
 			
 			String username = (String)parameters.get(UserDAO.USER_NAME);
 			String email = (String)parameters.get(UserDAO.EMAIL);
-			long userTypeId =(Long)parameters.get(UserDAO.USER_TYPE_ID);
+			long userTypeId =(Long.valueOf((String)parameters.get(UserDAO.USER_TYPE_ID)));
 			
 			//search database if this username exist
 			List<User> checkUsername = userDAO.findByProperty(new String[]{UserDAO.USER_NAME, UserDAO.USER_TYPE_ID}

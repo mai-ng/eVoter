@@ -110,7 +110,7 @@ public class QuestionService implements IQuestionService{
 		
 		try{
 			
-			long sessionId = (Long)parameters.get(QuestionSessionDAO.SESSION_ID);
+			long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
 			List<QuestionSession> questionSessionList = questionSessionDAO.findBySessionId(sessionId);
 			JSONArray response = new JSONArray();
 			
@@ -161,7 +161,7 @@ public class QuestionService implements IQuestionService{
 	public  Object doView(Map<String,Object> parameters) {
 		
 		try{
-			long questionId = (Long)parameters.get(QuestionDAO.ID);
+			long questionId = (Long.valueOf((String)parameters.get(QuestionDAO.ID)));
 			List<Question> questionList = questionDAO.findById(questionId);
 			JSONArray response = new JSONArray();
 			if (questionList != null && !questionList.isEmpty()){
@@ -229,11 +229,11 @@ public class QuestionService implements IQuestionService{
 		try{
 			
 			String[] questionTexts = (String[])parameters.get(QuestionDAO.QUESTION_TEXT);
-			long questionTypeId = (Long)parameters.get(QuestionDAO.QUESTION_TYPE_ID);
+			long questionTypeId = (Long.valueOf((String)parameters.get(QuestionDAO.QUESTION_TYPE_ID)));
 			Timestamp creationDate = Timestamp.valueOf((String)parameters.get(QuestionDAO.CREATION_DATE));
 			String userKey = (String)parameters.get(UserDAO.USER_KEY);
 			long userId = UserValidation.getUserIdFromUserKey(userKey);
-			long sessionId = (Long)parameters.get(QuestionSessionDAO.SESSION_ID);
+			long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
 			String[] answerTexts = (String[])parameters.get(AnswerDAO.ANSWER_TEXT);
 			
 			Question question = null;
@@ -305,7 +305,7 @@ public class QuestionService implements IQuestionService{
 	@Override
 	public  Object doDelete(Map<String,Object> parameters) {
 		
-		long questionId = (Long)parameters.get(QuestionDAO.ID);
+		long questionId = (Long.valueOf((String)parameters.get(QuestionDAO.ID)));
 		
 		try{
 			// ANSWER table
@@ -342,8 +342,8 @@ public class QuestionService implements IQuestionService{
 		
 		try{
 			
-			long questionId = (Long)parameters.get(QuestionDAO.ID);
-			long sessionId = (Long)parameters.get(QuestionSessionDAO.SESSION_ID);
+			long questionId = (Long.valueOf((String)parameters.get(QuestionDAO.ID)));
+			long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
 			//mapSentQuestion.put(sessionId, questionId);
 			addSentQuestion(sessionId, questionId);
 			return URIRequest.SUCCESS_MESSAGE;
@@ -374,7 +374,7 @@ public class QuestionService implements IQuestionService{
 		try{
 			
 			JSONArray response = new JSONArray();
-			long sessionId = (Long)parameters.get(QuestionSessionDAO.SESSION_ID);
+			long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
 			//if (mapSentQuestion.containsKey(sessionId)){
 			if (canSendQuestion(sessionId)){
 				long questionId = mapSentQuestion.get(sessionId);
@@ -415,7 +415,7 @@ public class QuestionService implements IQuestionService{
 	public  Object doStopSend(Map<String,Object> parameters) {
 		try{
 			
-			long sessionId = (Long)parameters.get(QuestionSessionDAO.SESSION_ID);
+			long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
 			//mapSentQuestion.remove(sessionId);
 			removeSentQuestion(sessionId);
 			//URIUtils.writeSuccessResponse(httpExchange);
@@ -436,7 +436,7 @@ public class QuestionService implements IQuestionService{
 	public Object doEdit(Map<String, Object> parameters) {
 		
 		String questionText = (String)parameters.get(QuestionDAO.QUESTION_TEXT);
-		long questionId = (Long)parameters.get(QuestionDAO.ID);
+		long questionId = (Long.valueOf((String)parameters.get(QuestionDAO.ID)));
 		
 		try{
 			

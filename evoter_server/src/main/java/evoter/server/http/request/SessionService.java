@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import evoter.server.http.URIUtils;
 import evoter.server.http.request.interfaces.ISessionService;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
@@ -96,7 +95,7 @@ public class SessionService implements ISessionService{
 		
 		try{
 			
-			long subjectId = Long.parseLong((String)parameters.get(SessionDAO.SUBJECT_ID));
+			long subjectId = (Long.valueOf((String)parameters.get(SessionDAO.SUBJECT_ID)));
 			long userId = Long.valueOf(UserValidation.
 					getUserIdFromUserKey((String)parameters.get(UserDAO.USER_KEY)));
 			
@@ -157,7 +156,11 @@ public class SessionService implements ISessionService{
 	public  Object doView(Map<String,Object> parameters) {
 		try{
 			
-			long id = Long.parseLong((String)parameters.get(SessionDAO.ID));
+//			System.out.println("array tested : " + (String[])parameters.get("colors"));
+//			String s = (String)parameters.get("ARRAY[]");
+//			System.out.println("array " + s);
+
+			long id = Long.valueOf((String)parameters.get(SessionDAO.ID));
 			List<Session> sessions = sessionDAO.findById(id);
 			JSONArray response = new JSONArray();
 			for (Session ses : sessions){
@@ -405,8 +408,8 @@ public class SessionService implements ISessionService{
 		
 		try{
 			JSONArray response = new JSONArray();
-			long sessionId = Long.valueOf(parameters.get(SessionUserDAO.SESSION_ID).toString());
-			boolean acceptSession = Boolean.valueOf(parameters.get(SessionUserDAO.ACCEPT_SESSION).toString());
+			long sessionId = Long.valueOf((String)parameters.get(SessionUserDAO.SESSION_ID));
+			boolean acceptSession = Boolean.valueOf((String)parameters.get(SessionUserDAO.ACCEPT_SESSION));
 
 			List<SessionUser> sessionUserList = sessionUserDAO.findByProperty(
 					new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.ACCEPT_SESSION}, 
@@ -420,7 +423,8 @@ public class SessionService implements ISessionService{
 					response.add(user.toJSON());
 				}
 				
-			}//for
+			}
+			System.out.println("response: " + response);//for
 			//URIUtils.writeResponse(response, httpExchange);
 			return response;
 			

@@ -1,13 +1,14 @@
 package web.gui.secretary;
 
-import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -18,7 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import web.applet.RunningTimeData;
-import web.gui.secretary.subcomponents.ItemOfListView;
+import web.gui.secretary.subcomponents.ListItems;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import evoter.share.dao.SubjectDAO;
@@ -30,20 +31,32 @@ public class SubjectPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JPanel subjectPanel;
 	private JButton btnNewSubject;
-	private ArrayList<ItemOfListView> listSubjects;
+	private ArrayList<ListItems> listSubjects;
 
-	/**
-	 * Create the panel.
-	 */
 	public SubjectPanel() {
 		initComponents();
-		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
-		this.setLayout(new BorderLayout());
-		this.add(subjectPanel, BorderLayout.PAGE_END);
+		
+		setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.insets = new Insets(1, 10, 30, 0);
+		
+		c.gridwidth = 2;
+		add(subjectPanel, c);
+		
+		c.gridy = 1;
+		c.anchor = GridBagConstraints.EAST;
+		c.gridx = 1;
+		c.gridwidth = 1;
+		c.ipady = 30;
+		add(btnNewSubject, c);
+		
+		//call add subject function
+		addSubject();
+		
 	}
 
-	private ArrayList<ItemOfListView> loadListSubject() {
-		ArrayList<ItemOfListView> listsubject = new ArrayList<ItemOfListView>();
+	private ArrayList<ListItems> loadListSubject() {
+		ArrayList<ListItems> listsubject = new ArrayList<ListItems>();
 
 		List<NameValuePair> subjectParams = new ArrayList<NameValuePair>();
 		subjectParams.add(new BasicNameValuePair(UserDAO.USER_KEY,
@@ -58,9 +71,9 @@ public class SubjectPanel extends JPanel {
 			JSONArray array = new JSONArray(listSubjectResponse);
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject ob = array.getJSONObject(i);
-				ItemOfListView item = new ItemOfListView(
+				ListItems item = new ListItems(
 						ob.getString(SubjectDAO.TITLE),
-						ob.getLong(SubjectDAO.ID), ItemOfListView.TYPE_SUBJECT);
+						ob.getLong(SubjectDAO.ID), ListItems.TYPE_SUBJECT);
 				// System.out.println(item.toString());
 				listsubject.add(item);
 			}
@@ -69,8 +82,24 @@ public class SubjectPanel extends JPanel {
 	}
 
 	public void initComponents() {
-		this.btnNewSubject = new JButton("New Subject");
-		this.btnNewSubject.addActionListener(new ActionListener() {
+		btnNewSubject = new JButton("New Subject");
+		listSubjects = new ArrayList<ListItems>();
+		listSubjects.addAll(loadListSubject());
+
+		subjectPanel = new JPanel();
+		subjectPanel.setLayout(new BoxLayout(subjectPanel, BoxLayout.Y_AXIS));
+		for (int i = 0; i < listSubjects.size(); i++) {
+//			listSubjects.get(i).setAlignmentX(CENTER_ALIGNMENT);
+//			listSubjects.get(i).setSize(subjectPanel.getWidth(), btnNewSubject.getHeight());
+			subjectPanel.add(listSubjects.get(i));
+		}
+	}
+	
+	/**
+	 * add a new subject when click {@link #btnNewSubject}
+	 */
+	public void addSubject(){
+		btnNewSubject.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -85,17 +114,6 @@ public class SubjectPanel extends JPanel {
 				}
 			}
 		});
-		listSubjects = new ArrayList<ItemOfListView>();
-		listSubjects.addAll(loadListSubject());
-
-		subjectPanel = new JPanel();
-		for (int i = 0; i < listSubjects.size(); i++) {
-//			listSubjects.get(i).setAlignmentX(CENTER_ALIGNMENT);
-//			listSubjects.get(i).setSize(subjectPanel.getWidth(), btnNewSubject.getHeight());
-			subjectPanel.add(listSubjects.get(i));
-		}
-		subjectPanel.add(btnNewSubject);
-		subjectPanel.setLayout(new BoxLayout(subjectPanel, BoxLayout.Y_AXIS));
 
 	}
 }

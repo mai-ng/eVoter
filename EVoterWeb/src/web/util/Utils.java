@@ -9,6 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.naming.Context;
+import javax.swing.ImageIcon;
+
+import web.gui.secretary.MainPanel;
 
 /**
  * Created by luongnv89 on 05/12/13.
@@ -76,5 +79,20 @@ public class Utils {
 			e.printStackTrace();
 		}
 
+	}
+	
+	/**
+	 * 
+	 * @param path of image
+	 * @return
+	 */
+	public static ImageIcon createImageIcon(String path) {
+		java.net.URL imgURL = MainPanel.class.getResource(path);
+		if (imgURL != null) {
+			return new ImageIcon(imgURL);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}
 	}
 }

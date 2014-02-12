@@ -50,12 +50,12 @@ public class LoginPanel extends JPanel {
 
 	GridBagConstraints c;
 
-	MainPage main;
+	MainPanel main;
 
 	/**
 	 * Create the panel.
 	 */
-	public LoginPanel(MainPage main) {
+	public LoginPanel(MainPanel main) {
 		this.main = main;
 		this.main.showMenu(false);
 		// this.password = password;

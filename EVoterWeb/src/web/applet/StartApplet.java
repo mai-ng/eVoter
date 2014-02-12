@@ -1,5 +1,7 @@
 package web.applet;
 
+import java.awt.BorderLayout;
+
 import javax.swing.JApplet;
 import javax.swing.SwingUtilities;
 
@@ -12,24 +14,26 @@ public class StartApplet extends JApplet {
 
 	// private Login login;
 	private MainPage mainpage;
+	LoginPanel login;
 
 	@Override
 	public void init() {
-		setSize(800, 600);
+		setSize(600, 600);
 		mainpage = new MainPage();
-		LoginPanel login = new LoginPanel(mainpage);
-		mainpage.setContent(login);
-		// login = new Login();
+		mainpage.setLocation(10, 10);
+		login = new LoginPanel(mainpage);
 		try {
 
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
 				public void run() {
-					setContentPane(mainpage);
+//					setContentPane(mainpage);
+					getContentPane().add(mainpage,BorderLayout.NORTH); 
 				}
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 }

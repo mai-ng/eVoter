@@ -29,16 +29,17 @@ import evoter.share.model.ItemData;
 import evoter.share.model.Subject;
 import evoter.share.utils.URIRequest;
 
-/**Updated by @author luongnv89 on 30-Jan-2014:<br>
+/**
+ * <br>Updated by @author luongnv89 on 30-Jan-2014:<br>
  * <li> Updated back button press -> call {@link EVoterActivity#exit()} method
- * Updated by @author luongnv89 on 26-Jan-2014:<br>
- * <li> Updated back button press -> show dialog to confirm exiting application. 
- * Updated by @author luongnv89 on 19-Jun-2014:<br>
- * <li>Using {@link DialogInfor} for long click event instead of {@link Dialog}
- * Created by @author nvluong on 05-Dec-2013</br> 
- * Updated by @author btdiem on 08-Jan-2014 : </br>
+ * <br>Updated by @author luongnv89 on 26-Jan-2014:<br>
+ * <br><li> Updated back button press -> show dialog to confirm exiting application. 
+ * <br>Updated by @author luongnv89 on 19-Jun-2014:<br>
+ * <br><li>Using {@link DialogInfor} for long click event instead of {@link Dialog}
+ * <br>Updated by @author btdiem on 08-Jan-2014 : </br>
  * </li>update loadListSubjects() method: </li>remove
  * parameters </li>add userKey to parameter map when sending request to server
+ * <br>Created by @author nvluong on 05-Dec-2013</br>
  */
 public class SubjectActivity extends ItemDataActivity {
 	

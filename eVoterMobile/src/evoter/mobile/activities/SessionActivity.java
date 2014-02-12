@@ -72,7 +72,13 @@ public class SessionActivity extends ItemDataActivity {
 					int position, long id) {
 				final Session selectedSession = (Session) parent
 						.getItemAtPosition(position);
-				
+				RuntimeEVoterManager.setCurrentSessionID(selectedSession
+						.getId());
+				RuntimeEVoterManager.setCurrentSessionStatus(selectedSession
+						.isActive());
+				RuntimeEVoterManager.setCurrentSessionName(selectedSession
+						.getTitle());
+				RuntimeEVoterManager.setCurrentSession(selectedSession);
 				final DialogInfor dialog = new DialogInfor(
 						SessionActivity.this, "Session");
 				dialog.setMessageContent(selectedSession.getTitle());

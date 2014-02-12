@@ -4,15 +4,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
+
+import java.util.Arrays;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
@@ -219,25 +221,79 @@ public class URIUtils {
 	public static Map<String, Object> getParameters(HttpExchange exchange) {
 		
 		Map<String,Object> parameters = new HashMap<String, Object>();
+		
 		try {
 			
 			StringWriter writer = new StringWriter();
 			IOUtils.copy(exchange.getRequestBody(), writer);
 			String parameterMessage = writer.toString();
 			StringTokenizer parameterValueToken = new StringTokenizer(parameterMessage,"&");
+			
 			while(parameterValueToken.hasMoreTokens()) {
+				
 				 String parameterValue = parameterValueToken.nextToken();
+				 System.out.println("before " + parameterValue);
 				 StringTokenizer value = new StringTokenizer(parameterValue,"=");
-				 parameters.put(value.nextToken(), value.nextToken().replace("+", " ").replace("%40", "@"));
+				 String tokenKey = value.nextToken();
+				 String tokenValue = value.nextToken(); 
+				 		
+				 boolean isArray = isArray(tokenKey);
+				 tokenKey = fixedEncodeKeyParameter(tokenKey);
+				 tokenValue= fixedEncodeKeyParameter(tokenValue);
+				 
+				 if (parameters.containsKey(tokenKey)){
+					 //from the second time
+					 String[] temp;
+					 if (parameters.get(tokenKey) instanceof String[]){
+						 temp = (String[])parameters.get(tokenKey);
+					 }else{
+						 //from the first time
+						 temp = new String[]{(String)parameters.get(tokenKey)};
+					 }
+					 List<String> list = new ArrayList<String>();
+					 list.addAll(Arrays.asList(temp));
+					 list.add(tokenValue);
+					 parameters.put(tokenKey, list.toArray(new String[]{}));
+
+				 }else{
+					 if (isArray)
+						 parameters.put(tokenKey, new String[]{tokenValue});
+					 else
+						 parameters.put(tokenKey, tokenValue);
+					 
+				 }
+				 
 			}
 			
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		System.out.println("after " + parameters);
 		return parameters;
 		
 	}
 	
+	/**
+	 * 
+	 * @param key key value of parameter element </br>
+	 * @return true if key contains [] </br>
+	 */
+	public static boolean isArray(String key){
+		return key.contains("%5B%5D");
+	}
+	public static String fixedEncodeKeyParameter(String key){
+		return 	key = key
+				.replace("+", "").replace("%40", "")
+				.replace("%5B", "").replace("%5D", "")
+				.replace("%3A", "");
+	}
+
+	public static String fixedEncodeValueParameter(String value){
+		return 	value = value
+				.replace("+", " ").replace("%40", "@")
+				.replace("%5B", "[").replace("%5D", "]")
+				.replace("%3A", ":");
+	}
 	public static void writeResponse(Object response, HttpExchange t) {
 		
 		byte[] responseBytes = response.toString().getBytes();
@@ -313,6 +369,12 @@ public class URIUtils {
 				&& URIString.endsWith(URIRequest.UPDATE_SUBJECT); 
 		
 	}
+	public static boolean isGetAllStudentOfSession(String URIString){
+		return (URIString != null) 
+				&& URIString.contains(((HttpConnection)BeanDAOFactory.getBean("httpConnection")).getContext()) 
+				&& URIString.endsWith(URIRequest.GET_ALL_STUDENT); 
+		
+	}	
 	
 	
 }

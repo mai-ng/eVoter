@@ -89,8 +89,13 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
 		<property name="questionSessionDAO" ref="questionSessionDAO" />
 		<property name="questionDAO" ref="questionDAO" />
 		<property name="answerDAO" ref="answerDAO" />
+		<property name="answerService" ref="answerService" />
 	</bean>
 
+   <bean id="answerService" class="evoter.server.http.request.AnswerService" lazy-init="true">
+		<property name="answerDAO" ref="answerDAO" />
+	</bean>
+	
     <bean id="sessionService" class="evoter.server.http.request.SessionService" lazy-init="true">
 		<property name="userDAO" ref="userDAO" />
 		<property name="sessionDAO" ref="sessionDAO" />

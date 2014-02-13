@@ -13,139 +13,13 @@ xsi:schemaLocation=
 		
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-    
-	<!--  
-http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springframework/beans/factory/xml/spring-beans-2.5.xsd
 	
-		http://www.springframework.org/schema/tx 
-		http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-		http://www.springframework.org/schema/jee 
-		http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
-		http://www.springframework.org/schema/aop 
-		http://www.springframework.org/schema/aop/spring-aop-2.0.xsd	
-	-->
-    
-   <context:component-scan base-package="evoter.server.dao.impl"/>
-   <context:component-scan base-package="evoter.server.http.request"/>
-   <context:component-scan base-package="evoter.server.dao.test"/>
-   <context:component-scan base-package="evoter.server.http"/>
-   
-       
-    <bean id="userDAO" class="evoter.server.dao.impl.UserDAOImpl" lazy-init="true">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-    <bean id="userTypeDAO" class="evoter.server.dao.impl.UserTypeDAOImpl" lazy-init="true">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-    <bean id="subjectDAO" class="evoter.server.dao.impl.SubjectDAOImpl" lazy-init="true">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-    
-    <bean id="userSubjectDAO" class="evoter.server.dao.impl.UserSubjectDAOImpl" lazy-init="true">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-    <bean id="questionTypeDAO" class="evoter.server.dao.impl.QuestionTypeDAOImpl" lazy-init="true">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-    <bean id="sessionDAO" class="evoter.server.dao.impl.SessionDAOImpl" lazy-init="true">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-    <bean id="sessionUserDAO" class="evoter.server.dao.impl.SessionUserDAOImpl" lazy-init="true">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-    <bean id="questionDAO" class="evoter.server.dao.impl.QuestionDAOImpl" lazy-init="true">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-    <bean id="questionSessionDAO" class="evoter.server.dao.impl.QuestionSessionDAOImpl" lazy-init="true">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-    
-    <bean id="answerDAO" class="evoter.server.dao.impl.AnswerDAOImpl" lazy-init="true">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-	
-    <bean id="statisticsDAO" class="evoter.server.dao.impl.StatisticsDAOImpl" lazy-init="true">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-	
-    <bean id="accountService" class="evoter.server.http.request.AccountService" lazy-init="true">
-		<property name="userDAO" ref="userDAO" />
-	</bean>    
-
-    <bean id="userService" class="evoter.server.http.request.UserService" lazy-init="true">
-		<property name="userDAO" ref="userDAO" />
-	</bean>    
-    
-    <bean id="questionService" class="evoter.server.http.request.QuestionService" lazy-init="true">
-
-        <property name="userDAO" ref="userDAO" />
-		<property name="questionTypeDAO" ref="questionTypeDAO" />
-		<property name="questionSessionDAO" ref="questionSessionDAO" />
-		<property name="questionDAO" ref="questionDAO" />
-		<property name="answerDAO" ref="answerDAO" />
-	</bean>
-
-    <bean id="sessionService" class="evoter.server.http.request.SessionService" lazy-init="true">
-		<property name="userDAO" ref="userDAO" />
-		<property name="sessionDAO" ref="sessionDAO" />
-		<property name="sessionUserDAO" ref="sessionUserDAO" />		
-	</bean>    
-    	    
-    <bean id="subjectService" class="evoter.server.http.request.SubjectService" lazy-init="true">
-		<property name="questionSessionDAO" ref="questionSessionDAO" />
-		<property name="sessionDAO" ref="sessionDAO" />
-		<property name="sessionUserDAO" ref="sessionUserDAO" />		
-		<property name="statisticsDAO" ref="statisticsDAO" />
-		<property name="subjectDAO" ref="subjectDAO" />
-		<property name="userDAO" ref="userDAO" />
-		<property name="userSubjectDAO" ref="userSubjectDAO" />
-	</bean> 
-	
-    
-    
-    
-    <!--    
-        <bean id="httpConnection" class="evoter.server.http.HttpConnection" lazy-init="true">
-			<property name="context" value="evoter" />
-			<property name="port" value="1000" />
-			<property name="ip" value="157.159.42.152" />
-		</bean>
-	
-	
-	  	 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/evoter"/>
-        <property name="username" value="root"/>
-        <property name="password" value="root"/>
-     </bean>
-     -->
-     
- <!--  
-<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="ignoreResourceNotFound" value="true"/>
-    <property name="location" value="classpath:jdbc.properties"/>
-     
-</bean>
--->
     <bean id="httpConnection" class="evoter.server.http.HttpConnection" lazy-init="true">
 		<property name="context" value="${connection.context}"/>
 		<property name="port" value="${connection.port}"/>
 		<property name="ip" value="${connection.ip}"/>
 	</bean>
 
-  
-    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-     
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>
         <property name="url" value="${jdbc.url}"/>
@@ -154,13 +28,7 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
      </bean>
  
     <context:property-placeholder location="jdbc.properties, connection.properties"/>
-      
-    <tx:annotation-driven transaction-manager="txManager" order="200"/>
     
-    <bean
-		id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-	   	
+    <import resource="dataSource.xml" />
+      
 </beans>

@@ -234,8 +234,14 @@ public class QuestionService implements IQuestionService{
 			String userKey = (String)parameters.get(UserDAO.USER_KEY);
 			long userId = UserValidation.getUserIdFromUserKey(userKey);
 			long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
-			String[] answerTexts = (String[])parameters.get(AnswerDAO.ANSWER_TEXT);
-			
+			String[] answerTexts = null;
+			/**
+			 * If the question is yes/no, agree/disagree, there is no answer anymore
+			 */
+			if (parameters.containsKey(AnswerDAO.ANSWER_TEXT)){
+				answerTexts = (String[])parameters.get(AnswerDAO.ANSWER_TEXT);
+			}
+
 			Question question = null;
 			long parentId = 0;
 			int index = 0;
@@ -268,10 +274,13 @@ public class QuestionService implements IQuestionService{
 			/**
 			 * Create Answer object and insert it to ANSWER table
 			 */
-			for (String answerText : answerTexts){
-				Answer answer = new Answer(questionId, answerText);
-				answerDAO.insert(answer);
+			if (answerTexts != null){
+				for (String answerText : answerTexts){
+					Answer answer = new Answer(questionId, answerText);
+					answerDAO.insert(answer);
+				}
 			}
+
 			/**
 			 * Create SessionQuestion object and insert it to QUESTION_SESSION table
 			 */

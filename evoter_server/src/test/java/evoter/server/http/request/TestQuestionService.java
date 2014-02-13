@@ -31,7 +31,7 @@ import evoter.share.model.Question;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+@ContextConfiguration(locations = {"classpath:applicationContextTest.xml"})
 public class TestQuestionService {
 
 	Map<String, Object> parameters;

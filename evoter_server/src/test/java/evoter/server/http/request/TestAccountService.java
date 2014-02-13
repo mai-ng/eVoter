@@ -27,7 +27,7 @@ import evoter.share.dao.UserDAO;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+@ContextConfiguration(locations = {"classpath:applicationContextTest.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback=true)
 public class TestAccountService {

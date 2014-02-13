@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -43,8 +42,6 @@ public class EditSessionActivity extends NewSessionActivity {
 		
 		etTitle = (EditText) findViewById(R.id.etNewSessionName);
 		etTitle.setText(RuntimeEVoterManager.getCurrentSessionName());
-		listView = (ListView) findViewById(R.id.lvNewSessionQuestion);
-		btAddQuestion = (Button) findViewById(R.id.btNewSessionAddQuestion);
 		btSave = (Button) findViewById(R.id.btNewSessionSave);
 		btSave.setOnClickListener(new OnClickListener() {
 			

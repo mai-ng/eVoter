@@ -11,7 +11,7 @@ import evoter.mobile.objects.OfflineEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 
 public class StartActivity extends EVoterActivity {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,18 +24,18 @@ public class StartActivity extends EVoterActivity {
 			finish();
 			return;
 		}
-
+		
 		offlineEVoterManager = new OfflineEVoterManager(this);
-
-		progressBar = (ProgressBar) findViewById(R.id.prBar);
-
-		progressBar.postDelayed(new Runnable() {
+		
+		internetProcessBar = (ProgressBar) findViewById(R.id.prBar);
+		
+		internetProcessBar.postDelayed(new Runnable() {
 			@Override
 			public void run() {
 				if (EVoterMobileUtils.hasInternetConnection(StartActivity.this)) {
-					if(serverReady()){
-						offlineEVoterManager.checkLogin();	
-					}else{
+					if (serverReady()) {
+						offlineEVoterManager.checkLogin();
+					} else {
 						EVoterMobileUtils.showeVoterToast(StartActivity.this, "Server error! Cannot connect to server!");
 						exit();
 					}
@@ -47,7 +47,7 @@ public class StartActivity extends EVoterActivity {
 					dialog.show();
 					dialog.getBtOK().setText("Retry");
 					dialog.getBtOK().setOnClickListener(new OnClickListener() {
-
+						
 						@Override
 						public void onClick(View v) {
 							Intent exitIntent = new Intent(StartActivity.this,
@@ -59,7 +59,7 @@ public class StartActivity extends EVoterActivity {
 					});
 					dialog.getBtKO().setText("Exit");
 					dialog.getBtKO().setOnClickListener(new OnClickListener() {
-
+						
 						@Override
 						public void onClick(View v) {
 							finish();
@@ -70,7 +70,7 @@ public class StartActivity extends EVoterActivity {
 			}
 		}, 1000);
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -78,5 +78,5 @@ public class StartActivity extends EVoterActivity {
 		// TODO Auto-generated method stub
 		return true;
 	}
-
+	
 }

@@ -54,8 +54,6 @@ public class NewSessionActivity extends EVoterActivity {
 		mainMenu.getBtNewSession().setVisibility(View.GONE);
 		
 		etTitle = (EditText) findViewById(R.id.etNewSessionName);
-		listView = (ListView) findViewById(R.id.lvNewSessionQuestion);
-		btAddQuestion = (Button) findViewById(R.id.btNewSessionAddQuestion);
 		btSave = (Button) findViewById(R.id.btNewSessionSave);
 		btSave.setOnClickListener(new OnClickListener() {
 			

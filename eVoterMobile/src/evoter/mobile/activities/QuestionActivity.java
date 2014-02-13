@@ -35,7 +35,9 @@ import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
- * Updated by @author luongnv89 on 18-Jan-2014 <br>
+ * <br>Updated by @author luongnv89 on 13-Feb-2014 <br>
+ * <li>change behaviour for click question event -> always show the detail of question
+ * <br>Updated by @author luongnv89 on 18-Jan-2014 <br>
  * <li>Add 2 seekbar for difficult and bored value of session - only add when
  * usertype is student and session is active {@link QuestionActivity} extend
  * from {@link ItemDataActivity} manages questions in a session. Created by
@@ -109,13 +111,13 @@ public class QuestionActivity extends ItemDataActivity {
 				RuntimeEVoterManager.setCurrentQuestion(selectQuestion);
 				Log.i("Detail of question: ", selectQuestion.getTitle());
 				//TODO: REQUEST GET STATISTIC OF QUESTION. IF THE QUESTION HASNOT STATISTIC YET, AND CURRENT SESSION IS RUNNING, SHOW QUESTIONDETAIL
-				if (RuntimeEVoterManager.currentSessionIsActive()) {
+//				if (RuntimeEVoterManager.currentSessionIsActive()) {
 					Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);
 					startActivity(detailQuestion);
-				} else {
-					Intent statisticActivity = new Intent(QuestionActivity.this,QuestionStatisticActivity.class);
-					startActivity(statisticActivity);
-				}
+//				} else {
+//					Intent statisticActivity = new Intent(QuestionActivity.this,QuestionStatisticActivity.class);
+//					startActivity(statisticActivity);
+////				}
 			}
 		});
 		
@@ -126,6 +128,7 @@ public class QuestionActivity extends ItemDataActivity {
 						int position, long id) {
 					final Question selectQuestion = (Question) parent
 							.getItemAtPosition(position);
+					RuntimeEVoterManager.setCurrentQuestion(selectQuestion);
 					final DialogInfor dialog = new DialogInfor(
 							QuestionActivity.this, "Question");
 					dialog.setMessageContent(selectQuestion.getTitle());
@@ -227,7 +230,7 @@ public class QuestionActivity extends ItemDataActivity {
 							JSONArray array = EVoterMobileUtils
 									.getJSONArray(response);
 							for (int i = 0; i < array.length(); i++) {
-								progressBar.setProgress((i + 1) * 100
+								internetProcessBar.setProgress((i + 1) * 100
 										/ array.length());
 								tvLoadingStatus.setText("Loading..." + (i + 1)
 										* 100 / array.length());

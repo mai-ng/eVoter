@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 //import org.springframework.test.annotation.Rollback;
 //import org.springframework.transaction.annotation.Transactional;
 
+import evoter.server.http.request.interfaces.IAnswerService;
 import evoter.server.http.request.interfaces.IQuestionService;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
@@ -48,6 +49,16 @@ public class QuestionService implements IQuestionService{
 	private QuestionTypeDAO questionTypeDAO;
 	//@Autowired
 	private UserDAO userDAO;
+	
+	public IAnswerService getAnswerService() {
+		return answerService;
+	}
+
+	public void setAnswerService(IAnswerService answerService) {
+		this.answerService = answerService;
+	}
+
+	private IAnswerService answerService;
 	
 	public AnswerDAO getAnswerDAO() {
 		return answerDAO;
@@ -124,7 +135,7 @@ public class QuestionService implements IQuestionService{
 					JSONObject object = question.toJSON();
 					object.put(QuestionSessionDAO.SESSION_ID, questionSession.getSessionId());
 					
-					JSONArray answers = getAnswersOfQuestion(question.getId());
+					JSONArray answers = (JSONArray)answerService.doGetAllAnswer(question.getId());//getAnswersOfQuestion(question.getId());
 					
 					List<Question> subQuestionList = questionDAO.findByParentId(question.getId());
 					if (subQuestionList != null && !subQuestionList.isEmpty()){
@@ -168,7 +179,8 @@ public class QuestionService implements IQuestionService{
 				
 				for (Question question : questionList){
 					//JSONObject jsObject = question.toJSON();
-					question.toJSON().put("answers", getAnswersOfQuestion(question.getId()));
+					//question.toJSON().put("answers", getAnswersOfQuestion(question.getId()));
+					question.toJSON().put("answers", answerService.doGetAllAnswer(question.getId()));
 					response.add(question.toJSON());
 				}
 			}
@@ -275,10 +287,12 @@ public class QuestionService implements IQuestionService{
 			 * Create Answer object and insert it to ANSWER table
 			 */
 			if (answerTexts != null){
-				for (String answerText : answerTexts){
-					Answer answer = new Answer(questionId, answerText);
-					answerDAO.insert(answer);
-				}
+				
+				answerService.doCreate(questionId, answerTexts);
+//				for (String answerText : answerTexts){
+//					Answer answer = new Answer(questionId, answerText);
+//					answerDAO.insert(answer);
+//				}
 			}
 
 			/**
@@ -390,7 +404,8 @@ public class QuestionService implements IQuestionService{
 				Question question = questionDAO.findById(questionId).get(0);
 				//RE-WORK 
 				JSONObject object = question.toJSON();
-				object.put("answers", getAnswersOfQuestion(question.getId()));
+				//object.put("answers", getAnswersOfQuestion(question.getId()));
+				object.put("answers", answerService.doGetAllAnswer(question.getId()));
 				response.add(object);
 				
 			}
@@ -444,10 +459,18 @@ public class QuestionService implements IQuestionService{
 	@Override
 	public Object doEdit(Map<String, Object> parameters) {
 		
-		String questionText = (String)parameters.get(QuestionDAO.QUESTION_TEXT);
-		long questionId = (Long.valueOf((String)parameters.get(QuestionDAO.ID)));
-		
 		try{
+			String questionText = (String)parameters.get(QuestionDAO.QUESTION_TEXT);
+			long questionId = (Long.valueOf((String)parameters.get(QuestionDAO.ID)));
+
+//			String [] answerIds = null;
+			/**
+			 * if this is match type question, this question is a parent </br>
+			 * continue inserting the sub questions to the database </br>
+			 */
+//			if (parameters.containsKey(QuestionDAO.ANSWER_ID)){
+//				answerIds = (String[]) parameters.get(QuestionDAO.ANSWER_ID);
+//			}
 			
 			List<Question> questions = questionDAO.findById(questionId);
 			if (questions != null && !questions.isEmpty()){
@@ -455,6 +478,28 @@ public class QuestionService implements IQuestionService{
 				Question question = questions.get(0);
 				question.setQuestionText(questionText);
 				questionDAO.update(question);
+			}
+			
+			/**
+			 * Create Answer object and insert it to ANSWER table
+			 */
+			String[] answerTexts = null;
+			if (parameters.containsKey(AnswerDAO.ANSWER_TEXT)){
+				answerTexts = (String[]) parameters.get(AnswerDAO.ANSWER_TEXT);
+			}
+			if (answerTexts != null){
+				
+				//delete the old answer
+				answerService.doDelete(questionId);
+				// add new one
+				answerService.doCreate(questionId, answerTexts);
+//				for (String answerText : answerTexts){
+//					Answer answer = new Answer();
+//					answer.setAnswerText(answerText);
+//					answer.set
+//					Answer answer = new Answer(questionId, answerText);
+//					answerDAO.insert(answer);
+//				}
 			}
 			//URIUtils.writeSuccessResponse(httpExchange);
 			return URIRequest.SUCCESS_MESSAGE;

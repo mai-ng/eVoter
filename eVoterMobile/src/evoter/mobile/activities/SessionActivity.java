@@ -178,7 +178,7 @@ public class SessionActivity extends ItemDataActivity {
 							ArrayList<ItemData> listSession = new ArrayList<ItemData>();
 							JSONArray array = EVoterMobileUtils.getJSONArray(response);
 							for (int i = 0; i < array.length(); i++) {
-								progressBar.setProgress((i + 1) * 100
+								internetProcessBar.setProgress((i + 1) * 100
 										/ array.length());
 								tvLoadingStatus.setText("Loading..." + (i + 1)
 										* 100 / array.length());

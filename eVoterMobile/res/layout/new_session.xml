@@ -15,42 +15,12 @@
         <requestFocus />
     </EditText>
 
-    <ScrollView
-        android:id="@+id/scv_new_session"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/etNewSessionName"
-        android:layout_marginTop="5dp" >
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/tvListQuestion"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="List questions of session" />
-
-            <ListView
-                android:id="@+id/lvNewSessionQuestion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp" >
-
-            </ListView>
-
-        </LinearLayout>
-    </ScrollView>
-
-    <Button
-        android:id="@+id/btNewSessionAddQuestion"
+    <TextView
+        android:id="@+id/tvCreateSSMessage"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/scv_new_session"
-        android:layout_marginTop="5dp"
-        android:text="Add Question" />
+        android:layout_below="@id/etNewSessionName"
+        android:text="To create question for session, you must save session and then go in to session." />
 
     <LinearLayout
         android:layout_alignParentBottom="true"

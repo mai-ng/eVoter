@@ -9,9 +9,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -46,6 +48,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 	TextView tvQuestionText;
 	LinearLayout answerArea;
 	Button btSend;
+	Button btView;
 	Question currentQuestion;
 	
 	@Override
@@ -104,8 +107,9 @@ public class QuestionDetailActivity extends EVoterActivity {
 			case QuestionType.SLIDER:
 				SeekBar seekbar = new SeekBar(this);
 				seekbar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				seekbar.setMax(10);
-				seekbar.setProgress(5);
+				int max = Integer.parseInt(column1.get(0).getAnswerText());
+				seekbar.setMax(max);
+				seekbar.setProgress(max / 2);
 				answerArea.addView(seekbar);
 				break;
 			case QuestionType.INPUT_ANSWER:
@@ -130,6 +134,15 @@ public class QuestionDetailActivity extends EVoterActivity {
 			btSend.setText("Submit");
 		}
 		
+		btView = (Button) findViewById(R.id.btViewStatistic);
+		btView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent statisticActivity = new Intent(QuestionDetailActivity.this, QuestionStatisticActivity.class);
+				startActivity(statisticActivity);
+			}
+		});
 	}
 	
 	/**

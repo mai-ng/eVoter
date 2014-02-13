@@ -32,6 +32,7 @@ import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.UserDAO;
+import evoter.share.model.QuestionType;
 import evoter.share.utils.URIRequest;
 
 /**
@@ -45,24 +46,24 @@ public class NewQuestionActivity extends EVoterActivity {
 	private final String INPUT_ANSWER = "Input Answer";
 	private final String MATCH = "Match";
 	
-	EditText etQuestionText;
-	EditText etAnswer;
-	EditText etMin;
-	EditText etMax;
+	protected EditText etQuestionText;
+	protected EditText etAnswer;
+	//	EditText etMin;
+	protected EditText etMax;
 	
-	Spinner spQuestionType;
-	LinearLayout laAnswer;
-	LinearLayout laSlider;
+	protected Spinner spQuestionType;
+	protected LinearLayout laAnswer;
+	protected LinearLayout laSlider;
 	
-	Button btSave;
-	Button btCancel;
-	Button btAddAnswer;
+	protected Button btSave;
+	protected Button btCancel;
+	protected Button btAddAnswer;
 	
-	ListView lvListAnswser;
-	ArrayList<String> typeArray = new ArrayList<String>();
-	ArrayList<String> listAnswser = new ArrayList<String>();
-	ArrayAdapter<String> adaterListView;
-	long typeID;
+	protected ListView lvListAnswser;
+	protected ArrayList<String> typeArray = new ArrayList<String>();
+	protected ArrayList<String> listAnswser = new ArrayList<String>();
+	protected ArrayAdapter<String> adaterListView;
+	protected long typeID;
 	
 	/*
 	 * (non-Javadoc)
@@ -72,18 +73,9 @@ public class NewQuestionActivity extends EVoterActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.new_question);
-		mainMenu.setQuestionActivityMenu();
-		mainMenu.getBtNewQuestion().setVisibility(View.GONE);
+		initialComponent();
 		
-		etQuestionText = (EditText) findViewById(R.id.etNewQuestionContent);
-		
-		//Layout answer for multi checkbox and multi radio button
-		adaterListView = new ArrayAdapter<String>(NewQuestionActivity.this, R.layout.answer_item, listAnswser);
-		lvListAnswser = (ListView) findViewById(R.id.lvCreaetQuestionListAnswser);
-		lvListAnswser.setAdapter(adaterListView);
 		lvListAnswser.setOnItemClickListener(new OnItemClickListener() {
-			
 			@Override
 			public void onItemClick(AdapterView<?> parentView, View itemClicked, int position, long id) {
 				final String itemClick = (String) parentView.getItemAtPosition(position);
@@ -113,9 +105,7 @@ public class NewQuestionActivity extends EVoterActivity {
 				dialog.show();
 			}
 		});
-		etAnswer = (EditText) findViewById(R.id.etCreateQuestionAnswer);
-		laAnswer = (LinearLayout) findViewById(R.id.la_answerArea);
-		btAddAnswer = (Button) findViewById(R.id.btCreateQuestionAddAnswer);
+		
 		btAddAnswer.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -134,16 +124,7 @@ public class NewQuestionActivity extends EVoterActivity {
 			}
 		});
 		
-		laAnswer.setVisibility(View.GONE);
-		//		lvListAnswser.setVisibility(View.GONE);
 		
-		//Layout answer for slider question
-		laSlider = (LinearLayout) findViewById(R.id.la_slider);
-		etMin = (EditText) findViewById(R.id.etCreateQMin);
-		etMax = (EditText) findViewById(R.id.etCreateQMax);
-		laSlider.setVisibility(View.VISIBLE);
-		
-		btCancel = (Button) findViewById(R.id.btCancelNewQuestion);
 		btCancel.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -153,15 +134,7 @@ public class NewQuestionActivity extends EVoterActivity {
 			}
 		});
 		
-		typeArray.add(YES_NO);
-		typeArray.add(MULTI_RADIO);
-		typeArray.add(MULTI_CHECK);
-		typeArray.add(SLIDER);
-		typeArray.add(INPUT_ANSWER);
-		typeArray.add(MATCH);
-		spQuestionType = (Spinner) findViewById(R.id.spQuestionType);
-		ArrayAdapter<String> adaterSpinner = new ArrayAdapter<String>(NewQuestionActivity.this, R.layout.user_item, typeArray);
-		spQuestionType.setAdapter(adaterSpinner);
+		
 		spQuestionType.setOnItemSelectedListener(new OnItemSelectedListener() {
 			
 			@Override
@@ -212,56 +185,102 @@ public class NewQuestionActivity extends EVoterActivity {
 				
 			}
 		});
+		
+		setBtSaveAction();
+		
+	}
+	
+	/**
+	 * 
+	 */
+	private void initialComponent() {
+		setContentView(R.layout.new_question);
+		mainMenu.setQuestionActivityMenu();
+		mainMenu.getBtNewQuestion().setVisibility(View.GONE);
+		
+		etQuestionText = (EditText) findViewById(R.id.etNewQuestionContent);
+		
+		//Layout answer for multi checkbox and multi radio button
+		adaterListView = new ArrayAdapter<String>(NewQuestionActivity.this, R.layout.answer_item, listAnswser);
+		lvListAnswser = (ListView) findViewById(R.id.lvCreaetQuestionListAnswser);
+		lvListAnswser.setAdapter(adaterListView);
+		etAnswer = (EditText) findViewById(R.id.etCreateQuestionAnswer);
+		laAnswer = (LinearLayout) findViewById(R.id.la_answerArea);
+		btAddAnswer = (Button) findViewById(R.id.btCreateQuestionAddAnswer);
+		laAnswer.setVisibility(View.GONE);
+		//		lvListAnswser.setVisibility(View.GONE);
+		
+		//Layout answer for slider question
+		laSlider = (LinearLayout) findViewById(R.id.la_slider);
+		//		etMin = (EditText) findViewById(R.id.etCreateQMin);
+		etMax = (EditText) findViewById(R.id.etCreateQMax);
+		laSlider.setVisibility(View.VISIBLE);
+		
+		btCancel = (Button) findViewById(R.id.btCancelNewQuestion);
+		typeArray.add(YES_NO);
+		typeArray.add(MULTI_RADIO);
+		typeArray.add(MULTI_CHECK);
+		typeArray.add(SLIDER);
+		typeArray.add(INPUT_ANSWER);
+		typeArray.add(MATCH);
+		spQuestionType = (Spinner) findViewById(R.id.spQuestionType);
+		ArrayAdapter<String> adaterSpinner = new ArrayAdapter<String>(NewQuestionActivity.this, R.layout.user_item, typeArray);
+		spQuestionType.setAdapter(adaterSpinner);
 		btSave = (Button) findViewById(R.id.btSaveNewQuestion);
+	}
+
+	/**
+	 * 
+	 */
+	protected void setBtSaveAction() {
 		btSave.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				
-				if(etQuestionText.getText().equals("")){
-					EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "The content of question should not empty!");
-				}
-				else{
-				// Send login request to server
-				RequestParams params = new RequestParams();
-				params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
-				params.put(QuestionDAO.QUESTION_TEXT, new String[]{etQuestionText.getText().toString()});
-				params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(typeID));
-				Timestamp ts = new Timestamp(System.currentTimeMillis());
-				params.add(QuestionDAO.CREATION_DATE, ts.toString());
-				params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(RuntimeEVoterManager.getCurrentSessionID()));
-				params.put(AnswerDAO.ANSWER_TEXT, listAnswser);
-				client.post(RequestConfig.getURL(URIRequest.CREATE_QUESTION), params,
-						new AsyncHttpResponseHandler() {
-							// Request successfully - client receive a response
-							@Override
-							public void onSuccess(String response) {
-								Log.i("Response", response);
-								if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-									EVoterMobileUtils.showeVoterToast(
-											NewQuestionActivity.this,
-											"A new question is created successfully!");
-									finish();
-								} else {
-									EVoterMobileUtils.showeVoterToast(
-											NewQuestionActivity.this,
-											"Cannot create new question");
+				if (!readyToCreate()) {
+					EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "Invalid parameter. Please input again!");
+				} else {
+					
+					// Send login request to server
+					RequestParams params = new RequestParams();
+					params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
+					params.put(QuestionDAO.QUESTION_TEXT, new String[] { etQuestionText.getText().toString() });
+					params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(typeID));
+					Timestamp ts = new Timestamp(System.currentTimeMillis());
+					params.add(QuestionDAO.CREATION_DATE, ts.toString());
+					params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(RuntimeEVoterManager.getCurrentSessionID()));
+					params.put(AnswerDAO.ANSWER_TEXT, listAnswser);
+					client.post(RequestConfig.getURL(URIRequest.CREATE_QUESTION), params,
+							new AsyncHttpResponseHandler() {
+								// Request successfully - client receive a response
+								@Override
+								public void onSuccess(String response) {
+									Log.i("Response", response);
+									if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+										EVoterMobileUtils.showeVoterToast(
+												NewQuestionActivity.this,
+												"A new question is created successfully!");
+										finish();
+									} else {
+										EVoterMobileUtils.showeVoterToast(
+												NewQuestionActivity.this,
+												"Cannot create new question");
+									}
+									
 								}
 								
-							}
-							
-							//Login fail
-							@Override
-							public void onFailure(Throwable error,
-									String content) {
-								EVoterMobileUtils.showeVoterToast(
-										NewQuestionActivity.this,
-										"Cannot request to server!");
-								Log.e("create question", "onFailure error : "
-										+ error.toString() + "content : "
-										+ content);
-							}
-						});
+								//Login fail
+								@Override
+								public void onFailure(Throwable error,
+										String content) {
+									EVoterMobileUtils.showeVoterToast(
+											NewQuestionActivity.this,
+											"Cannot request to server!");
+									Log.e("create question", "onFailure error : "
+											+ error.toString() + "content : "
+											+ content);
+								}
+							});
 				}
 				
 			}
@@ -270,16 +289,28 @@ public class NewQuestionActivity extends EVoterActivity {
 	}
 	
 	/**
-	 * @param listAnswser2
 	 * @return
 	 */
-	protected String[] buildAnswer(ArrayList<String> listAnswser2) {
-		// TODO Auto-generated method stub
-		String[] list = new String[listAnswser2.size()];
-		for (int i = 0; i < listAnswser2.size(); i++) {
-			list[i] = listAnswser2.get(i);
+	protected boolean readyToCreate() {
+		if (etQuestionText.getText().equals("")) {
+			EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "The content of question should not empty!");
+			return false;
 		}
-		return list;
+		if (typeID == QuestionType.SLIDER) {
+			//			int min = Integer.parseInt(etMin.getText().toString());
+			int max = Integer.parseInt(etMax.getText().toString());
+			if (max < 2) {
+				EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "The max value of slider should be greater than 1 !Please input again!");
+				return false;
+			} else {
+				//				listAnswser.add(String.valueOf(min));
+				listAnswser.add(String.valueOf(max));
+			}
+		}
+//		if (typeID == QuestionType.INPUT_ANSWER || typeID == QuestionType.YES_NO) {
+//			listAnswser.add("Yes/no and input answer question do not need answer text");
+//		}
+		return true;
 	}
 	
 	/**

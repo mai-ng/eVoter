@@ -81,9 +81,9 @@ public abstract class ItemDataActivity extends EVoterActivity {
 		
 		tvLoadingStatus = (TextView) dialogLoading
 				.findViewById(R.id.tvLoadingStatus);
-		progressBar = (ProgressBar) dialogLoading
+		internetProcessBar = (ProgressBar) dialogLoading
 				.findViewById(R.id.progressRefresh);
-		progressBar.setProgress(0);
+		internetProcessBar.setProgress(0);
 		
 //		offlineEVoterManager = new OfflineEVoterManager(this);
 		

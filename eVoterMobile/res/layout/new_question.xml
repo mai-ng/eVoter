@@ -90,23 +90,12 @@
         android:id="@+id/la_slider"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2" >
-
-        <EditText
-            android:id="@+id/etCreateQMin"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="Min "
-            android:inputType="number" />
+        android:orientation="horizontal" >
 
         <EditText
             android:id="@+id/etCreateQMax"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:ems="10"
             android:hint="Max"
             android:inputType="number" />

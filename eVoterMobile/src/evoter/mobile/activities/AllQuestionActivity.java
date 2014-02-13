@@ -185,7 +185,7 @@ public class AllQuestionActivity extends ItemDataActivity {
 							JSONArray array = EVoterMobileUtils
 									.getJSONArray(response);
 							for (int i = 0; i < array.length(); i++) {
-								progressBar.setProgress((i + 1) * 100
+								internetProcessBar.setProgress((i + 1) * 100
 										/ array.length());
 								tvLoadingStatus.setText("Loading..." + (i + 1)
 										* 100 / array.length());

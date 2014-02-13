@@ -81,7 +81,7 @@ public class EVoterActivity extends Activity {
 	/**
 	 * The progressbar show the progress of data loading process
 	 */
-	protected ProgressBar progressBar;
+	protected ProgressBar internetProcessBar;
 	/**
 	 * manage the offline data of eVoterMobile
 	 */

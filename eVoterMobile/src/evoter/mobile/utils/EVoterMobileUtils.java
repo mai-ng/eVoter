@@ -1,7 +1,6 @@
 package evoter.mobile.utils;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -22,21 +21,18 @@ import android.widget.Toast;
  * <br>Created by luongnv89 on 05/12/13.
  */
 public class EVoterMobileUtils {
-	
+	@SuppressLint("SimpleDateFormat")
+	static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	public static JSONArray getJSONArray(String response) throws JSONException {
 		return new JSONArray(response);
 	}
 	
-	@SuppressLint("SimpleDateFormat")
 	public static Timestamp convertToDate(String date) throws ParseException {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date utilDate = dateFormat.parse(date);
 		return new Timestamp(utilDate.getTime());
 	}
 	
-	@SuppressLint("SimpleDateFormat")
 	public static String convertToString(Timestamp creationDate) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		return dateFormat.format(creationDate);
 	}
 	

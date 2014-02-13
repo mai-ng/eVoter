@@ -22,25 +22,95 @@
         android:orientation="horizontal" >
 
         <TextView
-            android:id="@+id/tvUserItem_fullName"
+            android:id="@+id/tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Type" />
+            android:text="Type"
+            android:textSize="20sp" />
 
         <Spinner
-            android:id="@+id/spinner1"
-            android:layout_width="wrap_content"
+            android:id="@+id/spQuestionType"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="5dp" />
+            android:layout_marginTop="5dp"
+            android:padding="5dp"
+            android:scrollbarStyle="insideOverlay" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvUserItem_Email"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/la_answerArea"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Answer" />
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tvUserItem_Email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Answer"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <EditText
+                android:id="@+id/etCreateQuestionAnswer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Input answer"
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/btCreateQuestionAddAnswer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Add" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="List answers of question"
+            android:textSize="20sp" />
+
+        <ListView
+            android:id="@+id/lvCreaetQuestionListAnswser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/la_slider"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2" >
+
+        <EditText
+            android:id="@+id/etCreateQMin"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Min "
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/etCreateQMax"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Max"
+            android:inputType="number" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,7 +129,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="Cancel" />
 
     </LinearLayout>
 

@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
@@ -28,10 +29,12 @@ import evoter.share.model.Question;
 import evoter.share.model.QuestionType;
 import evoter.share.model.UserType;
 
-/**<br> Update by @author luongnv89 on 09-Feb-2014:<br>
- * <li> Parser answer for Multi-choice question
- * <li> Parser answer for input answer question
- * <br> Created by @author luongnv89 on 18-Jan-2014 <br>
+/**
+ * <br>
+ * Update by @author luongnv89 on 09-Feb-2014:<br>
+ * <li>Parser answer for Multi-choice question <li>Parser answer for input
+ * answer question <br>
+ * Created by @author luongnv89 on 18-Jan-2014 <br>
  * {@link QuestionDetailActivity} manage a question <li>With teacher: <br>
  * - Delete send question to student <br>
  * - Edit question <br>
@@ -53,7 +56,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		this.ivTitleBarRefresh.setVisibility(View.GONE);
 		mainMenu.setQuestionActivityMenu();
 		currentQuestion = RuntimeEVoterManager.getCurrentQuestion();
-		
+		Log.i("Current Question: ", currentQuestion.getTitle());
 		tvQuestionText = (TextView) findViewById(R.id.tvQuestionText);
 		tvQuestionText.setText(currentQuestion.getQuestionText());
 		
@@ -63,7 +66,6 @@ public class QuestionDetailActivity extends EVoterActivity {
 		
 		//Parser the answer of question
 		ArrayList<Answer> column1 = parserAnswer(currentQuestion.getAnswerColumn1());
-		ArrayList<Answer> column2 = parserAnswer(currentQuestion.getAnswerColumn2());
 		
 		//		type = 1;
 		switch (type) {
@@ -113,7 +115,9 @@ public class QuestionDetailActivity extends EVoterActivity {
 				answerArea.addView(etAnswer);
 				break;
 			case QuestionType.MATCH:
-				
+				if (!currentQuestion.getAnswerColumn2().equals("")) {
+					ArrayList<Answer> column2 = parserAnswer(currentQuestion.getAnswerColumn2());
+				}
 				break;
 			default:
 				break;

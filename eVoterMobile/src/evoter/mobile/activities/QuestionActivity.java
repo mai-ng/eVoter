@@ -107,6 +107,7 @@ public class QuestionActivity extends ItemDataActivity {
 				Question selectQuestion = (Question) parent
 						.getItemAtPosition(position);
 				RuntimeEVoterManager.setCurrentQuestion(selectQuestion);
+				Log.i("Detail of question: ", selectQuestion.getTitle());
 				//TODO: REQUEST GET STATISTIC OF QUESTION. IF THE QUESTION HASNOT STATISTIC YET, AND CURRENT SESSION IS RUNNING, SHOW QUESTIONDETAIL
 				if (RuntimeEVoterManager.currentSessionIsActive()) {
 					Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);

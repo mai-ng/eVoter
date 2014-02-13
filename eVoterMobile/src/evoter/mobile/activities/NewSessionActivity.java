@@ -69,12 +69,8 @@ public class NewSessionActivity extends EVoterActivity {
 					
 					RequestParams params = new RequestParams();
 					params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
-					java.util.Date date = new java.util.Date();
-					String time = String.valueOf(new Timestamp(date.getTime()));
-//					Log.i("Time",time);
-//					time.replace("%3A", ":");
-//					Log.i("Time",time);
-					params.add(SessionDAO.CREATION_DATE, time);
+					Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
+					params.add(SessionDAO.CREATION_DATE, EVoterMobileUtils.convertToString(timeStamp));
 					params.add(SessionDAO.IS_ACTIVE, String.valueOf(false));
 					params.add(SessionDAO.NAME, etTitle.getText().toString());
 					params.add(SessionDAO.SUBJECT_ID, String.valueOf(RuntimeEVoterManager.getCurrentSubjectID()));

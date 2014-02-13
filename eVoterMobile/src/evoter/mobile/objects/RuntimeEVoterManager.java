@@ -180,8 +180,8 @@ public class RuntimeEVoterManager {
 	/**
 	 * @param currentQuestion the currentQuestion to set
 	 */
-	public static void setCurrentQuestion(Question currentQuestion) {
-		RuntimeEVoterManager.currentQuestion = currentQuestion;
+	public static void setCurrentQuestion(Question auestion) {
+		currentQuestion = auestion;
 	}
 
 	/**

@@ -352,7 +352,8 @@ public class URIUtils {
 				.replace("%40", "")
 				.replace("%5B", "")
 				.replace("%5D", "")
-				.replace("%3A", "");
+				.replace("%3A", "")
+				.replace("%3F", "");
 	}
 
 	public static String fixedEncodeValueParameter(String value){
@@ -361,7 +362,8 @@ public class URIUtils {
 				.replace("%5B", "[")
 				.replace("%5D", "]")
 				.replace("%3A", ":")
-				.replace("+", " ");
+				.replace("+", " ")
+				.replace("%3F", "?");
 	}
 	public static void writeResponse(Object response, HttpExchange t) {
 		

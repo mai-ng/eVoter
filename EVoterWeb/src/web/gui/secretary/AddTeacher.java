@@ -88,9 +88,12 @@ public class AddTeacher extends GUITeacherAbstract {
 							RequestConfig.getURL(URIRequest.CREATE_USER),
 							teacherParams);
 					if (response == null) {
-						dialog.setTitle("Cannot request to server!");
+						msg.setText("Cannot request to server!");
+						dialog.setVisible(true);
 					} else {
-						dialog.setTitle("Edit successfully!");
+						msg.setText("Add successfully!");
+						dialog.setVisible(true);
+						AddTeacher.this.setVisible(false);
 					}
 				}
 			}

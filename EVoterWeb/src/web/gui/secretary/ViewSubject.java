@@ -45,9 +45,10 @@ public class ViewSubject extends GUISubjectAbstract {
 	 * Design user interface ( {@link JFrame} ) to view a subject.
 	 */
 	public ViewSubject(Subject sb) {
+		super();
 		this.subject = sb;
 		this.setTitle("View subject information");
-		initComponents();
+		
 
 		// user interface of viewing detail subject
 		// Row 0: Title

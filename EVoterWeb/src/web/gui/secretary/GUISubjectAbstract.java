@@ -25,6 +25,8 @@ public abstract class GUISubjectAbstract extends GUIAbstract {
 
 	public GUISubjectAbstract(){
 		super();
+		initComponents();
+		
 	}
 
 	/**

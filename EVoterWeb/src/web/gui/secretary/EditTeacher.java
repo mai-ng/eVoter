@@ -49,7 +49,7 @@ public class EditTeacher extends GUITeacherAbstract {
 				// TODO Check valid input and send an update user request
 
 				JDialog dialog = new JDialog(EditTeacher.this);
-				dialog.setTitle("Invalid input");
+				dialog.setTitle("Dialog");
 				dialog.setSize(new Dimension(400, 100));
 				dialog.setLocationRelativeTo(null);
 				dialog.setModal(true);
@@ -72,7 +72,10 @@ public class EditTeacher extends GUITeacherAbstract {
 				} else if (!UserAccountValidation.isValidPassword(password)) {
 					msg.setText("\tPassword is not valid! Please input again!");
 					dialog.setVisible(true);
-				} else {
+				} else if(fullName.equals(currentUser.getFullName())&&email.equals(currentUser.getEmail())&&username.equals(currentUser.getUserName())&&password.equals(currentUser.getPassWord())){
+					msg.setText("\tNothing change!");
+					dialog.setVisible(true);
+				}else{
 					List<NameValuePair> teacherParams = new ArrayList<NameValuePair>();
 					teacherParams.add(new BasicNameValuePair(UserDAO.USER_KEY,
 							RunningTimeData.getCurrentUserKey()));
@@ -96,9 +99,12 @@ public class EditTeacher extends GUITeacherAbstract {
 							RequestConfig.getURL(URIRequest.EDIT_USER),
 							teacherParams);
 					if (response == null) {
-						dialog.setTitle("Cannot request to server!");
+						msg.setText("Cannot request to server!");
+						dialog.setVisible(true);
 					} else {
-						dialog.setTitle("Edit successfully!");
+						msg.setText("Edit successfully!");
+						dialog.setVisible(true);
+						EditTeacher.this.setVisible(false);
 					}
 				}
 			}

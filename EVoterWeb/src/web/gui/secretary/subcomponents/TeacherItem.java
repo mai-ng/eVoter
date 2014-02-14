@@ -3,11 +3,17 @@
  */
 package web.gui.secretary.subcomponents;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+
 import web.gui.secretary.EditTeacher;
 import web.gui.secretary.ViewTeacher;
+import web.util.EVoterDialog;
 import evoter.share.model.User;
 
 /**
@@ -30,8 +36,24 @@ public class TeacherItem extends ItemViewAbstract {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO: Send a delete user request
-
+				final EVoterDialog confirmDialog = new EVoterDialog();
+				confirmDialog.setTitle("Confirm");
+				confirmDialog.getLbMsg().setText("Do you really want to delete user: " + user.getEmail());
+				confirmDialog.getBtYes().addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				confirmDialog.getBtNo().addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						confirmDialog.setVisible(false);
+					}
+				});
 			}
 		});
 

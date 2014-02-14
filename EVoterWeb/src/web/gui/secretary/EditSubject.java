@@ -11,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import evoter.share.model.Subject;
+
 /**
  * @author maint<br>
  * a JFrame to edit a subject. 
@@ -24,14 +26,17 @@ public class EditSubject extends GUISubjectAbstract {
 
 	private JButton btnSave;
 
+	private Subject currentSubject;
 	/**
 	 * set the title of the frame, and initialize its components.<br>
 	 * Design user interface ( {@link JFrame} ) to edit a subject.
 	 * @throws IOException 
 	 */
-	public EditSubject() throws IOException {
+	public EditSubject(Subject sb) throws IOException {
+		super();
+		this.currentSubject = sb;
 		this.setTitle("Edit subject information");
-		initComponents();
+//		initComponents();
 		importFile();
 
 		// Row 0: Title

@@ -202,8 +202,8 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 		final String sql = 
 				"UPDATE " + TABLE_NAME 
 				+ " SET " 
-				+ QUESTION_ID + "=" + answer.getQuestionId() 
-				+ "," + ANSWER_TEXT +"='" + answer.getAnswerText() + "'" 
+//				+ QUESTION_ID + "=" + answer.getQuestionId() 
+				+  ANSWER_TEXT +"='" + answer.getAnswerText() + "'" 
 				+ " WHERE " + ID + "=" + answer.getId();
 
 		return getJdbcTemplate().update(sql);

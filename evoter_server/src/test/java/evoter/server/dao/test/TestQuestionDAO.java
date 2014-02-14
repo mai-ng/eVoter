@@ -1,6 +1,7 @@
 package evoter.server.dao.test;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
@@ -246,9 +247,27 @@ public class TestQuestionDAO {
 		questions = questionDAO.findByQuestionTypeId(parentId);
 		assertTrue(questions.size() == 0);
 	}
+	/**
+	 * Test for {@link QuestionDAO#update(Question)}
+	 */
 	@Test
 	public void testUpdate(){
-		//TO DO
+
+		long questionId = 1;
+		Question question = questionDAO.findById(questionId).get(0);
+		question.setParentId(4);
+		question.setQuestionText("new question text");
+		question.setCreationDate(Timestamp.valueOf("2000-01-09 22:39:24"));
+		question.setQuestionTypeId(3);
+		
+		questionDAO.update(question);
+		assertEquals("update() changes parent id", question.getParentId(), 4);
+		assertEquals("update() changes question text", question.getQuestionText(), "new question text");
+		assertEquals("update() changes creation date", question.getCreationDate(), 
+				Timestamp.valueOf("2000-01-09 22:39:24"));
+		assertEquals("update() changes question type", question.getQuestionTypeId(), 3);
+		
+		
 	}
 
 }

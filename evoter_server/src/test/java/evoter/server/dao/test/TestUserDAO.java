@@ -1,5 +1,6 @@
 package evoter.server.dao.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -187,6 +188,33 @@ public class TestUserDAO {
 		userDAO.deleteByUserName("btdiem");
 		List<User> users = userDAO.findByUserName("btdiem");
 		assertTrue("testDeleteByUserName", users.size() == 0);
+	}
+	@Test
+	public void testUpdate(){
+		
+		User user = userDAO.findById(28).get(0);
+		//change email
+		user.setEmail("sundy_3th2_agu@yahoo.com");
+		user.setUserName("bui_thi_diem");
+		user.setFullName("Bui Thi Diem");
+		user.setPassWord("new_pass_12345");
+		user.setUserTypeId(2);
+		user.setApproved(false);
+		userDAO.update(user);
+		user = userDAO.findById(28).get(0);
+		assertEquals("update() changes email", "sundy_3th2_agu@yahoo.com", user.getEmail());
+		assertEquals("update() changes full name", "Bui Thi Diem", user.getFullName());
+		assertEquals("update() changes password", "new_pass_12345", user.getPassWord());
+		assertEquals("update() changes approved status", false, user.isApproved());
+		assertEquals("update() changes user type", 2, user.getUserTypeId());
+		//change username
+		
+//		user = userDAO.findById(28).get(0);
+//		userDAO.update(user);
+		
+		
+		
+		
 	}
 
 }

@@ -17,8 +17,8 @@ public abstract class GUISubjectAbstract extends GUIAbstract {
 
 	private static final long serialVersionUID = 1L;
 
-	private JTextArea txtTeacher;
-	private JTextArea txtStudent;
+	protected JTextArea listTeacherView;
+	protected JTextArea listStudentView;
 
 	protected JButton btnAddTeacher;
 	protected JButton btnAddStudent;
@@ -33,8 +33,8 @@ public abstract class GUISubjectAbstract extends GUIAbstract {
 	 * @throws IOException
 	 */
 	public void importFile() throws IOException {
-		ReadFileByClick.readFile(btnAddTeacher, txtTeacher);
-		ReadFileByClick.readFile(btnAddStudent, txtStudent);
+		ReadFileByClick.readFile(btnAddTeacher, listTeacherView);
+		ReadFileByClick.readFile(btnAddStudent, listStudentView);
 	}
 
 	/**
@@ -48,24 +48,10 @@ public abstract class GUISubjectAbstract extends GUIAbstract {
 		super.initComponents();
 
 		//text fields
-		txtTeacher = new JTextArea();
-		txtTeacher.setEditable(true);
+		listTeacherView = new JTextArea();
+		listTeacherView.setEditable(true);
 
-		txtStudent = new JTextArea();
-		txtStudent.setEditable(true);
-	}
-	
-	/**
-	 * @return the txtTeacher
-	 */
-	public JTextArea getTxtTeacher() {
-		return txtTeacher;
-	}
-
-	/**
-	 * @return the txtStudent
-	 */
-	public JTextArea getTxtStudent() {
-		return txtStudent;
+		listStudentView = new JTextArea();
+		listStudentView.setEditable(true);
 	}
 }

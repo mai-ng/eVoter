@@ -27,7 +27,7 @@ public class UserAccountValidation {
 	 * [a-zA-Z]			# Follow "@" are  characters and symbols, a-z, A-Z
 	 * $				# End of the line
 	 */
-	private static final String EMAIL_PATTERN = "^[a-zA-Z0-9_.]*@[a-zA-Z]*.[a-zA-Z]*$";
+	private static final String EMAIL_PATTERN = "^[a-zA-Z0-9_.]*@[a-zA-Z-_]*.[a-zA-Z]*$";
 	
 	private static Pattern usrname_pattern = Pattern.compile(USERNAME_PATTERN);
 	private static Pattern password_pattern = Pattern.compile(PASSWORD_PATTERN);

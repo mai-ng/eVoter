@@ -21,45 +21,45 @@ public abstract class GUITeacherAbstract extends GUIAbstract{
 	 * be ID label in {@link AddTeacher}.
 	 * Or be First-name label in {@link EditTeacher}
 	 */
-	private JLabel lbl1;
+	protected JLabel lblFullName;
 	
 	/**
 	 * be Password label in {@link AddTeacher}.
 	 * Or be Last-name label in {@link EditTeacher}
 	 */
-	private JLabel lbl2;
+	protected JLabel lblUserName;
 	
 	/**
 	 * Email label
 	 */
-	private JLabel lblEmail;
+	protected JLabel lblEmail;
 	
 	/**
 	 * Telephone label
 	 */
-	private JLabel lblTel;
+	protected JLabel lblPassword;
 
 	/**
 	 * be ID field in {@link AddTeacher}.
 	 * Or be First-name field in {@link EditTeacher}
 	 */
-	private JTextField txt1;
+	protected JTextField txtFullName;
 	
 	/**
 	 * be Password field in {@link AddTeacher}.
 	 * Or be Last-name field in {@link EditTeacher}
 	 */
-	private JTextField txt2;
+	protected JTextField txtUserName;
 	
 	/**
 	 * Email field
 	 */
-	private JTextField txtEmail;
+	protected JTextField txtEmail;
 	
 	/**
 	 * Telephone field
 	 */
-	private JTextField txtTel;
+	protected JTextField txtPassword;
 
 	/**
 	 * button "Save"
@@ -72,7 +72,7 @@ public abstract class GUITeacherAbstract extends GUIAbstract{
 	 */
 	public GUITeacherAbstract() {
 		super();
-
+		initComponents();
 		// Row 0: First name
 		c.gridy = 0;
 		
@@ -80,14 +80,14 @@ public abstract class GUITeacherAbstract extends GUIAbstract{
 		c.weightx = 0;
 		c.gridwidth = 1;
 		c.insets = new Insets(10,10, 5, 10);
-		this.add(lbl1, c);
+		this.add(lblFullName, c);
 
 		c.gridx = 1;
 		c.weightx = 0.5;
 		c.gridwidth = 3;
 		c.ipady = 10;
 		c.insets = new Insets(10, 40, 5, 20);
-		this.add(txt1, c);
+		this.add(txtFullName, c);
 
 		
 		// Row 1: Last name
@@ -97,14 +97,14 @@ public abstract class GUITeacherAbstract extends GUIAbstract{
 		c.weightx = 0;
 		c.gridwidth = 1;
 		c.insets = new Insets(10, 10, 5, 10);
-		this.add(lbl2, c);
+		this.add(lblUserName, c);
 
 		c.gridx = 1;
 		c.weightx = 0.5;
 		c.gridwidth = 3;
 		c.ipady = 10;
 		c.insets = new Insets(10, 40, 5, 20);
-		this.add(txt2, c);
+		this.add(txtUserName, c);
 
 		
 		//Row 3: Email
@@ -130,14 +130,14 @@ public abstract class GUITeacherAbstract extends GUIAbstract{
 		c.weightx = 0;
 		c.gridwidth = 1;
 		c.insets = new Insets(10, 10, 5, 10);
-		this.add(lblTel, c);
+		this.add(lblPassword, c);
 
 		c.gridx = 1;
 		c.weightx = 0.5;
 		c.gridwidth = 3;
 		c.ipady = 10;
 		c.insets = new Insets(10, 40, 5, 20);
-		this.add(txtTel, c);
+		this.add(txtPassword, c);
 
 		
 		//Row 8: Buttons
@@ -153,70 +153,71 @@ public abstract class GUITeacherAbstract extends GUIAbstract{
 		c.gridx = 3;
 		c.insets = new Insets(10, 30, 5, 100);
 		this.add(btnClose, c);
+		
 	}
 
 	/**
 	 * initialize components: 4 {@link JLabel} and 4 {@link JTextField}.	 * 
 	 */
-	public void initComponents() {
+	protected void initComponents() {
 		super.initComponents();
 		
 		//create labels
-		lbl1 = new JLabel();
-		lbl2 = new JLabel();
+		lblFullName = new JLabel("Full name");
+		lblUserName = new JLabel("Username");
 		lblEmail = new JLabel("Email");
-		lblTel = new JLabel("Telephone");
+		lblPassword = new JLabel("Password");
 		
 		// create text fields
-		txt1 = new JTextField();
-		txt2 = new JTextField();
-		txtEmail = new JTextField();
-		txtTel = new JTextField();
+		txtFullName = new JTextField("Full name");
+		txtUserName = new JTextField("User name");
+		txtEmail = new JTextField("Email");
+		txtPassword = new JTextField("Password");
 
 		// create buttons
 		btnSave = new JButton(SAVE);
 	}
 
-	/**
-	 * @return the lbl1
-	 */
-	public JLabel getLbl1() {
-		return lbl1;
-	}
-
-	/**
-	 * @return the lbl2
-	 */
-	public JLabel getLbl2() {
-		return lbl2;
-	}
-
-	/**
-	 * @return the txt1
-	 */
-	public JTextField getTxt1() {
-		return txt1;
-	}
-
-	/**
-	 * @return the txt2
-	 */
-	public JTextField getTxt2() {
-		return txt2;
-	}
-
-	/**
-	 * @return the txtEmail
-	 */
-	public JTextField getTxtEmail() {
-		return txtEmail;
-	}
-
-	/**
-	 * @return the txtTel
-	 */
-	public JTextField getTxtTel() {
-		return txtTel;
-	}
+//	/**
+//	 * @return the lbl1
+//	 */
+//	public JLabel getLblFullName() {
+//		return lblFullName;
+//	}
+//
+//	/**
+//	 * @return the lbl2
+//	 */
+//	public JLabel getLblUserName() {
+//		return lblUserName;
+//	}
+//
+//	/**
+//	 * @return the txt1
+//	 */
+//	public JTextField getTxtFullName() {
+//		return txtFullName;
+//	}
+//
+//	/**
+//	 * @return the txt2
+//	 */
+//	public JTextField getTxtUserName() {
+//		return txtUserName;
+//	}
+//
+//	/**
+//	 * @return the txtEmail
+//	 */
+//	public JTextField getTxtEmail() {
+//		return txtEmail;
+//	}
+//
+//	/**
+//	 * @return the txtTel
+//	 */
+//	public JTextField getTxtPassword() {
+//		return txtPassword;
+//	}
 
 }

@@ -3,10 +3,9 @@ package web.util;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.naming.Context;
 import javax.swing.ImageIcon;
@@ -30,22 +29,31 @@ public class Utils {
 		return true;
 	}
 
-//	public static JSONArray getJSONArray(String response) throws JSONException {
-//		// String reFormat = "{\"data\":" + response + "}";
-//		// JSONObject data = new JSONObject(reFormat);
-//		// return data.getJSONArray("data");
-//		return new JSONArray(response);
-//	}
+	// public static JSONArray getJSONArray(String response) throws
+	// JSONException {
+	// // String reFormat = "{\"data\":" + response + "}";
+	// // JSONObject data = new JSONObject(reFormat);
+	// // return data.getJSONArray("data");
+	// return new JSONArray(response);
+	// }
+	static SimpleDateFormat dateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd hh:mm:ss");
 
-	public static Date convertToDate(String date) throws ParseException {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	public static Timestamp convertToDate(String date) {
+		java.util.Date utilDate;
+		try {
+			utilDate = dateFormat.parse(date);
+			return new Timestamp(utilDate.getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 
-		return dateFormat.parse(date);
 	}
 
-	public static String convertToString(Date date) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		return dateFormat.format(date);
+	public static String convertToString(Timestamp creationDate) {
+		return dateFormat.format(creationDate);
 	}
 
 	/**
@@ -58,7 +66,7 @@ public class Utils {
 	public static boolean hasInternetConnection(Context context) {
 		return false;
 	}
-	
+
 	/**
 	 * Record the result test to output file
 	 * 
@@ -72,18 +80,20 @@ public class Utils {
 	 */
 	public static void writeLog(String msg, String resultfile) {
 		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(resultfile, true));
-			out.write(msg+"\n");
+			BufferedWriter out = new BufferedWriter(new FileWriter(resultfile,
+					true));
+			out.write(msg + "\n");
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 	}
-	
+
 	/**
 	 * 
-	 * @param path of image
+	 * @param path
+	 *            of image
 	 * @return
 	 */
 	public static ImageIcon createImageIcon(String path) {

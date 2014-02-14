@@ -61,7 +61,7 @@ public class AddSubject extends GUISubjectAbstract {
 		c.gridy = 0;
 		c.gridheight = 3;
 		c.weightx = 1.0;
-		teacherPanel.add(new JScrollPane(getTxtTeacher(),
+		teacherPanel.add(new JScrollPane(listTeacherView,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), c);
 
@@ -90,7 +90,7 @@ public class AddSubject extends GUISubjectAbstract {
 		c.gridy = 0;
 		c.gridheight = 3;
 		c.weightx = 1.0;
-		studentPanel.add(new JScrollPane(getTxtStudent(),
+		studentPanel.add(new JScrollPane(listStudentView,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), c);
 

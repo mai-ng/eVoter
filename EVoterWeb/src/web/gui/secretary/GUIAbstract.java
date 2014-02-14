@@ -29,6 +29,8 @@ public abstract class GUIAbstract extends JFrame{
 	 */
 	protected JButton btnClose;
 	
+//	protected JLabel lbMessage;
+	
 	/**
 	 * layout of a frame- {@link GridBagLayout}
 	 */
@@ -38,7 +40,7 @@ public abstract class GUIAbstract extends JFrame{
 	
 	public GUIAbstract(){
 		//initialize components
-		initComponents();
+		
 		
 		//initialize the layout
 		gridbag = new GridBagLayout();
@@ -46,7 +48,9 @@ public abstract class GUIAbstract extends JFrame{
 		this.setLayout(gridbag);
 
 		c.fill = GridBagConstraints.BOTH;
-		c.insets = new Insets(10, 20, 1, 5);
+//		c.insets = new Insets(10, 20, 1, 5);
+		c.insets = new Insets(5, 10, 5, 5);
+//		initComponents();
 	}
 
 	/**

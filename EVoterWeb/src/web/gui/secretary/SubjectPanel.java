@@ -19,11 +19,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import web.applet.RunningTimeData;
-import web.gui.secretary.subcomponents.ListItems;
+import web.gui.secretary.subcomponents.ItemViewAbstract;
+import web.gui.secretary.subcomponents.SubjectItem;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
+import web.util.Utils;
 import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
+import evoter.share.model.Subject;
 import evoter.share.utils.URIRequest;
 
 public class SubjectPanel extends JPanel {
@@ -31,7 +34,7 @@ public class SubjectPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JPanel subjectPanel;
 	private JButton btnNewSubject;
-	private ArrayList<ListItems> listSubjects;
+	private ArrayList<ItemViewAbstract> listSubjects;
 
 	public SubjectPanel() {
 		initComponents();
@@ -55,8 +58,8 @@ public class SubjectPanel extends JPanel {
 		
 	}
 
-	private ArrayList<ListItems> loadListSubject() {
-		ArrayList<ListItems> listsubject = new ArrayList<ListItems>();
+	private ArrayList<ItemViewAbstract> loadListSubject() {
+		ArrayList<ItemViewAbstract> listsubject = new ArrayList<ItemViewAbstract>();
 
 		List<NameValuePair> subjectParams = new ArrayList<NameValuePair>();
 		subjectParams.add(new BasicNameValuePair(UserDAO.USER_KEY,
@@ -71,11 +74,8 @@ public class SubjectPanel extends JPanel {
 			JSONArray array = new JSONArray(listSubjectResponse);
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject ob = array.getJSONObject(i);
-				ListItems item = new ListItems(
-						ob.getString(SubjectDAO.TITLE),
-						ob.getLong(SubjectDAO.ID), ListItems.TYPE_SUBJECT);
-				// System.out.println(item.toString());
-				listsubject.add(item);
+				Subject sb = new Subject(ob.getLong(SubjectDAO.ID), ob.getString(SubjectDAO.TITLE), Utils.convertToDate(ob.getString(SubjectDAO.CREATION_DATE)));
+				listsubject.add(new SubjectItem(sb));
 			}
 		}
 		return listsubject;
@@ -83,7 +83,7 @@ public class SubjectPanel extends JPanel {
 
 	public void initComponents() {
 		btnNewSubject = new JButton("New Subject");
-		listSubjects = new ArrayList<ListItems>();
+		listSubjects = new ArrayList<ItemViewAbstract>();
 		listSubjects.addAll(loadListSubject());
 
 		subjectPanel = new JPanel();

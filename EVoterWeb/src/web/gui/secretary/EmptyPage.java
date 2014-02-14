@@ -7,10 +7,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * @author louisnguyen
+ * @author maint
  * 
  */
 public class EmptyPage extends JPanel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public EmptyPage(String contentMessage) {
 		JLabel welcomeText = new JLabel(contentMessage);

@@ -27,8 +27,8 @@ public class StartApplet extends JApplet {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
 				public void run() {
-//					setContentPane(mainpage);
-					getContentPane().add(mainpage,BorderLayout.NORTH); 
+					// setContentPane(mainpage);
+					getContentPane().add(mainpage, BorderLayout.NORTH);
 				}
 			});
 		} catch (Exception e) {

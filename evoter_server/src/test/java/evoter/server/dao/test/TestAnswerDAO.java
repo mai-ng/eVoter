@@ -1,5 +1,6 @@
 package evoter.server.dao.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -121,7 +122,19 @@ public class TestAnswerDAO {
 		List<Answer> answers = answerDAO.findById(id);
 		assertTrue("testInsert", 1 == answers.size());
 	}
-
+	/**
+	 * Test for {@link AnswerDAO#update(Answer)} </br>
+	 */
+	@Test
+	public void testUpdate(){
+		long answerId = 2;
+		Answer answer = answerDAO.findById(answerId).get(0);
+		answer.setAnswerText("new answer text");
+		
+		answerDAO.update(answer);
+		assertEquals("update() changes answer text", 
+				answer.getAnswerText(), "new answer text");
+	}
 //	/**
 //	 * @param args
 //	 */

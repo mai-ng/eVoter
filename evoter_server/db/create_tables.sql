@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `answer` (
   PRIMARY KEY (`id`),
   KEY `answer_FKIndex1` (`question_id`),
   CONSTRAINT `FK_answer_question` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.answer: ~10 rows (approximately)
 DELETE FROM `answer`;
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `question` (
   KEY `FK_question_question_type` (`question_type_id`),
   CONSTRAINT `FK_question_question_type` FOREIGN KEY (`question_type_id`) REFERENCES `question_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_question_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=171 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.question: ~8 rows (approximately)
 DELETE FROM `question`;
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `question_type` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `question_type_value` char(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.question_type: ~6 rows (approximately)
 DELETE FROM `question_type`;
@@ -221,7 +221,7 @@ INSERT INTO `subject` (`id`, `title`, `creation_date`) VALUES
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_type_id` int(10) unsigned NOT NULL,
-  `full_name` char(100) NOT NULL,
+  `full_name` char(100) DEFAULT NULL,
   `email_address` char(100) NOT NULL,
   `username` char(30) NOT NULL,
   `passwd` char(30) NOT NULL,
@@ -229,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`),
   KEY `user_FKIndex1` (`user_type_id`),
   CONSTRAINT `FK_user_user_type` FOREIGN KEY (`user_type_id`) REFERENCES `user_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.user: ~8 rows (approximately)
 DELETE FROM `user`;
@@ -278,7 +278,7 @@ CREATE TABLE IF NOT EXISTS `user_type` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_type_value` char(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter.user_type: ~13 rows (approximately)
 DELETE FROM `user_type`;

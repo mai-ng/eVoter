@@ -189,6 +189,9 @@ public class TestUserDAO {
 		List<User> users = userDAO.findByUserName("btdiem");
 		assertTrue("testDeleteByUserName", users.size() == 0);
 	}
+	/**
+	 * Test for {@link UserDAO#update(User)} </br>
+	 */
 	@Test
 	public void testUpdate(){
 		
@@ -206,15 +209,7 @@ public class TestUserDAO {
 		assertEquals("update() changes full name", "Bui Thi Diem", user.getFullName());
 		assertEquals("update() changes password", "new_pass_12345", user.getPassWord());
 		assertEquals("update() changes approved status", false, user.isApproved());
-		assertEquals("update() changes user type", 2, user.getUserTypeId());
-		//change username
-		
-//		user = userDAO.findById(28).get(0);
-//		userDAO.update(user);
-		
-		
-		
-		
+		assertEquals("update() changes user type", 2, user.getUserTypeId());		
 	}
 
 }

@@ -13,6 +13,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import web.applet.RunningTimeData;
+import web.gui.secretary.spec.GUITeacherAbstract;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import web.util.UserAccountValidation;
@@ -29,13 +30,24 @@ public class AddTeacher extends GUITeacherAbstract {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * set the title of the frame, and initialize its components
-	 */
 	public AddTeacher() {
 		super();
-		this.setTitle("Add new teacher");
+		setTitle("Add new teacher");		
+		addNewTeacher();
+	}
+
+	/**
+	 * set text for button "Add"
+	 */
+	public void initComponents() {
+		super.initComponents();
 		btnSave.setText("Add");
+	}
+	
+	/**
+	 * create and add a new teacher to database
+	 */
+	public void addNewTeacher() {
 		btnSave.addActionListener(new ActionListener() {
 
 			@Override
@@ -51,7 +63,7 @@ public class AddTeacher extends GUITeacherAbstract {
 				String fullName = txtFullName.getText();
 				String email = txtEmail.getText();
 				String username = txtUserName.getText();
-				String password = txtPassword.getText();
+
 				if (fullName.equals("")) {
 					msg.setText("\tFull name is empty! Please input again!");
 					dialog.setVisible(true);
@@ -60,9 +72,6 @@ public class AddTeacher extends GUITeacherAbstract {
 					dialog.setVisible(true);
 				} else if (!UserAccountValidation.isValidEmail(email)) {
 					msg.setText("\tEmail is not valid! Please input again!");
-					dialog.setVisible(true);
-				} else if (!UserAccountValidation.isValidPassword(password)) {
-					msg.setText("\tPassword is not valid! Please input again!");
 					dialog.setVisible(true);
 				} else {
 					List<NameValuePair> teacherParams = new ArrayList<NameValuePair>();
@@ -77,13 +86,9 @@ public class AddTeacher extends GUITeacherAbstract {
 							email));
 					teacherParams.add(new BasicNameValuePair(UserDAO.USER_NAME,
 							username));
-					teacherParams.add(new BasicNameValuePair(UserDAO.PASSWORD,
-							password));
-					// teacherParams.add(new BasicNameValuePair(UserDAO.ID,
-					// String
-					// .valueOf(currentUser.getId())));
 					teacherParams.add(new BasicNameValuePair(
 							UserDAO.IS_APPROVED, String.valueOf(true)));
+				
 					String response = EVoterHTTPRequest.excutePost(
 							RequestConfig.getURL(URIRequest.CREATE_USER),
 							teacherParams);
@@ -98,5 +103,6 @@ public class AddTeacher extends GUITeacherAbstract {
 				}
 			}
 		});
+		
 	}
 }

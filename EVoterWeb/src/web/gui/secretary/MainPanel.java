@@ -14,23 +14,55 @@ import javax.swing.JPanel;
 import web.applet.RunningTimeData;
 
 /**
+ * the main framework (a {@link JPanel}) for the whole web application.
+ * Contains 2 parts: menu {@link JPanel} and content {@link JPanel}.
+ * <li> menu part: fixed except that it isn't appeared along with {@link LoginPanel}.
+ * <li> content part: changeable when an action is called. 
  * @author maint
  *
  */
 public class MainPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * fixed part: menu {@link JPanel}.
+	 */
 	private JPanel menu;
+	
+	/**
+	 * changeable part: content {@link JPanel}.
+	 */
 	private JPanel content;
 
+	/**
+	 * current user name
+	 */
 	private JLabel userName;
+	
+	/**
+	 * Teacher tab on menu
+	 */
 	private JButton btnTeacher;
+	
+	/**
+	 * Student tab on menu
+	 */
 	private JButton btnStudent;
+	
+	/**
+	 * Subject tab on menu
+	 */
 	private JButton btnSubject;
+	
+	/**
+	 * Log out tab on menu
+	 */
 	private JButton btnLogout;
 
 	/**
-	 * constructor to initialize components
+	 * constructor to initialize components,
+	 * create the first page of web app which is the "Log in" page.
 	 */
 	public MainPanel(){
 		init();
@@ -41,8 +73,6 @@ public class MainPanel extends JPanel {
 	 * But only contains {@link LoginPanel} as a components.
 	 */
 	public void init() {
-		menu = new JPanel();
-		content = new LoginPanel(MainPanel.this);
 		
 		if (RunningTimeData.getCurrentUserName() == null) {
 			userName = new JLabel("User: Guess");
@@ -71,27 +101,18 @@ public class MainPanel extends JPanel {
 		btnStudent.setContentAreaFilled(false);
 		btnStudent.setBorderPainted(false);
 		
+		menu = new JPanel();
+		content = new LoginPanel(MainPanel.this);
 		setLayout( new BorderLayout(10, 30));
 		this.add(content);
-//		actionPerformed();
-
 	}
 
-	/**
-	 * repaint {@link MainPanel}, change its content by removing all current components and reinitializing it.
-	 */
-	public void restart(){
-		revalidate();
-		removeAll();
-		init();
-	}
 	
 	/**
 	 * create GUI for {@link MainPanel}. 
-	 * It contains 2 sub panels: one is menu panel and other is the content panel 
-	 * (this panel can be repainted)
+	 * It contains 2 sub panels: one is menu panel and other is the content panel.
 	 */
-	public void createGUI(){
+	public void buildGUI(){
 		createMenu();
 		add(menu,BorderLayout.PAGE_START);
 		add(content,BorderLayout.CENTER);
@@ -128,7 +149,7 @@ public class MainPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SubjectPanel subjectTab = new SubjectPanel();
+				SubjectTab subjectTab = new SubjectTab();
 				setContentPanel(subjectTab);
 				resetButton();
 				btnSubject.setForeground(Color.BLUE);
@@ -139,7 +160,7 @@ public class MainPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TeacherPanel teacher = new TeacherPanel();
+				TeacherTab teacher = new TeacherTab();
 				setContentPanel(teacher);
 				resetButton();
 				btnTeacher.setForeground(Color.BLUE);
@@ -147,9 +168,22 @@ public class MainPanel extends JPanel {
 		});
 
 	}
+	
 
 	/**
-	 * reset foreground (text) of all buttons to black
+	 * repaint {@link MainPanel}, change its content by removing all current components and 
+	 * change it back to {@link LoginPanel} as the beginning.
+	 * Used for Log out action.
+	 */
+	private void restart(){
+		revalidate();
+		removeAll();
+		init();
+	}
+
+	/**
+	 * reset foreground (text) of all buttons to black.
+	 * Used when click a tab on the menu, this tab color changes to blue and others are black.
 	 */
 	private void resetButton(){
 		btnStudent.setForeground(Color.black);
@@ -157,7 +191,10 @@ public class MainPanel extends JPanel {
 		btnTeacher.setForeground(Color.black);
 	}
 	
-	// create a menu panel
+	/**
+	 * create a menu panel which contains "Subject", "Teacher", "Student", "Log out" tabs 
+	 * and user name field.
+	 */
 	private void createMenu() {
 		menu.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 		menu.add(btnSubject);
@@ -167,24 +204,18 @@ public class MainPanel extends JPanel {
 		menu.add(userName);
 		menu.setBackground(Color.lightGray);
 	}
-	
-	
 
 	/**
 	 * use to repaint the {@link #content} panel.
 	 * @param p is a panel
 	 */
 	public void setContentPanel(JPanel p) {
+		content.revalidate();
 		content.removeAll();
 		content.add(p);
-		content.revalidate();
 	}
 
 	public void updateAccountName(String acc) {
 		userName.setText(acc);
-	}
-
-	public void showMenu(boolean show) {
-		menu.setVisible(show);
 	}
 }

@@ -31,11 +31,20 @@ public class LoginPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	public static final String SIGNIN = "Sign in";
-	public static final String REGISTER = "New account";
 
+	/**
+	 * display error
+	 */
 	private JLabel lblError;
 
+	/**
+	 * user name field
+	 */
 	private JTextField txtUserName;
+	
+	/**
+	 * password field
+	 */
 	private JPasswordField txtPassword;
 
 	/**
@@ -43,28 +52,31 @@ public class LoginPanel extends JPanel {
 	 */
 	private JButton btnSignIn;
 
+
 	/**
-	 * button "Register"
+	 * the main framework (a JPanel) of the whole web app.
+	 * It contains two parts: menu and content panels.
 	 */
-	private JButton btnRegister;
-
-	GridBagConstraints c;
-
-	MainPanel main;
+	private MainPanel mainPanel;
 
 	/**
-	 * Create the panel.
+	 * constructor log in panel where to enter user name and password to sign in.
+	 * @param main
 	 */
 	public LoginPanel(MainPanel main) {
-		this.main = main;
-		this.main.showMenu(false);
-		// this.password = password;
-
+		this.mainPanel = main;
 		initComponents();
-		// design user's interface
-		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+		buildGUI();
+		actionPerformed();
+	}
+
+	/**
+	 * design user's interface
+	 */
+	public void buildGUI(){
+		setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		GridBagLayout gridbag = new GridBagLayout();
-		c = new GridBagConstraints();
+		GridBagConstraints c = new GridBagConstraints();
 		this.setLayout(gridbag);
 
 		c.fill = GridBagConstraints.BOTH;
@@ -104,45 +116,43 @@ public class LoginPanel extends JPanel {
 		c.insets = new Insets(10, 40, 5, 20);
 		this.add(txtPassword, c);
 
-		// Row 3,4: Create panel Buttons with BorderLayout
+		// Row 3: Create panel Buttons with BorderLayout
 		c.gridy = 3;
 		c.gridx = 1;
 		c.weightx = 0.5;
-		c.ipady = 10;
+		c.ipady = 30;
 		c.insets = new Insets(10, 40, 3, 20);
 		this.add(btnSignIn, c);
-
-		c.gridy = 4;
-		c.gridx = 1;
-		c.weightx = 0.5;
-		c.ipady = 10;
-		c.insets = new Insets(3, 40, 5, 20);
-		this.add(btnRegister, c);
 	}
-
+	
 	/**
-	 * initialize fields email, password, and buttons "Sign in" and "Register"
+	 * initialize fields email, password, and buttons "Sign in"
 	 */
 	public void initComponents() {
+		//set up error field
 		lblError = new JLabel();
 		lblError.setForeground(Color.RED);
 
-		// create text fields
+		// set up user name and password fields
 		txtPassword = new JPasswordField();
 		txtUserName = new JTextField();
 
-		// create buttons
+		// create button log in
 		btnSignIn = new JButton(SIGNIN);
+	}
+	
+	/**
+	 * create action for button "Log in"
+	 */
+	public void actionPerformed(){
 		btnSignIn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// String USER_KEY = null;
-				// lblError.setText("After clicked button");
-				// EVoterHttpClient client = new EVoterHttpClient();
 				final String i_Usrname = getTxtUserName().getText();
 				RunningTimeData.setCurrentUserName(i_Usrname);
 				final String i_Password = getTxtPassword().getText();
+				
 				// lblError.setText("Before prepare parameters");
 				// get input
 				List<NameValuePair> loginParams = new ArrayList<NameValuePair>();
@@ -150,6 +160,7 @@ public class LoginPanel extends JPanel {
 						i_Usrname));
 				loginParams.add(new BasicNameValuePair(UserDAO.PASSWORD,
 						i_Password));
+				
 				// lblError.setText("Before validate");
 				// Check validation of inputs
 				if (i_Usrname.equals("")) {
@@ -176,57 +187,29 @@ public class LoginPanel extends JPanel {
 						if (userkey != null) {
 							System.out.println(userkey);
 							RunningTimeData.setCurrentUserKey(userkey);
-							main.updateAccountName(i_Usrname);
-							main.createGUI();
-							main.showMenu(true);
-							main.setContentPanel(new EmptyPage("Welcome "
+							mainPanel.updateAccountName(i_Usrname);
+							mainPanel.buildGUI();
+							mainPanel.setContentPanel(new EmptyPage("Welcome "
 									+ i_Usrname + " to eVoter System!"));
 						}
 					} else {
 						lblError.setText("Login fail!!! ");
 					}
-					// Using HttpClient
-					// int reponseStatus = client.post(
-					// Configuration.get_urlLogin(), loginParams);
-					// System.out.println(reponseStatus);
-
-					// change to the page if "View list of subjects" if login
-					// succeeded
-					// if (reponseStatus == 200) {
-					// String content = client.getResponseContent();
-					// System.out.println(content);
-					// try {
-					// // JSONObject item = new JSONObject(content);
-					// // USER_KEY = item.getString(UserDAO.USER_KEY);
-					// Login.this.removeAll();
-					// ViewListSubject listOfSubjects = new ViewListSubject();
-					// Login.this.add(listOfSubjects);
-					// Login.this.revalidate();
-					// Login.this.repaint();
-					// } catch (JSONException e1) {
-					// e1.printStackTrace();
-					// lblError.setText("No account with input username and password");
-					// }
-					// } else {
-					// lblError.setText("Connect to server failed!");
-					// }
 				}
 
 			}
 		});
-		btnRegister = new JButton(REGISTER);
-
 	}
 
 	/**
-	 * @return the txtUserName
+	 * @return txtUserName is user name field
 	 */
 	public JTextField getTxtUserName() {
 		return txtUserName;
 	}
 
 	/**
-	 * @return the txtPassword
+	 * @return txtPassword is password field
 	 */
 	public JTextField getTxtPassword() {
 		return txtPassword;

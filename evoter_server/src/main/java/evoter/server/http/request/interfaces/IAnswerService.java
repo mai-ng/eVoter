@@ -56,6 +56,7 @@ public interface IAnswerService {
 	 */
 	public Object doDelete(long questionId) throws Exception;
 	/**
+	 * Update the statistic value of {@link Answer} </br>
 	 * @param parameter request parameter contains: </br>
 	 * {@link AnswerDAO#ID} </br>
 	 * {@link UserDAO#USER_KEY} </br>
@@ -65,6 +66,18 @@ public interface IAnswerService {
 	 * @return FAILURE 	message if there is an exception thrown </br>
 	 */
 	public Object doVote(Map<String, Object> parameter);
+	/**
+	 * Select all of {@link Answer} of question </br>
+	 * If there is {@link Answer} for that question, returning an empty array </br>
+	 * Otherwise, returning an {@link Answer#toJSON()} array </br>
+	 * @param parameter contains </br>
+	 * {@link UserDAO#USER_KEY} for account verification</br>
+	 * {@link QuestionDAO#ID} question id of answers that have statistics value </br>
+	 * @return {@link Answer#toJSON()} array if question has statistics of its answers </br>
+	 * @return an empty array if the question has no answer statistics </br>
+	 */
+	public Object doGetStatistics(Map<String, Object> parameter);
+	
 		
 	
 }

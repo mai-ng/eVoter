@@ -446,6 +446,12 @@ public class URIUtils {
 				&& URIString.endsWith(URIRequest.GET_ALL_STUDENT); 
 		
 	}	
+	public static boolean isVoteAnswer(String URIString){
+		return (URIString != null) 
+				&& URIString.contains(((HttpConnection)BeanDAOFactory.getBean("httpConnection")).getContext()) 
+				&& URIString.endsWith(URIRequest.VOTE_ANSWER); 
+		
+	}		
 	
 	
 }

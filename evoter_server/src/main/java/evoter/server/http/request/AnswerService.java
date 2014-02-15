@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import evoter.server.http.request.interfaces.IAnswerService;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
+import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
 import evoter.share.model.QuestionType;
 import evoter.share.utils.URIRequest;
@@ -123,7 +124,12 @@ public class AnswerService implements IAnswerService {
 					statistics += ":" + (String)parameter.get(AnswerDAO.STATISTICS);
 					
 				}else{
-					statistics = String.valueOf(Integer.valueOf(statistics) + 1);
+					if (statistics != null){
+						statistics = String.valueOf(Integer.valueOf(statistics) + 1);
+					}else{
+						statistics = "1";
+					}
+					
 				}
 				answer.setStatistics(statistics);
 				answerDAO.update(answer);
@@ -136,6 +142,36 @@ public class AnswerService implements IAnswerService {
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IAnswerService#doGetStatistics(java.util.Map)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object doGetStatistics(Map<String, Object> parameter) {
+		// TODO Auto-generated method stub
+		JSONArray response = new JSONArray();
+		
+		try{
+			
+			long questionId = Long.valueOf((String) 
+					parameter.get(QuestionDAO.ID));
+			List<Answer> answerList = answerDAO.findByQuestionId(questionId);
+			if (answerList != null){
+				for (Answer answer : answerList){
+					response.add(answer.toJSON());
+				}//for
+				
+			}//if
+			return response;
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			return URIRequest.FAILURE_MESSAGE;
+		}
+		
+		
 	}
 	
 	

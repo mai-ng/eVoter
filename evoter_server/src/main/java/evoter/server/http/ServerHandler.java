@@ -12,6 +12,7 @@ import com.sun.net.httpserver.HttpHandler;
 import evoter.server.dao.impl.BeanDAOFactory;
 //import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.server.http.request.interfaces.IAccountService;
+import evoter.server.http.request.interfaces.IAnswerService;
 import evoter.server.http.request.interfaces.IQuestionService;
 import evoter.server.http.request.interfaces.ISessionService;
 import evoter.server.http.request.interfaces.ISubjectService;
@@ -59,6 +60,7 @@ public class ServerHandler implements HttpHandler {
 			ISessionService sessionService = (ISessionService)BeanDAOFactory.getBean(ISessionService.BEAN_NAME);
 			IQuestionService questionService = (IQuestionService)BeanDAOFactory.getBean(IQuestionService.BEAN_NAME);
 			IUserService userService = (IUserService)BeanDAOFactory.getBean(IUserService.BEAN_NAME);
+			IAnswerService answerService = (IAnswerService)BeanDAOFactory.getBean(IAnswerService.BEAN_NAME);
 			
 			System.out.println("accountService: " + accountService);
 			System.out.println("subjectService: " + subjectService);
@@ -150,6 +152,11 @@ public class ServerHandler implements HttpHandler {
 						response = userService.doDelete(parameters);
 					}else if (URIUtils.isChangeApproveUserRequest(uri)){
 						response = userService.doChangeApprove(parameters);
+					}
+					
+					//statistic management
+					else if (URIUtils.isVoteAnswer(uri)){
+						response = answerService.doVote(parameters);
 					}
 				}
 

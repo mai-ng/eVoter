@@ -80,13 +80,19 @@ public class TestAnswerService {
 		long questionId = 3;
 		Object response = answerService.doGetAllAnswer(questionId);
 		String expected_response = ""+
-		"[{\"ANSWER_TEXT\":\"1\",\"ID\":1,\"QUESTION_ID\":3},{\"ANSWER_TEXT\":\"2\",\"ID\":2,\"QUESTION_ID\":3}," +
-		"{\"ANSWER_TEXT\":\"0\",\"ID\":3,\"QUESTION_ID\":3},{\"ANSWER_TEXT\":\"unlimited\",\"ID\":4,\"QUESTION_ID\":3}]";
+		"[{\"ANSWER_TEXT\":\"1\",\"ID\":1,\"QUESTION_ID\":3,\"STATISTICS\":null}," +
+		"{\"ANSWER_TEXT\":\"2\",\"ID\":2,\"QUESTION_ID\":3,\"STATISTICS\":null}," +
+		"{\"ANSWER_TEXT\":\"0\",\"ID\":3,\"QUESTION_ID\":3,\"STATISTICS\":null}," +
+		"{\"ANSWER_TEXT\":\"unlimited\",\"ID\":4,\"QUESTION_ID\":3,\"STATISTICS\":null}]";
 		assertEquals("doGetAllAnswer", response.toString(), expected_response);
 		
 		questionId = 1;
 		response = answerService.doGetAllAnswer(questionId);
-		assertEquals("doGetAllAnswer() returns an empty array", response.toString(), "[]");
+		expected_response = ""+
+				"[{\"ANSWER_TEXT\":\"Yes\",\"ID\":139,\"QUESTION_ID\":1,\"STATISTICS\":\"10\"}," +
+				"{\"ANSWER_TEXT\":\"No\",\"ID\":140,\"QUESTION_ID\":1,\"STATISTICS\":\"30\"}]";
+				
+		assertEquals("doGetAllAnswer()", response.toString(), expected_response);
 	}
 	/**
 	 * Test for {@link IAnswerService#doDelete(long)} </br>

@@ -40,7 +40,10 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 		
 		
 		final String sql = "INSERT INTO " + TABLE_NAME + "(" 
-		+ QUESTION_ID + "," + ANSWER_TEXT +")" + " VALUES(?,?)";
+		+ QUESTION_ID 
+		+ "," + ANSWER_TEXT 
+		+ "," + STATISTICS
+		+")" + " VALUES(?, ?, ?)";
 		 KeyHolder keyHolder = new GeneratedKeyHolder();
 		 getJdbcTemplate().update(new PreparedStatementCreator() {
 				@Override
@@ -50,6 +53,7 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 		            PreparedStatement ps = connection.prepareStatement(sql);
 		            ps.setLong(1, answer.getQuestionId());
 		            ps.setString(2, answer.getAnswerText());
+		            ps.setString(3, answer.getStatistics());
 		            return ps;
 
 				}
@@ -204,6 +208,7 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 				+ " SET " 
 //				+ QUESTION_ID + "=" + answer.getQuestionId() 
 				+  ANSWER_TEXT +"='" + answer.getAnswerText() + "'" 
+				+ ","+STATISTICS + "='" + answer.getStatistics() + "'"
 				+ " WHERE " + ID + "=" + answer.getId();
 
 		return getJdbcTemplate().update(sql);

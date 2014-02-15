@@ -161,14 +161,14 @@ public class TestSessionUserDAO {
 		assertTrue(sessionUsers.size() == 1);
 		
 		SessionUser sessionUser = sessionUsers.get(0);
-		boolean acceptSession = sessionUser.isAcceptSession();
-		sessionUser.setAcceptSession(!acceptSession);
+		boolean acceptSession = true;
+		sessionUser.setAcceptSession(acceptSession);
 		sessionUserDAO.update(sessionUser);
 
 		sessionUsers = sessionUserDAO.findByProperty(
 				new String[]{SessionUserDAO.USER_ID, SessionUserDAO.SESSION_ID}, 
 				new Object[]{3, 1}); 
-		assertTrue("testUpdate", sessionUsers.get(0).isAcceptSession() == !acceptSession);
+		assertTrue("testUpdate", sessionUsers.get(0).isAcceptSession());
 		
 	}
 		

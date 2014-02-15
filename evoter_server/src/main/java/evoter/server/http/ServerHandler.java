@@ -139,6 +139,8 @@ public class ServerHandler implements HttpHandler {
 						response = questionService.doGetLatest(parameters);
 					}else if (URIUtils.isStopSendQuestionRequest(uri)){
 						response = questionService.doStopSend(parameters);
+					}else if(URIUtils.isUpdateQuestionRequest(uri)){
+						response = questionService.doEdit(parameters);
 					
 					
 					//user management

@@ -7,7 +7,11 @@ import org.springframework.jdbc.core.RowMapper;
 
 import evoter.share.dao.AnswerDAO;
 import evoter.share.model.Answer;
-
+/**
+ * 
+ * @author btdiem
+ *
+ */
 public class AnswerRowMapper implements RowMapper<Answer> {
 
 	@Override
@@ -17,6 +21,7 @@ public class AnswerRowMapper implements RowMapper<Answer> {
 		answer.setId(rs.getLong(AnswerDAO.ID));
 		answer.setAnswerText(rs.getString(AnswerDAO.ANSWER_TEXT));
 		answer.setQuestionId(rs.getLong(AnswerDAO.QUESTION_ID));
+		answer.setStatistics(rs.getString(AnswerDAO.STATISTICS));
 		return answer;
 	}
 

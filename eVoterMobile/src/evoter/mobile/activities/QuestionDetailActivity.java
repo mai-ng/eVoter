@@ -24,7 +24,7 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import evoter.mobile.main.R;
-import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.mobile.objects.EVoterShareMemory;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.model.Answer;
 import evoter.share.model.Question;
@@ -49,26 +49,24 @@ public class QuestionDetailActivity extends EVoterActivity {
 	LinearLayout answerArea;
 	Button btSend;
 	Button btView;
-	Question currentQuestion;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.question_view_detail);
-		this.tvTitleBarContent.setText(RuntimeEVoterManager.getCurrentSessionName());
+		this.tvTitleBarContent.setText(EVoterShareMemory.getCurrentSessionName());
 		this.ivTitleBarRefresh.setVisibility(View.GONE);
 		mainMenu.setQuestionActivityMenu();
-		currentQuestion = RuntimeEVoterManager.getCurrentQuestion();
-		Log.i("Current Question: ", currentQuestion.getTitle());
+		Log.i("Current Question: ", EVoterShareMemory.getCurrentQuestion().getTitle());
 		tvQuestionText = (TextView) findViewById(R.id.tvQuestionText);
-		tvQuestionText.setText(currentQuestion.getQuestionText());
+		tvQuestionText.setText(EVoterShareMemory.getCurrentQuestion().getQuestionText());
 		
 		answerArea = (LinearLayout) findViewById(R.id.loAnswerArea);
 		
-		int type = (int) currentQuestion.getQuestionTypeId();
+		int type = (int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId();
 		
 		//Parser the answer of question
-		ArrayList<Answer> column1 = parserAnswer(currentQuestion.getAnswerColumn1());
+		ArrayList<Answer> column1 = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
 		
 		//		type = 1;
 		switch (type) {
@@ -119,8 +117,8 @@ public class QuestionDetailActivity extends EVoterActivity {
 				answerArea.addView(etAnswer);
 				break;
 			case QuestionType.MATCH:
-				if (!currentQuestion.getAnswerColumn2().equals("")) {
-					ArrayList<Answer> column2 = parserAnswer(currentQuestion.getAnswerColumn2());
+				if (!EVoterShareMemory.getCurrentQuestion().getAnswerColumn2().equals("")) {
+					ArrayList<Answer> column2 = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn2());
 				}
 				break;
 			default:
@@ -128,9 +126,9 @@ public class QuestionDetailActivity extends EVoterActivity {
 		}
 		
 		btSend = (Button) findViewById(R.id.btSendQuestion);
-		if (RuntimeEVoterManager.getCurrentUserType() == UserType.TEACHER) {
+		if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
 			btSend.setText("Send");
-		} else if (RuntimeEVoterManager.getCurrentUserType() == UserType.STUDENT) {
+		} else if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
 			btSend.setText("Submit");
 		}
 		

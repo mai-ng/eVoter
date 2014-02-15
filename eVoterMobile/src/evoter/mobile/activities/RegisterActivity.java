@@ -12,7 +12,7 @@ import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
 import evoter.mobile.objects.RequestConfig;
-import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.UserType;
@@ -103,7 +103,7 @@ public class RegisterActivity extends EVoterActivity {
 							else {
 								EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 										"You will receive an email to confirm your register!");
-								RuntimeEVoterManager.setCurrentUserName(i_usrname);
+								EVoterShareMemory.setCurrentUserName(i_usrname);
 								Intent intent = new Intent(RegisterActivity.this,
 										LoginActivity.class);
 								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

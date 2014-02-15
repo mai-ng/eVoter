@@ -15,7 +15,7 @@ import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
 import evoter.mobile.objects.RequestConfig;
-import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.UserDAO;
@@ -36,12 +36,12 @@ public class EditSessionActivity extends NewSessionActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		this.tvTitleBarContent.setText(RuntimeEVoterManager
+		this.tvTitleBarContent.setText(EVoterShareMemory
 				.getCurrentSessionName());
 		mainMenu.setSessionActivityMenu();
 		
 		etTitle = (EditText) findViewById(R.id.etNewSessionName);
-		etTitle.setText(RuntimeEVoterManager.getCurrentSessionName());
+		etTitle.setText(EVoterShareMemory.getCurrentSessionName());
 		btSave = (Button) findViewById(R.id.btNewSessionSave);
 		btSave.setOnClickListener(new OnClickListener() {
 			
@@ -53,9 +53,9 @@ public class EditSessionActivity extends NewSessionActivity {
 				else {
 					
 					RequestParams params = new RequestParams();
-					params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
+					params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 					params.add(SessionDAO.NAME, etTitle.getText().toString());
-					params.add(SessionDAO.ID, String.valueOf(RuntimeEVoterManager.getCurrentSessionID()));
+					params.add(SessionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSessionID()));
 					
 					client.post(RequestConfig.getURL(URIRequest.UPDATE_SESSION), params,
 							new AsyncHttpResponseHandler() {

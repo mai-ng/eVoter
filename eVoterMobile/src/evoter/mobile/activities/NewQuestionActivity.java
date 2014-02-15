@@ -26,7 +26,7 @@ import com.loopj.android.http.RequestParams;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.RequestConfig;
-import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
@@ -79,30 +79,8 @@ public class NewQuestionActivity extends EVoterActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parentView, View itemClicked, int position, long id) {
 				final String itemClick = (String) parentView.getItemAtPosition(position);
-				final DialogInfor dialog = new DialogInfor(
-						NewQuestionActivity.this, "Delete answer");
-				dialog.setMessageContent("Delete the answer: " + itemClick);
-				dialog.getBtOK().setText("Delete");
-				dialog.getBtOK().setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						Log.i("Answer click", "edit answer" + itemClick);
-						dialog.dismiss();
-						listAnswser.remove(itemClick);
-						adaterListView.notifyDataSetChanged();
-					}
-				});
 				
-				dialog.getBtKO().setText("Cancel");
-				dialog.getBtKO().setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						dialog.dismiss();
-					}
-				});
-				dialog.show();
+				clickAnswerAction(itemClick);
 			}
 		});
 		
@@ -142,41 +120,7 @@ public class NewQuestionActivity extends EVoterActivity {
 				String selected = (String) parentView.getItemAtPosition(position);
 				int idItem = getIDType(selected);
 				typeID = (long) idItem;
-				switch (idItem) {
-					case 1:
-						laAnswer.setVisibility(View.GONE);
-						//						lvListAnswser.setVisibility(View.GONE);
-						laSlider.setVisibility(View.GONE);
-						break;
-					case 2:
-						laAnswer.setVisibility(View.VISIBLE);
-						//						lvListAnswser.setVisibility(View.VISIBLE);
-						laSlider.setVisibility(View.GONE);
-						break;
-					case 3:
-						laAnswer.setVisibility(View.VISIBLE);
-						//						lvListAnswser.setVisibility(View.VISIBLE);
-						laSlider.setVisibility(View.GONE);
-						break;
-					case 4:
-						laAnswer.setVisibility(View.GONE);
-						//						lvListAnswser.setVisibility(View.GONE);
-						laSlider.setVisibility(View.VISIBLE);
-						break;
-					case 5:
-						laSlider.setVisibility(View.GONE);
-						laAnswer.setVisibility(View.GONE);
-						//						lvListAnswser.setVisibility(View.GONE);
-						break;
-					case 6:
-						laSlider.setVisibility(View.GONE);
-						laAnswer.setVisibility(View.GONE);
-						//						lvListAnswser.setVisibility(View.GONE);
-						EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "Not implemented yet!");
-						break;
-					default:
-						break;
-				}
+				buildAnswerArea(idItem);
 			}
 			
 			@Override
@@ -201,7 +145,7 @@ public class NewQuestionActivity extends EVoterActivity {
 		etQuestionText = (EditText) findViewById(R.id.etNewQuestionContent);
 		
 		//Layout answer for multi checkbox and multi radio button
-		adaterListView = new ArrayAdapter<String>(NewQuestionActivity.this, R.layout.answer_item, listAnswser);
+		adaterListView = new ArrayAdapter<String>(NewQuestionActivity.this, R.layout.user_item, listAnswser);
 		lvListAnswser = (ListView) findViewById(R.id.lvCreaetQuestionListAnswser);
 		lvListAnswser.setAdapter(adaterListView);
 		etAnswer = (EditText) findViewById(R.id.etCreateQuestionAnswer);
@@ -217,16 +161,23 @@ public class NewQuestionActivity extends EVoterActivity {
 		laSlider.setVisibility(View.VISIBLE);
 		
 		btCancel = (Button) findViewById(R.id.btCancelNewQuestion);
+		createQuestionType();
+		spQuestionType = (Spinner) findViewById(R.id.spQuestionType);
+		ArrayAdapter<String> adaterSpinner = new ArrayAdapter<String>(NewQuestionActivity.this, R.layout.answer_item, typeArray);
+		spQuestionType.setAdapter(adaterSpinner);
+		btSave = (Button) findViewById(R.id.btSaveNewQuestion);
+	}
+
+	/**
+	 * 
+	 */
+	private void createQuestionType() {
 		typeArray.add(YES_NO);
 		typeArray.add(MULTI_RADIO);
 		typeArray.add(MULTI_CHECK);
 		typeArray.add(SLIDER);
 		typeArray.add(INPUT_ANSWER);
 		typeArray.add(MATCH);
-		spQuestionType = (Spinner) findViewById(R.id.spQuestionType);
-		ArrayAdapter<String> adaterSpinner = new ArrayAdapter<String>(NewQuestionActivity.this, R.layout.user_item, typeArray);
-		spQuestionType.setAdapter(adaterSpinner);
-		btSave = (Button) findViewById(R.id.btSaveNewQuestion);
 	}
 
 	/**
@@ -237,51 +188,7 @@ public class NewQuestionActivity extends EVoterActivity {
 			
 			@Override
 			public void onClick(View v) {
-				if (!readyToCreate()) {
-					EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "Invalid parameter. Please input again!");
-				} else {
-					
-					// Send login request to server
-					RequestParams params = new RequestParams();
-					params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
-					params.put(QuestionDAO.QUESTION_TEXT, new String[] { etQuestionText.getText().toString() });
-					params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(typeID));
-					Timestamp ts = new Timestamp(System.currentTimeMillis());
-					params.add(QuestionDAO.CREATION_DATE, ts.toString());
-					params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(RuntimeEVoterManager.getCurrentSessionID()));
-					params.put(AnswerDAO.ANSWER_TEXT, listAnswser);
-					client.post(RequestConfig.getURL(URIRequest.CREATE_QUESTION), params,
-							new AsyncHttpResponseHandler() {
-								// Request successfully - client receive a response
-								@Override
-								public void onSuccess(String response) {
-									Log.i("Response", response);
-									if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-										EVoterMobileUtils.showeVoterToast(
-												NewQuestionActivity.this,
-												"A new question is created successfully!");
-										finish();
-									} else {
-										EVoterMobileUtils.showeVoterToast(
-												NewQuestionActivity.this,
-												"Cannot create new question");
-									}
-									
-								}
-								
-								//Login fail
-								@Override
-								public void onFailure(Throwable error,
-										String content) {
-									EVoterMobileUtils.showeVoterToast(
-											NewQuestionActivity.this,
-											"Cannot request to server!");
-									Log.e("create question", "onFailure error : "
-											+ error.toString() + "content : "
-											+ content);
-								}
-							});
-				}
+				createQuestionRequest();
 				
 			}
 		});
@@ -325,6 +232,130 @@ public class NewQuestionActivity extends EVoterActivity {
 		if (selected.equals(INPUT_ANSWER)) return 5;
 		if (selected.equals(MATCH)) return 6;
 		return -1;
+	}
+
+	/**
+	 * @param itemClick
+	 */
+	private void clickAnswerAction(final String itemClick) {
+		final DialogInfor dialog = new DialogInfor(
+				NewQuestionActivity.this, "Delete answer");
+		dialog.setMessageContent("Delete the answer: " + itemClick);
+		dialog.getBtOK().setText("Delete");
+		dialog.getBtOK().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Log.i("Answer click", "edit answer" + itemClick);
+				dialog.dismiss();
+				listAnswser.remove(itemClick);
+				adaterListView.notifyDataSetChanged();
+			}
+		});
+		
+		dialog.getBtKO().setText("Cancel");
+		dialog.getBtKO().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
+	}
+
+	/**
+	 * @param idItem
+	 */
+	private void buildAnswerArea(int idItem) {
+		switch (idItem) {
+			case 1:
+				laAnswer.setVisibility(View.GONE);
+				//						lvListAnswser.setVisibility(View.GONE);
+				laSlider.setVisibility(View.GONE);
+				break;
+			case 2:
+				laAnswer.setVisibility(View.VISIBLE);
+				//						lvListAnswser.setVisibility(View.VISIBLE);
+				laSlider.setVisibility(View.GONE);
+				break;
+			case 3:
+				laAnswer.setVisibility(View.VISIBLE);
+				//						lvListAnswser.setVisibility(View.VISIBLE);
+				laSlider.setVisibility(View.GONE);
+				break;
+			case 4:
+				laAnswer.setVisibility(View.GONE);
+				//						lvListAnswser.setVisibility(View.GONE);
+				laSlider.setVisibility(View.VISIBLE);
+				break;
+			case 5:
+				laSlider.setVisibility(View.GONE);
+				laAnswer.setVisibility(View.GONE);
+				//						lvListAnswser.setVisibility(View.GONE);
+				break;
+			case 6:
+				laSlider.setVisibility(View.GONE);
+				laAnswer.setVisibility(View.GONE);
+				//						lvListAnswser.setVisibility(View.GONE);
+				EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "Not implemented yet!");
+				break;
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void createQuestionRequest() {
+		if (!readyToCreate()) {
+			EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "Invalid parameter. Please input again!");
+		} else {
+			
+			// Send login request to server
+			RequestParams params = new RequestParams();
+			params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+			params.put(QuestionDAO.QUESTION_TEXT, new String[] { etQuestionText.getText().toString() });
+			params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(typeID));
+			Timestamp ts = new Timestamp(System.currentTimeMillis());
+			params.add(QuestionDAO.CREATION_DATE, ts.toString());
+			params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSessionID()));
+			params.put(AnswerDAO.ANSWER_TEXT, listAnswser);
+			client.post(RequestConfig.getURL(URIRequest.CREATE_QUESTION), params,
+					new AsyncHttpResponseHandler() {
+						// Request successfully - client receive a response
+						@Override
+						public void onSuccess(String response) {
+							Log.i("Response", response);
+							if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+								EVoterMobileUtils.showeVoterToast(
+										NewQuestionActivity.this,
+										"A new question is created successfully!");
+								
+							} else {
+								EVoterMobileUtils.showeVoterToast(
+										NewQuestionActivity.this,
+										"Cannot create new question");
+							}
+							finish();
+							
+						}
+						
+						//Login fail
+						@Override
+						public void onFailure(Throwable error,
+								String content) {
+							EVoterMobileUtils.showeVoterToast(
+									NewQuestionActivity.this,
+									"Cannot request to server!");
+							Log.e("create question", "onFailure error : "
+									+ error.toString() + "content : "
+									+ content);
+							finish();
+						}
+					});
+		}
 	}
 	
 }

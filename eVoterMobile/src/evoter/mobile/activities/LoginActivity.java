@@ -19,26 +19,27 @@ import com.loopj.android.http.RequestParams;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.OfflineEVoterManager;
 import evoter.mobile.objects.RequestConfig;
-import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.UserDAO;
 import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
 /**
- * <br>Update by @author luongnv89 on 12-Feb-2014:
  * <br>
- * <li> using {@link EVoterActivity#client} instead of local variable
- * <br>Update by @author luongnv89 on Thu 30-Jan-2014:
+ * Update by @author luongnv89 on 12-Feb-2014: <br>
+ * <li>using {@link EVoterActivity#client} instead of local variable <br>
+ * Update by @author luongnv89 on Thu 30-Jan-2014: <br> <li>remove constructor
+ * for {@link OfflineEVoterManager} to {@link EVoterActivity} <br>
+ * Updated by @author luongnv89 on 19-Jan-2014:<br> <li>Deleted start new
+ * LoginActivity in case "username and password is incorrect!" <br>
+ * Just notify for user and user can try again <br>
+ * Update by @author luongnv89 on 18-Jan-2014<br> <li>add comments for class,
+ * variable, method, <li>Edited onBackPressed() by using
+ * {@link EVoterActivity#exit()} method; <li>Add relogin in case the input
+ * username and password is not correct. <br>
  * <br>
- * <li> remove constructor for {@link OfflineEVoterManager} to {@link EVoterActivity}
- * <br>Updated by @author luongnv89 on 19-Jan-2014:<br>
- * <li> Deleted start new LoginActivity in case "username and password is incorrect!"
- * <br>Just notify for user and user can try again
- * <br>Update by @author luongnv89 on 18-Jan-2014<br>
- * <li>add comments for class, variable, method, <li>Edited onBackPressed() by
- * using {@link EVoterActivity#exit()} method; <li>Add relogin in case the input username and password is not correct. <br>
- * <br>Created by luongnv89 on 05/12/13 </br> Updated by @author btdiem on
+ * Created by luongnv89 on 05/12/13 </br> Updated by @author btdiem on
  * 08-Jan-2014:</br></li> parse response and store user key sent by server to
  * verify next time
  */
@@ -61,10 +62,9 @@ public class LoginActivity extends EVoterActivity {
 		
 		this.ivTitleBarIcon.setEnabled(false);
 		
-		
 		etUsrName = (EditText) findViewById(R.id.usrname);
-		if (RuntimeEVoterManager.getCurrentUserName() != null) {
-			etUsrName.setText(RuntimeEVoterManager.getCurrentUserName());
+		if (EVoterShareMemory.getCurrentUserName() != null) {
+			etUsrName.setText(EVoterShareMemory.getCurrentUserName());
 		}
 		etPassword = (EditText) findViewById(R.id.password);
 		
@@ -74,99 +74,11 @@ public class LoginActivity extends EVoterActivity {
 		btLogin.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// GetData getData = new GetData();
-				final String i_Usrname = etUsrName.getText().toString();
-				RuntimeEVoterManager
-						.setCurrentUserName(i_Usrname);
-				final String i_Password = etPassword.getText().toString();
-				
-				//Pre-check validation of input username and password
-				if (i_Usrname.equals("")) {
-					EVoterMobileUtils.showeVoterToast(LoginActivity.this,
-							"Please input your username");
-				} else if (i_Password.equals("")) {
-					EVoterMobileUtils.showeVoterToast(LoginActivity.this,
-							"Please input your password");
-				} else if (!UserValidation.isValidUserName(i_Usrname)) {
-					EVoterMobileUtils.showeVoterToast(LoginActivity.this,
-							"Input username is not valid");
-				} else if (!UserValidation.isValidPassword(i_Password)) {
-					EVoterMobileUtils.showeVoterToast(LoginActivity.this,
-							"Input password is not valid");
-				} else
-				
-				{
-					// Send login request to server
-					RequestParams params = new RequestParams();
-					params.add(UserDAO.USER_NAME, i_Usrname);
-					params.add(UserDAO.PASSWORD, i_Password);
-					client.post(RequestConfig.getURL(URIRequest.LOGIN), params,
-							new AsyncHttpResponseHandler() {
-								// Request successfully - client receive a response
-								@Override
-								public void onSuccess(String response) {
-									Log.i("Response", response);
-									String userKey = null;
-									try {
-										
-										JSONObject object = new JSONObject(
-												response);
-										userKey = object
-												.getString(UserDAO.USER_KEY);
-										
-									} catch (JSONException e) {
-										e.printStackTrace();
-										EVoterMobileUtils.showeVoterToast(LoginActivity.this, "Error! Cannot get user information");
-									}
-									
-									//Got the userkey
-									if (userKey != null && userKey != "null") {
-										Log.i("USER_KEY", userKey);
-										offlineEVoterManager
-												.rememberCurrentUser(i_Usrname,
-														userKey);
-										RuntimeEVoterManager
-												.setUSER_KEY(userKey);
-										EVoterMobileUtils.showeVoterToast(
-												LoginActivity.this,
-												"Welcome "
-														+ RuntimeEVoterManager
-																.getCurrentUserName()
-														+ " to eVoter!");
-										
-										Intent subjectIntent = new Intent(
-												LoginActivity.this,
-												SubjectActivity.class);
-										subjectIntent
-												.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-										subjectIntent
-												.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-										startActivity(subjectIntent);
-										
-									}
-									else {
-										EVoterMobileUtils.showeVoterToast(LoginActivity.this, "Error! Username and password is not correct. Please try again!");
-									}
-								}
-								
-								//Login fail
-								@Override
-								public void onFailure(Throwable error,
-										String content) {
-									EVoterMobileUtils.showeVoterToast(
-											LoginActivity.this,
-											"Cannot request to server!");
-									Log.e("LoginTest", "onFailure error : "
-											+ error.toString() + "content : "
-											+ content);
-								}
-							});
-				}
+				loginButtonAction();
 				
 			}
 		});
 		
-
 		tvRegister = (TextView) findViewById(R.id.tvSignUp);
 		tvRegister.setPaintFlags(tvRegister.getPaintFlags()
 				| Paint.UNDERLINE_TEXT_FLAG);
@@ -205,5 +117,107 @@ public class LoginActivity extends EVoterActivity {
 	@Override
 	public void onBackPressed() {
 		exit();
+	}
+	
+	/**
+	 * 
+	 */
+	private void loginButtonAction() {
+		// GetData getData = new GetData();
+		final String i_Usrname = etUsrName.getText().toString();
+		EVoterShareMemory
+				.setCurrentUserName(i_Usrname);
+		final String i_Password = etPassword.getText().toString();
+		
+		//Pre-check validation of input username and password
+		if (i_Usrname.equals("")) {
+			EVoterMobileUtils.showeVoterToast(LoginActivity.this,
+					"Please input your username");
+		} else if (i_Password.equals("")) {
+			EVoterMobileUtils.showeVoterToast(LoginActivity.this,
+					"Please input your password");
+		} else if (!UserValidation.isValidUserName(i_Usrname)) {
+			EVoterMobileUtils.showeVoterToast(LoginActivity.this,
+					"Input username is not valid");
+		} else if (!UserValidation.isValidPassword(i_Password)) {
+			EVoterMobileUtils.showeVoterToast(LoginActivity.this,
+					"Input password is not valid");
+		} else
+		
+		{
+			// Send login request to server
+			RequestParams params = new RequestParams();
+			params.add(UserDAO.USER_NAME, i_Usrname);
+			params.add(UserDAO.PASSWORD, i_Password);
+			client.post(RequestConfig.getURL(URIRequest.LOGIN), params,
+					new AsyncHttpResponseHandler() {
+						// Request successfully - client receive a response
+						@Override
+						public void onSuccess(String response) {
+							Log.i("Response", response);
+							responseProcess(i_Usrname, response);
+						}
+						
+						//Login fail
+						@Override
+						public void onFailure(Throwable error,
+								String content) {
+							EVoterMobileUtils.showeVoterToast(
+									LoginActivity.this,
+									"Cannot request to server!");
+							Log.e("LoginTest", "onFailure error : "
+									+ error.toString() + "content : "
+									+ content);
+						}
+					});
+		}
+	}
+
+	/**
+	 * @param i_Usrname
+	 * @param response
+	 */
+	private void responseProcess(final String i_Usrname, String response) {
+		String userKey = null;
+		try {
+			
+			JSONObject object = new JSONObject(
+					response);
+			userKey = object
+					.getString(UserDAO.USER_KEY);
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+			EVoterMobileUtils.showeVoterToast(LoginActivity.this, "Error! Cannot get user information");
+		}
+		
+		//Got the userkey
+		if (userKey != null && userKey != "null") {
+			Log.i("USER_KEY", userKey);
+			offlineEVoterManager
+					.rememberCurrentUser(i_Usrname,
+							userKey);
+			EVoterShareMemory
+					.setUSER_KEY(userKey);
+			EVoterMobileUtils.showeVoterToast(
+					LoginActivity.this,
+					"Welcome "
+							+ EVoterShareMemory
+									.getCurrentUserName()
+							+ " to eVoter!");
+			
+			Intent subjectIntent = new Intent(
+					LoginActivity.this,
+					SubjectActivity.class);
+			subjectIntent
+					.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			subjectIntent
+					.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(subjectIntent);
+			
+		}
+		else {
+			EVoterMobileUtils.showeVoterToast(LoginActivity.this, "Error! Username and password is not correct. Please try again!");
+		}
 	}
 }

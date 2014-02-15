@@ -17,14 +17,13 @@ import android.view.View.OnClickListener;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.RequestConfig;
-import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
-import evoter.share.model.Question;
 import evoter.share.model.QuestionType;
 import evoter.share.utils.URIRequest;
 
@@ -32,7 +31,6 @@ import evoter.share.utils.URIRequest;
  * @author luongnv89
  */
 public class EditQuestionActivity extends NewQuestionActivity {
-	Question currentQuestion ;
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -42,17 +40,15 @@ public class EditQuestionActivity extends NewQuestionActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		currentQuestion = RuntimeEVoterManager.getCurrentQuestion();
-		etQuestionText.setText(currentQuestion.getQuestionText());
-		int type = (int) currentQuestion.getQuestionTypeId();
+		etQuestionText.setText(EVoterShareMemory.getCurrentQuestion().getQuestionText());
+		int type = (int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId();
 		//Parser the answer of question
-		ArrayList<Answer> column1 = parserAnswer(currentQuestion.getAnswerColumn1());
-		spQuestionType.setSelection(type);
+		ArrayList<Answer> column1 = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
+		spQuestionType.setSelection(type-1);
+		spQuestionType.setEnabled(false);
 		//		type = 1;
 		switch (type) {
-			case QuestionType.YES_NO:
-				//				spQuestionType.setSelection(1);
-				break;
+			
 			case QuestionType.MULTI_RADIOBUTTON:
 				for (int i = 0; i < column1.size(); i++) {
 					listAnswser.add(column1.get(i).getAnswerText());
@@ -68,14 +64,14 @@ public class EditQuestionActivity extends NewQuestionActivity {
 			case QuestionType.SLIDER:
 				etMax.setText(column1.get(0).getAnswerText());
 				break;
-			case QuestionType.INPUT_ANSWER:
-				break;
+			
 			case QuestionType.MATCH:
 				EVoterMobileUtils.showeVoterToast(EditQuestionActivity.this, "Not implemented yet!");
 				break;
 			default:
 				break;
 		}
+		
 		setBtSaveAction();
 	}
 	
@@ -88,50 +84,7 @@ public class EditQuestionActivity extends NewQuestionActivity {
 			
 			@Override
 			public void onClick(View v) {
-				if (!readyToCreate()) {
-					EVoterMobileUtils.showeVoterToast(EditQuestionActivity.this, "Invalid parameter. Please input again!");
-				} else {
-					
-					// Send login request to server
-					RequestParams params = new RequestParams();
-					
-					params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
-					params.add(QuestionDAO.ID, String.valueOf(currentQuestion.getId()));
-					params.put(QuestionDAO.QUESTION_TEXT, new String[] { etQuestionText.getText().toString() });
-					params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(typeID));
-					params.put(AnswerDAO.ANSWER_TEXT, listAnswser);
-					client.post(RequestConfig.getURL(URIRequest.UPDATE_QUESTION), params,
-							new AsyncHttpResponseHandler() {
-								// Request successfully - client receive a response
-								@Override
-								public void onSuccess(String response) {
-									Log.i("Response", response);
-									if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-										EVoterMobileUtils.showeVoterToast(
-												EditQuestionActivity.this,
-												"Updated successfully!");
-										finish();
-									} else {
-										EVoterMobileUtils.showeVoterToast(
-												EditQuestionActivity.this,
-												"Cannot update question");
-									}
-									
-								}
-								
-								//Login fail
-								@Override
-								public void onFailure(Throwable error,
-										String content) {
-									EVoterMobileUtils.showeVoterToast(
-											EditQuestionActivity.this,
-											"Cannot request to server!");
-									Log.e("edit question", "onFailure error : "
-											+ error.toString() + "content : "
-											+ content);
-								}
-							});
-				}
+				updateQuestionRequest();
 				
 			}
 		});
@@ -168,6 +121,56 @@ public class EditQuestionActivity extends NewQuestionActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void updateQuestionRequest() {
+		if (!readyToCreate()) {
+			EVoterMobileUtils.showeVoterToast(EditQuestionActivity.this, "Invalid parameter. Please input again!");
+		} else {
+			
+//			parameters.put(QuestionDAO.ID, questionId);
+			
+			RequestParams params = new RequestParams();
+			params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+			params.put(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
+			params.put(QuestionDAO.QUESTION_TEXT, etQuestionText.getText().toString());
+			params.put(AnswerDAO.ANSWER_TEXT, listAnswser);
+			client.post(RequestConfig.getURL(URIRequest.UPDATE_QUESTION), params,
+					new AsyncHttpResponseHandler() {
+						// Request successfully - client receive a response
+						@Override
+						public void onSuccess(String response) {
+							Log.i("Response", response);
+							if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+								EVoterMobileUtils.showeVoterToast(
+										EditQuestionActivity.this,
+										"Updated successfully!");
+							} else {
+								EVoterMobileUtils.showeVoterToast(
+										EditQuestionActivity.this,
+										"Cannot update question");
+							}
+							finish();
+							
+						}
+						
+						//Login fail
+						@Override
+						public void onFailure(Throwable error,
+								String content) {
+							EVoterMobileUtils.showeVoterToast(
+									EditQuestionActivity.this,
+									"Cannot request to server!");
+							Log.e("edit question", "onFailure error : "
+									+ error.toString() + "content : "
+									+ content);
+							finish();
+						}
+					});
 		}
 	}
 	

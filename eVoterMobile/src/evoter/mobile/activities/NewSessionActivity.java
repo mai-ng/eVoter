@@ -18,7 +18,7 @@ import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
 import evoter.mobile.objects.RequestConfig;
-import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.UserDAO;
@@ -48,7 +48,7 @@ public class NewSessionActivity extends EVoterActivity {
 		
 		setContentView(R.layout.new_session);
 		
-		this.tvTitleBarContent.setText(RuntimeEVoterManager
+		this.tvTitleBarContent.setText(EVoterShareMemory
 				.getCurrentSubjectName());
 		mainMenu.setSessionActivityMenu();
 		mainMenu.getBtNewSession().setVisibility(View.GONE);
@@ -65,39 +65,7 @@ public class NewSessionActivity extends EVoterActivity {
 				}
 				else {
 					
-					RequestParams params = new RequestParams();
-					params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
-					Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
-					params.add(SessionDAO.CREATION_DATE, EVoterMobileUtils.convertToString(timeStamp));
-					params.add(SessionDAO.IS_ACTIVE, String.valueOf(false));
-					params.add(SessionDAO.NAME, etTitle.getText().toString());
-					params.add(SessionDAO.SUBJECT_ID, String.valueOf(RuntimeEVoterManager.getCurrentSubjectID()));
-					
-					client.post(RequestConfig.getURL(URIRequest.CREATE_SESSION), params,
-							new AsyncHttpResponseHandler() {
-								// Request successfully - client receive a response
-								@Override
-								public void onSuccess(String response) {
-									Log.i("Response", response);
-									if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-										EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "A new session is created!");
-									} else {
-										EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "Cannot create new session!");
-									}
-								}
-								
-								//Login fail
-								@Override
-								public void onFailure(Throwable error,
-										String content) {
-									EVoterMobileUtils.showeVoterToast(
-											NewSessionActivity.this,
-											"Cannot request to server!");
-									Log.e("Create new session", "onFailure error : "
-											+ error.toString() + "content : "
-											+ content);
-								}
-							});
+					createSessionRequest();
 					finish();
 				}
 			}
@@ -110,6 +78,45 @@ public class NewSessionActivity extends EVoterActivity {
 				finish();
 			}
 		});
+	}
+
+	/**
+	 * 
+	 */
+	private void createSessionRequest() {
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
+		params.add(SessionDAO.CREATION_DATE, EVoterMobileUtils.convertToString(timeStamp));
+		params.add(SessionDAO.IS_ACTIVE, String.valueOf(false));
+		params.add(SessionDAO.NAME, etTitle.getText().toString());
+		params.add(SessionDAO.SUBJECT_ID, String.valueOf(EVoterShareMemory.getCurrentSubjectID()));
+		
+		client.post(RequestConfig.getURL(URIRequest.CREATE_SESSION), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						Log.i("Response", response);
+						if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+							EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "A new session is created!");
+						} else {
+							EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "Cannot create new session!");
+						}
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								NewSessionActivity.this,
+								"Cannot request to server!");
+						Log.e("Create new session", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
 	}
 	
 }

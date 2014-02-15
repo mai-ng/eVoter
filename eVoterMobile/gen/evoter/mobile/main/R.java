@@ -36,8 +36,7 @@ public final class R {
         public static final int TextView01=0x7f090021;
         public static final int TextView02=0x7f090023;
         public static final int action_settings=0x7f09004e;
-        public static final int btAcceptedUser=0x7f09000d;
-        public static final int btAllQuestion=0x7f090010;
+        public static final int btAcceptedUser=0x7f09000e;
         public static final int btCancelNewQuestion=0x7f090039;
         public static final int btCreateQuestionAddAnswer=0x7f090033;
         public static final int btDialogExit=0x7f090002;
@@ -45,7 +44,7 @@ public final class R {
         public static final int btExit=0x7f090013;
         public static final int btLogin=0x7f09002a;
         public static final int btLogout=0x7f090012;
-        public static final int btNewQuestion=0x7f09000c;
+        public static final int btNewQuestion=0x7f09000d;
         public static final int btNewSession=0x7f090009;
         public static final int btNewSessionCancel=0x7f09003d;
         public static final int btNewSessionSave=0x7f09003c;
@@ -53,6 +52,7 @@ public final class R {
         public static final int btResetPassword=0x7f09003f;
         public static final int btSaveNewQuestion=0x7f090038;
         public static final int btSendQuestion=0x7f090042;
+        public static final int btStartSession=0x7f09000c;
         public static final int btSubjectDeleting=0x7f09004b;
         public static final int btSubjectDetail=0x7f09004a;
         public static final int btSubjectUser=0x7f09000a;
@@ -81,8 +81,8 @@ public final class R {
         public static final int password=0x7f090029;
         public static final int prBar=0x7f090049;
         public static final int progressRefresh=0x7f090003;
-        public static final int questionDetailMenuLayout=0x7f09000f;
-        public static final int questionMenuLayout=0x7f09000e;
+        public static final int questionDetailMenuLayout=0x7f090010;
+        public static final int questionMenuLayout=0x7f09000f;
         public static final int sbBored=0x7f090022;
         public static final int sbDifficult=0x7f09001e;
         public static final int sessionMenuLayout=0x7f09000b;

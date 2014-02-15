@@ -79,8 +79,8 @@ public class OfflineEVoterManager {
 			contex.startActivity(i);
 		} else {
 			HashMap<String, String> user = getSavedUserDetail();
-			RuntimeEVoterManager.setCurrentUserName(user.get(UserDAO.USER_NAME));
-			RuntimeEVoterManager.setUSER_KEY(user.get(UserDAO.USER_KEY));
+			EVoterShareMemory.setCurrentUserName(user.get(UserDAO.USER_NAME));
+			EVoterShareMemory.setUSER_KEY(user.get(UserDAO.USER_KEY));
 			Log.i("Already login: ", "UserName: " + user.get(UserDAO.USER_NAME) + " | Userkey: " + user.get(UserDAO.USER_KEY));
 			Intent i = new Intent(contex, SubjectActivity.class);
 			contex.startActivity(i);

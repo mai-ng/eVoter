@@ -25,7 +25,7 @@ import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
 import evoter.mobile.objects.RequestConfig;
-import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
@@ -81,7 +81,7 @@ public class SubjectUserActivity extends EVoterActivity {
 		internetProcessBar = (ProgressBar) dialogLoading
 				.findViewById(R.id.progressRefresh);
 		internetProcessBar.setProgress(0);
-		this.tvTitleBarContent.setText(RuntimeEVoterManager
+		this.tvTitleBarContent.setText(EVoterShareMemory
 				.getCurrentUserName());
 		
 		//Set menu
@@ -101,8 +101,8 @@ public class SubjectUserActivity extends EVoterActivity {
 	
 	private void loadListItemData() {
 		RequestParams params = new RequestParams();
-		params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
-		params.add(SubjectDAO.ID, String.valueOf(RuntimeEVoterManager.getCurrentSubjectID()));
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(SubjectDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSubjectID()));
 		
 		client.post(RequestConfig.getURL(URIRequest.GET_ALL_USERS_OF_SUBJECT), params,
 				new AsyncHttpResponseHandler() {
@@ -118,7 +118,7 @@ public class SubjectUserActivity extends EVoterActivity {
 								if (ob.getLong(UserDAO.USER_TYPE_ID) == UserType.TEACHER) {
 									listTeachers.add((listTeachers.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
 								} else if (ob.getLong(UserDAO.USER_TYPE_ID) == UserType.STUDENT) {
-									listStudents.add((listTeachers.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
+									listStudents.add((listStudents.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
 								}
 							}
 							Log.i("Total teachers: ", String.valueOf(listTeachers.size()));

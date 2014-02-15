@@ -21,13 +21,12 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.QuestionAdapter;
-import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.DialogInfor;
-import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
-import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.ItemData;
 import evoter.share.model.Question;
@@ -48,55 +47,13 @@ public class QuestionActivity extends ItemDataActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//Set titlebar of current activity is the name of current session
-		this.tvTitleBarContent.setText(RuntimeEVoterManager
+		this.tvTitleBarContent.setText(EVoterShareMemory
 				.getCurrentSessionName());
 		
 		mainMenu.setQuestionActivityMenu();
-		if (RuntimeEVoterManager.getCurrentUserType() == UserType.STUDENT && RuntimeEVoterManager.currentSessionIsActive()) {
+		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && EVoterShareMemory.currentSessionIsActive()) {
 			//Setup seekbar
-			tbSessionValue.setVisibility(View.VISIBLE);
-			sbBored.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-				int progressValue;
-				
-				@Override
-				public void onStopTrackingTouch(SeekBar seekBar) {
-					Toast.makeText(QuestionActivity.this, String.valueOf(progressValue), Toast.LENGTH_SHORT).show();
-					
-				}
-				
-				@Override
-				public void onStartTrackingTouch(SeekBar seekBar) {
-					Toast.makeText(QuestionActivity.this, "Slide the seekbar to the value of Bored!", Toast.LENGTH_SHORT).show();
-					
-				}
-				
-				@Override
-				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-					progressValue = progress;
-				}
-			});
-			
-			sbDifficult.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-				int value;
-				
-				@Override
-				public void onStopTrackingTouch(SeekBar seekBar) {
-					Toast.makeText(QuestionActivity.this, String.valueOf(value), Toast.LENGTH_SHORT).show();
-					
-				}
-				
-				@Override
-				public void onStartTrackingTouch(SeekBar seekBar) {
-					Toast.makeText(QuestionActivity.this, "Slide the seekbar to the value of Bored!", Toast.LENGTH_SHORT).show();
-					
-				}
-				
-				@Override
-				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-					
-					value = progress;
-				}
-			});
+			buildStaticSlider();
 		}
 		
 		adapter = new QuestionAdapter(QuestionActivity.this);
@@ -108,89 +65,83 @@ public class QuestionActivity extends ItemDataActivity {
 					int position, long id) {
 				Question selectQuestion = (Question) parent
 						.getItemAtPosition(position);
-				RuntimeEVoterManager.setCurrentQuestion(selectQuestion);
+				EVoterShareMemory.setCurrentQuestion(selectQuestion);
 				Log.i("Detail of question: ", selectQuestion.getTitle());
-				//TODO: REQUEST GET STATISTIC OF QUESTION. IF THE QUESTION HASNOT STATISTIC YET, AND CURRENT SESSION IS RUNNING, SHOW QUESTIONDETAIL
-//				if (RuntimeEVoterManager.currentSessionIsActive()) {
 					Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);
 					startActivity(detailQuestion);
-//				} else {
-//					Intent statisticActivity = new Intent(QuestionActivity.this,QuestionStatisticActivity.class);
-//					startActivity(statisticActivity);
-////				}
 			}
 		});
 		
-		if (RuntimeEVoterManager.getCurrentUserType() == UserType.TEACHER) {
+		if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
 			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				@Override
 				public boolean onItemLongClick(AdapterView<?> parent, View view,
 						int position, long id) {
 					final Question selectQuestion = (Question) parent
 							.getItemAtPosition(position);
-					RuntimeEVoterManager.setCurrentQuestion(selectQuestion);
-					final DialogInfor dialog = new DialogInfor(
-							QuestionActivity.this, "Question");
-					dialog.setMessageContent(selectQuestion.getTitle());
-					dialog.getBtOK().setText("Edit");
-					dialog.getBtOK().setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							Log.i("QUESTION LONG ITEM CLICK", "Edit question" + selectQuestion.getTitle());
-							dialog.dismiss();
-							Intent editQuestion = new Intent(QuestionActivity.this, EditQuestionActivity.class);
-							startActivity(editQuestion);
-						}
-					});
-					
-					dialog.getBtKO().setText("Delete");
-					dialog.getBtKO().setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							RequestParams params = new RequestParams();
-							params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
-							params.add(SessionUserDAO.SESSION_ID, String.valueOf(selectQuestion.getId()));
-							client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
-								@Override
-								public void onSuccess(String response) {
-									if (response.contains("SUCCESS")) {
-										EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
-												"Deleted question: " + selectQuestion.getTitle());
-										adapter.deleteItem(selectQuestion.getId());
-										adapter.notifyDataSetChanged();
-									}
-									else {
-										EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
-												"Cannot delete question: " + response);
-									}
-								}
-								
-								@Override
-								public void onFailure(Throwable error, String content)
-								{
-									EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
-											"FAILURE: " + error.toString());
-									Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
-								}
-							});
-							dialog.dismiss();
-						}
-					});
-					dialog.show();
+					EVoterShareMemory.setCurrentQuestion(selectQuestion);
+					longClickQuestionAction();
 					return true;
 				}
 			});
 		}
 		
 	}
+
+	/**
+	 * 
+	 */
+	private void buildStaticSlider() {
+		tbSessionValue.setVisibility(View.VISIBLE);
+		sbBored.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			int progressValue;
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				Toast.makeText(QuestionActivity.this, String.valueOf(progressValue), Toast.LENGTH_SHORT).show();
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				Toast.makeText(QuestionActivity.this, "Slide the seekbar to the value of Bored!", Toast.LENGTH_SHORT).show();
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				progressValue = progress;
+			}
+		});
+		
+		sbDifficult.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			int value;
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				Toast.makeText(QuestionActivity.this, String.valueOf(value), Toast.LENGTH_SHORT).show();
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				Toast.makeText(QuestionActivity.this, "Slide the seekbar to the value of Bored!", Toast.LENGTH_SHORT).show();
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				
+				value = progress;
+			}
+		});
+	}
 	
 	protected void loadListItemData() {
 		RequestParams params = new RequestParams();
 		params.add(QuestionSessionDAO.SESSION_ID,
-				String.valueOf(RuntimeEVoterManager.getCurrentSessionID()));
-		params.put(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
+				String.valueOf(EVoterShareMemory.getCurrentSessionID()));
+		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		
 		client.post(RequestConfig.getURL(URIRequest.GET_ALL_QUESTION), params,
 				new AsyncHttpResponseHandler() {
@@ -236,11 +187,6 @@ public class QuestionActivity extends ItemDataActivity {
 										* 100 / array.length());
 								String sString = array.get(i).toString();
 								JSONObject s = new JSONObject(sString);
-								// long id, String questionText, long
-								// questionTypeId,
-								// long userId, Date creationDate, long
-								// sessionID, long parentId,
-								// String answerColumn1, String answerColumn2
 								String answerColumn1 = "null";
 								String answerColumn2 = "null";
 								if (s.toString().contains(Question.COL1)) {
@@ -296,6 +242,78 @@ public class QuestionActivity extends ItemDataActivity {
 					}
 				});
 		
+	}
+
+	/**
+	 * @param selectQuestion
+	 */
+	private void longClickQuestionAction() {
+		final DialogInfor dialog = new DialogInfor(
+				QuestionActivity.this, "Question");
+		dialog.setMessageContent(EVoterShareMemory.getCurrentQuestion().getTitle());
+		dialog.getBtOK().setText("Edit");
+		dialog.getBtOK().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Log.i("QUESTION LONG ITEM CLICK", "Edit question" + EVoterShareMemory.getCurrentQuestion().getTitle());
+				dialog.dismiss();
+				Intent editQuestion = new Intent(QuestionActivity.this, EditQuestionActivity.class);
+				startActivity(editQuestion);
+			}
+		});
+		
+		dialog.getBtKO().setText("Delete");
+		dialog.getBtKO().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				deleteQuestionRequest();
+				dialog.dismiss();
+			}
+		});
+		if(questionHasStatistic()) dialog.getBtOK().setEnabled(false);
+		dialog.show();
+	}
+
+	/**
+	 * @return
+	 */
+	private boolean questionHasStatistic() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/**
+	 * 
+	 */
+	private void deleteQuestionRequest() {
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
+		client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				if (response.contains("SUCCESS")) {
+					EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+							"Deleted question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
+					adapter.deleteItem(EVoterShareMemory.getCurrentQuestion().getId());
+					adapter.notifyDataSetChanged();
+				}
+				else {
+					EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+							"Cannot delete question: " + response);
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
 	}
 	
 }

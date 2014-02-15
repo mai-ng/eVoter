@@ -41,30 +41,7 @@ public class StartActivity extends EVoterActivity {
 					}
 					
 				} else {
-					DialogInfor dialog = new DialogInfor(
-							StartActivity.this, "Error connection!");
-					dialog.setMessageContent("Cannot connect to internet. Check your mobile internet connection an try again!");
-					dialog.show();
-					dialog.getBtOK().setText("Retry");
-					dialog.getBtOK().setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							Intent exitIntent = new Intent(StartActivity.this,
-									StartActivity.class);
-							exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-							exitIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							startActivity(exitIntent);
-						}
-					});
-					dialog.getBtKO().setText("Exit");
-					dialog.getBtKO().setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							finish();
-						}
-					});
+					errorConnection();
 				}
 				
 			}
@@ -77,6 +54,36 @@ public class StartActivity extends EVoterActivity {
 	protected boolean serverReady() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	/**
+	 * 
+	 */
+	private void errorConnection() {
+		DialogInfor dialog = new DialogInfor(
+				StartActivity.this, "Error connection!");
+		dialog.setMessageContent("Cannot connect to internet. Check your mobile internet connection an try again!");
+		dialog.show();
+		dialog.getBtOK().setText("Retry");
+		dialog.getBtOK().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent exitIntent = new Intent(StartActivity.this,
+						StartActivity.class);
+				exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				exitIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(exitIntent);
+			}
+		});
+		dialog.getBtKO().setText("Exit");
+		dialog.getBtKO().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
 	}
 	
 }

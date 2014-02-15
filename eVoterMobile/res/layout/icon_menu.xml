@@ -33,6 +33,12 @@
         android:orientation="vertical" >
 
         <Button
+            android:id="@+id/btStartSession"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Start" />
+
+        <Button
             android:id="@+id/btNewQuestion"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -61,12 +67,6 @@
         android:orientation="vertical" >
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btAllQuestion"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="All question" />
 
     <LinearLayout
         android:id="@+id/mainMenuLayout"

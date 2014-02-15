@@ -13,15 +13,13 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
 public class ReadFileByClick extends JFrame {
-	/**
-		 * 
-		 */
+
 	private static final long serialVersionUID = 1L;
 	private static JFileChooser fileChooser = new JFileChooser();
 	static StringBuffer strBuff;
 
 
-	public static void readFile(final JButton button, final JTextArea txtArea)
+	public static void readFile(final JTextArea txtArea)
 			throws IOException {
 
 		/* Enabling Multiple Selection */
@@ -31,13 +29,13 @@ public class ReadFileByClick extends JFrame {
 		fileChooser.setCurrentDirectory(new File("C:\\Documents and Settings"));
 
 		/* Adding action listener to open file */
-		button.addActionListener(new ActionListener() {
 
-			public void actionPerformed(ActionEvent event) {
-				String command = event.getActionCommand();
-				if (command.equals(button.getText())) {
+
+//			public void actionPerformed(ActionEvent event) {
+//				String command = event.getActionCommand();
+//				if (command.equals(button.getText())) {
 					fileChooser.showDialog(new JFrame(), "File Chooser");
-				}
+//				}
 				//Read file to a JTextArea
 				String line;				
 				FileReader fr = null;
@@ -64,8 +62,8 @@ public class ReadFileByClick extends JFrame {
 					e.printStackTrace();
 				}
 			}
-		});
+//		});
 
-	}
+//	}
 
 }

@@ -31,13 +31,13 @@ public class MainMenu extends Dialog {
 	LinearLayout lo_sessionActivityMenu;
 	Button btNewSession;
 	Button btAcceptUsers;
+	Button btStartSession;
 	
 	LinearLayout lo_questionActivityMenu;
 	Button btNewQuestion;
 	
 	LinearLayout lo_questionDetailActivityMenu;
 
-	Button btAllQuestion;
 	
 	/**
 	 * @param context
@@ -67,19 +67,25 @@ public class MainMenu extends Dialog {
 		lo_questionActivityMenu = (LinearLayout) findViewById(R.id.questionMenuLayout);
 		btNewQuestion = (Button) findViewById(R.id.btNewQuestion);
 		btNewQuestion.setVisibility(View.GONE);
-		
+		btStartSession = (Button)findViewById(R.id.btStartSession);
+		if(EVoterShareMemory.getCurrentSession()!=null){
+			if(EVoterShareMemory.getCurrentSession().isActive()){
+				btStartSession.setText("STOP SESSION");
+			}else{
+				btStartSession.setText("START SESSION");
+			}
+		}
+		btStartSession.setVisibility(View.GONE);
 		lo_questionDetailActivityMenu = (LinearLayout) findViewById(R.id.questionDetailMenuLayout);
 		
-		btAllQuestion = (Button) findViewById(R.id.btAllQuestion);
 		lo_subjectActivityMenu.setVisibility(View.GONE);
 		lo_sessionActivityMenu.setVisibility(View.GONE);
 		lo_questionActivityMenu.setVisibility(View.GONE);
 		lo_questionDetailActivityMenu.setVisibility(View.GONE);
-		btAllQuestion.setVisibility(View.GONE);
-		if(RuntimeEVoterManager.getCurrentUserType()==UserType.TEACHER){
-			btAllQuestion.setVisibility(View.VISIBLE);
+		if(EVoterShareMemory.getCurrentUserType()==UserType.TEACHER){
 			btNewSession.setVisibility(View.VISIBLE);
 			btNewQuestion.setVisibility(View.VISIBLE);
+			btStartSession.setVisibility(View.VISIBLE);
 		}
 	}
 	
@@ -91,7 +97,6 @@ public class MainMenu extends Dialog {
 		lo_sessionActivityMenu.setVisibility(View.GONE);
 		lo_questionActivityMenu.setVisibility(View.GONE);
 		lo_questionDetailActivityMenu.setVisibility(View.GONE);
-		btAllQuestion.setVisibility(View.GONE);
 	}
 	
 	/**
@@ -100,7 +105,6 @@ public class MainMenu extends Dialog {
 	 */
 	public void setSessionActivityMenu(){
 		lo_subjectActivityMenu.setVisibility(View.VISIBLE);
-		btAllQuestion.setVisibility(View.VISIBLE);
 		lo_sessionActivityMenu.setVisibility(View.GONE);
 		lo_questionActivityMenu.setVisibility(View.GONE);
 		lo_questionDetailActivityMenu.setVisibility(View.GONE);
@@ -126,6 +130,8 @@ public class MainMenu extends Dialog {
 		lo_sessionActivityMenu.setVisibility(View.GONE);
 		lo_questionActivityMenu.setVisibility(View.GONE);
 	}
+	
+	
 	
 	/**
 	 * @return the mainMenu
@@ -205,10 +211,10 @@ public class MainMenu extends Dialog {
 	}
 
 	/**
-	 * @return the btAllQuestion
+	 * @return the btStartSession
 	 */
-	public Button getBtAllQuestion() {
-		return btAllQuestion;
+	public Button getBtStartSession() {
+		return btStartSession;
 	}
 
 }

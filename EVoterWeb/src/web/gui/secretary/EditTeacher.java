@@ -13,6 +13,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import web.applet.RunningTimeData;
+import web.gui.secretary.spec.GUITeacherAbstract;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import web.util.UserAccountValidation;
@@ -31,17 +32,35 @@ public class EditTeacher extends GUITeacherAbstract {
 	private static final long serialVersionUID = 1L;
 	private User currentUser;
 
-	/**
-	 * set the title of the frame, and initialize its components
-	 */
 	public EditTeacher(User us) {
 		super();
-		this.setTitle("Edit teacher's information");
-		this.currentUser = us;
+		setTitle("Edit teacher's information");
+		currentUser = us;
+		loadInfo();
+		updateUser();
+	}
+	
+	/**
+	 * set text for button "Update"
+	 */
+	public void initComponents() {
+		super.initComponents();
+		btnSave.setText("Update");
+	}
+
+	/**
+	 * load information of a teacher
+	 */
+	public void loadInfo(){
 		txtEmail.setText(currentUser.getEmail());
 		txtFullName.setText(currentUser.getFullName());
 		txtUserName.setText(currentUser.getUserName());
-		txtPassword.setText(currentUser.getPassWord());
+	}
+
+	/**
+	 * update edited information
+	 */
+	public void updateUser() {
 		btnSave.addActionListener(new ActionListener() {
 
 			@Override
@@ -59,7 +78,6 @@ public class EditTeacher extends GUITeacherAbstract {
 				String fullName = txtFullName.getText();
 				String email = txtEmail.getText();
 				String username = txtUserName.getText();
-				String password = txtPassword.getText();
 				if (fullName.equals("")) {
 					msg.setText("\tFull name is empty! Please input again!");
 					dialog.setVisible(true);
@@ -69,10 +87,7 @@ public class EditTeacher extends GUITeacherAbstract {
 				} else if (!UserAccountValidation.isValidEmail(email)) {
 					msg.setText("\tEmail is not valid! Please input again!");
 					dialog.setVisible(true);
-				} else if (!UserAccountValidation.isValidPassword(password)) {
-					msg.setText("\tPassword is not valid! Please input again!");
-					dialog.setVisible(true);
-				} else if(fullName.equals(currentUser.getFullName())&&email.equals(currentUser.getEmail())&&username.equals(currentUser.getUserName())&&password.equals(currentUser.getPassWord())){
+				} else if(fullName.equals(currentUser.getFullName())&&email.equals(currentUser.getEmail())&&username.equals(currentUser.getUserName())){
 					msg.setText("\tNothing change!");
 					dialog.setVisible(true);
 				}else{
@@ -88,8 +103,6 @@ public class EditTeacher extends GUITeacherAbstract {
 							email));
 					teacherParams.add(new BasicNameValuePair(UserDAO.USER_NAME,
 							username));
-					teacherParams.add(new BasicNameValuePair(UserDAO.PASSWORD,
-							password));
 					teacherParams.add(new BasicNameValuePair(UserDAO.ID, String
 							.valueOf(currentUser.getId())));
 					teacherParams.add(new BasicNameValuePair(
@@ -109,6 +122,8 @@ public class EditTeacher extends GUITeacherAbstract {
 				}
 			}
 		});
+		
 	}
+	
 
 }

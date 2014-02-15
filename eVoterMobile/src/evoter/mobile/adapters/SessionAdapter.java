@@ -9,7 +9,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Filterable;
 import android.widget.TextView;
 import evoter.mobile.main.R;
-import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.model.Session;
 
@@ -60,7 +60,7 @@ public class SessionAdapter extends ItemDataAdapter implements Filterable {
 		holder.title = detail(convertView, R.id.tvSesName, listItemDataToPublic
 				.get(position).getTitle());
 		holder.teacherName = detail(convertView, R.id.tvTeacher, ((Session) listItemDataToPublic.get(position)).getCreatorName());
-		if(RuntimeEVoterManager.getCurrentUserType()==3){
+		if(EVoterShareMemory.getCurrentUserType()==3){
 			
 		}
 		holder.sessionStatus = detail(

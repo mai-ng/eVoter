@@ -4,7 +4,7 @@
 package evoter.mobile.activities;
 
 import evoter.mobile.main.R;
-import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.mobile.objects.EVoterShareMemory;
 import android.os.Bundle;
 
 /**
@@ -22,7 +22,7 @@ public class QuestionStatisticActivity extends EVoterActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.question_statistic);
 		mainMenu.setQuestionActivityMenu();
-		tvTitleBarContent.setText(RuntimeEVoterManager.getCurrentQuestion().getTitle());
+		tvTitleBarContent.setText(EVoterShareMemory.getCurrentQuestion().getTitle());
 	}
 	
 }

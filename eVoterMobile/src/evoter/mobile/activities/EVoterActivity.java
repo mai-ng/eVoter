@@ -21,31 +21,31 @@ import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
 import evoter.mobile.objects.DialogInfor;
+import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.MainMenu;
 import evoter.mobile.objects.OfflineEVoterManager;
 import evoter.mobile.objects.RequestConfig;
-import evoter.mobile.objects.RuntimeEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.dao.SessionDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.utils.URIRequest;
 
-
 /**
- * <br>Update by @author luongnv89 on 12-Feb-2014: <br>
- * <li> add logout request to server
- * 
- * <br>Update by @author luongnv89 on 09-Feb-2014: <br>
- * <li> Change the name of {@link MainMenu} variable to mainMenu
  * <br>
- * <br>Update by @author luongnv89 on Thu 30-Jan-2014: <br>
- * <li>Add constructor for {@link OfflineEVoterManager} <br>On Sat - 18/01/2014 -
- * modified by luongnv89: <br>
- * <br>Add {@link EVoterActivity#exit()} - to exit application from anywhere when
+ * Update by @author luongnv89 on 12-Feb-2014: <br>
+ * <li>add logout request to server <br>
+ * Update by @author luongnv89 on 09-Feb-2014: <br> <li>Change the name of
+ * {@link MainMenu} variable to mainMenu <br>
+ * <br>
+ * Update by @author luongnv89 on Thu 30-Jan-2014: <br> <li>Add constructor for
+ * {@link OfflineEVoterManager} <br>
+ * On Sat - 18/01/2014 - modified by luongnv89: <br>
+ * <br>
+ * Add {@link EVoterActivity#exit()} - to exit application from anywhere when
  * the application has error, exception,... avoid stuck phone
  * {@link EVoterActivity} is a parent class of all activity of eVoterMobile
- * application
- * 
- * <br>Created by @author luongnv89
+ * application <br>
+ * Created by @author luongnv89
  */
 public class EVoterActivity extends Activity {
 	/**
@@ -138,36 +138,7 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				//TODO: Send logout request to server
-				offlineEVoterManager.logoutUser();
-				RequestParams params = new RequestParams();
-				params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
-				
-				client.post(RequestConfig.getURL(URIRequest.LOGOUT), params,
-						new AsyncHttpResponseHandler() {
-							// Request successfully - client receive a response
-							@Override
-							public void onSuccess(String response) {
-								Log.i("Response", response);
-								if(response.contains(URIRequest.SUCCESS_MESSAGE)){
-									EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Goodbye...!");
-								}else{
-									EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "You are not logged out from system!");
-								}
-							}
-							
-							//Login fail
-							@Override
-							public void onFailure(Throwable error,
-									String content) {
-								EVoterMobileUtils.showeVoterToast(
-										EVoterActivity.this,
-										"Cannot request logout from server!");
-								Log.e("LoginTest", "onFailure error : "
-										+ error.toString() + "content : "
-										+ content);
-							}
-						});
+				logout();
 			}
 		});
 		
@@ -179,17 +150,6 @@ public class EVoterActivity extends Activity {
 				mainMenu.dismiss();
 				Intent acceptedStudents = new Intent(EVoterActivity.this, AcceptedStudents.class);
 				startActivity(acceptedStudents);
-			}
-		});
-		
-		mainMenu.getBtAllQuestion().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Log.i("Main menu", "Show list all questions");
-				mainMenu.dismiss();
-				Intent allQuestion = new Intent(EVoterActivity.this, AllQuestionActivity.class);
-				startActivity(allQuestion);
 			}
 		});
 		
@@ -225,6 +185,99 @@ public class EVoterActivity extends Activity {
 				mainMenu.dismiss();
 			}
 		});
+		
+		mainMenu.getBtStartSession().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if (mainMenu.getBtStartSession().getText().toString().contains("STOP")) {
+					mainMenu.getBtStartSession().setText("START SESSION");
+					stopSession();
+					mainMenu.dismiss();
+				} else {
+					mainMenu.getBtStartSession().setText("STOP SESSION");
+					startSession();
+					mainMenu.dismiss();
+				}
+			}
+		});
+		
+	}
+	
+	/**
+	 * 
+	 */
+	protected void stopSession() {
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(SessionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		
+		client.post(RequestConfig.getURL(URIRequest.INACTIVE_SESSION), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						if(response.contains(URIRequest.SUCCESS_MESSAGE)){
+							EVoterMobileUtils.showeVoterToast(
+									EVoterActivity.this,
+									"Session is stopped!");
+						}else{
+							EVoterMobileUtils.showeVoterToast(
+									EVoterActivity.this,
+									"Cannot start session! Request failure");
+						}
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								EVoterActivity.this,
+								"Cannot request to server!");
+						Log.e("Stop session", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
+	}
+	
+	/**
+	 * 
+	 */
+	protected void startSession() {
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(SessionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		
+		client.post(RequestConfig.getURL(URIRequest.ACTIVE_SESSION), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						if(response.contains(URIRequest.SUCCESS_MESSAGE)){
+							EVoterMobileUtils.showeVoterToast(
+									EVoterActivity.this,
+									"Session is running!");
+						}else{
+							EVoterMobileUtils.showeVoterToast(
+									EVoterActivity.this,
+									"Cannot start session! Request failure");
+						}
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								EVoterActivity.this,
+								"Cannot request to server!");
+						Log.e("start session", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
 		
 	}
 	
@@ -265,6 +318,41 @@ public class EVoterActivity extends Activity {
 		exitIntent.putExtra("Exit application", true);
 		startActivity(exitIntent);
 		finish();
+	}
+	
+	/**
+	 * 
+	 */
+	private void logout() {
+		offlineEVoterManager.logoutUser();
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		
+		client.post(RequestConfig.getURL(URIRequest.LOGOUT), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						Log.i("Response", response);
+						if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+							EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Goodbye...!");
+						} else {
+							EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "You are not logged out from system!");
+						}
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								EVoterActivity.this,
+								"Cannot request logout from server!");
+						Log.e("Logout", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
 	}
 	
 }

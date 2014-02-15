@@ -19,9 +19,9 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.SubjectAdapter;
-import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.DialogInfor;
-import evoter.mobile.objects.RuntimeEVoterManager;
+import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
@@ -30,25 +30,27 @@ import evoter.share.model.Subject;
 import evoter.share.utils.URIRequest;
 
 /**
- * <br>Updated by @author luongnv89 on 30-Jan-2014:<br>
- * <li> Updated back button press -> call {@link EVoterActivity#exit()} method
- * <br>Updated by @author luongnv89 on 26-Jan-2014:<br>
- * <br><li> Updated back button press -> show dialog to confirm exiting application. 
- * <br>Updated by @author luongnv89 on 19-Jun-2014:<br>
- * <br><li>Using {@link DialogInfor} for long click event instead of {@link Dialog}
- * <br>Updated by @author btdiem on 08-Jan-2014 : </br>
- * </li>update loadListSubjects() method: </li>remove
- * parameters </li>add userKey to parameter map when sending request to server
- * <br>Created by @author nvluong on 05-Dec-2013</br>
+ * <br>
+ * Updated by @author luongnv89 on 30-Jan-2014:<br>
+ * <li>Updated back button press -> call {@link EVoterActivity#exit()} method <br>
+ * Updated by @author luongnv89 on 26-Jan-2014:<br>
+ * <br><li>Updated back button press -> show dialog to confirm exiting
+ * application. <br>
+ * Updated by @author luongnv89 on 19-Jun-2014:<br>
+ * <br><li>Using {@link DialogInfor} for long click event instead of
+ * {@link Dialog} <br>
+ * Updated by @author btdiem on 08-Jan-2014 : </br></li>update
+ * loadListSubjects() method: </li>remove
+ * parameters </li>add userKey to parameter map when sending request to server <br>
+ * Created by @author nvluong on 05-Dec-2013</br>
  */
 public class SubjectActivity extends ItemDataActivity {
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Set content for title bar is the username
-		this.tvTitleBarContent.setText(RuntimeEVoterManager
+		this.tvTitleBarContent.setText(EVoterShareMemory
 				.getCurrentUserName());
-		
 		
 		adapter = new SubjectAdapter(SubjectActivity.this);
 		listView.setAdapter(adapter);
@@ -59,79 +61,30 @@ public class SubjectActivity extends ItemDataActivity {
 					int position, long id) {
 				Subject currentSubject = ((Subject) parent
 						.getItemAtPosition(position));
-				
-				RuntimeEVoterManager.setCurrentSubjectID(currentSubject.getId());
-				RuntimeEVoterManager.setCurrentSubjectName(currentSubject
-						.getTitle());
+				EVoterShareMemory.setCurrentSubject(currentSubject);
 				Intent sessionIntent = new Intent(SubjectActivity.this,
 						SessionActivity.class);
 				startActivity(sessionIntent);
 			}
 		});
 		
-		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				
-				final Subject subject = (Subject) parent
-						.getItemAtPosition(position);
-				
-				final DialogInfor dialog = new DialogInfor(
-						SubjectActivity.this, "Subject");
-				dialog.setMessageContent(subject.getTitle());
-				dialog.getBtOK().setText("Exit");
-				dialog.getBtOK().setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						dialog.dismiss();
-					}
-				});
-				
-				dialog.getBtKO().setText("Delete");
-				dialog.getBtKO().setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						RequestParams params = new RequestParams();
-						params.add(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
-						params.add(SubjectDAO.ID, String.valueOf(subject.getId()));
-						client.post(RequestConfig.getURL(URIRequest.DELETE_SUBJECT), params, new AsyncHttpResponseHandler() {
-							@Override
-							public void onSuccess(String response) {
-								if (response.contains("SUCCESS")) {
-									EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
-											"Deleted subject: " + subject.getTitle());
-									adapter.deleteItem(subject.getId());
-									adapter.notifyDataSetChanged();
-								}
-								else {
-									EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
-											"Cannot delete subject: " + subject.getTitle());
-								}
-							}
-							
-							@Override
-							public void onFailure(Throwable error, String content)
-							{
-								EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
-										"FAILURE: " + error.toString());
-								Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
-							}
-						});
-						dialog.dismiss();
-					}
-				});
-				dialog.show();
-				return true;
-			}
-		});
+		//		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+		//			@Override
+		//			public boolean onItemLongClick(AdapterView<?> parent, View view,
+		//					int position, long id) {
+		//				
+		//				final Subject subject = (Subject) parent
+		//						.getItemAtPosition(position);
+		//				
+		//				subjectLongClickAction(subject);
+		//				return true;
+		//			}
+		//		});
 	}
 	
 	protected void loadListItemData() {
 		RequestParams params = new RequestParams();
-		params.put(UserDAO.USER_KEY, RuntimeEVoterManager.getUSER_KEY());
+		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		client.post(RequestConfig.getURL(URIRequest.GET_ALL_SUBJECT), params,
 				new AsyncHttpResponseHandler() {
 					
@@ -165,43 +118,7 @@ public class SubjectActivity extends ItemDataActivity {
 					@Override
 					public void onSuccess(String response) {
 						
-						try {
-							ArrayList<ItemData> newList = new ArrayList<ItemData>();
-							JSONArray array = EVoterMobileUtils.getJSONArray(response);
-							
-							for (int i = 0; i < array.length(); i++) {
-								internetProcessBar.setProgress((i + 1) * 100
-										/ array.length());
-								tvLoadingStatus.setText("Loading..." + (i + 1)
-										* 100 / array.length());
-								String sItem = array.get(i).toString();
-								JSONObject item = new JSONObject(sItem);
-								Log.i("JSON TEST: ", item.toString());
-								Subject subject = null;
-								try {
-									subject = new Subject(
-											Long.parseLong(item
-													.getString(SubjectDAO.ID)),
-											item.getString(SubjectDAO.TITLE),
-											EVoterMobileUtils.convertToDate(item
-													.getString(SubjectDAO.CREATION_DATE)));
-								} catch (NumberFormatException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								} catch (ParseException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								newList.add(subject);
-							}
-							if (newList.isEmpty()) {
-								EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
-										"There isn't any subject!");
-							}
-							adapter.updateList(newList);
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
+						loadListItemDataResponseProcess(response);
 					}
 					
 					@Override
@@ -220,6 +137,109 @@ public class SubjectActivity extends ItemDataActivity {
 	@Override
 	public void onBackPressed() {
 		exit();
+	}
+	
+	/**
+	 * @param subject
+	 */
+	private void subjectLongClickAction(final Subject subject) {
+		final DialogInfor dialog = new DialogInfor(
+				SubjectActivity.this, "Subject");
+		dialog.setMessageContent(subject.getTitle());
+		dialog.getBtOK().setText("Exit");
+		dialog.getBtOK().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		
+		dialog.getBtKO().setText("Delete");
+		dialog.getBtKO().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				deleteSubjectRequest(subject);
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
+	}
+	
+	/**
+	 * @param response
+	 */
+	private void loadListItemDataResponseProcess(String response) {
+		try {
+			ArrayList<ItemData> newList = new ArrayList<ItemData>();
+			JSONArray array = EVoterMobileUtils.getJSONArray(response);
+			
+			for (int i = 0; i < array.length(); i++) {
+				internetProcessBar.setProgress((i + 1) * 100
+						/ array.length());
+				tvLoadingStatus.setText("Loading..." + (i + 1)
+						* 100 / array.length());
+				String sItem = array.get(i).toString();
+				JSONObject item = new JSONObject(sItem);
+				Log.i("JSON TEST: ", item.toString());
+				Subject subject = null;
+				try {
+					subject = new Subject(
+							Long.parseLong(item
+									.getString(SubjectDAO.ID)),
+							item.getString(SubjectDAO.TITLE),
+							EVoterMobileUtils.convertToDate(item
+									.getString(SubjectDAO.CREATION_DATE)));
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				newList.add(subject);
+			}
+			if (newList.isEmpty()) {
+				EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
+						"There isn't any subject!");
+			}
+			adapter.updateList(newList);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * @param subject
+	 */
+	private void deleteSubjectRequest(final Subject subject) {
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(SubjectDAO.ID, String.valueOf(subject.getId()));
+		client.post(RequestConfig.getURL(URIRequest.DELETE_SUBJECT), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				if (response.contains("SUCCESS")) {
+					EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
+							"Deleted subject: " + subject.getTitle());
+					adapter.deleteItem(subject.getId());
+					adapter.notifyDataSetChanged();
+				}
+				else {
+					EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
+							"Cannot delete subject: " + subject.getTitle());
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
 	}
 	
 }

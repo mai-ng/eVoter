@@ -3,6 +3,11 @@
  */
 package evoter.server.http.request.interfaces;
 
+import java.util.Map;
+
+import evoter.share.dao.AnswerDAO;
+import evoter.share.dao.QuestionDAO;
+import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
 import evoter.share.model.Question;
 
@@ -16,6 +21,7 @@ import evoter.share.model.Question;
  */
 public interface IAnswerService {
 	
+	final String BEAN_NAME = "answerService";
 	/**
 	 * 
 	 * @param questionId question Id value of answer </br>
@@ -49,6 +55,16 @@ public interface IAnswerService {
 	 * @throws exception if answers are not deleted unsuccessfully </br>
 	 */
 	public Object doDelete(long questionId) throws Exception;
+	/**
+	 * @param parameter request parameter contains: </br>
+	 * {@link AnswerDAO#ID} </br>
+	 * {@link UserDAO#USER_KEY} </br>
+	 * {@link QuestionDAO#QUESTION_TYPE_ID} </br>
+	 * {@link AnswerDAO#STATISTICS} if the question type is slider or input </br> 
+	 * @return SUCCESS message if updating the number of vote for {@link Answer} successfully </br>
+	 * @return FAILURE 	message if there is an exception thrown </br>
+	 */
+	public Object doVote(Map<String, Object> parameter);
 		
 	
 }

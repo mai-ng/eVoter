@@ -130,10 +130,13 @@ public class TestAnswerDAO {
 		long answerId = 2;
 		Answer answer = answerDAO.findById(answerId).get(0);
 		answer.setAnswerText("new answer text");
+		answer.setStatistics("1");
 		
 		answerDAO.update(answer);
 		assertEquals("update() changes answer text", 
 				answer.getAnswerText(), "new answer text");
+		assertEquals("update() changes statistics value", 
+				answer.getStatistics(), "1");
 	}
 //	/**
 //	 * @param args

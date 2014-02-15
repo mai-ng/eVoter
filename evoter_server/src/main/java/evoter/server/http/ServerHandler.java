@@ -159,6 +159,8 @@ public class ServerHandler implements HttpHandler {
 					//statistic management
 					else if (URIUtils.isVoteAnswer(uri)){
 						response = answerService.doVote(parameters);
+					}else if (URIUtils.isGetStatisticsRequest(uri)){
+						response = answerService.doGetStatistics(parameters);
 					}
 				}
 

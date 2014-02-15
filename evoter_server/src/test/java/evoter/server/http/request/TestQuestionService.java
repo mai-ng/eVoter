@@ -55,19 +55,22 @@ public class TestQuestionService {
 	@Rollback(false)
 	public void test_doGetAll() { 
 		
-		String expected_response= "" +
-		"[{\"USER_ID\":1,\"SESSION_ID\":4,\"QUESTION_TYPE_ID\":1,\"ID\":2,\"column1\"" +
-		":[{\"ANSWER_TEXT\":\"add a new answer\",\"ID\":9,\"QUESTION_ID\":2}," +
-		"{\"ANSWER_TEXT\":\"add a new answer\",\"ID\":10,\"QUESTION_ID\":2}]," +
-		"\"QUESTION_TEXT\":\"Abstract can implement an interface?\"," +
-		"\"CREATION_DATE\":\"2014-01-09 10:31:17.0\",\"PARENT_ID\":0}]";
+		String expected_response = ""+
+		"[{\"USER_ID\":1,\"SESSION_ID\":4,\"QUESTION_TYPE_ID\":1,\"ID\":2,\"column1\":" +
+		"[{\"ANSWER_TEXT\":\"No\",\"ID\":9,\"QUESTION_ID\":2,\"STATISTICS\":\"2\"}," +
+		"{\"ANSWER_TEXT\":\"Yes\",\"ID\":10,\"QUESTION_ID\":2,\"STATISTICS\":\"5\"}]," +
+		"\"QUESTION_TEXT\":\"Abstract can implement an interface?\",\"CREATION_DATE\":" +
+		"\"2014-01-09 10:31:17.0\",\"PARENT_ID\":0}]";
 
 		String sessionId = "4";
 		parameters.put(QuestionSessionDAO.SESSION_ID, sessionId);
 		Object response = questionService.doGetAll(parameters);
+		
+
 		assertEquals(response.toString(), expected_response);
 		
 	}
+	
 	/**
 	 * Test for {@link IQuestionService#doView(Map)} </br>
 	 * Expect returning {@link Question} </br>
@@ -169,7 +172,10 @@ public class TestQuestionService {
 		questionService.addSentQuestion(sessionId, questionId);
 		parameters.put(QuestionSessionDAO.SESSION_ID, String.valueOf(sessionId));
 		String expected_response = "" +
-		"[{\"USER_ID\":1,\"QUESTION_TYPE_ID\":1,\"answers\":[],\"ID\":1,\"QUESTION_TEXT\":\"Interface can implement an interface?\"," +
+		"[{\"USER_ID\":1,\"QUESTION_TYPE_ID\":1," +
+		"\"answers\":[{\"ANSWER_TEXT\":\"Yes\",\"ID\":139,\"QUESTION_ID\":1,\"STATISTICS\":\"10\"}," +
+		"{\"ANSWER_TEXT\":\"No\",\"ID\":140,\"QUESTION_ID\":1,\"STATISTICS\":\"30\"}]," +
+		"\"ID\":1,\"QUESTION_TEXT\":\"Interface can implement an interface?\"," +
 		"\"CREATION_DATE\":\"2014-01-09 10:31:17.0\",\"PARENT_ID\":0}]";
 		
 		Object response = questionService.doGetLatest(parameters);

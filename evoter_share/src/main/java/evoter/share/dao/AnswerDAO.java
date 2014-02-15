@@ -16,6 +16,7 @@ public interface AnswerDAO {
 	public static final String ID = "ID";
 	public static final String ANSWER_TEXT = "ANSWER_TEXT";
 	public static final String QUESTION_ID = "QUESTION_ID";
+	public static final String STATISTICS = "STATISTICS";
 	public static final String TABLE_NAME = "ANSWER";
 	public static final String BEAN_NAME = "answerDAO";
 	

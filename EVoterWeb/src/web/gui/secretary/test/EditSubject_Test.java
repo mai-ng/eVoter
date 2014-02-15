@@ -17,8 +17,6 @@ public class EditSubject_Test {
 	{
 		Subject sub = new Subject();
 		EditSubject subject = new EditSubject(sub);
-		subject.setLocationRelativeTo(null);
-		subject.setVisible(true);
 	}
 
 }

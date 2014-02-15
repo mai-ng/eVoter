@@ -62,6 +62,7 @@ public class EVoterHTTPRequest {
 				response.append(line + "\n");
 			}
 			rd.close();
+			System.out.println("Response: " +  response.toString());
 			return response.toString();
 		} catch (Exception e) {
 			e.printStackTrace();

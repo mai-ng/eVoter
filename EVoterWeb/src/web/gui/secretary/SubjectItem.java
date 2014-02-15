@@ -5,7 +5,6 @@ package web.gui.secretary;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import web.gui.secretary.spec.ItemViewAbstract;
 import evoter.share.model.Subject;
 
@@ -28,6 +27,15 @@ public class SubjectItem extends ItemViewAbstract{
 			public void actionPerformed(ActionEvent e) {
 				EditSubject editSub = new EditSubject(subject);
 			}
+		});
+		
+		btnDelete.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+			
 		});
 		
 		btnDetail.addActionListener(new ActionListener() {

@@ -4,6 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UserAccountValidation {
+	
+	public static final String DEFAULT_PASSWORD = "evoter2014";
 	/**
 	 * ^             	# Start of the line
 	 * [a-zA-Z0-9_-]	# Match characters and symbols in the list, a-z, A-Z, 0-9, underscore, hyphen

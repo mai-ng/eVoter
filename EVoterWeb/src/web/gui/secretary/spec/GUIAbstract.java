@@ -10,15 +10,15 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import web.gui.secretary.AddSubject;
-import web.gui.secretary.AddTeacher;
+import web.gui.secretary.AddUser;
 import web.gui.secretary.EditSubject;
-import web.gui.secretary.EditTeacher;
+import web.gui.secretary.EditUser;
 import web.gui.secretary.ViewSubject;
-import web.gui.secretary.ViewTeacher;
+import web.gui.secretary.ViewUser;
 
 /**
  * @author maint<br>
- * extended by {@link GUISubjectAbstract}, {@link GUITeacherAbstract}.
+ * extended by {@link SubjectGUIAbstract}, {@link UserGUIAbstract}.
  * Set layout for a frame, and initialize the button "Close" for all frames.
  */
 public abstract class GUIAbstract extends JFrame{
@@ -62,8 +62,8 @@ public abstract class GUIAbstract extends JFrame{
 
 	/**
 	 * initialize button "Close" which are used in 
-	 *<li> {@link GUISubjectAbstract}; and its instants, {@link AddSubject}, {@link EditSubject}, and {@link ViewSubject} 
-	 *<li> {@link GUITeacherAbstract}; and its instants, {@link AddTeacher}, {@link EditTeacher}, and {@link ViewTeacher}
+	 *<li> {@link SubjectGUIAbstract}; and its instants, {@link AddSubject}, {@link EditSubject}, and {@link ViewSubject} 
+	 *<li> {@link UserGUIAbstract}; and its instants, {@link AddUser}, {@link EditUser}, and {@link ViewUser}
 	 */
 	protected void initComponents() {
 		//button "Close"

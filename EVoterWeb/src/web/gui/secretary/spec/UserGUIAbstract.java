@@ -11,17 +11,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import web.gui.secretary.AddTeacher;
-import web.gui.secretary.EditTeacher;
-import web.gui.secretary.ViewTeacher;
+import web.gui.secretary.AddUser;
+import web.gui.secretary.EditUser;
+import web.gui.secretary.ViewUser;
 
 /**
- * extended by {@link AddTeacher}, {@link EditTeacher}, {@link ViewTeacher}. classes<br> 
+ * extended by {@link AddUser}, {@link EditUser}, {@link ViewUser}. classes<br> 
  * Create common components, initialize them, and define a layout and user interface. <br>
  * @author maint<br>
  *         
  */
-public abstract class GUITeacherAbstract extends JFrame {
+public abstract class UserGUIAbstract extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,14 +37,14 @@ public abstract class GUITeacherAbstract extends JFrame {
 	protected JButton btnClose;
 
 	
-	public GUITeacherAbstract() {
+	public UserGUIAbstract() {
 		initComponents();
 		buildGUI();
 	}
 
 	/**
-	 * design user interface for {@link AddTeacher},
-	 * {@link EditTeacher}, {@link ViewTeacher}.
+	 * design user interface for {@link AddUser},
+	 * {@link EditUser}, {@link ViewUser}.
 	 */
 	public void buildGUI() {
 		//show frame
@@ -141,8 +141,8 @@ public abstract class GUITeacherAbstract extends JFrame {
 	}
 
 	/**
-	 * initialize all components which are used in {@link AddTeacher},
-	 * {@link EditTeacher}, {@link ViewTeacher}.
+	 * initialize all components which are used in {@link AddUser},
+	 * {@link EditUser}, {@link ViewUser}.
 	 */
 	public void initComponents() {
 		// create labels

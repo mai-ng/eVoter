@@ -1,43 +1,52 @@
 package web.gui.secretary;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import web.applet.RunningTimeData;
-import web.gui.secretary.spec.GUITeacherAbstract;
+import web.gui.secretary.spec.UserGUIAbstract;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import web.util.UserAccountValidation;
+import web.util.Utils;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.User;
 import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
+ * Edit information of a user (Teacher/Student) such as full name, user name, and email.<br> 
+ * extends {@link UserGUIAbstract} class.
  * @author maint<br>
- *         a JFrame to edit teacher's information. extends
- *         {@link GUITeacherAbstract} class.
  */
-public class EditTeacher extends GUITeacherAbstract {
+public class EditUser extends UserGUIAbstract {
 
 	private static final long serialVersionUID = 1L;
-	private User currentUser;
+	protected User currentUser;
 
-	public EditTeacher(User us) {
-		super();
-		setTitle("Edit teacher's information");
-		currentUser = us;
+	/**
+	 * set title for the frame.<br>
+	 * load information of the user.<br>
+	 * edit information of a student/teacher.<br>
+	 * update information.
+	 * @param user is a student or teacher.
+	 */
+	public EditUser(User user) {
+		super();		
+		currentUser = user;
+		if(currentUser.getUserTypeId()==UserType.STUDENT){
+			setTitle("Edit student's information");
+		}else if(currentUser.getUserTypeId()==UserType.TEACHER){
+			setTitle("Edit teacher's information");
+		}
+		
 		loadInfo();
-		updateUser();
+		updateUser(currentUser.getUserTypeId());
 	}
 	
 	/**
@@ -60,43 +69,31 @@ public class EditTeacher extends GUITeacherAbstract {
 	/**
 	 * update edited information
 	 */
-	public void updateUser() {
+	public void updateUser(final long userType) {
 		btnSave.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Check valid input and send an update user request
 
-				JDialog dialog = new JDialog(EditTeacher.this);
-				dialog.setTitle("Dialog");
-				dialog.setSize(new Dimension(400, 100));
-				dialog.setLocationRelativeTo(null);
-				dialog.setModal(true);
-				JLabel msg = new JLabel();
-				dialog.add(msg);
-
 				String fullName = txtFullName.getText();
 				String email = txtEmail.getText();
 				String username = txtUserName.getText();
 				if (fullName.equals("")) {
-					msg.setText("\tFull name is empty! Please input again!");
-					dialog.setVisible(true);
+					Utils.informDialog("\tFull name is empty! Please input again!");
 				} else if (!UserAccountValidation.isValidUserName(username)) {
-					msg.setText("\tUser name is not valid! Please input again!");
-					dialog.setVisible(true);
+					Utils.informDialog("\tUser name is not valid! Please input again!");
 				} else if (!UserAccountValidation.isValidEmail(email)) {
-					msg.setText("\tEmail is not valid! Please input again!");
-					dialog.setVisible(true);
+					Utils.informDialog("\tEmail is not valid! Please input again!");
 				} else if(fullName.equals(currentUser.getFullName())&&email.equals(currentUser.getEmail())&&username.equals(currentUser.getUserName())){
-					msg.setText("\tNothing change!");
-					dialog.setVisible(true);
+					Utils.informDialog("\tNothing change!");
 				}else{
 					List<NameValuePair> teacherParams = new ArrayList<NameValuePair>();
 					teacherParams.add(new BasicNameValuePair(UserDAO.USER_KEY,
 							RunningTimeData.getCurrentUserKey()));
 					teacherParams.add(new BasicNameValuePair(
 							UserDAO.USER_TYPE_ID, String
-									.valueOf(UserType.TEACHER)));
+									.valueOf(userType)));
 					teacherParams.add(new BasicNameValuePair(UserDAO.FULL_NAME,
 							fullName));
 					teacherParams.add(new BasicNameValuePair(UserDAO.EMAIL,
@@ -112,18 +109,16 @@ public class EditTeacher extends GUITeacherAbstract {
 							RequestConfig.getURL(URIRequest.EDIT_USER),
 							teacherParams);
 					if (response == null) {
-						msg.setText("Cannot request to server!");
-						dialog.setVisible(true);
+						Utils.informDialog("Cannot request to server!");
 					} else {
-						msg.setText("Edit successfully!");
-						dialog.setVisible(true);
-						EditTeacher.this.setVisible(false);
+						Utils.informDialog("Edit successfully!");
+						dispose();
 					}
 				}
 			}
 		});
 		
 	}
-	
+
 
 }

@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import web.applet.RunningTimeData;
-import web.gui.secretary.spec.GUISubjectAbstract;
+import web.gui.secretary.spec.SubjectGUIAbstract;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import evoter.share.dao.SubjectDAO;
@@ -21,10 +21,10 @@ import evoter.share.utils.URIRequest;
 
 /**
  * Edit information of a subject such as the title, teachers, students of it.<br> 
- * extends {@link GUISubjectAbstract} class.
+ * extends {@link SubjectGUIAbstract} class.
  * @author maint<br>
  */
-public class EditSubject extends GUISubjectAbstract {
+public class EditSubject extends SubjectGUIAbstract {
 
 	private static final long serialVersionUID = 1L;
 

@@ -27,7 +27,7 @@ import web.util.ReadFileByClick;
  * @author maint<br>
  *         
  */
-public abstract class GUISubjectAbstract extends JFrame {
+public abstract class SubjectGUIAbstract extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
@@ -40,7 +40,7 @@ public abstract class GUISubjectAbstract extends JFrame {
 	protected JButton btnAddTeacher;
 	protected JButton btnAddStudent;
 
-	public GUISubjectAbstract() {
+	public SubjectGUIAbstract() {
 		initComponents();
 		try {
 			importFile();

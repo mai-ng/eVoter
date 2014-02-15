@@ -11,6 +11,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import evoter.share.model.UserType;
+
 import web.applet.RunningTimeData;
 
 /**
@@ -136,12 +138,10 @@ public class MainPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JPanel home = new JPanel();
-				home.add(new JLabel(
-						"Welcome to eVoter System! This is student page"));
-				setContentPanel(home);
+				UserTab teacher = new UserTab(UserType.STUDENT);
+				setContentPanel(teacher);
 				resetButton();
-            	btnStudent.setForeground(Color.BLUE);
+				btnStudent.setForeground(Color.BLUE);
 			}
 		});
 		
@@ -160,7 +160,7 @@ public class MainPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TeacherTab teacher = new TeacherTab();
+				UserTab teacher = new UserTab(UserType.TEACHER);
 				setContentPanel(teacher);
 				resetButton();
 				btnTeacher.setForeground(Color.BLUE);

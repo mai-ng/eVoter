@@ -34,6 +34,7 @@ public class SubjectTab extends MenuTabAbstract{
 
 	public SubjectTab(){
 		super();
+		createListView();
 	}
 
 	/**

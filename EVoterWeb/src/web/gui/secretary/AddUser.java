@@ -1,39 +1,50 @@
 package web.gui.secretary;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import web.applet.RunningTimeData;
-import web.gui.secretary.spec.GUITeacherAbstract;
+import web.gui.secretary.spec.UserGUIAbstract;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import web.util.UserAccountValidation;
+import web.util.Utils;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
- * Add a new teacher with information of full name, user name , and email.<br> 
- * extends {@link GUITeacherAbstract} class.
+ * Add a new user (Teacher or Student) with information of full name, user name , and email.<br> 
+ * extends {@link UserGUIAbstract} class.
  * @author maint<br>
  */
-public class AddTeacher extends GUITeacherAbstract {
+public class AddUser extends UserGUIAbstract {
 
 	private static final long serialVersionUID = 1L;
-
-	public AddTeacher() {
+	private long userTypeId;
+	
+	/**
+	 * set title for the frame.<br>
+	 * add a new student/teacher.<br>
+	 * @param user_type_id is a student or teacher.
+	 * <li> if <code>user_type_id = UserType.STUDENT</code>, he is a student.
+	 * <li> if <code>user_type_id = UserType.TEACHER</code>, he is a teacher.
+	 */
+	public AddUser(long user_type_id) {
 		super();
-		setTitle("Add new teacher");		
-		addNew();
+		userTypeId = user_type_id;
+		if(userTypeId==UserType.STUDENT){
+			setTitle("Add new student");
+		}else if(userTypeId==UserType.TEACHER){
+			setTitle("Add new teacher");
+		}
+		
+		addNewUser();
 	}
 
 	/**
@@ -47,59 +58,52 @@ public class AddTeacher extends GUITeacherAbstract {
 	/**
 	 * create and add a new teacher to database
 	 */
-	public void addNew() {
+	public void addNewUser() {
 		btnSave.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JDialog dialog = new JDialog(AddTeacher.this);
-				dialog.setTitle("Invalid input");
-				dialog.setSize(new Dimension(400, 100));
-				dialog.setLocationRelativeTo(null);
-				dialog.setModal(true);
-				JLabel msg = new JLabel();
-				dialog.add(msg);
-
+		
 				String fullName = txtFullName.getText();
 				String email = txtEmail.getText();
 				String username = txtUserName.getText();
 
 				if (fullName.equals("")) {
-					msg.setText("\tFull name is empty! Please input again!");
-					dialog.setVisible(true);
+					Utils.informDialog("\tFull name is empty! Please input again!");
 				} else if (!UserAccountValidation.isValidUserName(username)) {
-					msg.setText("\tUser name is not valid! Please input again!");
-					dialog.setVisible(true);
+					Utils.informDialog("\tUser name is not valid! Please input again!");
 				} else if (!UserAccountValidation.isValidEmail(email)) {
-					msg.setText("\tEmail is not valid! Please input again!");
-					dialog.setVisible(true);
+					Utils.informDialog("\tEmail is not valid! Please input again!");
 				} else {
 					List<NameValuePair> teacherParams = new ArrayList<NameValuePair>();
 					teacherParams.add(new BasicNameValuePair(UserDAO.USER_KEY,
 							RunningTimeData.getCurrentUserKey()));
 					teacherParams.add(new BasicNameValuePair(
 							UserDAO.USER_TYPE_ID, String
-									.valueOf(UserType.TEACHER)));
+									.valueOf(userTypeId)));
 					teacherParams.add(new BasicNameValuePair(UserDAO.FULL_NAME,
 							fullName));
 					teacherParams.add(new BasicNameValuePair(UserDAO.EMAIL,
 							email));
 					teacherParams.add(new BasicNameValuePair(UserDAO.USER_NAME,
 							username));
+					if(userTypeId==UserType.STUDENT){
 					teacherParams.add(new BasicNameValuePair(
-							UserDAO.IS_APPROVED, String.valueOf(true)));
+							UserDAO.IS_APPROVED, String.valueOf(false)));
+					}else{
+						teacherParams.add(new BasicNameValuePair(
+								UserDAO.IS_APPROVED, String.valueOf(true)));
+					}
 					teacherParams.add(new BasicNameValuePair(
 							UserDAO.PASSWORD, UserAccountValidation.DEFAULT_PASSWORD));
 					String response = EVoterHTTPRequest.excutePost(
 							RequestConfig.getURL(URIRequest.CREATE_USER),
 							teacherParams);
 					if (response == null) {
-						msg.setText("Cannot request to server!");
-						dialog.setVisible(true);
+						Utils.informDialog("Cannot request to server!");
 					} else {
-						msg.setText("Add successfully!");
-						dialog.setVisible(true);
-						AddTeacher.this.setVisible(false);
+						Utils.informDialog("Add successfully!");
+						dispose();
 					}
 				}
 			}

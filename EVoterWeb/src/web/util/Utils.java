@@ -1,5 +1,6 @@
 package web.util;
 
+import java.awt.Dimension;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,6 +10,10 @@ import java.text.SimpleDateFormat;
 
 import javax.naming.Context;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import web.gui.secretary.MainPanel;
 
@@ -104,5 +109,34 @@ public class Utils {
 			System.err.println("Couldn't find file: " + path);
 			return null;
 		}
+	}
+	
+	
+	/**
+	 * a dialog to inform a message.
+	 * @param txt is message want to inform
+	 */
+	public static void informDialog(String txt){
+		JOptionPane.showMessageDialog(new JFrame(), txt);
+	}
+	
+	/**
+	 * @param info is information of the selected object
+	 */
+	public static int confirmDialog(String info) {
+		JDialog.setDefaultLookAndFeelDecorated(true);
+		return JOptionPane.showConfirmDialog(null, "Do you really want to delete: \n"
+				+info, "Confirm",
+		        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+//	    int response = JOptionPane.showConfirmDialog(null, "Do you really want to delete: \n"
+//				+info, "Confirm",
+//	        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+//	    if (response == JOptionPane.NO_OPTION) {
+//	      System.out.println("No button clicked");
+//	    } else if (response == JOptionPane.YES_OPTION) {
+//	      System.out.println("Yes button clicked");
+//	    } else if (response == JOptionPane.CLOSED_OPTION) {
+//	      System.out.println("JOptionPane closed");
+//	    }
 	}
 }

@@ -13,33 +13,40 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import evoter.share.dao.UserDAO;
-import evoter.share.model.User;
-import evoter.share.model.UserType;
-import evoter.share.utils.URIRequest;
-
 import web.applet.RunningTimeData;
 import web.gui.secretary.spec.ItemViewAbstract;
 import web.gui.secretary.spec.MenuTabAbstract;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
+import evoter.share.dao.UserDAO;
+import evoter.share.model.User;
+import evoter.share.model.UserType;
+import evoter.share.utils.URIRequest;
 
 /**
- * content panel in {@link MainPanel} of Teacher tab. Contains list of
- * {@link TeacherItem} and allow to add a new teacher.
+ * content panel in {@link MainPanel} of Teacher tab or Student tab. Contains list of
+ * {@link UserItem} and allow to add a new teacher.
  * @author maint
  * 
  */
-public class TeacherTab extends MenuTabAbstract {
+public class UserTab extends MenuTabAbstract {
 
 	private static final long serialVersionUID = 1L;
+	private long userTypeId;
 
 	/**
 	 * constructor to initialize, design user interface and action performance
 	 * for Teacher tab on menu bar.
 	 */
-	public TeacherTab() {
+	public UserTab(long user_type_id) {
 		super();
+		userTypeId = user_type_id;
+		if(userTypeId==UserType.STUDENT){
+			btnAddNewItem.setText("New Student");
+		}else if(userTypeId==UserType.TEACHER){
+			btnAddNewItem.setText("New Teacher");
+		}
+		createListView();
 	}
 
 	/**
@@ -52,7 +59,7 @@ public class TeacherTab extends MenuTabAbstract {
 		teacherParams.add(new BasicNameValuePair(UserDAO.USER_KEY,
 				RunningTimeData.getCurrentUserKey()));
 		teacherParams.add(new BasicNameValuePair(UserDAO.USER_TYPE_ID, String
-				.valueOf(UserType.TEACHER)));
+				.valueOf(userTypeId)));
 		String listTeacherResponse = EVoterHTTPRequest.excutePost(
 				RequestConfig.getURL(URIRequest.GET_ALL_USER), teacherParams);
 		if (listTeacherResponse == null) {
@@ -69,7 +76,7 @@ public class TeacherTab extends MenuTabAbstract {
 						ob.getString(UserDAO.FULL_NAME),
 						ob.getBoolean(UserDAO.IS_APPROVED));
 				u.setId(ob.getLong(UserDAO.ID));
-				list_teachers.add(new TeacherItem(u));
+				list_teachers.add(new UserItem(u));
 			}
 		}
 		return list_teachers;
@@ -79,12 +86,11 @@ public class TeacherTab extends MenuTabAbstract {
 	 * add a new subject when click {@link #btnNewTeacher}
 	 */
 	public void addItem() {
-		btnAddNewItem.setText("New Teacher");
 		btnAddNewItem.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AddTeacher addedTeacher = new AddTeacher();
+				AddUser addedTeacher = new AddUser(userTypeId);
 				addedTeacher.setLocationRelativeTo(null);
 				addedTeacher.setVisible(true);
 			}

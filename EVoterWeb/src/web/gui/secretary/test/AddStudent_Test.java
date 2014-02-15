@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import web.gui.secretary.AddStudent;
-import web.gui.secretary.AddTeacher;
+import web.gui.secretary.AddUser;
 
 /**
  * @author maint

@@ -2,14 +2,14 @@ package web.gui.secretary;
 
 import java.io.IOException;
 
-import web.gui.secretary.spec.GUISubjectAbstract;
+import web.gui.secretary.spec.SubjectGUIAbstract;
 
 /**
  * Add a new subject by inserting information of a subject such as the title, teachers, students of it.<br> 
- * extends {@link GUISubjectAbstract} class.
+ * extends {@link SubjectGUIAbstract} class.
  * @author maint<br>
  */
-public class AddSubject extends GUISubjectAbstract {
+public class AddSubject extends SubjectGUIAbstract {
 
 	private static final long serialVersionUID = 1L;
 	

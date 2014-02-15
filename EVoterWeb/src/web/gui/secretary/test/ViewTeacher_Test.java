@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import evoter.share.model.User;
 
-import web.gui.secretary.AddTeacher;
-import web.gui.secretary.ViewTeacher;
+import web.gui.secretary.AddUser;
+import web.gui.secretary.ViewUser;
 
 /**
  * @author maint
@@ -21,7 +21,7 @@ public class ViewTeacher_Test {
 	public static void main(String[] args)
 	{
 		User usr = new User();
-		ViewTeacher teacher = new ViewTeacher(usr);
+		ViewUser teacher = new ViewUser(usr);
 	}
 
 }

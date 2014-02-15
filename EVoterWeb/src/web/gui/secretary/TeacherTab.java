@@ -68,6 +68,7 @@ public class TeacherTab extends MenuTabAbstract {
 						ob.getLong(UserDAO.USER_TYPE_ID),
 						ob.getString(UserDAO.FULL_NAME),
 						ob.getBoolean(UserDAO.IS_APPROVED));
+				u.setId(ob.getLong(UserDAO.ID));
 				list_teachers.add(new TeacherItem(u));
 			}
 		}
@@ -78,6 +79,7 @@ public class TeacherTab extends MenuTabAbstract {
 	 * add a new subject when click {@link #btnNewTeacher}
 	 */
 	public void addItem() {
+		btnAddNewItem.setText("New Teacher");
 		btnAddNewItem.addActionListener(new ActionListener() {
 
 			@Override

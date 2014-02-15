@@ -17,7 +17,5 @@ public class ViewSubject_Test {
 	{
 		Subject sub = new Subject();
 		ViewSubject subject = new ViewSubject(sub);
-		subject.setLocationRelativeTo(null);
-		subject.setVisible(true);
 	}
 }

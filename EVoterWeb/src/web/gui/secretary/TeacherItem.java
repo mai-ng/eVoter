@@ -52,20 +52,20 @@ public class TeacherItem extends ItemViewAbstract {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				//TODO: Check if the user delete himself
 				inforDialog.setTitle("Information");
-				inforDialog.setSize(new Dimension(400, 100));
+				inforDialog.setSize(400,400);
 				inforDialog.setModal(true);
 				inforDialog.setLocationRelativeTo(null);
 
 				inforDialog.add(inforMsg);
 
 				confirmDialog.setTitle("Confirm");
-				confirmDialog.setSize(new Dimension(400, 100));
+				confirmDialog.setSize(new Dimension(400, 400));
 				confirmDialog.setModal(true);
 				confirmDialog.setLocationRelativeTo(null);
 				
-				lb.setText("Do you really want to delete user: "
+				lb.setText("Do you really want to delete user: \n"
 						+ user.getEmail());
 				panel.add(lb);
 				panel.add(btYes);

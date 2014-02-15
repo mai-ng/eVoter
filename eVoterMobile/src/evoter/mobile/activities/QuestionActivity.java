@@ -25,6 +25,7 @@ import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.UserDAO;
@@ -280,8 +281,34 @@ public class QuestionActivity extends ItemDataActivity {
 	 * @return
 	 */
 	private boolean questionHasStatistic() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
+//		RequestParams params = new RequestParams();
+//		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+//		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
+//		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+//		params.put(AnswerDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+//		client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
+//			@Override
+//			public void onSuccess(String response) {
+//				if (response.contains("SUCCESS")) {
+//					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+//							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
+//					btSend.setEnabled(false);
+//				}
+//				else {
+//					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+//							"Cannot send question: " + response);
+//				}
+//			}
+//			
+//			@Override
+//			public void onFailure(Throwable error, String content)
+//			{
+//				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+//						"FAILURE: " + error.toString());
+//				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+//			}
+//		});
 	}
 
 	/**

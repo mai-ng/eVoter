@@ -36,8 +36,6 @@ public class AddTeacher_Test {
 	public static void main(String[] args)
 	{
 		AddTeacher add_teacher = new AddTeacher();
-		add_teacher.setLocationRelativeTo(null);
-		add_teacher.setVisible(true);
 	}
 
 }

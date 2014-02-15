@@ -14,8 +14,6 @@ public class AddSubject_Test {
 	public static void main(String[] args) throws IOException
 	{
 		AddSubject add_subject = new AddSubject();
-		add_subject.setLocationRelativeTo(null);
-		add_subject.setVisible(true);
 	}
 
 }

@@ -13,7 +13,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import web.applet.RunningTimeData;
-import web.gui.secretary.spec.GUITeacherAbstract;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import web.util.UserAccountValidation;
@@ -21,38 +20,32 @@ import evoter.share.dao.UserDAO;
 import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
+
 /**
- * Add a new teacher with information of full name, user name , and email.<br> 
- * extends {@link GUITeacherAbstract} class.
+ * Add a new student with information of full name, user name , and email.<br> 
+ * extends {@link AddTeacher} class.
  * @author maint<br>
  */
-public class AddTeacher extends GUITeacherAbstract {
+public class AddStudent extends AddTeacher{
 
 	private static final long serialVersionUID = 1L;
 
-	public AddTeacher() {
+	public AddStudent() {
 		super();
-		setTitle("Add new teacher");		
+		setTitle("Add new student");		
 		addNew();
 	}
 
-	/**
-	 * set text for button "Add"
-	 */
-	public void initComponents() {
-		super.initComponents();
-		btnSave.setText("Add");
-	}
 	
 	/**
-	 * create and add a new teacher to database
+	 * create and add a new student
 	 */
 	public void addNew() {
 		btnSave.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JDialog dialog = new JDialog(AddTeacher.this);
+				JDialog dialog = new JDialog(AddStudent.this);
 				dialog.setTitle("Invalid input");
 				dialog.setSize(new Dimension(400, 100));
 				dialog.setLocationRelativeTo(null);
@@ -79,7 +72,7 @@ public class AddTeacher extends GUITeacherAbstract {
 							RunningTimeData.getCurrentUserKey()));
 					teacherParams.add(new BasicNameValuePair(
 							UserDAO.USER_TYPE_ID, String
-									.valueOf(UserType.TEACHER)));
+									.valueOf(UserType.STUDENT)));
 					teacherParams.add(new BasicNameValuePair(UserDAO.FULL_NAME,
 							fullName));
 					teacherParams.add(new BasicNameValuePair(UserDAO.EMAIL,
@@ -99,7 +92,7 @@ public class AddTeacher extends GUITeacherAbstract {
 					} else {
 						msg.setText("Add successfully!");
 						dialog.setVisible(true);
-						AddTeacher.this.setVisible(false);
+						AddStudent.this.setVisible(false);
 					}
 				}
 			}

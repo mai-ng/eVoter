@@ -24,7 +24,7 @@ public class URIRequest {
 	public static final String EMAIL_EXIST_MESSAGE = "EMAIL EXISTS";
 	public static final String EMAIL_NOT_EXIST_MESSAGE = "EMAIL DOES NOT EXIST";
 	public static final String SUBJECT_NOT_EXIST_MESSAGE = "SUBJECT DOES NOT EXIST";
-
+	public static final String ANSWER_NOT_EXIST = "ANSWER DOES NOT EXIST";
 	
 	//for login
 	/**
@@ -300,6 +300,11 @@ public class URIRequest {
 	 * Change the approved status of user request
 	 */
 	public static final String CHANGE_APPROVE_USER="change_approve_user";
+	/**
+	 * Select an answer of question and send to server </br>
+	 */
+	public static final String VOTE_ANSWER="vote_answer";
+
 	
 	
 }

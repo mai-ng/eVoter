@@ -10,7 +10,8 @@ import evoter.share.dao.AnswerDAO;
 /**
  * <br>Update by @author luongnv89 on 09-Feb-2014:<br>
  * <li> Add {@link Answer#Answer(long, long, String)} constructor
- *
+ * 
+ * @author btdiem </br>
  */
 public class Answer extends ItemData implements Serializable {
 
@@ -53,10 +54,19 @@ public class Answer extends ItemData implements Serializable {
 	public void setAnswerText(String answerText) {
 		this.title = answerText;
 	}
+	private String statistics;
+	
+	public String getStatistics() {
+		return statistics;
+	}
+	public void setStatistics(String statistics) {
+		this.statistics = statistics;
+	}
+
 	@Override
 	public String toString() {
-		return "Answer [id=" + id + ", questionId=" + questionId
-				+ ", answerText=" + title + "]";
+		return "Answer [questionId=" + questionId + ", statistics="
+				+ statistics + ", id=" + id + ", title=" + title + "]";
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -65,6 +75,7 @@ public class Answer extends ItemData implements Serializable {
 		object.put(AnswerDAO.ID, id);
 		object.put(AnswerDAO.QUESTION_ID, questionId);
 		object.put(AnswerDAO.ANSWER_TEXT, title);
+		object.put(AnswerDAO.STATISTICS, statistics);
 		return object;
 	}
 	

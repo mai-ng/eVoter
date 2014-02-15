@@ -483,24 +483,17 @@ public class QuestionService implements IQuestionService{
 			/**
 			 * Create Answer object and insert it to ANSWER table
 			 */
-			String[] answerTexts = null;
 			if (parameters.containsKey(AnswerDAO.ANSWER_TEXT)){
-				answerTexts = (String[]) parameters.get(AnswerDAO.ANSWER_TEXT);
-			}
-			if (answerTexts != null){
-				
+				String[] answerTexts = (String[]) parameters.get(AnswerDAO.ANSWER_TEXT);
 				//delete the old answer
 				answerService.doDelete(questionId);
 				// add new one
 				answerService.doCreate(questionId, answerTexts);
-//				for (String answerText : answerTexts){
-//					Answer answer = new Answer();
-//					answer.setAnswerText(answerText);
-//					answer.set
-//					Answer answer = new Answer(questionId, answerText);
-//					answerDAO.insert(answer);
-//				}
+
 			}
+
+				
+
 			//URIUtils.writeSuccessResponse(httpExchange);
 			return URIRequest.SUCCESS_MESSAGE;
 			

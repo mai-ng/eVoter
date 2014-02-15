@@ -4,6 +4,7 @@
 package evoter.server.http.request;
 
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.http.request.interfaces.IAnswerService;
 import evoter.share.dao.AnswerDAO;
+import evoter.share.dao.QuestionDAO;
 import evoter.share.model.Answer;
+import evoter.share.model.QuestionType;
 import evoter.share.utils.URIRequest;
 
 /**
@@ -97,6 +100,42 @@ public class AnswerService implements IAnswerService {
 		answerDAO.deleteByQuestionId(questionId);
 		
 		return URIRequest.SUCCESS_MESSAGE;
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IAnswerService#doVote(java.util.Map)
+	 */
+	@Override
+	public Object doVote(Map<String, Object> parameter) {
+		
+		try{
+			
+			long answerId = Long.valueOf((String)parameter.get(AnswerDAO.ID));
+			List<Answer> answers = answerDAO.findById(answerId);
+			if (answers != null && !answers.isEmpty()){
+				Answer answer = answers.get(0);
+				String statistics = answer.getStatistics();
+				long questionTypeId = Long.valueOf((String)parameter.get(QuestionDAO.QUESTION_TYPE_ID));
+				
+				if (questionTypeId == QuestionType.INPUT_ANSWER 
+					|| questionTypeId == QuestionType.SLIDER){
+					
+					statistics += ":" + (String)parameter.get(AnswerDAO.STATISTICS);
+					
+				}else{
+					statistics = String.valueOf(Integer.valueOf(statistics) + 1);
+				}
+				answer.setStatistics(statistics);
+				answerDAO.update(answer);
+				return URIRequest.SUCCESS_MESSAGE;
+			}
+			return URIRequest.ANSWER_NOT_EXIST;
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			return URIRequest.FAILURE_MESSAGE;
+		}
+
 	}
 	
 	

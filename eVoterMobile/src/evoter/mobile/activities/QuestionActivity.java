@@ -272,7 +272,16 @@ public class QuestionActivity extends ItemDataActivity {
 				dialog.dismiss();
 			}
 		});
+		if(questionHasStatistic()) dialog.getBtOK().setEnabled(false);
 		dialog.show();
+	}
+
+	/**
+	 * @return
+	 */
+	private boolean questionHasStatistic() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	/**

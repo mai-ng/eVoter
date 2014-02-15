@@ -23,13 +23,22 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
 import evoter.mobile.main.R;
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.objects.RequestConfig;
+import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
+import evoter.share.dao.QuestionDAO;
+import evoter.share.dao.QuestionSessionDAO;
+import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
-import evoter.share.model.Question;
 import evoter.share.model.QuestionType;
 import evoter.share.model.UserType;
+import evoter.share.utils.URIRequest;
 
 /**
  * <br>
@@ -45,10 +54,14 @@ import evoter.share.model.UserType;
  */
 public class QuestionDetailActivity extends EVoterActivity {
 	
+	private final String STOP="Stop receive answer";
+	private final String SEND ="Send";
+	private final String SUBMIT ="Submit";
 	TextView tvQuestionText;
 	LinearLayout answerArea;
 	Button btSend;
 	Button btView;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +82,157 @@ public class QuestionDetailActivity extends EVoterActivity {
 		ArrayList<Answer> column1 = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
 		
 		//		type = 1;
+		buidAnswerArea(type, column1);
+		
+		btSend = (Button) findViewById(R.id.btSendQuestion);
+		setupAction();
+		btView = (Button) findViewById(R.id.btViewStatistic);
+		btView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent statisticActivity = new Intent(QuestionDetailActivity.this, QuestionStatisticActivity.class);
+				startActivity(statisticActivity);
+			}
+		});
+	}
+
+	/**
+	 * 
+	 */
+	private void setupAction() {
+		if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
+			btSend.setText(SEND);
+		} else if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
+			btSend.setText(SUBMIT);
+		}
+		
+		if (!EVoterShareMemory.getCurrentSession().isActive()) {
+			btSend.setEnabled(false);
+		}
+		
+		btSend.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(btSend.getText().toString().equals(SEND)){
+					sendQuestion();
+				}else if(btSend.getText().toString().equals(SUBMIT)){
+					submitAnswer();
+				}else if(btSend.getText().toString().equals(STOP)){
+					stopReceiveAnswer();
+				}
+				
+			}
+		});
+	}
+	
+	
+	/**
+	 * 
+	 */
+	protected void stopReceiveAnswer() {
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		client.post(RequestConfig.getURL(URIRequest.STOP_SEND_QUESTION), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				if (response.contains("SUCCESS")) {
+					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
+					btSend.setText(SEND);
+				}
+				else {
+					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+							"Cannot send question: " + response);
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
+		
+	}
+
+	/**
+	 * 
+	 */
+	protected void submitAnswer() {
+		//TODO: Submit answer
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
+		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		params.put(AnswerDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				if (response.contains("SUCCESS")) {
+					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
+					btSend.setEnabled(false);
+				}
+				else {
+					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+							"Cannot send question: " + response);
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
+		
+	}
+	
+	/**
+	 * 
+	 */
+	protected void sendQuestion() {
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
+		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		client.post(RequestConfig.getURL(URIRequest.SEND_QUESTION), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				if (response.contains("SUCCESS")) {
+					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
+					btSend.setText(STOP);
+					
+				}
+				else {
+					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+							"Cannot send question: " + response);
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
+	}
+	
+	/**
+	 * @param type
+	 * @param column1
+	 */
+	private void buidAnswerArea(int type, ArrayList<Answer> column1) {
 		switch (type) {
 			case QuestionType.YES_NO:
 				RadioGroup groups = new RadioGroup(this);
@@ -117,30 +281,13 @@ public class QuestionDetailActivity extends EVoterActivity {
 				answerArea.addView(etAnswer);
 				break;
 			case QuestionType.MATCH:
-				if (!EVoterShareMemory.getCurrentQuestion().getAnswerColumn2().equals("")) {
-					ArrayList<Answer> column2 = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn2());
-				}
+				//				if (!EVoterShareMemory.getCurrentQuestion().getAnswerColumn2().equals("")) {
+				//					ArrayList<Answer> column2 = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn2());
+				//				}
 				break;
 			default:
 				break;
 		}
-		
-		btSend = (Button) findViewById(R.id.btSendQuestion);
-		if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
-			btSend.setText("Send");
-		} else if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
-			btSend.setText("Submit");
-		}
-		
-		btView = (Button) findViewById(R.id.btViewStatistic);
-		btView.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent statisticActivity = new Intent(QuestionDetailActivity.this, QuestionStatisticActivity.class);
-				startActivity(statisticActivity);
-			}
-		});
 	}
 	
 	/**

@@ -50,7 +50,7 @@ public class UserTab extends MenuTabAbstract {
 	}
 
 	/**
-	 * @return list of all existing teachers
+	 * @return list of all existing users
 	 */
 	public ArrayList<ItemViewAbstract> loadListItems() {
 		ArrayList<ItemViewAbstract> list_teachers = new ArrayList<ItemViewAbstract>();

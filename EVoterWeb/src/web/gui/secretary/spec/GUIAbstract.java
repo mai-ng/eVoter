@@ -96,4 +96,12 @@ public abstract class GUIAbstract extends JFrame{
 	protected abstract String getURLRequest();
 
 	protected abstract List<NameValuePair> buildRequestParameters();
+
+
+	/**
+	 * @return the btnSave
+	 */
+	public JButton getBtnSave() {
+		return btnSave;
+	}
 }

@@ -16,7 +16,7 @@ import web.util.UserAccountValidation;
 import web.util.Utils;
 
 /**
- * extended by {@link AddUser}, {@link EditUser}, {@link ViewUser}. classes<br>
+ * extended by {@link AddUser}, {@link EditUser}, {@link ViewUser} classes<br>
  * Create common components, initialize them, and define a layout and user
  * interface. <br>
  * 
@@ -45,32 +45,6 @@ public abstract class UserGUIAbstract extends GUIAbstract {
 	public UserGUIAbstract() {
 		super();
 		buildGUI();
-	}
-
-	/**
-	 * Check pre-condition to send request to server.<br>
-	 * Used in {@link AddUser}, {@link EditUser} when click button "Add" or "Save".
-	 * @return true if:
-	 * <li> full name field is valid.
-	 * <li> user name field is valid.
-	 * <li> and email field is valid.<br>
-	 * else false.
-	 */
-	protected boolean readyToSendRequest() {
-		String fullName = txtFullName.getText();
-		String email = txtEmail.getText();
-		String username = txtUserName.getText();
-		if (fullName.equals("")) {
-			Utils.informDialog("\tFull name is empty! Please input again!");
-			return false;
-		} else if (!UserAccountValidation.isValidUserName(username)) {
-			Utils.informDialog("\tUser name is not valid! Please input again!");
-			return false;
-		} else if (!UserAccountValidation.isValidEmail(email)) {
-			Utils.informDialog("\tEmail is not valid! Please input again!");
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -174,6 +148,80 @@ public abstract class UserGUIAbstract extends GUIAbstract {
 				dispose();
 			}
 		});
+	}
+
+	/**
+	 * Check pre-condition to send request to server.<br>
+	 * Used in {@link AddUser}, {@link EditUser} when click button "Add" or "Save".
+	 * @return true if:
+	 * <li> full name field is valid.
+	 * <li> user name field is valid.
+	 * <li> and email field is valid.<br>
+	 * else false.
+	 */
+	protected boolean readyToSendRequest() {
+		String fullName = txtFullName.getText();
+		String email = txtEmail.getText();
+		String username = txtUserName.getText();
+		if (fullName.equals("")) {
+			Utils.informDialog("\tFull name is empty! Please input again!");
+			return false;
+		} else if (!UserAccountValidation.isValidUserName(username)) {
+			Utils.informDialog("\tUser name is not valid! Please input again!");
+			return false;
+		} else if (!UserAccountValidation.isValidEmail(email)) {
+			Utils.informDialog("\tEmail is not valid! Please input again!");
+			return false;
+		}
+		return true;
+	}
+	/**
+	 * @return the lblFullName
+	 */
+	public JLabel getLblFullName() {
+		return lblFullName;
+	}
+
+	/**
+	 * @return the lblUserName
+	 */
+	public JLabel getLblUserName() {
+		return lblUserName;
+	}
+
+	/**
+	 * @return the lblEmail
+	 */
+	public JLabel getLblEmail() {
+		return lblEmail;
+	}
+
+	/**
+	 * @return the txtFullName
+	 */
+	public JTextField getTxtFullName() {
+		return txtFullName;
+	}
+
+	/**
+	 * @return the txtUserName
+	 */
+	public JTextField getTxtUserName() {
+		return txtUserName;
+	}
+
+	/**
+	 * @return the txtEmail
+	 */
+	public JTextField getTxtEmail() {
+		return txtEmail;
+	}
+
+	/**
+	 * @return the btnClose
+	 */
+	public JButton getBtnClose() {
+		return btnClose;
 	}
 
 }

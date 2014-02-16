@@ -133,8 +133,8 @@ public class TestAnswerService {
 	public void test_doGetStatistics(){
 		
 		String expected_response=""+
-		"[{\"ANSWER_TEXT\":\"Yes\",\"ID\":139,\"QUESTION_ID\":1,\"STATISTICS\":\"10\"}," +
-		"{\"ANSWER_TEXT\":\"No\",\"ID\":140,\"QUESTION_ID\":1,\"STATISTICS\":\"30\"}]";
+		"[{\"ID\":139,\"STATISTICS\":\"10\"}," +
+		"{\"ID\":140,\"STATISTICS\":\"30\"}]";
 		
 		String username = "paul_gibson";
 		String password = "12345678";

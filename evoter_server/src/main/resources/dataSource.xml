@@ -100,7 +100,10 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
 		<property name="userDAO" ref="userDAO" />
 		<property name="sessionDAO" ref="sessionDAO" />
 		<property name="sessionUserDAO" ref="sessionUserDAO" />	
-		<property name="userSubjectDAO" ref="userSubjectDAO"></property>	
+		<property name="userSubjectDAO" ref="userSubjectDAO"/>	
+		<property name="questionSessionDAO" ref="questionSessionDAO" />
+		<property name="questionDAO" ref="questionDAO" />
+		
 	</bean>    
     	    
     <bean id="subjectService" class="evoter.server.http.request.SubjectService" lazy-init="true">

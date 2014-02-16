@@ -13,15 +13,16 @@ public class QuestionRowMapper implements RowMapper<Question> {
 	@Override
 	public Question mapRow(ResultSet rs, int rowIndex) throws SQLException {
 
-		Question qe = new Question();
-		qe.setId(rs.getLong(QuestionDAO.ID));
-		qe.setQuestionText(rs.getString(QuestionDAO.QUESTION_TEXT));
-		qe.setQuestionTypeId(rs.getLong(QuestionDAO.QUESTION_TYPE_ID));
-//		qe.setSessionId(rs.getLong(QuestionDAO.SESSION_ID));
-		qe.setUserId(rs.getLong(QuestionDAO.USER_ID));
-		qe.setCreationDate(rs.getTimestamp(QuestionDAO.CREATION_DATE));
-		qe.setParentId(rs.getLong(QuestionDAO.PARENT_ID));
-		return qe;
+		Question question = new Question();
+		question.setId(rs.getLong(QuestionDAO.ID));
+		question.setQuestionText(rs.getString(QuestionDAO.QUESTION_TEXT));
+		question.setQuestionTypeId(rs.getLong(QuestionDAO.QUESTION_TYPE_ID));
+		question.setUserId(rs.getLong(QuestionDAO.USER_ID));
+		question.setCreationDate(rs.getTimestamp(QuestionDAO.CREATION_DATE));
+		question.setParentId(rs.getLong(QuestionDAO.PARENT_ID));
+		question.setStatus(rs.getInt(QuestionDAO.STATUS));
+		
+		return question;
 	}
 
 }

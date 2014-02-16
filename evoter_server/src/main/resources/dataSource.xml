@@ -99,7 +99,8 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
     <bean id="sessionService" class="evoter.server.http.request.SessionService" lazy-init="true">
 		<property name="userDAO" ref="userDAO" />
 		<property name="sessionDAO" ref="sessionDAO" />
-		<property name="sessionUserDAO" ref="sessionUserDAO" />		
+		<property name="sessionUserDAO" ref="sessionUserDAO" />	
+		<property name="userSubjectDAO" ref="userSubjectDAO"></property>	
 	</bean>    
     	    
     <bean id="subjectService" class="evoter.server.http.request.SubjectService" lazy-init="true">

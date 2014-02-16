@@ -53,6 +53,7 @@ public class QuestionActivity extends ItemDataActivity {
 				.getCurrentSessionName());
 		
 		mainMenu.setQuestionActivityMenu();
+		if(!userAcceptSession()) mainMenu.getBtStartSession().setVisibility(View.GONE);
 		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && EVoterShareMemory.currentSessionIsActive()) {
 			//Setup seekbar
 			buildStaticSlider();
@@ -313,5 +314,11 @@ public class QuestionActivity extends ItemDataActivity {
 			}
 		});
 	}
-	
+	/**
+	 * @return true if current student already accepted current session
+	 */
+	protected boolean userAcceptSession() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

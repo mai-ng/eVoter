@@ -30,6 +30,7 @@ import evoter.mobile.objects.OfflineEVoterManager;
 import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.SessionDAO;
+import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.utils.URIRequest;
 
@@ -193,15 +194,19 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				if (mainMenu.getBtStartSession().getText().toString().contains("STOP")) {
-					mainMenu.getBtStartSession().setText("START SESSION");
-					stopSession();
+				if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.STOP_SESSION)) {
+					mainMenu.getBtStartSession().setText(MainMenu.START_SESSION);
+					startSession(false);
 					mainMenu.dismiss();
-				} else {
-					mainMenu.getBtStartSession().setText("STOP SESSION");
-					startSession();
+				} else if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.START_SESSION)) {
+					mainMenu.getBtStartSession().setText(MainMenu.STOP_SESSION);
+					startSession(true);
+					mainMenu.dismiss();
+				} else if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.ACCEPT_SESSION)) {
+					acceptSession();
 					mainMenu.dismiss();
 				}
+				
 			}
 		});
 		
@@ -210,24 +215,24 @@ public class EVoterActivity extends Activity {
 	/**
 	 * 
 	 */
-	protected void stopSession() {
+	protected void acceptSession() {
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(SessionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-		
-		client.post(RequestConfig.getURL(URIRequest.INACTIVE_SESSION), params,
+		params.add(SessionUserDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		client.post(RequestConfig.getURL(URIRequest.ACCEPT_SESSION), params,
 				new AsyncHttpResponseHandler() {
 					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						if(response.contains(URIRequest.SUCCESS_MESSAGE)){
+						if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 							EVoterMobileUtils.showeVoterToast(
 									EVoterActivity.this,
-									"Session is stopped!");
-						}else{
+									"You joined to session");
+							mainMenu.getBtStartSession().setVisibility(View.GONE);
+						} else {
 							EVoterMobileUtils.showeVoterToast(
 									EVoterActivity.this,
-									"Cannot start session! Request failure");
+									response);
 						}
 					}
 					
@@ -238,34 +243,35 @@ public class EVoterActivity extends Activity {
 						EVoterMobileUtils.showeVoterToast(
 								EVoterActivity.this,
 								"Cannot request to server!");
-						Log.e("Stop session", "onFailure error : "
+						Log.e("Accept session", "onFailure error : "
 								+ error.toString() + "content : "
 								+ content);
 					}
 				});
+		
 	}
 	
 	/**
 	 * 
 	 */
-	protected void startSession() {
+	protected void startSession(final boolean start) {
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		params.add(SessionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-		
-		client.post(RequestConfig.getURL(URIRequest.ACTIVE_SESSION), params,
+		String url = start ? URIRequest.ACTIVE_SESSION : URIRequest.INACTIVE_SESSION;
+		client.post(RequestConfig.getURL(url), params,
 				new AsyncHttpResponseHandler() {
 					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						if(response.contains(URIRequest.SUCCESS_MESSAGE)){
+						if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 							EVoterMobileUtils.showeVoterToast(
 									EVoterActivity.this,
-									"Session is running!");
-						}else{
+									"Session is " + (start ? "running!" : "stop"));
+						} else {
 							EVoterMobileUtils.showeVoterToast(
 									EVoterActivity.this,
-									"Cannot start session! Request failure");
+									"Request failure");
 						}
 					}
 					
@@ -373,7 +379,7 @@ public class EVoterActivity extends Activity {
 					@Override
 					public void onSuccess(String response) {
 						Log.i("Response", response);
-						responseProcess(i_Usrname,i_Password, response);
+						responseProcess(i_Usrname, i_Password, response);
 					}
 					
 					//Login fail
@@ -383,18 +389,18 @@ public class EVoterActivity extends Activity {
 						EVoterMobileUtils.showeVoterToast(
 								EVoterActivity.this,
 								"Cannot request to server!");
-						Log.e("LoginTest", "onFailure error : "
+						Log.e("Login", "onFailure error : "
 								+ error.toString() + "content : "
 								+ content);
 					}
 				});
 	}
-
+	
 	/**
 	 * @param i_Usrname
 	 * @param response
 	 */
-	private void responseProcess(final String i_Usrname, final String i_password,String response) {
+	private void responseProcess(final String i_Usrname, final String i_password, String response) {
 		String userKey = null;
 		try {
 			
@@ -417,7 +423,7 @@ public class EVoterActivity extends Activity {
 			EVoterShareMemory
 					.setUSER_KEY(userKey);
 			EVoterShareMemory
-			.setCurrentUserName(i_Usrname);
+					.setCurrentUserName(i_Usrname);
 			EVoterMobileUtils.showeVoterToast(
 					EVoterActivity.this,
 					"Welcome "

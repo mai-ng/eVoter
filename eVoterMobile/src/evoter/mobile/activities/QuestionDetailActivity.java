@@ -64,7 +64,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 	Button btSend;
 	Button btView;
 	RadioGroup groups;
-	ArrayList<Answer> column1;
+	ArrayList<Answer> answers;
 	ArrayList<CheckBox> listCheckBox;
 	long idAnswer = -1;
 	String statistic;
@@ -84,7 +84,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		answerArea = (LinearLayout) findViewById(R.id.loAnswerArea);
 		
 		//Parser the answer of question
-		column1 = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
+		answers = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
 		
 		//		type = 1;
 		buidAnswerArea();
@@ -110,6 +110,9 @@ public class QuestionDetailActivity extends EVoterActivity {
 			btSend.setText(SEND);
 		} else if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
 			btSend.setText(SUBMIT);
+			if(!EVoterShareMemory.getCurrentSession().isActive()){
+				btSend.setEnabled(false);
+			}
 		}
 		
 		if (!EVoterShareMemory.getCurrentSession().isActive()) {
@@ -181,7 +184,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				boolean hasAnswer = false;
 				for (int i = 0; i < listCheckBox.size(); i++) {
 					if (listCheckBox.get(i).isChecked()) {
-						doVote(column1.get(i).getId(), null);
+						doVote(answers.get(i).getId(), null);
 						hasAnswer = true;
 					}
 				}
@@ -193,7 +196,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				if (idAnswer == -1) {
 					EVoterMobileUtils.showeVoterToast(this, "You have to choose at least one answer before submit");
 				} else {
-					doVote(column1.get(0).getId(), statistic);
+					doVote(answers.get(0).getId(), statistic);
 				}
 				break;
 			case QuestionType.INPUT_ANSWER:
@@ -201,7 +204,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				if (statistic == null || statistic.equals("")) {
 					EVoterMobileUtils.showeVoterToast(this, "You have to fill an answer before submit");
 				} else {
-					doVote(column1.get(0).getId(), statistic);
+					doVote(answers.get(0).getId(), statistic);
 				}
 				break;
 			case QuestionType.MATCH:
@@ -293,60 +296,16 @@ public class QuestionDetailActivity extends EVoterActivity {
 		etAnswer.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		switch ((int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId()) {
 			case QuestionType.YES_NO:
+				mutiRadioButtonArea();
+				break;
 			case QuestionType.MULTI_RADIOBUTTON:
-				for (int i = 0; i < column1.size(); i++) {
-					RadioButton ans = new RadioButton(this);
-					ans.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-					ans.setText(column1.get(i).getAnswerText());
-					ans.setId(i);
-					if (i == 0) ans.setChecked(true);
-					groups.addView(ans);
-					
-				}
-				
-				groups.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-					
-					@Override
-					public void onCheckedChanged(RadioGroup group, int checkedId) {
-						idAnswer = column1.get(checkedId).getId();
-					}
-				});
-				answerArea.addView(groups);
+				mutiRadioButtonArea();
 				break;
 			case QuestionType.MULTI_CHECKBOX:
-				for (int i = 0; i < column1.size(); i++) {
-					CheckBox ans = new CheckBox(this);
-					ans.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-					ans.setText(column1.get(i).getAnswerText());
-					ans.setId(i);
-					listCheckBox.add(ans);
-					answerArea.addView(ans);
-				}
+				multiCheckboxArea();
 				break;
 			case QuestionType.SLIDER:
-				SeekBar seekbar = new SeekBar(this);
-				seekbar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				int max = Integer.parseInt(column1.get(0).getAnswerText());
-				seekbar.setMax(max);
-				seekbar.setProgress(max / 2);
-				seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-					@Override
-					public void onStopTrackingTouch(SeekBar seekBar) {
-						
-					}
-					
-					@Override
-					public void onStartTrackingTouch(SeekBar seekBar) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-						statistic = String.valueOf(progress);
-					}
-				});
-				answerArea.addView(seekbar);
+				seekBarArea();
 				break;
 			case QuestionType.INPUT_ANSWER:
 				etAnswer.setHint("Your answer here");
@@ -360,6 +319,73 @@ public class QuestionDetailActivity extends EVoterActivity {
 			default:
 				break;
 		}
+	}
+
+	/**
+	 * 
+	 */
+	private void seekBarArea() {
+		SeekBar seekbar = new SeekBar(this);
+		seekbar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		int max = Integer.parseInt(answers.get(0).getAnswerText());
+		seekbar.setMax(max);
+		seekbar.setProgress(max / 2);
+		statistic=String.valueOf(max/2);
+		seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Your value is: " + statistic);
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				statistic = String.valueOf(progress);
+			}
+		});
+		answerArea.addView(seekbar);
+	}
+
+	/**
+	 * 
+	 */
+	private void multiCheckboxArea() {
+		for (int i = 0; i < answers.size(); i++) {
+			CheckBox ans = new CheckBox(this);
+			ans.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+			ans.setText(answers.get(i).getAnswerText());
+			ans.setId(i);
+			listCheckBox.add(ans);
+			answerArea.addView(ans);
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void mutiRadioButtonArea() {
+		for (int i = 0; i < answers.size(); i++) {
+			RadioButton ans = new RadioButton(this);
+			ans.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+			ans.setText(answers.get(i).getAnswerText());
+			ans.setId(i);
+			if (i == 0) ans.setChecked(true);
+			groups.addView(ans);
+			
+		}
+		idAnswer = answers.get(0).getId();
+		groups.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				idAnswer = answers.get(checkedId).getId();
+			}
+		});
+		answerArea.addView(groups);
 	}
 	
 	/**
@@ -387,7 +413,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 	 */
 	private Answer parserJSONObjectToAnswer(JSONObject jsonObject) {
 		try {
-			return new Answer(jsonObject.getLong(AnswerDAO.QUESTION_ID), jsonObject.getString(AnswerDAO.ANSWER_TEXT));
+			return new Answer(jsonObject.getLong(AnswerDAO.ID),jsonObject.getLong(AnswerDAO.QUESTION_ID), jsonObject.getString(AnswerDAO.ANSWER_TEXT));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

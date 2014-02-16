@@ -15,8 +15,8 @@ import evoter.share.model.UserType;
 
 /**
  * Update by @author luongnv89 on 09-Feb-2014:<br>
- * <li> Change the classname from MenuDialog to MainMenu
- * Created by @author luongnv89 on 19-Jan-2014:<br>
+ * <li>Change the classname from MenuDialog to MainMenu Created by @author
+ * luongnv89 on 19-Jan-2014:<br>
  * Manage main menu of eVoterMobile.
  */
 public class MainMenu extends Dialog {
@@ -37,7 +37,9 @@ public class MainMenu extends Dialog {
 	Button btNewQuestion;
 	
 	LinearLayout lo_questionDetailActivityMenu;
-
+	public static final String STOP_SESSION = "Stop session";
+	public static final String START_SESSION = "Start session";
+	public static final String ACCEPT_SESSION = "Accept to join";
 	
 	/**
 	 * @param context
@@ -67,32 +69,34 @@ public class MainMenu extends Dialog {
 		lo_questionActivityMenu = (LinearLayout) findViewById(R.id.questionMenuLayout);
 		btNewQuestion = (Button) findViewById(R.id.btNewQuestion);
 		btNewQuestion.setVisibility(View.GONE);
-		btStartSession = (Button)findViewById(R.id.btStartSession);
-		if(EVoterShareMemory.getCurrentSession()!=null){
-			if(EVoterShareMemory.getCurrentSession().isActive()){
-				btStartSession.setText("STOP SESSION");
-			}else{
-				btStartSession.setText("START SESSION");
+		btStartSession = (Button) findViewById(R.id.btStartSession);
+		if (EVoterShareMemory.getCurrentSession() != null) {
+			if (EVoterShareMemory.getCurrentSession().isActive()) {
+				btStartSession.setText(STOP_SESSION);
+			} else {
+				btStartSession.setText(START_SESSION);
 			}
 		}
-		btStartSession.setVisibility(View.GONE);
 		lo_questionDetailActivityMenu = (LinearLayout) findViewById(R.id.questionDetailMenuLayout);
 		
 		lo_subjectActivityMenu.setVisibility(View.GONE);
 		lo_sessionActivityMenu.setVisibility(View.GONE);
 		lo_questionActivityMenu.setVisibility(View.GONE);
 		lo_questionDetailActivityMenu.setVisibility(View.GONE);
-		if(EVoterShareMemory.getCurrentUserType()==UserType.TEACHER){
+		if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
 			btNewSession.setVisibility(View.VISIBLE);
 			btNewQuestion.setVisibility(View.VISIBLE);
 			btStartSession.setVisibility(View.VISIBLE);
+		}
+		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
+			btStartSession.setText(ACCEPT_SESSION);
 		}
 	}
 	
 	/**
 	 * Set top menu, which is show in all activity of application
 	 */
-	public void setTopMenu(){
+	public void setTopMenu() {
 		lo_subjectActivityMenu.setVisibility(View.GONE);
 		lo_sessionActivityMenu.setVisibility(View.GONE);
 		lo_questionActivityMenu.setVisibility(View.GONE);
@@ -101,37 +105,35 @@ public class MainMenu extends Dialog {
 	
 	/**
 	 * Set main menu for {@link SessionActivity}:<br>
-	 * <li> 
+	 * <li>
 	 */
-	public void setSessionActivityMenu(){
+	public void setSessionActivityMenu() {
 		lo_subjectActivityMenu.setVisibility(View.VISIBLE);
 		lo_sessionActivityMenu.setVisibility(View.GONE);
 		lo_questionActivityMenu.setVisibility(View.GONE);
 		lo_questionDetailActivityMenu.setVisibility(View.GONE);
 	}
 	
-	public void setQuestionActivityMenu(){
+	public void setQuestionActivityMenu() {
 		lo_sessionActivityMenu.setVisibility(View.VISIBLE);
 		lo_subjectActivityMenu.setVisibility(View.GONE);
 		lo_questionActivityMenu.setVisibility(View.GONE);
 		lo_questionDetailActivityMenu.setVisibility(View.GONE);
 	}
 	
-	public void setMenuQuestionActivity(){
+	public void setMenuQuestionActivity() {
 		lo_questionActivityMenu.setVisibility(View.VISIBLE);
 		lo_subjectActivityMenu.setVisibility(View.GONE);
 		lo_sessionActivityMenu.setVisibility(View.GONE);
 		lo_questionDetailActivityMenu.setVisibility(View.GONE);
 	}
 	
-	public void setMenuQuestionDetailActivity(){
+	public void setMenuQuestionDetailActivity() {
 		lo_questionDetailActivityMenu.setVisibility(View.VISIBLE);
 		lo_subjectActivityMenu.setVisibility(View.GONE);
 		lo_sessionActivityMenu.setVisibility(View.GONE);
 		lo_questionActivityMenu.setVisibility(View.GONE);
 	}
-	
-	
 	
 	/**
 	 * @return the mainMenu
@@ -139,82 +141,82 @@ public class MainMenu extends Dialog {
 	public LinearLayout getMainMenu() {
 		return lo_mainMenu;
 	}
-
+	
 	/**
 	 * @return the btExit
 	 */
 	public Button getBtExit() {
 		return btExit;
 	}
-
+	
 	/**
 	 * @return the btLogout
 	 */
 	public Button getBtLogout() {
 		return btLogout;
 	}
-
+	
 	/**
 	 * @return the subjectActivityMenu
 	 */
 	public LinearLayout getSubjectActivityMenu() {
 		return lo_subjectActivityMenu;
 	}
-
+	
 	/**
 	 * @return the btListUsers
 	 */
 	public Button getBtListUsers() {
 		return btListUsers;
 	}
-
+	
 	/**
 	 * @return the sessionActivityMenu
 	 */
 	public LinearLayout getSessionActivityMenu() {
 		return lo_sessionActivityMenu;
 	}
-
+	
 	/**
 	 * @return the btNewSession
 	 */
 	public Button getBtNewSession() {
 		return btNewSession;
 	}
-
+	
 	/**
 	 * @return the btAcceptUsers
 	 */
 	public Button getBtAcceptUsers() {
 		return btAcceptUsers;
 	}
-
+	
 	/**
 	 * @return the questionActivityMenu
 	 */
 	public LinearLayout getQuestionActivityMenu() {
 		return lo_questionActivityMenu;
 	}
-
+	
 	/**
 	 * @return the btNewQuestion
 	 */
 	public Button getBtNewQuestion() {
 		return btNewQuestion;
 	}
-
+	
 	/**
 	 * @return the questionDetailActivityMenu
 	 */
 	public LinearLayout getQuestionDetailActivityMenu() {
 		return lo_questionDetailActivityMenu;
 	}
-
+	
 	/**
 	 * @return the btStartSession
 	 */
 	public Button getBtStartSession() {
 		return btStartSession;
 	}
-
+	
 }

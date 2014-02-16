@@ -210,13 +210,19 @@ public class NewQuestionActivity extends EVoterActivity {
 				EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "The max value of slider should be greater than 1 !Please input again!");
 				return false;
 			} else {
-				//				listAnswser.add(String.valueOf(min));
+				listAnswser.clear();
 				listAnswser.add(String.valueOf(max));
 			}
 		}
-//		if (typeID == QuestionType.INPUT_ANSWER || typeID == QuestionType.YES_NO) {
-//			listAnswser.add("Yes/no and input answer question do not need answer text");
-//		}
+		if (typeID == QuestionType.INPUT_ANSWER) {
+			listAnswser.clear();
+			listAnswser.add("Input answer");
+		}
+		if(typeID == QuestionType.YES_NO){
+			listAnswser.clear();
+			listAnswser.add("Yes");
+			listAnswser.add("No");
+		}
 		return true;
 	}
 	
@@ -322,6 +328,7 @@ public class NewQuestionActivity extends EVoterActivity {
 			params.add(QuestionDAO.CREATION_DATE, ts.toString());
 			params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSessionID()));
 			params.put(AnswerDAO.ANSWER_TEXT, listAnswser);
+			Log.i("List Answer: ", listAnswser.get(0));
 			client.post(RequestConfig.getURL(URIRequest.CREATE_QUESTION), params,
 					new AsyncHttpResponseHandler() {
 						// Request successfully - client receive a response

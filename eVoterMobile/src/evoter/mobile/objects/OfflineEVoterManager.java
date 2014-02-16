@@ -9,7 +9,6 @@ import android.content.SharedPreferences.Editor;
 import android.util.Log;
 import evoter.mobile.activities.EVoterActivity;
 import evoter.mobile.activities.LoginActivity;
-import evoter.mobile.activities.SubjectActivity;
 import evoter.share.dao.UserDAO;
 
 /**
@@ -81,8 +80,6 @@ public class OfflineEVoterManager {
 			HashMap<String, String> user = getSavedUserDetail();
 			contex.doLogin(user.get(UserDAO.USER_NAME), user.get(UserDAO.PASSWORD));
 			Log.i("Already login: ", "UserName: " + user.get(UserDAO.USER_NAME) + " | Userkey: " + user.get(UserDAO.USER_KEY));
-			Intent i = new Intent(contex, SubjectActivity.class);
-			contex.startActivity(i);
 		}
 	}
 	

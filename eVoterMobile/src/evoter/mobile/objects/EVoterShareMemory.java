@@ -6,7 +6,6 @@ package evoter.mobile.objects;
 import evoter.share.model.Question;
 import evoter.share.model.Session;
 import evoter.share.model.Subject;
-import evoter.share.model.User;
 
 /**
  * {@link EVoterShareMemory} manage the parameters of eVoter application

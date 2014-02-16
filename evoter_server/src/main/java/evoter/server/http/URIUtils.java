@@ -451,6 +451,13 @@ public class URIUtils {
 				&& URIString.contains(((HttpConnection)BeanDAOFactory.getBean("httpConnection")).getContext()) 
 				&& URIString.endsWith(URIRequest.VOTE_ANSWER); 
 		
+	}
+
+	public static boolean isCreateSubject(String URIString) {
+		
+		return (URIString != null) 
+				&& URIString.contains(((HttpConnection)BeanDAOFactory.getBean("httpConnection")).getContext()) 
+				&& URIString.endsWith(URIRequest.CREATE_SUBJECT);
 	}		
 	
 	

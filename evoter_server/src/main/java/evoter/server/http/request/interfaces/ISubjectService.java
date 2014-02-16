@@ -7,6 +7,7 @@ import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Subject;
 import evoter.share.model.User;
+import evoter.share.model.UserSubject;
 import evoter.share.utils.URIRequest;
 
 /**
@@ -72,26 +73,29 @@ public interface ISubjectService {
 	 */
 	public Object doGetUsersOfSubject(Map<String, Object> parameters);
 	/**
-	 * Update a {@link Subject} to database </br>
+	 * Update a the changes for {@link Subject} to database </br>
+	 * Delete all records of this subject in user_subject table </br>
+	 * Iterate email list, create {@link UserSubject} and insert new records to user_subject table </br>
 	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
 	 * @param parameters contains: </br>
 	 * </li> {@link UserDAO#USER_KEY} </br>
 	 * </li> {@link SubjectDAO#ID} </br>
 	 * </li> {@link SubjectDAO#TITLE} </br>
-	 *  {@link SubjectDAO#STUDENT_EMAIL_LIST} : an array of student email </br>
-	 *  {@link SubjectDAO#TEACHER_EMAIL_LIST} : an array of teacher email </br>
+	 *  {@link SubjectDAO#EMAIL_LIST} : an array of student and teacher email </br>
 	 * 
 	 */
 	public Object doEdit(Map<String, Object> parameters);
 	/**
-	 * Create a {@link Subject} </br> 
+	 * Insert a new {@link Subject} to subject table </br>
+	 * Iterate user email list and insert these records to user_subject table </br> 
+	 * 
 	 * @param httpExchange {@link HttpExchange} communicates between server and clients </br>
 	 * @param parameters contains: </br>
 	 *  {@link UserDAO#USER_KEY} </br>
 	 *  {@link SubjectDAO#TITLE} </br>
 	 *  {@link SubjectDAO#CREATION_DATE} </br>
-	 *  {@link SubjectDAO#STUDENT_EMAIL_LIST} : an array of student email </br>
-	 *  {@link SubjectDAO#TEACHER_EMAIL_LIST} : an array of teacher email </br>
+	 *  {@link SubjectDAO#EMAIL_LIST} : an array of student and teacher email </br>
+	 *  
 	 */
 	public Object doCreate(Map<String, Object> parameters);
 	

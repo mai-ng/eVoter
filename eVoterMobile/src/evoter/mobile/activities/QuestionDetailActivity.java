@@ -182,6 +182,48 @@ public class QuestionDetailActivity extends EVoterActivity {
 	 * 
 	 */
 	protected void submitAnswer() {
+		//TODO: Submit answer
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
+		client.post(RequestConfig.getURL(URIRequest.VIEW_QUESTION), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				//						Log.i("Get question status", response);
+				try {
+					JSONArray array = new JSONArray(response);
+					JSONObject ob = array.getJSONObject(0);
+					int status = ob.getInt(QuestionDAO.STATUS);
+					Log.i("Get question status", String.valueOf(status));
+					EVoterShareMemory.getCurrentQuestion().setStatus(status);
+					if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
+						submitToServer();
+					} else {
+						EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Time out! Your will not be count in the statistic of question!");
+						btSend.setVisibility(View.GONE);
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
+		
+	}
+	
+	/**
+	 * 
+	 */
+	private void submitToServer() {
 		switch ((int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId()) {
 			case QuestionType.YES_NO:
 			case QuestionType.MULTI_RADIOBUTTON:
@@ -224,6 +266,13 @@ public class QuestionDetailActivity extends EVoterActivity {
 			default:
 				break;
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void updateStatusCurrentQuestion() {
+		
 	}
 	
 	/**
@@ -442,8 +491,9 @@ public class QuestionDetailActivity extends EVoterActivity {
 			return null;
 		}
 	}
-
-	/* (non-Javadoc)
+	
+	/*
+	 * (non-Javadoc)
 	 * @see android.app.Activity#onBackPressed()
 	 */
 	@Override
@@ -452,7 +502,5 @@ public class QuestionDetailActivity extends EVoterActivity {
 		super.onBackPressed();
 		EVoterShareMemory.getPreviousContext().loadListItemData();
 	}
-	
-	
 	
 }

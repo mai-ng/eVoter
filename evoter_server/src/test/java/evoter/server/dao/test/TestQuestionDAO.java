@@ -259,6 +259,7 @@ public class TestQuestionDAO {
 		question.setQuestionText("new question text");
 		question.setCreationDate(Timestamp.valueOf("2000-01-09 22:39:24"));
 		question.setQuestionTypeId(3);
+		question.setStatus(2);
 		
 		questionDAO.update(question);
 		assertEquals("update() changes parent id", question.getParentId(), 4);
@@ -266,6 +267,7 @@ public class TestQuestionDAO {
 		assertEquals("update() changes creation date", question.getCreationDate(), 
 				Timestamp.valueOf("2000-01-09 22:39:24"));
 		assertEquals("update() changes question type", question.getQuestionTypeId(), 3);
+		assertEquals("update() changes question status", question.getStatus(), 2);
 		
 		
 	}

@@ -313,13 +313,43 @@ public class SubjectService implements ISubjectService{
 			
 			long subjectId = Long.valueOf(parameters.get(SubjectDAO.ID).toString());
 			String title = parameters.get(SubjectDAO.TITLE).toString();
-			Timestamp creationDate = Timestamp.valueOf(parameters.get(SubjectDAO.CREATION_DATE).toString());
+			String[] mail_list = (String[])parameters.get(SubjectDAO.EMAIL_LIST);
+			/**
+			 * Search the subject if it exists in the database or not
+			 */
+			List<Subject> subjectList = subjectDAO.findById(subjectId);
+			if (subjectList != null && !subjectList.isEmpty()){
+				
+				Subject subject = subjectList.get(0);
+				subject.setTitle(title);
+				
+				subjectDAO.update(subject);
+				
+				/**
+				 * Delete records of user_subject table of this subject
+				 */
+				userSubjectDAO.deleteBySubjectId(subjectId);
+				/**
+				 * Iterator email list, create new UserSubject records and insert them to user_subject table
+				 */
+				for (String email : mail_list){
+					
+					List<User> userList = userDAO.findByEmail(email);
+					if (userList != null && !userList.isEmpty()){
+						User user = userList.get(0);
+						
+						UserSubject userSubject = new UserSubject();
+						userSubject.setSubjectId(subjectId);
+						userSubject.setUserId(user.getId());
+						
+						userSubjectDAO.insert(userSubject);
+					}
+				}
+				
+				return URIRequest.SUCCESS_MESSAGE;
+			}
 			
-			Subject subject = new Subject(subjectId, title, creationDate);
-			subjectDAO.update(subject);
-			
-			//URIUtils.writeSuccessResponse(httpExchange);
-			return URIRequest.SUCCESS_MESSAGE;
+			return URIRequest.SUBJECT_NOT_EXIST_MESSAGE;
 			
 		}catch(Exception e){
 			
@@ -337,7 +367,45 @@ public class SubjectService implements ISubjectService{
 	@Override
 	public Object doCreate(Map<String, Object> parameters) {
 		
-		return null;
+		try{
+			
+			String title = parameters.get(SubjectDAO.TITLE).toString();
+			Timestamp creationDate = Timestamp.valueOf(parameters.get(SubjectDAO.CREATION_DATE).toString());
+			String[] mail_list = (String[])parameters.get(SubjectDAO.EMAIL_LIST);
+			
+			Subject subject = new Subject();
+			subject.setCreationDate(creationDate);
+			subject.setTitle(title);
+			/**
+			 * Insert a record to subject table and return a new id
+			 */
+			long subjectId = subjectDAO.insert(subject);
+			/**
+			 * Iterate email list and insert these records to user_subject table
+			 */
+			for (String email : mail_list){
+				
+				List<User> userList = userDAO.findByEmail(email);
+				if (userList != null && !userList.isEmpty()){
+					User user = userList.get(0);
+					
+					UserSubject userSubject = new UserSubject();
+					userSubject.setSubjectId(subjectId);
+					userSubject.setUserId(user.getId());
+					
+					userSubjectDAO.insert(userSubject);
+				}
+			}
+			
+			//URIUtils.writeSuccessResponse(httpExchange);
+			return URIRequest.SUCCESS_MESSAGE;
+			
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			//URIUtils.writeFailureResponse(httpExchange);
+			return URIRequest.FAILURE_MESSAGE;
+		}
 	}
 	
 	

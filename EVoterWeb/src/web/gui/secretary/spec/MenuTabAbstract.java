@@ -38,7 +38,7 @@ public abstract class MenuTabAbstract extends JPanel {
 	/**
 	 * button add a new teacher
 	 */
-	protected JButton btnAddNewItem;
+	protected JButton btnNewItem;
 
 	/**
 	 * list of {@link UserItem}
@@ -73,7 +73,7 @@ public abstract class MenuTabAbstract extends JPanel {
 		c.gridx = 1;
 		c.gridwidth = 1;
 		c.ipady = 30;
-		add(btnAddNewItem, c);
+		add(btnNewItem, c);
 
 	}
 
@@ -93,7 +93,7 @@ public abstract class MenuTabAbstract extends JPanel {
 	 * initialize all components
 	 */
 	public void initComponents() {
-		btnAddNewItem = new JButton("New Subject");
+		btnNewItem = new JButton("New Subject");
 		listItems = new ArrayList<ItemViewAbstract>();
 		listView = new JPanel();
 	}

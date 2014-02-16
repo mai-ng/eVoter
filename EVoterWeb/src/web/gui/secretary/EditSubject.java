@@ -49,7 +49,7 @@ public class EditSubject extends SubjectGUIAbstract {
 	 */
 	public void initComponents() {
 		super.initComponents();
-		btnUpdate.setText("Update");
+		btnSave.setText("Update");
 	}
 	
 	/**
@@ -85,6 +85,21 @@ public class EditSubject extends SubjectGUIAbstract {
 			}
 		}
 
+	}
+
+	@Override
+	protected String getURLRequest() {
+		return RequestConfig.getURL(URIRequest.UPDATE_SUBJECT);
+	}
+
+	@Override
+	protected List<NameValuePair> buildRequestParameters() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(UserDAO.USER_KEY,
+				RunningTimeData.getCurrentUserKey()));
+		params.add(new BasicNameValuePair(SubjectDAO.ID, String
+				.valueOf(currentSubject.getId())));
+		return params;
 	}
 
 	

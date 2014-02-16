@@ -37,7 +37,7 @@ public abstract class ItemViewAbstract extends JPanel {
 	public ItemViewAbstract() {
 		initComponents();
 		buildGUI();
-		actionPerformed();
+		buttonEvent();
 	}
 
 	public void buildGUI() {
@@ -97,6 +97,6 @@ public abstract class ItemViewAbstract extends JPanel {
 		btnDetail.setBorderPainted(false);
 	}
 
-	public abstract void actionPerformed();
+	public abstract void buttonEvent();
 
 }

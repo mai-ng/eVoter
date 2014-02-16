@@ -8,17 +8,14 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import web.applet.RunningTimeData;
 import web.gui.secretary.spec.ItemViewAbstract;
+import web.gui.secretary.spec.UserGUIAbstract;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import web.util.Utils;
@@ -33,14 +30,8 @@ import evoter.share.utils.URIRequest;
 public class UserItem extends ItemViewAbstract {
 
 	private static final long serialVersionUID = 1L;
-	User user;
-	JDialog inforDialog = new JDialog();
-	JDialog confirmDialog = new JDialog();
-	JLabel inforMsg = new JLabel();
-	JButton btYes = new JButton("Yes");
-	JButton btNo = new JButton("No");
-	JPanel panel = new JPanel();
-	JLabel lb = new JLabel();
+	private User user;
+	private UserGUIAbstract targetUser;
 	
 	public UserItem(User u) {
 		super();
@@ -48,7 +39,7 @@ public class UserItem extends ItemViewAbstract {
 		itemName.setText(u.getEmail());
 	}
 	
-	public void actionPerformed(){
+	public void buttonEvent(){
 		btnDelete.addActionListener(new ActionListener() {
 
 			@Override
@@ -84,7 +75,7 @@ public class UserItem extends ItemViewAbstract {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ViewUser teacher = new ViewUser(user);
+				setTargetUser( new ViewUser(user));
 			}
 		});
 
@@ -92,9 +83,23 @@ public class UserItem extends ItemViewAbstract {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				EditUser editTeacherView = new EditUser(user);
+				setTargetUser( new EditUser(user));
 			}
 		});
+	}
+
+	/**
+	 * @return the targetUser
+	 */
+	public UserGUIAbstract getTargetUser() {
+		return targetUser;
+	}
+
+	/**
+	 * @param targetUser the targetUser to set
+	 */
+	public void setTargetUser(UserGUIAbstract targetUser) {
+		this.targetUser = targetUser;
 	}
 
 }

@@ -42,9 +42,9 @@ public class UserTab extends MenuTabAbstract {
 		super();
 		userTypeId = user_type_id;
 		if(userTypeId==UserType.STUDENT){
-			btnAddNewItem.setText("New Student");
+			btnNewItem.setText("New Student");
 		}else if(userTypeId==UserType.TEACHER){
-			btnAddNewItem.setText("New Teacher");
+			btnNewItem.setText("New Teacher");
 		}
 		createListView();
 	}
@@ -55,13 +55,13 @@ public class UserTab extends MenuTabAbstract {
 	public ArrayList<ItemViewAbstract> loadListItems() {
 		ArrayList<ItemViewAbstract> list_teachers = new ArrayList<ItemViewAbstract>();
 
-		List<NameValuePair> teacherParams = new ArrayList<NameValuePair>();
-		teacherParams.add(new BasicNameValuePair(UserDAO.USER_KEY,
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(UserDAO.USER_KEY,
 				RunningTimeData.getCurrentUserKey()));
-		teacherParams.add(new BasicNameValuePair(UserDAO.USER_TYPE_ID, String
+		params.add(new BasicNameValuePair(UserDAO.USER_TYPE_ID, String
 				.valueOf(userTypeId)));
 		String listTeacherResponse = EVoterHTTPRequest.excutePost(
-				RequestConfig.getURL(URIRequest.GET_ALL_USER), teacherParams);
+				RequestConfig.getURL(URIRequest.GET_ALL_USER), params);
 		if (listTeacherResponse == null) {
 			System.out.println("Get list subject fail!!!!");
 		} else {
@@ -86,7 +86,7 @@ public class UserTab extends MenuTabAbstract {
 	 * add a new subject when click {@link #btnNewTeacher}
 	 */
 	public void addItem() {
-		btnAddNewItem.addActionListener(new ActionListener() {
+		btnNewItem.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {

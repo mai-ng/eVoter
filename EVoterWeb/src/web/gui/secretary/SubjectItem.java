@@ -15,6 +15,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import web.applet.RunningTimeData;
 import web.gui.secretary.spec.ItemViewAbstract;
+import web.gui.secretary.spec.SubjectGUIAbstract;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import web.util.Utils;
@@ -27,20 +28,20 @@ import evoter.share.utils.URIRequest;
 public class SubjectItem extends ItemViewAbstract{
 
 	private static final long serialVersionUID = 1L;
-	Subject subject;
+	private Subject subject;
+	private SubjectGUIAbstract targetSubject;
 	
-	public SubjectItem(Subject su) {
-		subject = su;
+	public SubjectItem(Subject sub) {
+		subject = sub;
 		itemName.setText(subject.getTitle());
-		
 	}
 
-	public void actionPerformed(){
+	public void buttonEvent(){
 		btnEdite.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				EditSubject editSub = new EditSubject(subject);
+				setTargetSubject(new EditSubject(subject));
 			}
 		});
 		
@@ -79,8 +80,22 @@ public class SubjectItem extends ItemViewAbstract{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ViewSubject subView = new ViewSubject(subject);
+				setTargetSubject(new ViewSubject(subject));
 			}
 		});
+	}
+
+	/**
+	 * @return the targetSubject
+	 */
+	public SubjectGUIAbstract getTargetSubject() {
+		return targetSubject;
+	}
+
+	/**
+	 * @param targetSubject the targetSubject to set
+	 */
+	public void setTargetSubject(SubjectGUIAbstract targetSubject) {
+		this.targetSubject = targetSubject;
 	}
 }

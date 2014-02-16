@@ -1,6 +1,5 @@
 package web.util;
 
-import java.awt.Dimension;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,7 +11,6 @@ import javax.naming.Context;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import web.gui.secretary.MainPanel;

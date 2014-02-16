@@ -1,6 +1,9 @@
 package web.gui.secretary;
 
 import java.io.IOException;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
 
 import web.gui.secretary.spec.SubjectGUIAbstract;
 
@@ -26,9 +29,22 @@ public class AddSubject extends SubjectGUIAbstract {
 	/**
 	 * set text for button "Invite"
 	 */
-	protected void initComponents() {
+	public void initComponents() {
 		super.initComponents();
-		btnUpdate.setText("Invite");
+		btnSave.setText("Add");
+	}
+
+	@Override
+	protected String getURLRequest() {
+		//TODO: Set URL for create new subject
+//		return RequestConfig.getURL(URIRequest.C);
+		return null;
+	}
+
+	@Override
+	protected List<NameValuePair> buildRequestParameters() {
+		// TODO Build Paramters for create new subject
+		return null;
 	}
 
 }

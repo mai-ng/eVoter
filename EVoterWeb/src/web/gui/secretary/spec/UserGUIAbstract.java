@@ -1,27 +1,29 @@
 package web.gui.secretary.spec;
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import web.gui.secretary.AddUser;
 import web.gui.secretary.EditUser;
 import web.gui.secretary.ViewUser;
+import web.util.UserAccountValidation;
+import web.util.Utils;
 
 /**
- * extended by {@link AddUser}, {@link EditUser}, {@link ViewUser}. classes<br> 
- * Create common components, initialize them, and define a layout and user interface. <br>
+ * extended by {@link AddUser}, {@link EditUser}, {@link ViewUser}. classes<br>
+ * Create common components, initialize them, and define a layout and user
+ * interface. <br>
+ * 
  * @author maint<br>
- *         
+ * 
  */
-public abstract class UserGUIAbstract extends JFrame {
+public abstract class UserGUIAbstract extends GUIAbstract {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,31 +35,53 @@ public abstract class UserGUIAbstract extends JFrame {
 	protected JTextField txtUserName;
 	protected JTextField txtEmail;
 
-	protected JButton btnSave;
 	protected JButton btnClose;
 
-	
+	/**
+	 * initialize components.<br>
+	 * create user interface for {@link AddUser}, {@link EditUser},
+	 * {@link ViewUser}.
+	 */
 	public UserGUIAbstract() {
-		initComponents();
+		super();
 		buildGUI();
 	}
 
 	/**
-	 * design user interface for {@link AddUser},
-	 * {@link EditUser}, {@link ViewUser}.
+	 * Check pre-condition to send request to server.<br>
+	 * Used in {@link AddUser}, {@link EditUser} when click button "Add" or "Save".
+	 * @return true if:
+	 * <li> full name field is valid.
+	 * <li> user name field is valid.
+	 * <li> and email field is valid.<br>
+	 * else false.
+	 */
+	protected boolean readyToSendRequest() {
+		String fullName = txtFullName.getText();
+		String email = txtEmail.getText();
+		String username = txtUserName.getText();
+		if (fullName.equals("")) {
+			Utils.informDialog("\tFull name is empty! Please input again!");
+			return false;
+		} else if (!UserAccountValidation.isValidUserName(username)) {
+			Utils.informDialog("\tUser name is not valid! Please input again!");
+			return false;
+		} else if (!UserAccountValidation.isValidEmail(email)) {
+			Utils.informDialog("\tEmail is not valid! Please input again!");
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * design user interface for {@link AddUser}, {@link EditUser},
+	 * {@link ViewUser} frames.
 	 */
 	public void buildGUI() {
-		//show frame
+		// show frame
 		setSize(600, 250);
 		setLocationRelativeTo(null);
 		setVisible(true);
-
-		//user interface
-		GridBagLayout gridbag = new GridBagLayout();
-		GridBagConstraints c = new GridBagConstraints();
-		setLayout(gridbag);
-		c.fill = GridBagConstraints.BOTH;
-		c.insets = new Insets(10, 10, 0, 5);
 
 		// Row 0: full name
 		c.gridy = 0;
@@ -106,25 +130,9 @@ public abstract class UserGUIAbstract extends JFrame {
 		c.ipady = 10;
 		c.insets = new Insets(10, 40, 5, 20);
 		this.add(txtEmail, c);
-//
-//		// Row 3: Telephone
-//		c.gridy = 3;
-//
-//		c.gridx = 0;
-//		c.weightx = 0;
-//		c.gridwidth = 1;
-//		c.insets = new Insets(10, 10, 5, 10);
-//		this.add(lblPassword, c);
-//
-//		c.gridx = 1;
-//		c.weightx = 0.5;
-//		c.gridwidth = 3;
-//		c.ipady = 10;
-//		c.insets = new Insets(10, 40, 5, 20);
-//		this.add(txtPassword, c);
 
-		// Row 4: Buttons
-		c.gridy = 4;
+		// Row 3: Buttons
+		c.gridy = 3;
 		c.ipady = 30;
 		c.ipadx = 1;
 		c.gridwidth = 1;
@@ -145,6 +153,8 @@ public abstract class UserGUIAbstract extends JFrame {
 	 * {@link EditUser}, {@link ViewUser}.
 	 */
 	public void initComponents() {
+		super.initComponents();
+		
 		// create labels
 		lblFullName = new JLabel("Full name");
 		lblUserName = new JLabel("Username");
@@ -156,7 +166,6 @@ public abstract class UserGUIAbstract extends JFrame {
 		txtEmail = new JTextField("Email");
 
 		// create buttons
-		btnSave = new JButton();
 		btnClose = new JButton("Close");
 		btnClose.addActionListener(new ActionListener() {
 

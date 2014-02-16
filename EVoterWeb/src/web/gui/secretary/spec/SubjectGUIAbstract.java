@@ -1,33 +1,48 @@
 package web.gui.secretary.spec;
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import web.applet.RunningTimeData;
 import web.gui.secretary.AddSubject;
+import web.gui.secretary.AddUser;
 import web.gui.secretary.EditSubject;
+import web.gui.secretary.EditUser;
 import web.gui.secretary.ViewSubject;
+import web.util.EVoterHTTPRequest;
 import web.util.ReadFileByClick;
+import web.util.RequestConfig;
+import web.util.Utils;
+import evoter.share.dao.UserDAO;
+import evoter.share.model.UserType;
+import evoter.share.utils.URIRequest;
 
 /**
- * extended by {@link AddSubject}, {@link EditSubject}, and {@link ViewSubject}.<br> 
- * Create common components, initialize them, and define a layout and user interface. <br>
+ * extended by {@link AddSubject}, {@link EditSubject}, and {@link ViewSubject}.<br>
+ * Create common components, initialize them, and define a layout and user
+ * interface. <br>
+ * 
  * @author maint<br>
- *         
+ * 
  */
-public abstract class SubjectGUIAbstract extends JFrame {
+public abstract class SubjectGUIAbstract extends GUIAbstract {
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,12 +51,13 @@ public abstract class SubjectGUIAbstract extends JFrame {
 	protected JTextArea listTeacherView;
 	protected JTextArea listStudentView;
 
-	protected JButton btnUpdate;
 	protected JButton btnAddTeacher;
 	protected JButton btnAddStudent;
+	protected ArrayList<String> listTeacherEmails;
+	protected ArrayList<String> listStudentEmails;
 
 	public SubjectGUIAbstract() {
-		initComponents();
+		super();
 		try {
 			importFile();
 		} catch (IOException e) {
@@ -51,21 +67,31 @@ public abstract class SubjectGUIAbstract extends JFrame {
 	}
 
 	/**
-	 * design user interface for {@link AddSubject}, {@link EditSubject}, and {@link ViewSubject}.
+	 * initialize all components which are used in {@link AddSubject},
+	 * {@link EditSubject}, {@link ViewSubject}.
+	 */
+	public void initComponents() {
+		super.initComponents();
+		lblTitle = new JLabel("Title: ");
+		txtTitle = new JTextField();
+
+		listTeacherView = new JTextArea();
+		listStudentView = new JTextArea();
+
+		btnAddStudent = new JButton("Import");
+		btnAddTeacher = new JButton("Import");
+	}
+
+	/**
+	 * design user interface for {@link AddSubject}, {@link EditSubject}, and
+	 * {@link ViewSubject}.
 	 */
 	public void buildGUI() {
-		//show frame
+		// show frame
 		setSize(700, 500);
 		setLocationRelativeTo(null);
 		setVisible(true);
-		
-		// design user interface
-		GridBagLayout gridbag = new GridBagLayout();
-		GridBagConstraints c = new GridBagConstraints();
-		setLayout(gridbag);
-		c.fill = GridBagConstraints.BOTH;
-		c.insets = new Insets(10, 10, 0, 5);
-	
+
 		// Row 0: Title
 		c.weightx = 0;
 		this.add(lblTitle, c);
@@ -138,17 +164,18 @@ public abstract class SubjectGUIAbstract extends JFrame {
 		c.gridy = 5;
 		c.fill = 0;
 		c.weighty = 0.2;
-		this.add(btnUpdate, c);
+		this.add(btnSave, c);
 	}
 
 	/**
 	 * import a file to {@link JTextArea} when click a button. This function is
 	 * used in {@link AddSubject}, {@link EditSubject} classes.
+	 * 
 	 * @throws IOException
 	 */
 	public void importFile() throws IOException {
 		btnAddTeacher.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -156,12 +183,12 @@ public abstract class SubjectGUIAbstract extends JFrame {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				
+
 			}
 		});
-		
+
 		btnAddStudent.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -169,28 +196,74 @@ public abstract class SubjectGUIAbstract extends JFrame {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				
+
 			}
 		});
 	}
 
 	/**
-	 * initialize all components which are used in {@link AddSubject},
-	 * {@link EditSubject}, {@link ViewSubject}.
+	 * Check pre-condition to send request to server.<br>
+	 * Used in {@link AddUser}, {@link EditUser} when click button "Add" or
+	 * "Save".
+	 * 
+	 * @return true if: <li>full name field is valid. <li>user name field is
+	 *         valid. <li>and email field is valid.<br>
+	 *         else false.
 	 */
-	protected void initComponents() {
-		lblTitle = new JLabel("Title: ");
-		txtTitle = new JTextField();
-
-		listTeacherView = new JTextArea();
-		listStudentView = new JTextArea();
-
-		btnAddStudent = new JButton("Import");
-		btnAddTeacher = new JButton("Import");
-		btnUpdate = new JButton();
+	protected boolean readyToSendRequest() {
+		if (lblTitle.getText().equals("")) {
+			Utils.informDialog("Subject title is empty!");
+			return false;
+		} else {
+			return checkListEmails();
+		}
 	}
-	
 
+	private boolean checkListEmails() {
+		getListEmailUsers(UserType.STUDENT,listStudentEmails);
+		getListEmailUsers(UserType.TEACHER,listTeacherEmails);
+		if(!validListEmails(listStudentEmails,listStudentView)) return false;
+		if(!validListEmails(listTeacherEmails,listTeacherView)) return false;
+		return true;
+	}
+
+	private boolean validListEmails(ArrayList<String> listEmails,
+			JTextArea textArea) {
+		StringBuffer bf = new StringBuffer();
+		String textAreaContent = textArea.getText();
+		
+		String[] arrayEmails = textAreaContent.split(", ");
+		for(int i=0;i<arrayEmails.length;i++){
+			String email = arrayEmails[i].replace(" ", "");
+			if(!listEmails.contains(email)) bf.append(email+"\n");
+		}
+		if(!bf.toString().equals("")){
+			Utils.informDialog("There are some email does not exist in system: "+bf.toString());
+			return false;
+		}
+		return true;
+	}
+
+	private void getListEmailUsers(long userType,ArrayList<String> listEmails) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(UserDAO.USER_KEY, RunningTimeData
+				.getCurrentUserKey()));
+		params.add(new BasicNameValuePair(UserDAO.USER_TYPE_ID, String
+				.valueOf(userType)));
+		String listTeacherResponse = EVoterHTTPRequest.excutePost(
+				RequestConfig.getURL(URIRequest.GET_ALL_USER), params);
+		if (listTeacherResponse == null) {
+			Utils.informDialog("Get list students fail!!!!");
+		} else {
+			System.out.println(listTeacherResponse);
+			JSONArray array = new JSONArray(listTeacherResponse);
+			for (int i = 0; i < array.length(); i++) {
+				JSONObject ob = array.getJSONObject(i);
+				listEmails.add(ob.getString(UserDAO.EMAIL));
+			}
+		}
+
+	}
 	/**
 	 * @return the txtTitle is title field of a subject
 	 */

@@ -1,7 +1,5 @@
 package web.gui.secretary;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import web.applet.RunningTimeData;
 import web.gui.secretary.spec.UserGUIAbstract;
-import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
-import web.util.UserAccountValidation;
 import web.util.Utils;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.User;
@@ -46,7 +42,6 @@ public class EditUser extends UserGUIAbstract {
 		}
 		
 		loadInfo();
-		updateUser(currentUser.getUserTypeId());
 	}
 	
 	/**
@@ -66,59 +61,46 @@ public class EditUser extends UserGUIAbstract {
 		txtUserName.setText(currentUser.getUserName());
 	}
 
-	/**
-	 * update edited information
-	 */
-	public void updateUser(final long userType) {
-		btnSave.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Check valid input and send an update user request
-
-				String fullName = txtFullName.getText();
-				String email = txtEmail.getText();
-				String username = txtUserName.getText();
-				if (fullName.equals("")) {
-					Utils.informDialog("\tFull name is empty! Please input again!");
-				} else if (!UserAccountValidation.isValidUserName(username)) {
-					Utils.informDialog("\tUser name is not valid! Please input again!");
-				} else if (!UserAccountValidation.isValidEmail(email)) {
-					Utils.informDialog("\tEmail is not valid! Please input again!");
-				} else if(fullName.equals(currentUser.getFullName())&&email.equals(currentUser.getEmail())&&username.equals(currentUser.getUserName())){
-					Utils.informDialog("\tNothing change!");
-				}else{
-					List<NameValuePair> teacherParams = new ArrayList<NameValuePair>();
-					teacherParams.add(new BasicNameValuePair(UserDAO.USER_KEY,
-							RunningTimeData.getCurrentUserKey()));
-					teacherParams.add(new BasicNameValuePair(
-							UserDAO.USER_TYPE_ID, String
-									.valueOf(userType)));
-					teacherParams.add(new BasicNameValuePair(UserDAO.FULL_NAME,
-							fullName));
-					teacherParams.add(new BasicNameValuePair(UserDAO.EMAIL,
-							email));
-					teacherParams.add(new BasicNameValuePair(UserDAO.USER_NAME,
-							username));
-					teacherParams.add(new BasicNameValuePair(UserDAO.ID, String
-							.valueOf(currentUser.getId())));
-					teacherParams.add(new BasicNameValuePair(
-							UserDAO.IS_APPROVED, String.valueOf(currentUser
-									.isApproved())));
-					String response = EVoterHTTPRequest.excutePost(
-							RequestConfig.getURL(URIRequest.EDIT_USER),
-							teacherParams);
-					if (response == null) {
-						Utils.informDialog("Cannot request to server!");
-					} else {
-						Utils.informDialog("Edit successfully!");
-						dispose();
-					}
-				}
-			}
-		});
-		
+	@Override
+	protected String getURLRequest() {
+		return RequestConfig.getURL(URIRequest.EDIT_USER);
 	}
 
+	@Override
+	protected List<NameValuePair> buildRequestParameters() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(UserDAO.USER_KEY,
+				RunningTimeData.getCurrentUserKey()));
+		params.add(new BasicNameValuePair(
+				UserDAO.USER_TYPE_ID, String
+						.valueOf(currentUser.getUserTypeId())));
+		params.add(new BasicNameValuePair(UserDAO.FULL_NAME,
+				txtFullName.getText()));
+		params.add(new BasicNameValuePair(UserDAO.EMAIL,
+				txtEmail.getText()));
+		params.add(new BasicNameValuePair(UserDAO.USER_NAME,
+				txtUserName.getText()));
+		params.add(new BasicNameValuePair(UserDAO.ID, String
+				.valueOf(currentUser.getId())));
+		params.add(new BasicNameValuePair(
+				UserDAO.IS_APPROVED, String.valueOf(currentUser
+						.isApproved())));
+		return params;
+	}
+
+	/* (non-Javadoc)
+	 * @see web.gui.secretary.spec.UserGUIAbstract#readyToSendRequest()
+	 */
+	@Override
+	protected boolean readyToSendRequest() {
+		String fullName = txtFullName.getText();
+		String email = txtEmail.getText();
+		String username = txtUserName.getText();
+		if(fullName.equals(currentUser.getFullName())&&email.equals(currentUser.getEmail())&&username.equals(currentUser.getUserName())){
+				Utils.informDialog("\tNothing change!");
+				return false;
+			}
+		return super.readyToSendRequest();
+	}
 
 }

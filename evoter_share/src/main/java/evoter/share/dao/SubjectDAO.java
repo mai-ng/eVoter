@@ -14,6 +14,9 @@ public interface SubjectDAO {
 	public static final String CREATION_DATE = "CREATION_DATE";
 	public static final String TABLE_NAME = "SUBJECT";
 	public static final String BEAN_NAME = "subjectDAO";
+	public static final String STUDENT_EMAIL_LIST="student_email_list";
+	public static final String TEACHER_EMAIL_LIST="teacher_email_list";
+	public static final String EMAIL_LIST="email_list";
 	
 	public long insert (Subject subject);
 	public List<Subject> findAll();

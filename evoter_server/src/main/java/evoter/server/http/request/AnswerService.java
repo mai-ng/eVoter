@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
@@ -160,7 +161,10 @@ public class AnswerService implements IAnswerService {
 			List<Answer> answerList = answerDAO.findByQuestionId(questionId);
 			if (answerList != null){
 				for (Answer answer : answerList){
-					response.add(answer.toJSON());
+					JSONObject answerStatistics = new JSONObject();
+					answerStatistics.put(AnswerDAO.ID, answer.getId());
+					answerStatistics.put(AnswerDAO.STATISTICS, answer.getStatistics());
+					response.add(answerStatistics);
 				}//for
 				
 			}//if

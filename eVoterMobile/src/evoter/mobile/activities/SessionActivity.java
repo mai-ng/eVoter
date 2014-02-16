@@ -27,6 +27,7 @@ import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.ItemData;
 import evoter.share.model.Session;
+import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
@@ -59,18 +60,20 @@ public class SessionActivity extends ItemDataActivity {
 				startActivity(new Intent("android.intent.action.SESSIONVIEW"));
 			}
 		});
-		
-		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				final Session selectedSession = (Session) parent
-						.getItemAtPosition(position);
-				EVoterShareMemory.setCurrentSession(selectedSession);
-				longClickSessionAction();
-				return true;
-			}
-		});
+		if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
+			
+			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					final Session selectedSession = (Session) parent
+							.getItemAtPosition(position);
+					EVoterShareMemory.setCurrentSession(selectedSession);
+					longClickSessionAction();
+					return true;
+				}
+			});
+		}
 		
 	}
 	
@@ -83,33 +86,6 @@ public class SessionActivity extends ItemDataActivity {
 				String.valueOf(EVoterShareMemory.getCurrentSubjectID()));
 		client.post(RequestConfig.getURL(URIRequest.GET_ALL_SESSION), params,
 				new AsyncHttpResponseHandler() {
-					
-					/*
-					 * (non-Javadoc)
-					 * @see
-					 * com.loopj.android.http.AsyncHttpResponseHandler#onStart()
-					 */
-					@Override
-					public void onStart() {
-						// TODO Auto-generated method stub
-						super.onStart();
-						tvLoadingStatus.setText("Loading...");
-						dialogLoading.show();
-					}
-					
-					/*
-					 * (non-Javadoc)
-					 * @see
-					 * com.loopj.android.http.AsyncHttpResponseHandler#onFinish
-					 * ()
-					 */
-					@Override
-					public void onFinish() {
-						// TODO Auto-generated method stub
-						super.onFinish();
-						tvLoadingStatus.setText("Finished");
-						dialogLoading.dismiss();
-					}
 					
 					@Override
 					public void onSuccess(String response) {
@@ -124,7 +100,7 @@ public class SessionActivity extends ItemDataActivity {
 				});
 		
 	}
-
+	
 	/**
 	 * @param selectedSession
 	 */
@@ -155,7 +131,7 @@ public class SessionActivity extends ItemDataActivity {
 		});
 		dialog.show();
 	}
-
+	
 	/**
 	 * @param response
 	 */
@@ -164,10 +140,6 @@ public class SessionActivity extends ItemDataActivity {
 			ArrayList<ItemData> listSession = new ArrayList<ItemData>();
 			JSONArray array = EVoterMobileUtils.getJSONArray(response);
 			for (int i = 0; i < array.length(); i++) {
-				internetProcessBar.setProgress((i + 1) * 100
-						/ array.length());
-				tvLoadingStatus.setText("Loading..." + (i + 1)
-						* 100 / array.length());
 				String sString = array.get(i).toString();
 				JSONObject s = new JSONObject(sString);
 				Session session = new Session(Long.parseLong(s
@@ -197,7 +169,7 @@ public class SessionActivity extends ItemDataActivity {
 		}
 		Log.i("Get All Session Test", "response : " + response);
 	}
-
+	
 	/**
 	 * @param selectedSession
 	 */

@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -62,24 +61,12 @@ public class SubjectActivity extends ItemDataActivity {
 				Subject currentSubject = ((Subject) parent
 						.getItemAtPosition(position));
 				EVoterShareMemory.setCurrentSubject(currentSubject);
-				Intent sessionIntent = new Intent(SubjectActivity.this,
+				Intent subject = new Intent(SubjectActivity.this,
 						SessionActivity.class);
-				startActivity(sessionIntent);
+				startActivity(subject);
 			}
 		});
 		
-		//		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-		//			@Override
-		//			public boolean onItemLongClick(AdapterView<?> parent, View view,
-		//					int position, long id) {
-		//				
-		//				final Subject subject = (Subject) parent
-		//						.getItemAtPosition(position);
-		//				
-		//				subjectLongClickAction(subject);
-		//				return true;
-		//			}
-		//		});
 	}
 	
 	protected void loadListItemData() {
@@ -87,33 +74,6 @@ public class SubjectActivity extends ItemDataActivity {
 		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		client.post(RequestConfig.getURL(URIRequest.GET_ALL_SUBJECT), params,
 				new AsyncHttpResponseHandler() {
-					
-					/*
-					 * (non-Javadoc)
-					 * @see
-					 * com.loopj.android.http.AsyncHttpResponseHandler#onStart()
-					 */
-					@Override
-					public void onStart() {
-						// TODO Auto-generated method stub
-						super.onStart();
-						tvLoadingStatus.setText("Loading...");
-						dialogLoading.show();
-					}
-					
-					/*
-					 * (non-Javadoc)
-					 * @see
-					 * com.loopj.android.http.AsyncHttpResponseHandler#onFinish
-					 * ()
-					 */
-					@Override
-					public void onFinish() {
-						// TODO Auto-generated method stub
-						super.onFinish();
-						tvLoadingStatus.setText("Finished");
-						dialogLoading.dismiss();
-					}
 					
 					@Override
 					public void onSuccess(String response) {
@@ -140,34 +100,6 @@ public class SubjectActivity extends ItemDataActivity {
 	}
 	
 	/**
-	 * @param subject
-	 */
-	private void subjectLongClickAction(final Subject subject) {
-		final DialogInfor dialog = new DialogInfor(
-				SubjectActivity.this, "Subject");
-		dialog.setMessageContent(subject.getTitle());
-		dialog.getBtOK().setText("Exit");
-		dialog.getBtOK().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-			}
-		});
-		
-		dialog.getBtKO().setText("Delete");
-		dialog.getBtKO().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				deleteSubjectRequest(subject);
-				dialog.dismiss();
-			}
-		});
-		dialog.show();
-	}
-	
-	/**
 	 * @param response
 	 */
 	private void loadListItemDataResponseProcess(String response) {
@@ -176,13 +108,9 @@ public class SubjectActivity extends ItemDataActivity {
 			JSONArray array = EVoterMobileUtils.getJSONArray(response);
 			
 			for (int i = 0; i < array.length(); i++) {
-				internetProcessBar.setProgress((i + 1) * 100
-						/ array.length());
-				tvLoadingStatus.setText("Loading..." + (i + 1)
-						* 100 / array.length());
 				String sItem = array.get(i).toString();
 				JSONObject item = new JSONObject(sItem);
-				Log.i("JSON TEST: ", item.toString());
+//				Log.i("JSON TEST: ", item.toString());
 				Subject subject = null;
 				try {
 					subject = new Subject(
@@ -208,38 +136,6 @@ public class SubjectActivity extends ItemDataActivity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	/**
-	 * @param subject
-	 */
-	private void deleteSubjectRequest(final Subject subject) {
-		RequestParams params = new RequestParams();
-		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(SubjectDAO.ID, String.valueOf(subject.getId()));
-		client.post(RequestConfig.getURL(URIRequest.DELETE_SUBJECT), params, new AsyncHttpResponseHandler() {
-			@Override
-			public void onSuccess(String response) {
-				if (response.contains("SUCCESS")) {
-					EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
-							"Deleted subject: " + subject.getTitle());
-					adapter.deleteItem(subject.getId());
-					adapter.notifyDataSetChanged();
-				}
-				else {
-					EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
-							"Cannot delete subject: " + subject.getTitle());
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable error, String content)
-			{
-				EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
-						"FAILURE: " + error.toString());
-				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
-			}
-		});
 	}
 	
 }

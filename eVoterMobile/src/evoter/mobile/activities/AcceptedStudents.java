@@ -69,7 +69,7 @@ public class AcceptedStudents extends EVoterActivity {
 		params.add(SessionUserDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSessionID()));
 		params.add(SessionUserDAO.ACCEPT_SESSION, String.valueOf(true));
 		
-		client.post(RequestConfig.getURL(URIRequest.ACCEPT_SESSION), params,
+		client.post(RequestConfig.getURL(URIRequest.GET_ALL_STUDENT), params,
 				new AsyncHttpResponseHandler() {
 					// Request successfully - client receive a response
 					@Override

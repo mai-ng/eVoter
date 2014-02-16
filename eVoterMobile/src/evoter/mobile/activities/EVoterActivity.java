@@ -3,6 +3,9 @@
  */
 package evoter.mobile.activities;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -353,6 +356,88 @@ public class EVoterActivity extends Activity {
 								+ content);
 					}
 				});
+	}
+	
+	/**
+	 * @param i_Usrname
+	 * @param i_Password
+	 */
+	public void doLogin(final String i_Usrname, final String i_Password) {
+		// Send login request to server
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_NAME, i_Usrname);
+		params.add(UserDAO.PASSWORD, i_Password);
+		client.post(RequestConfig.getURL(URIRequest.LOGIN), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						Log.i("Response", response);
+						responseProcess(i_Usrname,i_Password, response);
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								EVoterActivity.this,
+								"Cannot request to server!");
+						Log.e("LoginTest", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
+	}
+
+	/**
+	 * @param i_Usrname
+	 * @param response
+	 */
+	private void responseProcess(final String i_Usrname, final String i_password,String response) {
+		String userKey = null;
+		try {
+			
+			JSONObject object = new JSONObject(
+					response);
+			userKey = object
+					.getString(UserDAO.USER_KEY);
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+			EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Error! Cannot get user information");
+		}
+		
+		//Got the userkey
+		if (userKey != null && userKey != "null") {
+			Log.i("USER_KEY", userKey);
+			offlineEVoterManager
+					.rememberCurrentUser(i_Usrname,
+							i_password);
+			EVoterShareMemory
+					.setUSER_KEY(userKey);
+			EVoterShareMemory
+			.setCurrentUserName(i_Usrname);
+			EVoterMobileUtils.showeVoterToast(
+					EVoterActivity.this,
+					"Welcome "
+							+ EVoterShareMemory
+									.getCurrentUserName()
+							+ " to eVoter!");
+			
+			Intent subjectIntent = new Intent(
+					EVoterActivity.this,
+					SubjectActivity.class);
+			subjectIntent
+					.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			subjectIntent
+					.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(subjectIntent);
+			
+		}
+		else {
+			EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Error! Username and password is not correct. Please try again!");
+		}
 	}
 	
 }

@@ -1,28 +1,17 @@
 package evoter.mobile.activities;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
 import evoter.mobile.main.R;
-import evoter.mobile.objects.OfflineEVoterManager;
-import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.objects.OfflineEVoterManager;
 import evoter.mobile.utils.EVoterMobileUtils;
-import evoter.share.dao.UserDAO;
-import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
 /**
@@ -145,79 +134,8 @@ public class LoginActivity extends EVoterActivity {
 		} else
 		
 		{
-			// Send login request to server
-			RequestParams params = new RequestParams();
-			params.add(UserDAO.USER_NAME, i_Usrname);
-			params.add(UserDAO.PASSWORD, i_Password);
-			client.post(RequestConfig.getURL(URIRequest.LOGIN), params,
-					new AsyncHttpResponseHandler() {
-						// Request successfully - client receive a response
-						@Override
-						public void onSuccess(String response) {
-							Log.i("Response", response);
-							responseProcess(i_Usrname, response);
-						}
-						
-						//Login fail
-						@Override
-						public void onFailure(Throwable error,
-								String content) {
-							EVoterMobileUtils.showeVoterToast(
-									LoginActivity.this,
-									"Cannot request to server!");
-							Log.e("LoginTest", "onFailure error : "
-									+ error.toString() + "content : "
-									+ content);
-						}
-					});
+			doLogin(i_Usrname, i_Password);
 		}
 	}
 
-	/**
-	 * @param i_Usrname
-	 * @param response
-	 */
-	private void responseProcess(final String i_Usrname, String response) {
-		String userKey = null;
-		try {
-			
-			JSONObject object = new JSONObject(
-					response);
-			userKey = object
-					.getString(UserDAO.USER_KEY);
-			
-		} catch (JSONException e) {
-			e.printStackTrace();
-			EVoterMobileUtils.showeVoterToast(LoginActivity.this, "Error! Cannot get user information");
-		}
-		
-		//Got the userkey
-		if (userKey != null && userKey != "null") {
-			Log.i("USER_KEY", userKey);
-			offlineEVoterManager
-					.rememberCurrentUser(i_Usrname,
-							userKey);
-			EVoterShareMemory
-					.setUSER_KEY(userKey);
-			EVoterMobileUtils.showeVoterToast(
-					LoginActivity.this,
-					"Welcome "
-							+ EVoterShareMemory
-									.getCurrentUserName()
-							+ " to eVoter!");
-			
-			Intent subjectIntent = new Intent(
-					LoginActivity.this,
-					SubjectActivity.class);
-			subjectIntent
-					.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			subjectIntent
-					.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(subjectIntent);
-			
-		}
-		else {
-			EVoterMobileUtils.showeVoterToast(LoginActivity.this, "Error! Username and password is not correct. Please try again!");
-		}
-	}
 }

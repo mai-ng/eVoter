@@ -3,11 +3,11 @@ package evoter.mobile.objects;
 import java.util.HashMap;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
+import evoter.mobile.activities.EVoterActivity;
 import evoter.mobile.activities.LoginActivity;
 import evoter.mobile.activities.SubjectActivity;
 import evoter.share.dao.UserDAO;
@@ -23,7 +23,7 @@ public class OfflineEVoterManager {
 	
 	Editor editor;
 	
-	Context contex;
+	EVoterActivity contex;
 	
 	int PRIVATE_MODE = 0;
 	
@@ -32,7 +32,7 @@ public class OfflineEVoterManager {
 	private final String IS_LOGIN = "IsLoggedin";
 	
 	@SuppressLint("CommitPrefEdits")
-	public OfflineEVoterManager(Context contex) {
+	public OfflineEVoterManager(EVoterActivity contex) {
 		this.contex = contex;
 		preferences = contex.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
 		editor = preferences.edit();
@@ -44,10 +44,10 @@ public class OfflineEVoterManager {
 	 * @param name
 	 * @param password
 	 */
-	public void rememberCurrentUser(String name, String userkey) {
+	public void rememberCurrentUser(String name, String password) {
 		editor.putBoolean(IS_LOGIN, true);
 		editor.putString(UserDAO.USER_NAME, name);
-		editor.putString(UserDAO.USER_KEY, userkey);
+		editor.putString(UserDAO.PASSWORD, password);
 		
 		editor.commit();
 	}
@@ -62,8 +62,8 @@ public class OfflineEVoterManager {
 		
 		user.put(UserDAO.USER_NAME,
 				preferences.getString(UserDAO.USER_NAME, null));
-		user.put(UserDAO.USER_KEY,
-				preferences.getString(UserDAO.USER_KEY, null));
+		user.put(UserDAO.PASSWORD,
+				preferences.getString(UserDAO.PASSWORD, null));
 		
 		return user;
 	}
@@ -79,8 +79,7 @@ public class OfflineEVoterManager {
 			contex.startActivity(i);
 		} else {
 			HashMap<String, String> user = getSavedUserDetail();
-			EVoterShareMemory.setCurrentUserName(user.get(UserDAO.USER_NAME));
-			EVoterShareMemory.setUSER_KEY(user.get(UserDAO.USER_KEY));
+			contex.doLogin(user.get(UserDAO.USER_NAME), user.get(UserDAO.PASSWORD));
 			Log.i("Already login: ", "UserName: " + user.get(UserDAO.USER_NAME) + " | Userkey: " + user.get(UserDAO.USER_KEY));
 			Intent i = new Intent(contex, SubjectActivity.class);
 			contex.startActivity(i);

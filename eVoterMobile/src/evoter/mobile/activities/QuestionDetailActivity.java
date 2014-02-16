@@ -21,7 +21,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -54,14 +56,19 @@ import evoter.share.utils.URIRequest;
  */
 public class QuestionDetailActivity extends EVoterActivity {
 	
-	private final String STOP="Stop receive answer";
-	private final String SEND ="Send";
-	private final String SUBMIT ="Submit";
+	private final String STOP = "Stop receive answer";
+	private final String SEND = "Send";
+	private final String SUBMIT = "Submit";
 	TextView tvQuestionText;
 	LinearLayout answerArea;
 	Button btSend;
 	Button btView;
-	
+	RadioGroup groups;
+	ArrayList<Answer> column1;
+	ArrayList<CheckBox> listCheckBox;
+	long idAnswer = -1;
+	String statistic;
+	EditText etAnswer;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +83,11 @@ public class QuestionDetailActivity extends EVoterActivity {
 		
 		answerArea = (LinearLayout) findViewById(R.id.loAnswerArea);
 		
-		int type = (int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId();
-		
 		//Parser the answer of question
-		ArrayList<Answer> column1 = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
+		column1 = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
 		
 		//		type = 1;
-		buidAnswerArea(type, column1);
+		buidAnswerArea();
 		
 		btSend = (Button) findViewById(R.id.btSendQuestion);
 		setupAction();
@@ -96,7 +101,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 			}
 		});
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -115,18 +120,17 @@ public class QuestionDetailActivity extends EVoterActivity {
 			
 			@Override
 			public void onClick(View v) {
-				if(btSend.getText().toString().equals(SEND)){
+				if (btSend.getText().toString().equals(SEND)) {
 					sendQuestion();
-				}else if(btSend.getText().toString().equals(SUBMIT)){
+				} else if (btSend.getText().toString().equals(SUBMIT)) {
 					submitAnswer();
-				}else if(btSend.getText().toString().equals(STOP)){
+				} else if (btSend.getText().toString().equals(STOP)) {
 					stopReceiveAnswer();
 				}
 				
 			}
 		});
 	}
-	
 	
 	/**
 	 * 
@@ -159,18 +163,67 @@ public class QuestionDetailActivity extends EVoterActivity {
 		});
 		
 	}
-
+	
 	/**
 	 * 
 	 */
 	protected void submitAnswer() {
+		switch ((int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId()) {
+			case QuestionType.YES_NO:
+			case QuestionType.MULTI_RADIOBUTTON:
+				if (idAnswer == -1) {
+					EVoterMobileUtils.showeVoterToast(this, "You have to choose one answer before submit");
+				} else {
+					doVote(idAnswer, statistic);
+				}
+				break;
+			case QuestionType.MULTI_CHECKBOX:
+				boolean hasAnswer = false;
+				for (int i = 0; i < listCheckBox.size(); i++) {
+					if (listCheckBox.get(i).isChecked()) {
+						doVote(column1.get(i).getId(), null);
+						hasAnswer = true;
+					}
+				}
+				if (!hasAnswer) {
+					EVoterMobileUtils.showeVoterToast(this, "You have to choose at least one answer before submit");
+				}
+				break;
+			case QuestionType.SLIDER:
+				if (idAnswer == -1) {
+					EVoterMobileUtils.showeVoterToast(this, "You have to choose at least one answer before submit");
+				} else {
+					doVote(column1.get(0).getId(), statistic);
+				}
+				break;
+			case QuestionType.INPUT_ANSWER:
+				statistic = etAnswer.getText().toString();
+				if (statistic == null || statistic.equals("")) {
+					EVoterMobileUtils.showeVoterToast(this, "You have to fill an answer before submit");
+				} else {
+					doVote(column1.get(0).getId(), statistic);
+				}
+				break;
+			case QuestionType.MATCH:
+				EVoterMobileUtils.showeVoterToast(this, "Not implemented yet");
+				break;
+			default:
+				break;
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	protected void doVote(long answerID, String statistic) {
 		//TODO: Submit answer
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
-		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-		params.put(AnswerDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-		client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
+		params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getQuestionTypeId()));
+		params.put(AnswerDAO.ID, String.valueOf(answerID));
+		if (statistic != null)
+			params.put(AnswerDAO.STATISTICS, statistic);
+		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
 				if (response.contains("SUCCESS")) {
@@ -232,37 +285,41 @@ public class QuestionDetailActivity extends EVoterActivity {
 	 * @param type
 	 * @param column1
 	 */
-	private void buidAnswerArea(int type, ArrayList<Answer> column1) {
-		switch (type) {
+	private void buidAnswerArea() {
+		groups = new RadioGroup(this);
+		groups.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		listCheckBox = new ArrayList<CheckBox>();
+		etAnswer = new EditText(this);
+		etAnswer.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		switch ((int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId()) {
 			case QuestionType.YES_NO:
-				RadioGroup groups = new RadioGroup(this);
-				groups.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				RadioButton btYes = new RadioButton(this);
-				btYes.setText("True");
-				btYes.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				RadioButton btNo = new RadioButton(this);
-				btNo.setText("False");
-				btNo.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				groups.addView(btYes);
-				groups.addView(btNo);
-				answerArea.addView(groups);
-				break;
 			case QuestionType.MULTI_RADIOBUTTON:
-				RadioGroup groupMultiRadioBox = new RadioGroup(this);
-				groupMultiRadioBox.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 				for (int i = 0; i < column1.size(); i++) {
 					RadioButton ans = new RadioButton(this);
 					ans.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 					ans.setText(column1.get(i).getAnswerText());
-					groupMultiRadioBox.addView(ans);
+					ans.setId(i);
+					if (i == 0) ans.setChecked(true);
+					groups.addView(ans);
+					
 				}
-				answerArea.addView(groupMultiRadioBox);
+				
+				groups.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					
+					@Override
+					public void onCheckedChanged(RadioGroup group, int checkedId) {
+						idAnswer = column1.get(checkedId).getId();
+					}
+				});
+				answerArea.addView(groups);
 				break;
 			case QuestionType.MULTI_CHECKBOX:
 				for (int i = 0; i < column1.size(); i++) {
 					CheckBox ans = new CheckBox(this);
 					ans.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 					ans.setText(column1.get(i).getAnswerText());
+					ans.setId(i);
+					listCheckBox.add(ans);
 					answerArea.addView(ans);
 				}
 				break;
@@ -272,11 +329,26 @@ public class QuestionDetailActivity extends EVoterActivity {
 				int max = Integer.parseInt(column1.get(0).getAnswerText());
 				seekbar.setMax(max);
 				seekbar.setProgress(max / 2);
+				seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+					@Override
+					public void onStopTrackingTouch(SeekBar seekBar) {
+						
+					}
+					
+					@Override
+					public void onStartTrackingTouch(SeekBar seekBar) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+						statistic = String.valueOf(progress);
+					}
+				});
 				answerArea.addView(seekbar);
 				break;
 			case QuestionType.INPUT_ANSWER:
-				EditText etAnswer = new EditText(this);
-				etAnswer.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 				etAnswer.setHint("Your answer here");
 				answerArea.addView(etAnswer);
 				break;

@@ -25,7 +25,6 @@ import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
-import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.UserDAO;
@@ -35,13 +34,15 @@ import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
- * <br>Updated by @author luongnv89 on 13-Feb-2014 <br>
- * <li>change behaviour for click question event -> always show the detail of question
- * <br>Updated by @author luongnv89 on 18-Jan-2014 <br>
- * <li>Add 2 seekbar for difficult and bored value of session - only add when
- * usertype is student and session is active {@link QuestionActivity} extend
- * from {@link ItemDataActivity} manages questions in a session. Created by
- * luongnv89 on 06/12/13.
+ * <br>
+ * Updated by @author luongnv89 on 13-Feb-2014 <br>
+ * <li>change behaviour for click question event -> always show the detail of
+ * question <br>
+ * Updated by @author luongnv89 on 18-Jan-2014 <br> <li>Add 2 seekbar for
+ * difficult and bored value of session - only add when usertype is student and
+ * session is active {@link QuestionActivity} extend from
+ * {@link ItemDataActivity} manages questions in a session. Created by luongnv89
+ * on 06/12/13.
  */
 public class QuestionActivity extends ItemDataActivity {
 	
@@ -68,8 +69,8 @@ public class QuestionActivity extends ItemDataActivity {
 						.getItemAtPosition(position);
 				EVoterShareMemory.setCurrentQuestion(selectQuestion);
 				Log.i("Detail of question: ", selectQuestion.getTitle());
-					Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);
-					startActivity(detailQuestion);
+				Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);
+				startActivity(detailQuestion);
 			}
 		});
 		
@@ -88,7 +89,7 @@ public class QuestionActivity extends ItemDataActivity {
 		}
 		
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -147,33 +148,6 @@ public class QuestionActivity extends ItemDataActivity {
 		client.post(RequestConfig.getURL(URIRequest.GET_ALL_QUESTION), params,
 				new AsyncHttpResponseHandler() {
 					
-					/*
-					 * (non-Javadoc)
-					 * @see
-					 * com.loopj.android.http.AsyncHttpResponseHandler#onStart()
-					 */
-					@Override
-					public void onStart() {
-						// TODO Auto-generated method stub
-						super.onStart();
-						tvLoadingStatus.setText("Loading...");
-						dialogLoading.show();
-					}
-					
-					/*
-					 * (non-Javadoc)
-					 * @see
-					 * com.loopj.android.http.AsyncHttpResponseHandler#onFinish
-					 * ()
-					 */
-					@Override
-					public void onFinish() {
-						// TODO Auto-generated method stub
-						super.onFinish();
-						tvLoadingStatus.setText("Finished");
-						dialogLoading.dismiss();
-					}
-					
 					@Override
 					public void onSuccess(String response) {
 						Log.i("Get All Quesion Test", "response : " + response);
@@ -182,10 +156,7 @@ public class QuestionActivity extends ItemDataActivity {
 							JSONArray array = EVoterMobileUtils
 									.getJSONArray(response);
 							for (int i = 0; i < array.length(); i++) {
-								internetProcessBar.setProgress((i + 1) * 100
-										/ array.length());
-								tvLoadingStatus.setText("Loading..." + (i + 1)
-										* 100 / array.length());
+								
 								String sString = array.get(i).toString();
 								JSONObject s = new JSONObject(sString);
 								String answerColumn1 = "null";
@@ -212,7 +183,7 @@ public class QuestionActivity extends ItemDataActivity {
 												.getString(QuestionSessionDAO.SESSION_ID)),
 										Long.parseLong(s
 												.getString(QuestionDAO.PARENT_ID)),
-										answerColumn1,answerColumn2);
+										answerColumn1, answerColumn2);
 								listQuestion.add(question);
 							}
 							if (listQuestion.isEmpty()) {
@@ -244,7 +215,7 @@ public class QuestionActivity extends ItemDataActivity {
 				});
 		
 	}
-
+	
 	/**
 	 * @param selectQuestion
 	 */
@@ -273,44 +244,44 @@ public class QuestionActivity extends ItemDataActivity {
 				dialog.dismiss();
 			}
 		});
-		if(questionHasStatistic()) dialog.getBtOK().setEnabled(false);
+		if (questionHasStatistic()) dialog.getBtOK().setEnabled(false);
 		dialog.show();
 	}
-
+	
 	/**
 	 * @return
 	 */
 	private boolean questionHasStatistic() {
-		return true;
-//		RequestParams params = new RequestParams();
-//		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-//		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
-//		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-//		params.put(AnswerDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-//		client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
-//			@Override
-//			public void onSuccess(String response) {
-//				if (response.contains("SUCCESS")) {
-//					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-//							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
-//					btSend.setEnabled(false);
-//				}
-//				else {
-//					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-//							"Cannot send question: " + response);
-//				}
-//			}
-//			
-//			@Override
-//			public void onFailure(Throwable error, String content)
-//			{
-//				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-//						"FAILURE: " + error.toString());
-//				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
-//			}
-//		});
+		return false;
+		//		RequestParams params = new RequestParams();
+		//		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		//		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
+		//		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		//		params.put(AnswerDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		//		client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
+		//			@Override
+		//			public void onSuccess(String response) {
+		//				if (response.contains("SUCCESS")) {
+		//					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+		//							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
+		//					btSend.setEnabled(false);
+		//				}
+		//				else {
+		//					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+		//							"Cannot send question: " + response);
+		//				}
+		//			}
+		//			
+		//			@Override
+		//			public void onFailure(Throwable error, String content)
+		//			{
+		//				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+		//						"FAILURE: " + error.toString());
+		//				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+		//			}
+		//		});
 	}
-
+	
 	/**
 	 * 
 	 */

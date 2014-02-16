@@ -20,8 +20,6 @@ public class EVoterShareMemory {
 	 */
 	private static String USER_KEY;
 	
-	private static User currentUser;
-	
 	private static Question currentQuestion;
 	
 	private static Session currentSession;
@@ -49,21 +47,6 @@ public class EVoterShareMemory {
 	 */
 	public static void setCurrentSubject(Subject currentSubject) {
 		EVoterShareMemory.currentSubject = currentSubject;
-	}
-	
-	/**
-	 * @return the currentUser
-	 */
-	public static User getCurrentUser() {
-		return currentUser;
-	}
-	
-	/**
-	 * @param currentUser the currentUser to set
-	 */
-	public static void setCurrentUser(User currentUser) {
-		EVoterShareMemory.currentUser = currentUser;
-		EVoterShareMemory.currentUserName = currentUser.getUserName();
 	}
 	
 	/**

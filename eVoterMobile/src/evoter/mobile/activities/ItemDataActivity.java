@@ -3,20 +3,16 @@
  */
 package evoter.mobile.activities;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TableLayout;
-import android.widget.TextView;
 import evoter.mobile.adapters.ItemDataAdapter;
 import evoter.mobile.main.R;
 
@@ -69,22 +65,6 @@ public abstract class ItemDataActivity extends EVoterActivity {
 		sbBored = (SeekBar) findViewById(R.id.sbBored);
 		sbDifficult = (SeekBar) findViewById(R.id.sbDifficult);
 		tbSessionValue.setVisibility(View.GONE);
-		//Setup dialog which is show the loading process
-		dialogLoading = new Dialog(this);
-		dialogLoading.setContentView(R.layout.dialog_loading);
-		dialogLoading.setTitle("Refresh");
-		WindowManager.LayoutParams layoutParameters = new WindowManager.LayoutParams();
-		layoutParameters.copyFrom(dialogLoading.getWindow().getAttributes());
-		layoutParameters.width = WindowManager.LayoutParams.MATCH_PARENT;
-		layoutParameters.height = WindowManager.LayoutParams.WRAP_CONTENT;
-		dialogLoading.getWindow().setAttributes(layoutParameters);
-		
-		tvLoadingStatus = (TextView) dialogLoading
-				.findViewById(R.id.tvLoadingStatus);
-		internetProcessBar = (ProgressBar) dialogLoading
-				.findViewById(R.id.progressRefresh);
-		internetProcessBar.setProgress(0);
-		
 //		offlineEVoterManager = new OfflineEVoterManager(this);
 		
 		context = this;

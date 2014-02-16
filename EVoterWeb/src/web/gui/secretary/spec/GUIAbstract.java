@@ -5,38 +5,35 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import org.apache.http.NameValuePair;
+
 import web.gui.secretary.AddSubject;
-import web.gui.secretary.AddTeacher;
+import web.gui.secretary.AddUser;
 import web.gui.secretary.EditSubject;
-import web.gui.secretary.EditTeacher;
-import web.gui.secretary.ViewSubject;
-import web.gui.secretary.ViewTeacher;
+import web.gui.secretary.EditUser;
+import web.util.EVoterHTTPRequest;
+import web.util.Utils;
 
 /**
- * @author maint<br>
- * extended by {@link GUISubjectAbstract}, {@link GUITeacherAbstract}.
- * Set layout for a frame, and initialize the button "Close" for all frames.
+ * extended by {@link SubjectGUIAbstract}, {@link UserGUIAbstract}.<br>
+ * Set layout for a frame, and initialize the button add?edit.<br>
+ * @author maint
  */
 public abstract class GUIAbstract extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 	
-	public static final String INVITE = "Invite";
-	public static final String SAVE = "Save";
-	public static final String IMPORT_TEACHER = "Import";
-	public static final String IMPORT_STUDENT = "Import";
-	public static final String CLOSE = "Close";
-	
 	/**
-	 * button "Close" on a JFrame
+	 * button "Add" on the create/add (subject or user) frame.<br>
+	 * button "Save" on the edit (subject or user) frame.<br>
+	 * used in {@link AddSubject}, {@link AddUser}, {@link EditSubject}, and {@link EditUser}.
 	 */
-	protected JButton btnClose;
-	
-//	protected JLabel lbMessage;
+	protected JButton btnSave;
 	
 	/**
 	 * layout of a frame- {@link GridBagLayout}
@@ -46,34 +43,57 @@ public abstract class GUIAbstract extends JFrame{
 	
 	
 	public GUIAbstract(){
-		//initialize components
-		
-		
-		//initialize the layout
+		initComponents();
+		buttonEvent();
+	}
+
+
+	/**
+	 * create button and layout
+	 */
+	public void initComponents() {
+		btnSave = new JButton();
+		// initialize the layout
 		gridbag = new GridBagLayout();
 		c = new GridBagConstraints();
 		this.setLayout(gridbag);
 
 		c.fill = GridBagConstraints.BOTH;
-//		c.insets = new Insets(10, 20, 1, 5);
 		c.insets = new Insets(5, 10, 5, 5);
-//		initComponents();
+	}
+	
+	/**
+	 * create an event for {@link #btnSave}.
+	 */
+	protected void buttonEvent() {
+		btnSave.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readyToSendRequest()) {
+					List<NameValuePair> params = buildRequestParameters();
+					String urlRequest = getURLRequest();
+					String response = EVoterHTTPRequest.excutePost(urlRequest,
+							params);
+					if (response == null) {
+						Utils.informDialog("Cannot request to server!");
+					} else {
+						Utils.informDialog("Success!");
+						dispose();
+					}
+				}
+
+			}
+		});
+
 	}
 
 	/**
-	 * initialize button "Close" which are used in 
-	 *<li> {@link GUISubjectAbstract}; and its instants, {@link AddSubject}, {@link EditSubject}, and {@link ViewSubject} 
-	 *<li> {@link GUITeacherAbstract}; and its instants, {@link AddTeacher}, {@link EditTeacher}, and {@link ViewTeacher}
+	 * check validation of fields before send request to server.
 	 */
-	protected void initComponents() {
-		//button "Close"
-		btnClose = new JButton(CLOSE);
-		btnClose.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-			}
-		});
-	}
+	protected abstract boolean readyToSendRequest();
+
+	protected abstract String getURLRequest();
+
+	protected abstract List<NameValuePair> buildRequestParameters();
 }

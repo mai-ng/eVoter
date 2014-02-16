@@ -24,7 +24,8 @@ public class ReadFileByClick extends JFrame {
 
 		/* Enabling Multiple Selection */
 		fileChooser.setMultiSelectionEnabled(true);
-
+		fileChooser.setFileFilter(new TXTFileFilter());
+		fileChooser.setAcceptAllFileFilterUsed(false);
 		/* Setting Current Directory */
 		fileChooser.setCurrentDirectory(new File("C:\\Documents and Settings"));
 

@@ -15,50 +15,45 @@ import org.apache.http.message.BasicNameValuePair;
 
 import web.applet.RunningTimeData;
 import web.gui.secretary.spec.ItemViewAbstract;
-import web.gui.secretary.spec.SubjectGUIAbstract;
+import web.gui.secretary.spec.UserGUIAbstract;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import web.util.Utils;
-import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
-import evoter.share.model.Subject;
+import evoter.share.model.User;
 import evoter.share.utils.URIRequest;
 
-
-public class SubjectItem extends ItemViewAbstract{
+/**
+ * @author maint
+ * 
+ */
+public class UserItem extends ItemViewAbstract {
 
 	private static final long serialVersionUID = 1L;
-	private Subject subject;
-	private SubjectGUIAbstract targetSubject;
+	private User user;
+	private UserGUIAbstract targetUser;
 	
-	public SubjectItem(Subject sub) {
-		subject = sub;
-		itemName.setText(subject.getTitle());
+	public UserItem(User u) {
+		super();
+		this.user = u;
+		itemName.setText(u.getEmail());
 	}
-
+	
 	public void buttonEvent(){
-		btnEdite.addActionListener(new ActionListener() {
+		btnDelete.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setTargetSubject(new EditSubject(subject));
-			}
-		});
-		
-		btnDelete.addActionListener( new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int response = Utils.confirmDialog(subject.getTitle());
+				int response = Utils.confirmDialog(user.getEmail());
 				if (response == JOptionPane.YES_OPTION) {
 			    	List<NameValuePair> teacherParams = new ArrayList<NameValuePair>();
 					teacherParams.add(new BasicNameValuePair(
 							UserDAO.USER_KEY, RunningTimeData
 									.getCurrentUserKey()));
-					teacherParams.add(new BasicNameValuePair(SubjectDAO.ID,
-							String.valueOf(subject.getId())));
+					teacherParams.add(new BasicNameValuePair(UserDAO.ID,
+							String.valueOf(user.getId())));
 					String res = EVoterHTTPRequest.excutePost(
-							RequestConfig.getURL(URIRequest.DELETE_SUBJECT),
+							RequestConfig.getURL(URIRequest.DELETE_USER),
 							teacherParams);
 					if (res == null) {
 						Utils.informDialog("Cannot request to server!");
@@ -75,27 +70,36 @@ public class SubjectItem extends ItemViewAbstract{
 			    }
 			}
 		});
-		
+
 		btnDetail.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setTargetSubject(new ViewSubject(subject));
+				setTargetUser( new ViewUser(user));
+			}
+		});
+
+		btnEdite.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setTargetUser( new EditUser(user));
 			}
 		});
 	}
 
 	/**
-	 * @return the targetSubject
+	 * @return the targetUser
 	 */
-	public SubjectGUIAbstract getTargetSubject() {
-		return targetSubject;
+	public UserGUIAbstract getTargetUser() {
+		return targetUser;
 	}
 
 	/**
-	 * @param targetSubject the targetSubject to set
+	 * @param targetUser the targetUser to set
 	 */
-	public void setTargetSubject(SubjectGUIAbstract targetSubject) {
-		this.targetSubject = targetSubject;
+	public void setTargetUser(UserGUIAbstract targetUser) {
+		this.targetUser = targetUser;
 	}
+
 }

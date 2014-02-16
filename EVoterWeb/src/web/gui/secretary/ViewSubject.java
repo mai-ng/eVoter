@@ -32,7 +32,7 @@ public class ViewSubject extends EditSubject {
 		btnAddStudent.setVisible(false);
 		btnAddTeacher.setEnabled(false);
 		btnAddTeacher.setVisible(false);
-		btnUpdate.setEnabled(false);
-		btnUpdate.setVisible(false);
+		btnSave.setEnabled(false);
+		btnSave.setVisible(false);
 	}
 }

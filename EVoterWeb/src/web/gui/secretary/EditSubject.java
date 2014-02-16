@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import web.applet.RunningTimeData;
-import web.gui.secretary.spec.GUISubjectAbstract;
+import web.gui.secretary.spec.SubjectGUIAbstract;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import evoter.share.dao.SubjectDAO;
@@ -21,10 +21,10 @@ import evoter.share.utils.URIRequest;
 
 /**
  * Edit information of a subject such as the title, teachers, students of it.<br> 
- * extends {@link GUISubjectAbstract} class.
+ * extends {@link SubjectGUIAbstract} class.
  * @author maint<br>
  */
-public class EditSubject extends GUISubjectAbstract {
+public class EditSubject extends SubjectGUIAbstract {
 
 	private static final long serialVersionUID = 1L;
 
@@ -49,7 +49,7 @@ public class EditSubject extends GUISubjectAbstract {
 	 */
 	public void initComponents() {
 		super.initComponents();
-		btnUpdate.setText("Update");
+		btnSave.setText("Update");
 	}
 	
 	/**
@@ -85,6 +85,21 @@ public class EditSubject extends GUISubjectAbstract {
 			}
 		}
 
+	}
+
+	@Override
+	protected String getURLRequest() {
+		return RequestConfig.getURL(URIRequest.UPDATE_SUBJECT);
+	}
+
+	@Override
+	protected List<NameValuePair> buildRequestParameters() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(UserDAO.USER_KEY,
+				RunningTimeData.getCurrentUserKey()));
+		params.add(new BasicNameValuePair(SubjectDAO.ID, String
+				.valueOf(currentSubject.getId())));
+		return params;
 	}
 
 	

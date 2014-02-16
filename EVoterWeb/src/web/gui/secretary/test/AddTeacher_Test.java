@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import web.gui.secretary.AddTeacher;
+import web.gui.secretary.AddUser;
 
 /**
  * @author maint
@@ -35,7 +35,7 @@ public class AddTeacher_Test {
 //	}
 	public static void main(String[] args)
 	{
-		AddTeacher add_teacher = new AddTeacher();
+		AddUser add_teacher = new AddUser();
 	}
 
 }

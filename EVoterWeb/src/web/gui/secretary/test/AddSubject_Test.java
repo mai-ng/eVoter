@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import web.gui.secretary.AddSubject;
-import web.gui.secretary.AddTeacher;
+import web.gui.secretary.AddUser;
 
 public class AddSubject_Test {
 

@@ -34,20 +34,18 @@ public class SubjectTab extends MenuTabAbstract{
 
 	public SubjectTab(){
 		super();
+		createListView();
 	}
 
 	/**
 	 * add a new subject when click {@link #btnNewSubject}
 	 */
 	public void addItem() {
-		btnAddNewItem.addActionListener(new ActionListener() {
+		btnNewItem.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 					AddSubject addSubject = new AddSubject();
-					addSubject.setSize(800, 600);
-					addSubject.setLocationRelativeTo(null);
-					addSubject.setVisible(true);
 			}
 		});
 	}

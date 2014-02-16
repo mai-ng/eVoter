@@ -71,6 +71,7 @@ public class QuestionActivity extends ItemDataActivity {
 				EVoterShareMemory.setCurrentQuestion(selectQuestion);
 				Log.i("Detail of question: ", selectQuestion.getTitle());
 				Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);
+				EVoterShareMemory.setPreviousContext(QuestionActivity.this);
 				startActivity(detailQuestion);
 			}
 		});
@@ -197,7 +198,10 @@ public class QuestionActivity extends ItemDataActivity {
 										Long.parseLong(s
 												.getString(QuestionDAO.PARENT_ID)),
 										answerColumn1, answerColumn2);
-								listQuestion.add(question);
+								question.setStatus(s.getInt(QuestionDAO.STATUS));
+								//With student, only load the question which already sent or finished.
+								if (!(EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && question.getStatus() == 0))
+									listQuestion.add(question);
 							}
 							if (listQuestion.isEmpty()) {
 								EVoterMobileUtils.showeVoterToast(

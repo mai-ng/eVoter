@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,19 +59,20 @@ public class TestSessionService {
 		
 		long subjectId = 1;
 		//user type is teacher
-		String userKey = "1333_1_2";
-		parameters.put(UserDAO.USER_KEY, userKey);
+		String username = "paul_gibson";
+		String password = "12345678";
+		
+		parameters.put(UserDAO.USER_NAME, username);
+		parameters.put(UserDAO.PASSWORD, password);
+		
+		JSONObject userKey = (JSONObject)accountService.doLogin(parameters);
+		parameters.put("userkey", userKey.get("userkey"));
 		parameters.put(SessionDAO.SUBJECT_ID, String.valueOf(subjectId));
 		
 		String expected_response = ""+
-		"[{\"NAME\":\"subject_1_session_1\",\"USER_ID\":1,\"SUBJECT_ID\":1,\"ID\":1," +
-		"\"CREATOR\":\"paul_gibson\",\"CREATION_DATE\":\"2013-12-28 00:00:00.0\"," +
-		"\"IS_ACTIVE\":true},{\"NAME\":\"subject_1_session_2\",\"USER_ID\":1,\"SUBJECT_ID\":1," +
-		"\"ID\":2,\"CREATOR\":\"paul_gibson\",\"CREATION_DATE\":\"2013-12-28 12:50:24.0\"," +
-		"\"IS_ACTIVE\":false},{\"NAME\":\"subject_1_session_3\",\"USER_ID\":1,\"SUBJECT_ID\":1," +
-		"\"ID\":3,\"CREATOR\":\"paul_gibson\",\"CREATION_DATE\":\"2013-12-28 12:50:24.0\",\"IS_ACTIVE\":false}]";
-		
-		accountService.addUserKey(userKey);
+		"[{\"NAME\":\"subject_1_session_1\",\"USER_ID\":1,\"SUBJECT_ID\":1," +
+		"\"ID\":1,\"CREATION_DATE\":\"2013-12-28 00:00:00.0\",\"IS_ACTIVE\":true}]";
+				
 		Object response = sessionService.doGetAll(parameters);
 		assertEquals("doGetAll()", response.toString(), expected_response);
 		
@@ -83,19 +85,28 @@ public class TestSessionService {
 	@Test
 	public void test_doGetAll_2(){
 		
-		long subjectId = 2;
-		//user type is teacher
-		String userKey = "1333_3_3";
-		parameters.put(UserDAO.USER_KEY, userKey);
+		String username = "nvluong";
+		String password = "12345678";
+		
+		parameters.put(UserDAO.USER_NAME, username);
+		parameters.put(UserDAO.PASSWORD, password);
+		
+		JSONObject userKey = (JSONObject)accountService.doLogin(parameters);
+		parameters.put("userkey", userKey.get("userkey"));
+		
+		long subjectId = 1;
 		parameters.put(SessionDAO.SUBJECT_ID, String.valueOf(subjectId));
 		
 		String expected_response = ""+
-		"[{\"NAME\":\"subject_2_session_5\",\"USER_ID\":2,\"SUBJECT_ID\":2,\"ID\":5," +
-		"\"CREATOR\":\"jean\",\"CREATION_DATE\":\"2013-12-28 12:50:24.0\",\"IS_ACTIVE\":false}]";
-
+		"[{\"NAME\":\"subject_1_session_1\",\"ACCEPT_STT\":false,\"USER_ID\":1," +
+		"\"SUBJECT_ID\":1,\"ID\":1,\"CREATOR\":\"paul_gibson\",\"CREATION_DATE\":" +
+		"\"2013-12-28 00:00:00.0\",\"IS_ACTIVE\":true}]";
+		
 		Object response = sessionService.doGetAll(parameters);
 		assertEquals("doGetAll()", response.toString(), expected_response);
 	}
+	
+	
 	/**
 	 * Test for {@link ISessionService#doView(Map)} </br>
 	 */

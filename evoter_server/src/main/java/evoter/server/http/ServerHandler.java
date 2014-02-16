@@ -84,7 +84,7 @@ public class ServerHandler implements HttpHandler {
 				if (accountService.hasUserKey(
 						(String)parameters.get(UserDAO.USER_KEY))){
 					
-					System.out.println("has userKey");
+					System.out.println("has userKey" + parameters.get(UserDAO.USER_KEY) );
 					//subject management
 					if (URIUtils.isViewSubjectRequest(uri)){
 						response = subjectService.doView(parameters);
@@ -98,7 +98,8 @@ public class ServerHandler implements HttpHandler {
 						response = subjectService.doGetUsersOfSubject(parameters);
 					}else if (URIUtils.isUpdateSubject(uri)){
 						response = subjectService.doEdit(parameters);
-						
+					}else if (URIUtils.isCreateSubject(uri)){
+						response = subjectService.doCreate(parameters);
 						
 						//start with session management part
 					}else if (URIUtils.isGetAllSessionRequest(uri)){

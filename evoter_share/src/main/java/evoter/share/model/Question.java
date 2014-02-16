@@ -34,6 +34,7 @@ public class Question extends ItemData implements Serializable {
 	public static final String COL2 = "column2";
 	private String answerColumn1;
 	private String answerColumn2;
+	private int status;
 
 	/**
 	 * @param questionTypeId
@@ -53,6 +54,7 @@ public class Question extends ItemData implements Serializable {
 		this.creationDate = creationDate;
 		this.sessionID = sessionID;
 		this.parentId = parentId;
+		this.status = 0;
 		if(answerColumn1.equals("null")) 
 			this.answerColumn1="";
 		else
@@ -74,6 +76,7 @@ public class Question extends ItemData implements Serializable {
 		this.title = questionText;
 		this.creationDate = creationDate;
 		this.parentId = parentId;
+		this.status = 0;
 
 	}
 
@@ -91,10 +94,19 @@ public class Question extends ItemData implements Serializable {
 		this.parentId = cp.getParentId();
 		this.answerColumn1 = cp.getAnswerColumn1();
 		this.answerColumn2 = cp.getAnswerColumn2();
+		this.status = cp.status;
 	}
 
 	
 	
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	/**
 	 * @return the sessionID
 	 */
@@ -166,10 +178,11 @@ public class Question extends ItemData implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Question [id=" + id + ", questionTypeId=" + questionTypeId
-				+ ", userId=" + userId + ", questionText=" + title
-				+ ", creationDate=" + creationDate + ", parentId=" + parentId
-				+ "]";
+		return "Question [questionTypeId=" + questionTypeId + ", userId="
+				+ userId + ", creationDate=" + creationDate + ", parentId="
+				+ parentId + ", sessionID=" + sessionID + ", answerColumn1="
+				+ answerColumn1 + ", answerColumn2=" + answerColumn2
+				+ ", status=" + status + "]";
 	}
 
 	@SuppressWarnings("unchecked")
@@ -181,6 +194,7 @@ public class Question extends ItemData implements Serializable {
 		object.put(QuestionDAO.USER_ID, userId);
 		object.put(QuestionDAO.CREATION_DATE, "" + creationDate + "");
 		object.put(QuestionDAO.PARENT_ID, parentId);
+		object.put(QuestionDAO.STATUS, status);
 		return object;
 	}
 

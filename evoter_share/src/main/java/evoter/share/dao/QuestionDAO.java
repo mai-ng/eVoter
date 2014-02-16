@@ -22,6 +22,7 @@ public interface QuestionDAO {
 	public static final String CREATION_DATE = "CREATION_DATE";
 	public static final String USER_ID = "USER_ID";
 	public static final String PARENT_ID = "PARENT_ID";
+	public static final String STATUS = "STATUS";
 	
 	public static final String TABLE_NAME = "QUESTION";	
 	public static final String BEAN_NAME = "questionDAO";
@@ -72,6 +73,7 @@ public interface QuestionDAO {
 	public List<Question> findByQuestionTypeId(long questionTypeId);
 	public List<Question> findByCreationDate(Timestamp creationDate);
 	public List<Question> findByParentId(long parentId);
+	public List<Question> findByStatus(int status);
 	/**
 	 * 
 	 * Delete {@link Question} objects in the database by input properties and their values </br> 
@@ -111,6 +113,8 @@ public interface QuestionDAO {
 	 * @param parentId value of parent question id
 	 */
 	public void deleteByParentId(long parentId);
+	
+	public void deleteByStatus(int status);
 	/**
 	 * Update the changes values of {@link Question} to the database </br>
 	 * @param question {@link Question} object that is needed to update </br>

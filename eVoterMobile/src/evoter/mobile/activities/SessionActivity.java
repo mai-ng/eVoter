@@ -56,7 +56,7 @@ public class SessionActivity extends ItemDataActivity {
 				Session selectedSession = (Session) parent
 						.getItemAtPosition(position);
 				EVoterShareMemory.setCurrentSession(selectedSession);
-				EVoterShareMemory.setCurrentSession(selectedSession);
+				EVoterShareMemory.setPreviousContext(SessionActivity.this);
 				startActivity(new Intent("android.intent.action.SESSIONVIEW"));
 			}
 		});
@@ -69,6 +69,17 @@ public class SessionActivity extends ItemDataActivity {
 				EVoterShareMemory.setCurrentSession(selectedSession);
 				longClickSessionAction();
 				return true;
+			}
+		});
+		
+		mainMenu.getBtNewSession().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent newSessionIntent = new Intent(SessionActivity.this, NewSessionActivity.class);
+				EVoterShareMemory.setPreviousContext(SessionActivity.this);
+				startActivity(newSessionIntent);
+				mainMenu.dismiss();
 			}
 		});
 		
@@ -194,7 +205,7 @@ public class SessionActivity extends ItemDataActivity {
 							"Deleted session: " + EVoterShareMemory.getCurrentSession().getTitle());
 					adapter.deleteItem(EVoterShareMemory.getCurrentSession().getId());
 					adapter.notifyDataSetChanged();
-//					loadListItemData();
+					//					loadListItemData();
 				}
 				else {
 					EVoterMobileUtils.showeVoterToast(SessionActivity.this,

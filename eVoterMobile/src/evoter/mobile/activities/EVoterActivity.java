@@ -169,27 +169,6 @@ public class EVoterActivity extends Activity {
 			}
 		});
 		
-		mainMenu.getBtNewQuestion().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Log.i("Main menu", "Create new question");
-				mainMenu.dismiss();
-				Intent newQuestion = new Intent(EVoterActivity.this, NewQuestionActivity.class);
-				startActivity(newQuestion);
-				
-			}
-		});
-		
-		mainMenu.getBtNewSession().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent newSessionIntent = new Intent(EVoterActivity.this, NewSessionActivity.class);
-				startActivity(newSessionIntent);
-				mainMenu.dismiss();
-			}
-		});
 		
 		mainMenu.getBtStartSession().setOnClickListener(new OnClickListener() {
 			
@@ -447,16 +426,5 @@ public class EVoterActivity extends Activity {
 			EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Error! Username and password is not correct. Please try again!");
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onBackPressed()
-	 */
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
-	}
-	
-	
 	
 }

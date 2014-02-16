@@ -14,6 +14,7 @@ import android.widget.SeekBar;
 import android.widget.TableLayout;
 import evoter.mobile.adapters.ItemDataAdapter;
 import evoter.mobile.main.R;
+import evoter.mobile.objects.EVoterShareMemory;
 
 /**
  * {@link ItemDataActivity} is the abstract class of all the item activity of
@@ -46,7 +47,6 @@ public abstract class ItemDataActivity extends EVoterActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list_item_data_view);
-		
 		this.ivTitleBarRefresh.setVisibility(View.VISIBLE);
 		
 		// When the refresh icon is click, the data of listview will be reloaded
@@ -92,5 +92,15 @@ public abstract class ItemDataActivity extends EVoterActivity {
 	 * Request data from server according to context of activity.
 	 */
 	protected abstract void loadListItemData();
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		EVoterShareMemory.getPreviousContext().loadListItemData();
+	}
+
 	
 }

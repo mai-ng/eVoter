@@ -88,6 +88,18 @@ public class QuestionActivity extends ItemDataActivity {
 				}
 			});
 		}
+		mainMenu.getBtNewQuestion().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Log.i("Main menu", "Create new question");
+				mainMenu.dismiss();
+				Intent newQuestion = new Intent(QuestionActivity.this, NewQuestionActivity.class);
+				EVoterShareMemory.setPreviousContext(QuestionActivity.this);
+				startActivity(newQuestion);
+				
+			}
+		});
 		
 	}
 	
@@ -323,5 +335,5 @@ public class QuestionActivity extends ItemDataActivity {
 		// TODO Auto-generated method stub
 		return EVoterShareMemory.getListAcceptedSessions().contains(EVoterShareMemory.getCurrentSession().getId());
 	}
-
+	
 }

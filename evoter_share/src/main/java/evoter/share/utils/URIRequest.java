@@ -94,8 +94,15 @@ public class URIRequest {
 	 * 	</li> {@link List} of {@link Subject} 
 	 */
 	public static final String SEARCH_SUBJECT="/search_subject";
-	
+	/**
+	 * Edit subject request
+	 */
+
 	public static final String UPDATE_SUBJECT = "/update_subject";
+	/**
+	 * Create subject request
+	 */
+	public static String CREATE_SUBJECT="create_subject";
 	
 	
 	//for session management
@@ -181,6 +188,8 @@ public class URIRequest {
 	 * Get all students of a session that accepted or not accepted yet </br>
 	 */
 	public static final String GET_ALL_STUDENT="/get_all_students";
+
+	
 	//for question management
 	/**
 	 * request parameter </br>
@@ -304,6 +313,7 @@ public class URIRequest {
 	 * Select an answer of question and send to server </br>
 	 */
 	public static final String VOTE_ANSWER="vote_answer";
+
 
 	
 	

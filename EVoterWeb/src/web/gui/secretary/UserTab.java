@@ -90,9 +90,7 @@ public class UserTab extends MenuTabAbstract {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AddUser addedTeacher = new AddUser(userTypeId);
-				addedTeacher.setLocationRelativeTo(null);
-				addedTeacher.setVisible(true);
+				new AddUser(userTypeId);
 			}
 		});
 	}

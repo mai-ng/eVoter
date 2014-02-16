@@ -45,7 +45,7 @@ public class SubjectTab extends MenuTabAbstract{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-					AddSubject addSubject = new AddSubject();
+					new AddSubject();
 			}
 		});
 	}

@@ -135,9 +135,9 @@ public abstract class UserGUIAbstract extends GUIAbstract {
 		lblEmail = new JLabel("Email");
 
 		// create text fields
-		txtFullName = new JTextField("Full name");
-		txtUserName = new JTextField("User name");
-		txtEmail = new JTextField("Email");
+		txtFullName = new JTextField();
+		txtUserName = new JTextField();
+		txtEmail = new JTextField();
 
 		// create buttons
 		btnClose = new JButton("Close");

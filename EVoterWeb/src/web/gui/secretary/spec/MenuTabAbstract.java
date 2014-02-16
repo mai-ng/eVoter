@@ -3,7 +3,6 @@
  */
 package web.gui.secretary.spec;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,12 +10,9 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 
 import web.gui.secretary.MainPanel;
 import web.gui.secretary.SubjectItem;
@@ -50,7 +46,6 @@ public abstract class MenuTabAbstract extends JPanel {
 	 * list of {@link UserItem}
 	 */
 	protected ArrayList<ItemViewAbstract> listItems;
-//	protected JList<ItemViewAbstract> listItems;
 
 	/**
 	 * constructor to initialize, design user interface and action performance
@@ -89,16 +84,18 @@ public abstract class MenuTabAbstract extends JPanel {
 	 * {@link UserItem}, or {@link StudentItem}
 	 */
 	public void createListView() {
+		listView.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		listView.setPreferredSize(new Dimension(650, 400));
+		
 		listItems.addAll(loadListItems());
 		
 		JPanel panelListItems = new JPanel();
-		panelListItems.setLayout(new GridLayout(8, 1));
+		panelListItems.setLayout(new GridLayout(0, 1));
 		for (int i = 0; i < listItems.size(); i++) {
 			panelListItems.add(listItems.get(i));
 		}
-		
 		listView.setViewportView(panelListItems);
-		listView.setPreferredSize(new Dimension(650, 400));
+		
 	}
 
 	/**

@@ -15,11 +15,12 @@ import web.util.Utils;
 
 /**
  * present a line in the list of Teachers, Students, or Subjects. Each item contains: 
- * <li>title: teacher's name, student's name, or title of a subject
+ * <li>title: teacher's email, student's email, or title of a subject
  * <li>button: edit 
  * <li>button: delete 
  * <li>button: detail <br>
- * Display: "Title------btnEdit---btnDelete---btnDetail"
+ * Display: "Title------btnEdit---btnDelete---btnDetail".<br>
+ * Used in {@link MenuTabAbstract} as list of items in its content.
  * 
  * @author maint<br>
  */
@@ -27,10 +28,22 @@ public abstract class ItemViewAbstract extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * title of item: email of teacher/student, or title of a subject.
+	 */
 	protected JLabel itemName;
 
+	/**
+	 * button edit to edit a teacher, student, or subject if it is pressed.
+	 */
 	protected JButton btnEdite;
+	/**
+	 * button delete to delete a teacher, student, or subject if it is pressed.
+	 */
 	protected JButton btnDelete;
+	/**
+	 * button detail to view detail information a teacher, student, or subject if it is pressed.
+	 */
 	protected JButton btnDetail;
 
 
@@ -40,6 +53,9 @@ public abstract class ItemViewAbstract extends JPanel {
 		buttonEvent();
 	}
 
+	/**
+	 * user interface of each item.
+	 */
 	public void buildGUI() {
 		setBackground(Color.white);
 		GridBagLayout gridbag = new GridBagLayout();
@@ -97,6 +113,9 @@ public abstract class ItemViewAbstract extends JPanel {
 		btnDetail.setBorderPainted(false);
 	}
 
+	/**
+	 * create event for buttons.
+	 */
 	public abstract void buttonEvent();
 
 }

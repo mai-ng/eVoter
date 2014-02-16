@@ -25,6 +25,12 @@ import evoter.share.model.Subject;
 import evoter.share.utils.URIRequest;
 
 
+/**
+ * Extends {@link ItemViewAbstract}.<br>
+ * Used in {@link SubjectTab} as its content.
+ * @author maint
+ * @see ItemViewAbstract
+ */
 public class SubjectItem extends ItemViewAbstract{
 
 	private static final long serialVersionUID = 1L;

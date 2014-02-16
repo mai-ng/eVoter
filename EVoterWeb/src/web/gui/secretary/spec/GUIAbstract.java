@@ -25,7 +25,6 @@ import web.util.Utils;
  * @author maint
  */
 public abstract class GUIAbstract extends JFrame{
-
 	private static final long serialVersionUID = 1L;
 	
 	/**
@@ -104,4 +103,5 @@ public abstract class GUIAbstract extends JFrame{
 	public JButton getBtnSave() {
 		return btnSave;
 	}
+	
 }

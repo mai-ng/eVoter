@@ -1,6 +1,5 @@
 package web.gui.secretary;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +103,13 @@ public class EditSubject extends SubjectGUIAbstract {
 			params.add(new BasicNameValuePair(SubjectDAO.EMAIL_LIST,listInputEmails.get(i)));
 		}
 		return params;
+	}
+
+	/**
+	 * @return the currentSubject
+	 */
+	public Subject getCurrentSubject() {
+		return currentSubject;
 	}
 
 	

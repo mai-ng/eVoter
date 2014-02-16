@@ -24,8 +24,10 @@ import evoter.share.model.User;
 import evoter.share.utils.URIRequest;
 
 /**
+ * Extends {@link ItemViewAbstract}.<br>
+ * Used in {@link UserTab} as its content.
  * @author maint
- * 
+ * @see ItemViewAbstract
  */
 public class UserItem extends ItemViewAbstract {
 

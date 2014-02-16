@@ -53,7 +53,7 @@ public class QuestionActivity extends ItemDataActivity {
 				.getCurrentSessionName());
 		
 		mainMenu.setQuestionActivityMenu();
-		if(!userAcceptSession()) mainMenu.getBtStartSession().setVisibility(View.GONE);
+		if (userAcceptSession()) mainMenu.getBtStartSession().setVisibility(View.GONE);
 		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && EVoterShareMemory.currentSessionIsActive()) {
 			//Setup seekbar
 			buildStaticSlider();
@@ -232,6 +232,7 @@ public class QuestionActivity extends ItemDataActivity {
 				Log.i("QUESTION LONG ITEM CLICK", "Edit question" + EVoterShareMemory.getCurrentQuestion().getTitle());
 				dialog.dismiss();
 				Intent editQuestion = new Intent(QuestionActivity.this, EditQuestionActivity.class);
+				EVoterShareMemory.setPreviousContext(QuestionActivity.this);
 				startActivity(editQuestion);
 			}
 		});
@@ -314,11 +315,13 @@ public class QuestionActivity extends ItemDataActivity {
 			}
 		});
 	}
+	
 	/**
 	 * @return true if current student already accepted current session
 	 */
 	protected boolean userAcceptSession() {
 		// TODO Auto-generated method stub
-		return true;
+		return EVoterShareMemory.getListAcceptedSessions().contains(EVoterShareMemory.getCurrentSession().getId());
 	}
+
 }

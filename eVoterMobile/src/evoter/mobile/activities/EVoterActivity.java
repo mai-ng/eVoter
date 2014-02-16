@@ -107,6 +107,7 @@ public class EVoterActivity extends Activity {
 		setContentView(R.layout.start);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
 				R.layout.evoter_title_bar);
+		
 		ivTitleBarIcon = (ImageView) findViewById(R.id.ivIconTitleBar);
 		ivTitleBarRefresh = (ImageView) findViewById(R.id.ivRefreshTitleBar);
 		tvTitleBarContent = (TextView) findViewById(R.id.tvTitleBar);
@@ -229,6 +230,7 @@ public class EVoterActivity extends Activity {
 									EVoterActivity.this,
 									"You joined to session");
 							mainMenu.getBtStartSession().setVisibility(View.GONE);
+							EVoterShareMemory.addToListAcceptedSessions(EVoterShareMemory.getCurrentSession().getId());
 						} else {
 							EVoterMobileUtils.showeVoterToast(
 									EVoterActivity.this,
@@ -445,5 +447,16 @@ public class EVoterActivity extends Activity {
 			EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Error! Username and password is not correct. Please try again!");
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+	}
+	
+	
 	
 }

@@ -3,7 +3,6 @@
  */
 package evoter.mobile.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,10 +31,7 @@ public abstract class ItemDataActivity extends EVoterActivity {
 	 * Adapter for listview
 	 */
 	protected ItemDataAdapter adapter;
-	/**
-	 * Context of activity
-	 */
-	protected Context context;
+
 	/**
 	 * Each activity will have an edit text to search item by name
 	 */
@@ -67,7 +63,6 @@ public abstract class ItemDataActivity extends EVoterActivity {
 		tbSessionValue.setVisibility(View.GONE);
 //		offlineEVoterManager = new OfflineEVoterManager(this);
 		
-		context = this;
 		listView = (ListView) findViewById(R.id.lvItemData);
 		// listView.setEmptyView(progressBar);
 		etSearch = (EditText) findViewById(R.id.etSearch);

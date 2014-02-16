@@ -69,6 +69,8 @@ public class QuestionDetailActivity extends EVoterActivity {
 	long idAnswer = -1;
 	String statistic;
 	EditText etAnswer;
+	TextView tvMaxShow;
+	TextView tvAnswerShow;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -325,12 +327,20 @@ public class QuestionDetailActivity extends EVoterActivity {
 	 * 
 	 */
 	private void seekBarArea() {
+		tvMaxShow = new TextView(this);
+		tvMaxShow.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		
+		tvAnswerShow = new TextView(this);
+		tvAnswerShow.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		
 		SeekBar seekbar = new SeekBar(this);
 		seekbar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		int max = Integer.parseInt(answers.get(0).getAnswerText());
 		seekbar.setMax(max);
+		tvMaxShow.setText("Max value: "+max);
 		seekbar.setProgress(max / 2);
 		statistic=String.valueOf(max/2);
+		tvAnswerShow.setText("Your value: "+statistic);
 		seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
@@ -345,9 +355,12 @@ public class QuestionDetailActivity extends EVoterActivity {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				statistic = String.valueOf(progress);
+				tvAnswerShow.setText("Your value: "+statistic);
 			}
 		});
 		answerArea.addView(seekbar);
+		answerArea.addView(tvMaxShow);
+		answerArea.addView(tvAnswerShow);
 	}
 
 	/**

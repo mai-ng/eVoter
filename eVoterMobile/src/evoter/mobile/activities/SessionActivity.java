@@ -60,20 +60,17 @@ public class SessionActivity extends ItemDataActivity {
 				startActivity(new Intent("android.intent.action.SESSIONVIEW"));
 			}
 		});
-		if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
-			
-			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-				@Override
-				public boolean onItemLongClick(AdapterView<?> parent, View view,
-						int position, long id) {
-					final Session selectedSession = (Session) parent
-							.getItemAtPosition(position);
-					EVoterShareMemory.setCurrentSession(selectedSession);
-					longClickSessionAction();
-					return true;
-				}
-			});
-		}
+		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				final Session selectedSession = (Session) parent
+						.getItemAtPosition(position);
+				EVoterShareMemory.setCurrentSession(selectedSession);
+				longClickSessionAction();
+				return true;
+			}
+		});
 		
 	}
 	
@@ -116,6 +113,7 @@ public class SessionActivity extends ItemDataActivity {
 				Log.i("SESSION LONG ITEM CLICK", "Edit session" + EVoterShareMemory.getCurrentSession().getTitle());
 				dialog.dismiss();
 				Intent editSession = new Intent(SessionActivity.this, EditSessionActivity.class);
+				EVoterShareMemory.setPreviousContext(SessionActivity.this);
 				startActivity(editSession);
 			}
 		});
@@ -137,19 +135,30 @@ public class SessionActivity extends ItemDataActivity {
 	 */
 	private void loadItemDataResponseProcess(String response) {
 		try {
+			EVoterShareMemory.resetListAcceptedSessions();
 			ArrayList<ItemData> listSession = new ArrayList<ItemData>();
 			JSONArray array = EVoterMobileUtils.getJSONArray(response);
 			for (int i = 0; i < array.length(); i++) {
 				String sString = array.get(i).toString();
 				JSONObject s = new JSONObject(sString);
-				Session session = new Session(Long.parseLong(s
-						.getString(SessionDAO.ID)), Long.parseLong(s
+				long sessionID = Long.parseLong(s
+						.getString(SessionDAO.ID));
+				String creator;
+				if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
+					creator = EVoterShareMemory.getCurrentUserName();
+				} else {
+					creator = s.getString("CREATOR");
+					boolean isAccepted = s.getBoolean(SessionUserDAO.ACCEPT_SESSION);
+					if (isAccepted) EVoterShareMemory.addToListAcceptedSessions(sessionID);
+				}
+				Session session = new Session(sessionID, Long.parseLong(s
 						.getString(SessionDAO.SUBJECT_ID)), s
 						.getString(SessionDAO.NAME), EVoterMobileUtils
 						.convertToDate(s
 								.getString(SessionDAO.CREATION_DATE)),
 						Boolean.parseBoolean(s
-								.getString(SessionDAO.IS_ACTIVE)), Long.parseLong(s.getString(SessionDAO.USER_ID)), s.getString("CREATOR"));
+								.getString(SessionDAO.IS_ACTIVE)), Long.parseLong(s.getString(SessionDAO.USER_ID)), creator);
+				
 				listSession.add(session);
 			}
 			if (listSession.isEmpty()) {
@@ -185,6 +194,7 @@ public class SessionActivity extends ItemDataActivity {
 							"Deleted session: " + EVoterShareMemory.getCurrentSession().getTitle());
 					adapter.deleteItem(EVoterShareMemory.getCurrentSession().getId());
 					adapter.notifyDataSetChanged();
+//					loadListItemData();
 				}
 				else {
 					EVoterMobileUtils.showeVoterToast(SessionActivity.this,
@@ -201,4 +211,5 @@ public class SessionActivity extends ItemDataActivity {
 			}
 		});
 	}
+	
 }

@@ -3,6 +3,9 @@
  */
 package evoter.mobile.objects;
 
+import java.util.ArrayList;
+
+import evoter.mobile.activities.ItemDataActivity;
 import evoter.share.model.Question;
 import evoter.share.model.Session;
 import evoter.share.model.Subject;
@@ -26,6 +29,42 @@ public class EVoterShareMemory {
 	private static Subject currentSubject;
 	
 	private static String currentUserName;
+	
+	private static ArrayList<Long> listAcceptedSessions = new ArrayList<Long>();
+	
+	private static ItemDataActivity previousContext;
+	
+	/**
+	 * @return the previousContext
+	 */
+	public static ItemDataActivity getPreviousContext() {
+		return previousContext;
+	}
+
+	/**
+	 * @param previousContext the previousContext to set
+	 */
+	public static void setPreviousContext(ItemDataActivity previousContext) {
+		EVoterShareMemory.previousContext = previousContext;
+	}
+
+	/**
+	 * @return the listAcceptedSessions
+	 */
+	public static ArrayList<Long> getListAcceptedSessions() {
+		return listAcceptedSessions;
+	}
+	
+	/**
+	 * @param listAcceptedSessions the listAcceptedSessions to set
+	 */
+	public static void addToListAcceptedSessions(long sessionID) {
+		EVoterShareMemory.listAcceptedSessions.add(sessionID);
+	}
+	
+	public static void resetListAcceptedSessions() {
+		listAcceptedSessions.clear();
+	}
 	
 	/**
 	 * @param currentUserName the currentUserName to set
@@ -139,9 +178,9 @@ public class EVoterShareMemory {
 	 * @return the currentUserType
 	 */
 	public static long getCurrentUserType() {
-		if(getUSER_KEY()==null || getUSER_KEY().equals("")) return 0;
+		if (getUSER_KEY() == null || getUSER_KEY().equals("")) return 0;
 		String[] array = getUSER_KEY().split("_");
-		return Long.parseLong(array[array.length-1]);
+		return Long.parseLong(array[array.length - 1]);
 	}
 	
 }

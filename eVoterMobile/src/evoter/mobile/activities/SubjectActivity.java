@@ -83,7 +83,7 @@ public class SubjectActivity extends ItemDataActivity {
 					
 					@Override
 					public void onFailure(Throwable error, String content) {
-						Log.e("Get all subjects", "onFailure error : "
+						Log.e("Get All Subject Test", "onFailure error : "
 								+ error.toString() + "content : " + content);
 					}
 				});

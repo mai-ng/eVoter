@@ -76,6 +76,8 @@ public interface ISubjectService {
 	 * Update a the changes for {@link Subject} to database </br>
 	 * Delete all records of this subject in user_subject table </br>
 	 * Iterate email list, create {@link UserSubject} and insert new records to user_subject table </br>
+	 * This method is called when receiving {@link URIRequest#UPDATE_SUBJECT} request </br>
+	 * 
 	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
 	 * @param parameters contains: </br>
 	 * </li> {@link UserDAO#USER_KEY} </br>
@@ -88,6 +90,7 @@ public interface ISubjectService {
 	/**
 	 * Insert a new {@link Subject} to subject table </br>
 	 * Iterate user email list and insert these records to user_subject table </br> 
+	 * This method is called when receiving {@link URIRequest#CREATE_SUBJECT} request</br>
 	 * 
 	 * @param httpExchange {@link HttpExchange} communicates between server and clients </br>
 	 * @param parameters contains: </br>

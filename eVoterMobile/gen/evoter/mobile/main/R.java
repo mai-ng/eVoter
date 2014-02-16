@@ -91,7 +91,6 @@ public final class R {
         public static final int tableRow1=0x7f09001c;
         public static final int tableRow2=0x7f090020;
         public static final int tbSessionValue=0x7f09001b;
-        public static final int textView1=0x7f090034;
         public static final int tv=0x7f09002e;
         public static final int tvCreateSSMessage=0x7f09003b;
         public static final int tvDialogMessage=0x7f090000;
@@ -106,6 +105,7 @@ public final class R {
         public static final int tvSessDate=0x7f090018;
         public static final int tvSessionStatus=0x7f090017;
         public static final int tvSignUp=0x7f09002b;
+        public static final int tvStatistic=0x7f090034;
         public static final int tvSubDate=0x7f09001a;
         public static final int tvSubname=0x7f090019;
         public static final int tvTeacher=0x7f090016;

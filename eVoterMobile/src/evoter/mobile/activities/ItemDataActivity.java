@@ -3,7 +3,6 @@
  */
 package evoter.mobile.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +14,7 @@ import android.widget.SeekBar;
 import android.widget.TableLayout;
 import evoter.mobile.adapters.ItemDataAdapter;
 import evoter.mobile.main.R;
+import evoter.mobile.objects.EVoterShareMemory;
 
 /**
  * {@link ItemDataActivity} is the abstract class of all the item activity of
@@ -32,10 +32,7 @@ public abstract class ItemDataActivity extends EVoterActivity {
 	 * Adapter for listview
 	 */
 	protected ItemDataAdapter adapter;
-	/**
-	 * Context of activity
-	 */
-	protected Context context;
+
 	/**
 	 * Each activity will have an edit text to search item by name
 	 */
@@ -50,7 +47,6 @@ public abstract class ItemDataActivity extends EVoterActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list_item_data_view);
-		
 		this.ivTitleBarRefresh.setVisibility(View.VISIBLE);
 		
 		// When the refresh icon is click, the data of listview will be reloaded
@@ -67,7 +63,6 @@ public abstract class ItemDataActivity extends EVoterActivity {
 		tbSessionValue.setVisibility(View.GONE);
 //		offlineEVoterManager = new OfflineEVoterManager(this);
 		
-		context = this;
 		listView = (ListView) findViewById(R.id.lvItemData);
 		// listView.setEmptyView(progressBar);
 		etSearch = (EditText) findViewById(R.id.etSearch);
@@ -97,5 +92,15 @@ public abstract class ItemDataActivity extends EVoterActivity {
 	 * Request data from server according to context of activity.
 	 */
 	protected abstract void loadListItemData();
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		EVoterShareMemory.getPreviousContext().loadListItemData();
+	}
+
 	
 }

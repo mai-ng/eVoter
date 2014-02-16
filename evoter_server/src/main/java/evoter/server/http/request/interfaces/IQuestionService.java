@@ -93,6 +93,7 @@ public interface IQuestionService {
 	public Object doGetLatest(Map<String,Object> parameters);
 	/** 
 	 * This method is called when teacher sends the request </br>
+	 * Change {@link QuestionDAO#STATUS} of {@link Question} from 1 to 2 </br>
 	 * {@link URIRequest#STOP_SEND_QUESTION} to server </br>
 	 *  
 	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
@@ -114,14 +115,15 @@ public interface IQuestionService {
 	 * Keep question sent to students by teacher</br>
 	 *  When receiving a get latest question, response client request this question </br>
 	 * @param sessionId the current session id</br>
-	 * @param questionId Id question sent to students </br>
+	 * @param question  question sent to students </br>
 	 */
-	public void addSentQuestion(long sessionId, long questionId);
+	public void addSentQuestion(long sessionId, Question question);
 	/**
 	 * This question is called when server receive stop sending question request </br>
 	 * @param sessionId
+	 * @return {@link Question} 
 	 */
-	public void removeSentQuestion(long sessionId);
+	public Question removeSentQuestion(long sessionId);
 	/**
 	 * 
 	 * @param sessionId id of session that is sending the latest question </br>

@@ -24,9 +24,11 @@ import evoter.share.dao.SessionDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.utils.URIRequest;
 
-/**<br>Update by @author luongnv89 on 12-Feb-2014:<br>
- * <li> Completed send create session request to server 
- * <br>Created by @author luongnv89 on 30-Jun-2014 <br>
+/**
+ * <br>
+ * Update by @author luongnv89 on 12-Feb-2014:<br>
+ * <li>Completed send create session request to server <br>
+ * Created by @author luongnv89 on 30-Jun-2014 <br>
  * Manage creating a new session in a subject
  */
 public class NewSessionActivity extends EVoterActivity {
@@ -79,7 +81,7 @@ public class NewSessionActivity extends EVoterActivity {
 			}
 		});
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -100,6 +102,7 @@ public class NewSessionActivity extends EVoterActivity {
 						Log.i("Response", response);
 						if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 							EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "A new session is created!");
+							EVoterShareMemory.getPreviousContext().loadListItemData();
 						} else {
 							EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "Cannot create new session!");
 						}

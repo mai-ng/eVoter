@@ -50,7 +50,7 @@ public class SubjectActivity extends ItemDataActivity {
 		// Set content for title bar is the username
 		this.tvTitleBarContent.setText(EVoterShareMemory
 				.getCurrentUserName());
-		
+		EVoterShareMemory.setPreviousContext(this);
 		adapter = new SubjectAdapter(SubjectActivity.this);
 		listView.setAdapter(adapter);
 		
@@ -83,7 +83,7 @@ public class SubjectActivity extends ItemDataActivity {
 					
 					@Override
 					public void onFailure(Throwable error, String content) {
-						Log.e("Get all subjects", "onFailure error : "
+						Log.e("Get All Subject Test", "onFailure error : "
 								+ error.toString() + "content : " + content);
 					}
 				});

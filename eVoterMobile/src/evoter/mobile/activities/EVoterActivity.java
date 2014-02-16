@@ -107,6 +107,7 @@ public class EVoterActivity extends Activity {
 		setContentView(R.layout.start);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
 				R.layout.evoter_title_bar);
+		
 		ivTitleBarIcon = (ImageView) findViewById(R.id.ivIconTitleBar);
 		ivTitleBarRefresh = (ImageView) findViewById(R.id.ivRefreshTitleBar);
 		tvTitleBarContent = (TextView) findViewById(R.id.tvTitleBar);
@@ -168,27 +169,6 @@ public class EVoterActivity extends Activity {
 			}
 		});
 		
-		mainMenu.getBtNewQuestion().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Log.i("Main menu", "Create new question");
-				mainMenu.dismiss();
-				Intent newQuestion = new Intent(EVoterActivity.this, NewQuestionActivity.class);
-				startActivity(newQuestion);
-				
-			}
-		});
-		
-		mainMenu.getBtNewSession().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent newSessionIntent = new Intent(EVoterActivity.this, NewSessionActivity.class);
-				startActivity(newSessionIntent);
-				mainMenu.dismiss();
-			}
-		});
 		
 		mainMenu.getBtStartSession().setOnClickListener(new OnClickListener() {
 			
@@ -229,6 +209,7 @@ public class EVoterActivity extends Activity {
 									EVoterActivity.this,
 									"You joined to session");
 							mainMenu.getBtStartSession().setVisibility(View.GONE);
+							EVoterShareMemory.addToListAcceptedSessions(EVoterShareMemory.getCurrentSession().getId());
 						} else {
 							EVoterMobileUtils.showeVoterToast(
 									EVoterActivity.this,

@@ -25,6 +25,10 @@ public class URIRequest {
 	public static final String EMAIL_NOT_EXIST_MESSAGE = "EMAIL DOES NOT EXIST";
 	public static final String SUBJECT_NOT_EXIST_MESSAGE = "SUBJECT DOES NOT EXIST";
 	public static final String ANSWER_NOT_EXIST = "ANSWER DOES NOT EXIST";
+	/**
+	 * Message is sent to client when the question could not be found in the database </br>
+	 */
+	public static String QUESTION_NOT_EXIST="QUESTION NOT EXIST";
 	
 	//for login
 	/**
@@ -103,6 +107,7 @@ public class URIRequest {
 	 * Create subject request
 	 */
 	public static String CREATE_SUBJECT="/create_subject";
+
 	
 	
 	//for session management

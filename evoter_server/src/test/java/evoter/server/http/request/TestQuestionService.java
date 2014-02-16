@@ -3,6 +3,7 @@ package evoter.server.http.request;
 import static org.junit.Assert.*;
 
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.simple.JSONArray;
@@ -55,15 +56,17 @@ public class TestQuestionService {
 	@Rollback(false)
 	public void test_doGetAll() { 
 		
+		long sessionId = 4;
+		
 		String expected_response = ""+
 		"[{\"USER_ID\":1,\"SESSION_ID\":4,\"QUESTION_TYPE_ID\":1,\"ID\":2,\"column1\":" +
 		"[{\"ANSWER_TEXT\":\"No\",\"ID\":9,\"QUESTION_ID\":2,\"STATISTICS\":\"2\"}," +
 		"{\"ANSWER_TEXT\":\"Yes\",\"ID\":10,\"QUESTION_ID\":2,\"STATISTICS\":\"5\"}]," +
-		"\"QUESTION_TEXT\":\"Abstract can implement an interface?\",\"CREATION_DATE\":" +
+		"\"QUESTION_TEXT\":\"Abstract can implement an interface?\",\"STATUS\":0,\"CREATION_DATE\":" +
 		"\"2014-01-09 10:31:17.0\",\"PARENT_ID\":0}]";
 
-		String sessionId = "4";
-		parameters.put(QuestionSessionDAO.SESSION_ID, sessionId);
+		
+		parameters.put(QuestionSessionDAO.SESSION_ID, String.valueOf(sessionId));
 		Object response = questionService.doGetAll(parameters);
 		
 
@@ -83,7 +86,7 @@ public class TestQuestionService {
 		
 		String expected_response = "" + 
 		"[{\"USER_ID\":1,\"QUESTION_TYPE_ID\":1,\"ID\":1,\"QUESTION_TEXT\":\"Interface can implement an interface?\"," +
-		"\"CREATION_DATE\":\"2014-01-09 10:31:17.0\",\"PARENT_ID\":0}]";
+		"\"STATUS\":0,\"CREATION_DATE\":\"2014-01-09 10:31:17.0\",\"PARENT_ID\":0}]";
 		
 		String questionId = "1";
 		parameters.put(QuestionDAO.ID, questionId);
@@ -150,7 +153,7 @@ public class TestQuestionService {
 	 */
 	@Test
 	@Transactional
-	@Rollback(false)
+	@Rollback(true)
 	public void test_doSend(){
 		
 		parameters.put(QuestionDAO.ID, "1");
@@ -169,14 +172,19 @@ public class TestQuestionService {
 		
 		long sessionId = 1;
 		long questionId = 1;
-		questionService.addSentQuestion(sessionId, questionId);
+		Question question = new Question(1, 1, 
+				"Interface can implement an interface?"
+				, Timestamp.valueOf("2014-01-09 10:31:17"), 0);
+		question.setId(questionId);
+		
+		questionService.addSentQuestion(sessionId, question);
 		parameters.put(QuestionSessionDAO.SESSION_ID, String.valueOf(sessionId));
 		String expected_response = "" +
 		"[{\"USER_ID\":1,\"QUESTION_TYPE_ID\":1," +
 		"\"answers\":[{\"ANSWER_TEXT\":\"Yes\",\"ID\":139,\"QUESTION_ID\":1,\"STATISTICS\":\"10\"}," +
 		"{\"ANSWER_TEXT\":\"No\",\"ID\":140,\"QUESTION_ID\":1,\"STATISTICS\":\"30\"}]," +
 		"\"ID\":1,\"QUESTION_TEXT\":\"Interface can implement an interface?\"," +
-		"\"CREATION_DATE\":\"2014-01-09 10:31:17.0\",\"PARENT_ID\":0}]";
+		"\"STATUS\":0,\"CREATION_DATE\":\"2014-01-09 10:31:17.0\",\"PARENT_ID\":0}]";
 		
 		Object response = questionService.doGetLatest(parameters);
 		assertEquals("doGetLatest", response.toString(), expected_response);
@@ -209,13 +217,14 @@ public class TestQuestionService {
 	 */
 	@Test
 	@Transactional
-	@Rollback(false)
+	@Rollback(true)
 	public void test_doStopSend(){
 		
 		long sessionId = 1;
-		long questionId = 1;
+		//long questionId = 1;
+		Question question = new Question(1, 1, "question text", Timestamp.valueOf("2014-01-09 10:31:17"), 0);
 		parameters.put(QuestionSessionDAO.SESSION_ID, String.valueOf(sessionId));
-		questionService.addSentQuestion(sessionId, questionId);
+		questionService.addSentQuestion(sessionId, question);
 		
 		assertTrue("canSendQuestion returns true",
 				questionService.canSendQuestion(sessionId));

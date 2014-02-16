@@ -69,6 +69,8 @@ public class QuestionDetailActivity extends EVoterActivity {
 	long idAnswer = -1;
 	String statistic;
 	EditText etAnswer;
+	TextView tvMaxShow;
+	TextView tvAnswerShow;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		buidAnswerArea();
 		
 		btSend = (Button) findViewById(R.id.btSendQuestion);
+		
 		setupAction();
 		btView = (Button) findViewById(R.id.btViewStatistic);
 		btView.setOnClickListener(new OnClickListener() {
@@ -106,17 +109,25 @@ public class QuestionDetailActivity extends EVoterActivity {
 	 * 
 	 */
 	private void setupAction() {
-		if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
-			btSend.setText(SEND);
-		} else if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
-			btSend.setText(SUBMIT);
-			if(!EVoterShareMemory.getCurrentSession().isActive()){
-				btSend.setEnabled(false);
-			}
-		}
-		
 		if (!EVoterShareMemory.getCurrentSession().isActive()) {
-			btSend.setEnabled(false);
+			btSend.setVisibility(View.GONE);
+		} else {
+			btSend.setVisibility(View.VISIBLE);
+		}
+		if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
+			if (EVoterShareMemory.getCurrentQuestion().getStatus() == 0) {
+				btSend.setText(SEND);
+			} else if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
+				btSend.setText(STOP);
+			} else if (EVoterShareMemory.getCurrentQuestion().getStatus() == 2) {
+				btSend.setVisibility(View.GONE);
+			}
+		} else if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
+			if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
+				btSend.setText(SUBMIT);
+			} else if (EVoterShareMemory.getCurrentQuestion().getStatus() == 2) {
+				btSend.setVisibility(View.GONE);
+			}
 		}
 		
 		btSend.setOnClickListener(new OnClickListener() {
@@ -148,7 +159,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				if (response.contains("SUCCESS")) {
 					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
-					btSend.setText(SEND);
+					btSend.setVisibility(View.GONE);
 				}
 				else {
 					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
@@ -232,7 +243,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				if (response.contains("SUCCESS")) {
 					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
-					btSend.setEnabled(false);
+					btSend.setVisibility(View.GONE);
 				}
 				else {
 					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
@@ -320,17 +331,25 @@ public class QuestionDetailActivity extends EVoterActivity {
 				break;
 		}
 	}
-
+	
 	/**
 	 * 
 	 */
 	private void seekBarArea() {
+		tvMaxShow = new TextView(this);
+		tvMaxShow.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		
+		tvAnswerShow = new TextView(this);
+		tvAnswerShow.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		
 		SeekBar seekbar = new SeekBar(this);
 		seekbar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		int max = Integer.parseInt(answers.get(0).getAnswerText());
 		seekbar.setMax(max);
+		tvMaxShow.setText("Max value: " + max);
 		seekbar.setProgress(max / 2);
-		statistic=String.valueOf(max/2);
+		statistic = String.valueOf(max / 2);
+		tvAnswerShow.setText("Your value: " + statistic);
 		seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
@@ -345,11 +364,14 @@ public class QuestionDetailActivity extends EVoterActivity {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				statistic = String.valueOf(progress);
+				tvAnswerShow.setText("Your value: " + statistic);
 			}
 		});
 		answerArea.addView(seekbar);
+		answerArea.addView(tvMaxShow);
+		answerArea.addView(tvAnswerShow);
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -363,7 +385,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 			answerArea.addView(ans);
 		}
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -413,12 +435,24 @@ public class QuestionDetailActivity extends EVoterActivity {
 	 */
 	private Answer parserJSONObjectToAnswer(JSONObject jsonObject) {
 		try {
-			return new Answer(jsonObject.getLong(AnswerDAO.ID),jsonObject.getLong(AnswerDAO.QUESTION_ID), jsonObject.getString(AnswerDAO.ANSWER_TEXT));
+			return new Answer(jsonObject.getLong(AnswerDAO.ID), jsonObject.getLong(AnswerDAO.QUESTION_ID), jsonObject.getString(AnswerDAO.ANSWER_TEXT));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		EVoterShareMemory.getPreviousContext().loadListItemData();
+	}
+	
+	
 	
 }

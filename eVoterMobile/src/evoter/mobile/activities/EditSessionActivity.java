@@ -47,43 +47,7 @@ public class EditSessionActivity extends NewSessionActivity {
 			
 			@Override
 			public void onClick(View v) {
-				if (etTitle.getText().toString().equals("")) {
-					EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Session title cannot be empty!");
-				}
-				else {
-					
-					RequestParams params = new RequestParams();
-					params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-					params.add(SessionDAO.NAME, etTitle.getText().toString());
-					params.add(SessionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSessionID()));
-					
-					client.post(RequestConfig.getURL(URIRequest.UPDATE_SESSION), params,
-							new AsyncHttpResponseHandler() {
-								// Request successfully - client receive a response
-								@Override
-								public void onSuccess(String response) {
-									Log.i("Response", response);
-									if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-										EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Session is updated!");
-									} else {
-										EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Cannot update session!");
-									}
-								}
-								
-								//Login fail
-								@Override
-								public void onFailure(Throwable error,
-										String content) {
-									EVoterMobileUtils.showeVoterToast(
-											EditSessionActivity.this,
-											"Cannot request to server!");
-									Log.e("Create new session", "onFailure error : "
-											+ error.toString() + "content : "
-											+ content);
-								}
-							});
-					finish();
-				}
+				editSession();
 			}
 		});
 		btCancel = (Button) findViewById(R.id.btNewSessionCancel);
@@ -94,6 +58,50 @@ public class EditSessionActivity extends NewSessionActivity {
 				finish();
 			}
 		});
+	}
+
+	/**
+	 * 
+	 */
+	private void editSession() {
+		if (etTitle.getText().toString().equals("")) {
+			EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Session title cannot be empty!");
+		}
+		else {
+			
+			RequestParams params = new RequestParams();
+			params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+			params.add(SessionDAO.NAME, etTitle.getText().toString());
+			params.add(SessionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSessionID()));
+			
+			client.post(RequestConfig.getURL(URIRequest.UPDATE_SESSION), params,
+					new AsyncHttpResponseHandler() {
+						// Request successfully - client receive a response
+						@Override
+						public void onSuccess(String response) {
+							Log.i("Response", response);
+							if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+								EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Session is updated!");
+								EVoterShareMemory.getPreviousContext().loadListItemData();
+							} else {
+								EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Cannot update session!");
+							}
+						}
+						
+						//Login fail
+						@Override
+						public void onFailure(Throwable error,
+								String content) {
+							EVoterMobileUtils.showeVoterToast(
+									EditSessionActivity.this,
+									"Cannot request to server!");
+							Log.e("Create new session", "onFailure error : "
+									+ error.toString() + "content : "
+									+ content);
+						}
+					});
+			finish();
+		}
 	}
 	
 }

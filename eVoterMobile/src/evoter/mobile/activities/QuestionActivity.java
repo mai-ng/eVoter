@@ -53,7 +53,7 @@ public class QuestionActivity extends ItemDataActivity {
 				.getCurrentSessionName());
 		
 		mainMenu.setQuestionActivityMenu();
-		if(!userAcceptSession()) mainMenu.getBtStartSession().setVisibility(View.GONE);
+		if (userAcceptSession()) mainMenu.getBtStartSession().setVisibility(View.GONE);
 		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && EVoterShareMemory.currentSessionIsActive()) {
 			//Setup seekbar
 			buildStaticSlider();
@@ -71,6 +71,7 @@ public class QuestionActivity extends ItemDataActivity {
 				EVoterShareMemory.setCurrentQuestion(selectQuestion);
 				Log.i("Detail of question: ", selectQuestion.getTitle());
 				Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);
+				EVoterShareMemory.setPreviousContext(QuestionActivity.this);
 				startActivity(detailQuestion);
 			}
 		});
@@ -88,6 +89,18 @@ public class QuestionActivity extends ItemDataActivity {
 				}
 			});
 		}
+		mainMenu.getBtNewQuestion().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Log.i("Main menu", "Create new question");
+				mainMenu.dismiss();
+				Intent newQuestion = new Intent(QuestionActivity.this, NewQuestionActivity.class);
+				EVoterShareMemory.setPreviousContext(QuestionActivity.this);
+				startActivity(newQuestion);
+				
+			}
+		});
 		
 	}
 	
@@ -185,7 +198,10 @@ public class QuestionActivity extends ItemDataActivity {
 										Long.parseLong(s
 												.getString(QuestionDAO.PARENT_ID)),
 										answerColumn1, answerColumn2);
-								listQuestion.add(question);
+								question.setStatus(s.getInt(QuestionDAO.STATUS));
+								//With student, only load the question which already sent or finished.
+								if (!(EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && question.getStatus() == 0))
+									listQuestion.add(question);
 							}
 							if (listQuestion.isEmpty()) {
 								EVoterMobileUtils.showeVoterToast(
@@ -232,6 +248,7 @@ public class QuestionActivity extends ItemDataActivity {
 				Log.i("QUESTION LONG ITEM CLICK", "Edit question" + EVoterShareMemory.getCurrentQuestion().getTitle());
 				dialog.dismiss();
 				Intent editQuestion = new Intent(QuestionActivity.this, EditQuestionActivity.class);
+				EVoterShareMemory.setPreviousContext(QuestionActivity.this);
 				startActivity(editQuestion);
 			}
 		});
@@ -314,11 +331,13 @@ public class QuestionActivity extends ItemDataActivity {
 			}
 		});
 	}
+	
 	/**
 	 * @return true if current student already accepted current session
 	 */
 	protected boolean userAcceptSession() {
 		// TODO Auto-generated method stub
-		return true;
+		return EVoterShareMemory.getListAcceptedSessions().contains(EVoterShareMemory.getCurrentSession().getId());
 	}
+	
 }

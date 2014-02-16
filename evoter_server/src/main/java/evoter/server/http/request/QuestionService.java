@@ -101,7 +101,11 @@ public class QuestionService implements IQuestionService{
 	}
 
 	//This value is updated when receiving a /send_question request 
-	private  Map<Long,Long> mapSentQuestion = new HashMap<Long, Long>();
+	//private  Map<Long,Long> mapSentQuestion = new HashMap<Long, Long>();
+	/**
+	 * Map has key: session ID and value:Question being sending status of that session </br>
+	 */
+	private  Map<Long,Question> mapSentQuestion = new HashMap<Long, Question>();
 
 	/**
 	 * This method will response a list of {@link Question} and {@link Answer} when server </br>
@@ -353,6 +357,7 @@ public class QuestionService implements IQuestionService{
 	 * When receiving {@link URIRequest#SEND_QUESTION} from teacher application </br>
 	 * keep the questionId and sessionId of request and wait for request {@link URIRequest#GET_LATEST_QUESTION} </br>
 	 * from student application </br>
+	 * Change {@link QuestionDAO#STATUS} from 0 to 1 </br>
 	 * @param httpExchange </br>
 	 * @param parameters contains: </br>
 	 * 	</li> {@link QuestionDAO#ID} : questionID
@@ -360,17 +365,28 @@ public class QuestionService implements IQuestionService{
 	 * 	</li> {@link UserDAO#USER_KEY}
 	 */
 	@Override
-	@Rollback(false)
+	@Transactional
+	@Rollback(true)
 	public  Object doSend(Map<String,Object> parameters) {
 		
 		try{
 			
 			long questionId = (Long.valueOf((String)parameters.get(QuestionDAO.ID)));
-			long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
-			//mapSentQuestion.put(sessionId, questionId);
-			addSentQuestion(sessionId, questionId);
-			return URIRequest.SUCCESS_MESSAGE;
-			
+			List<Question> questionList = questionDAO.findById(questionId);
+			if (questionList != null && !questionList.isEmpty()){
+				
+				Question question = questionList.get(0);
+				question.setStatus(1);
+				questionDAO.update(question);
+				
+				long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
+				//mapSentQuestion.put(sessionId, questionId);
+				addSentQuestion(sessionId, question);
+				
+				return URIRequest.SUCCESS_MESSAGE;
+			}
+			return URIRequest.QUESTION_NOT_EXIST;
+
 		}catch(Exception e){
 			
 			e.printStackTrace();
@@ -400,8 +416,9 @@ public class QuestionService implements IQuestionService{
 			long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
 			//if (mapSentQuestion.containsKey(sessionId)){
 			if (canSendQuestion(sessionId)){
-				long questionId = mapSentQuestion.get(sessionId);
-				Question question = questionDAO.findById(questionId).get(0);
+				//long questionId = mapSentQuestion.get(sessionId);
+				//Question question = questionDAO.findById(questionId).get(0);
+				Question question = mapSentQuestion.get(sessionId);
 				//RE-WORK 
 				JSONObject object = question.toJSON();
 				//object.put("answers", getAnswersOfQuestion(question.getId()));
@@ -441,7 +458,9 @@ public class QuestionService implements IQuestionService{
 			
 			long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
 			//mapSentQuestion.remove(sessionId);
-			removeSentQuestion(sessionId);
+			Question question = removeSentQuestion(sessionId);
+			question.setStatus(2);
+			questionDAO.update(question);
 			//URIUtils.writeSuccessResponse(httpExchange);
 			return URIRequest.SUCCESS_MESSAGE;
 
@@ -511,9 +530,9 @@ public class QuestionService implements IQuestionService{
 	 * @see evoter.server.http.request.interfaces.IQuestionService#addSentQuestion(long, long)
 	 */
 	@Override
-	public void addSentQuestion(long sessionId, long questionId) {
+	public void addSentQuestion(long sessionId, Question question) {
 		
-		mapSentQuestion.put(sessionId, questionId);
+		mapSentQuestion.put(sessionId, question);
 		
 	}
 	/*
@@ -521,9 +540,9 @@ public class QuestionService implements IQuestionService{
 	 * @see evoter.server.http.request.interfaces.IQuestionService#removeSentQuestion(long)
 	 */
 	@Override
-	public void removeSentQuestion(long sessionId) {
+	public Question removeSentQuestion(long sessionId) {
 		
-		mapSentQuestion.remove(sessionId);
+		return mapSentQuestion.remove(sessionId);
 		
 	}
 	/*

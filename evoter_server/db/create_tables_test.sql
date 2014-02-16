@@ -24,9 +24,9 @@ CREATE TABLE IF NOT EXISTS `answer` (
   PRIMARY KEY (`id`),
   KEY `answer_FKIndex1` (`question_id`),
   CONSTRAINT `FK_answer_question` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=496 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=617 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter_test.answer: ~14 rows (approximately)
+-- Dumping data for table evoter_test.answer: ~0 rows (approximately)
 DELETE FROM `answer`;
 /*!40000 ALTER TABLE `answer` DISABLE KEYS */;
 INSERT INTO `answer` (`id`, `question_id`, `answer_text`, `statistics`) VALUES
@@ -55,27 +55,28 @@ CREATE TABLE IF NOT EXISTS `question` (
   `question_type_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `parent_id` int(10) DEFAULT '0',
+  `status` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `FK_question_user` (`user_id`),
   KEY `FK_question_question_type` (`question_type_id`),
   CONSTRAINT `FK_question_question_type` FOREIGN KEY (`question_type_id`) REFERENCES `question_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_question_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=193 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=240 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter_test.question: ~10 rows (approximately)
 DELETE FROM `question`;
 /*!40000 ALTER TABLE `question` DISABLE KEYS */;
-INSERT INTO `question` (`id`, `question_text`, `creation_date`, `question_type_id`, `user_id`, `parent_id`) VALUES
-	(1, 'Interface can implement an interface?', '2014-01-09 10:31:17', 1, 1, 0),
-	(2, 'Abstract can implement an interface?', '2014-01-09 10:31:17', 1, 1, 0),
-	(3, 'An class can implement how many interface?', '2014-01-09 10:31:17', 2, 1, 0),
-	(4, 'Match the questions with the answers', '2014-01-09 22:39:24', 6, 1, 0),
-	(5, 'Who are you waiting for?', '2014-01-09 22:40:19', 6, 1, 4),
-	(6, 'What happened to Bob?', '2014-01-09 22:43:35', 6, 1, 4),
-	(7, 'How long does it take you to get there?', '2014-01-09 22:44:40', 6, 1, 4),
-	(8, 'Can you tell me the time?', '2014-01-09 22:45:45', 6, 1, 4),
-	(57, 'List prime numbers from 1 to 100', '2014-02-15 00:45:34', 5, 2, 0),
-	(58, 'How many reasons in your country?', '2014-02-15 00:48:03', 4, 2, 0);
+INSERT INTO `question` (`id`, `question_text`, `creation_date`, `question_type_id`, `user_id`, `parent_id`, `status`) VALUES
+	(1, 'Interface can implement an interface?', '2014-01-09 10:31:17', 1, 1, 0, 0),
+	(2, 'Abstract can implement an interface?', '2014-01-09 10:31:17', 1, 1, 0, 0),
+	(3, 'An class can implement how many interface?', '2014-01-09 10:31:17', 2, 1, 0, 1),
+	(4, 'Match the questions with the answers', '2014-01-09 22:39:24', 6, 1, 0, 0),
+	(5, 'Who are you waiting for?', '2014-01-09 22:40:19', 6, 1, 4, 0),
+	(6, 'What happened to Bob?', '2014-01-09 22:43:35', 6, 1, 4, 0),
+	(7, 'How long does it take you to get there?', '2014-01-09 22:44:40', 6, 1, 4, 0),
+	(8, 'Can you tell me the time?', '2014-01-09 22:45:45', 6, 1, 4, 0),
+	(57, 'List prime numbers from 1 to 100', '2014-02-15 00:45:34', 5, 2, 0, 1),
+	(58, 'How many reasons in your country?', '2014-02-15 00:48:03', 4, 2, 0, 2);
 /*!40000 ALTER TABLE `question` ENABLE KEYS */;
 
 
@@ -84,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `question_type` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `question_type_value` char(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table evoter_test.question_type: ~6 rows (approximately)
 DELETE FROM `question_type`;
@@ -114,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `session` (
   CONSTRAINT `FK_session_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter_test.session: ~9 rows (approximately)
+-- Dumping data for table evoter_test.session: ~0 rows (approximately)
 DELETE FROM `session`;
 /*!40000 ALTER TABLE `session` DISABLE KEYS */;
 INSERT INTO `session` (`id`, `subject_id`, `name`, `creation_date`, `is_active`, `user_id`) VALUES
@@ -140,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `session_question` (
   CONSTRAINT `FK_session_question_session` FOREIGN KEY (`session_id`) REFERENCES `session` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter_test.session_question: ~4 rows (approximately)
+-- Dumping data for table evoter_test.session_question: ~0 rows (approximately)
 DELETE FROM `session_question`;
 /*!40000 ALTER TABLE `session_question` DISABLE KEYS */;
 INSERT INTO `session_question` (`question_id`, `session_id`) VALUES
@@ -164,7 +165,7 @@ CREATE TABLE IF NOT EXISTS `session_user` (
   CONSTRAINT `FK_session_user_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter_test.session_user: ~8 rows (approximately)
+-- Dumping data for table evoter_test.session_user: ~0 rows (approximately)
 DELETE FROM `session_user`;
 /*!40000 ALTER TABLE `session_user` DISABLE KEYS */;
 INSERT INTO `session_user` (`user_id`, `session_id`, `delete_indicator`, `accept_stt`) VALUES
@@ -199,7 +200,7 @@ CREATE TABLE IF NOT EXISTS `subject` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter_test.subject: ~12 rows (approximately)
+-- Dumping data for table evoter_test.subject: ~5 rows (approximately)
 DELETE FROM `subject`;
 /*!40000 ALTER TABLE `subject` DISABLE KEYS */;
 INSERT INTO `subject` (`id`, `title`, `creation_date`) VALUES
@@ -230,9 +231,9 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`),
   KEY `user_FKIndex1` (`user_type_id`),
   CONSTRAINT `FK_user_user_type` FOREIGN KEY (`user_type_id`) REFERENCES `user_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=149 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=180 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter_test.user: ~8 rows (approximately)
+-- Dumping data for table evoter_test.user: ~1 rows (approximately)
 DELETE FROM `user`;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`id`, `user_type_id`, `full_name`, `email_address`, `username`, `passwd`, `approved`) VALUES
@@ -279,9 +280,9 @@ CREATE TABLE IF NOT EXISTS `user_type` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_type_value` char(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8;
 
--- Dumping data for table evoter_test.user_type: ~13 rows (approximately)
+-- Dumping data for table evoter_test.user_type: ~11 rows (approximately)
 DELETE FROM `user_type`;
 /*!40000 ALTER TABLE `user_type` DISABLE KEYS */;
 INSERT INTO `user_type` (`id`, `user_type_value`) VALUES

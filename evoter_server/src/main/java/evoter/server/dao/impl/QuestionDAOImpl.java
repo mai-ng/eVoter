@@ -37,8 +37,10 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		+ "," + QUESTION_TYPE_ID 
 		+ ","+ QUESTION_TEXT 
 		+ "," + CREATION_DATE 
-		+ "," + PARENT_ID + ")" 
-		+ " VALUES(?,?,?,?,?)";
+		+ "," + PARENT_ID 
+		+ "," + STATUS
+		+ ")" 
+		+ " VALUES(?,?,?,?,?,?)";
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		 getJdbcTemplate().update(new PreparedStatementCreator() {
 				@Override
@@ -51,6 +53,7 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		            ps.setString(3, question.getQuestionText());
 		            ps.setTimestamp(4, question.getCreationDate());
 		            ps.setLong(5, question.getParentId());
+		            ps.setInt(6, question.getStatus());
 		            return ps;
 
 				}
@@ -227,9 +230,27 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		+ ","+ QUESTION_TEXT + "='" + question.getQuestionText() + "'"
 		+ "," + CREATION_DATE + "='" + question.getCreationDate()+"'"
 		+ "," + PARENT_ID + "=" + question.getParentId()
+		+ "," + STATUS + "=" + question.getStatus()
 		+ " WHERE " + ID + "=" + question.getId();
 		
 		return getJdbcTemplate().update(sql);
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#findByStatus(int)
+	 */
+	@Override
+	public List<Question> findByStatus(int status) {
+		return findByProperty(new String[]{STATUS}, new Object[]{status});
+	}
+
+
+
+	@Override
+	public void deleteByStatus(int status) {
+		deleteByProperty(new String[]{STATUS}, new Object[]{status});
 	}
 
 	

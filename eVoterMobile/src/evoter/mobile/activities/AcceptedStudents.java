@@ -98,7 +98,7 @@ public class AcceptedStudents extends EVoterActivity {
 						EVoterMobileUtils.showeVoterToast(
 								AcceptedStudents.this,
 								"Cannot request to server!");
-						Log.e("LoginTest", "onFailure error : "
+						Log.e("Accepted user request", "onFailure error : "
 								+ error.toString() + "content : "
 								+ content);
 					}

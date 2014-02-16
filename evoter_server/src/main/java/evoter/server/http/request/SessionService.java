@@ -15,11 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sun.net.httpserver.HttpExchange;
 
 import evoter.server.http.request.interfaces.ISessionService;
+import evoter.share.dao.QuestionDAO;
+import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.dao.UserSubjectDAO;
 import evoter.share.model.Question;
+import evoter.share.model.QuestionSession;
+import evoter.share.model.QuestionType;
 import evoter.share.model.Session;
 import evoter.share.model.SessionUser;
 import evoter.share.model.Subject;
@@ -48,9 +52,29 @@ public class SessionService implements ISessionService{
 	private SessionUserDAO sessionUserDAO;
 	//@Autowired
 	private UserDAO userDAO;
+	
 	private UserSubjectDAO userSubjectDAO;
 	
+	private QuestionDAO questionDAO;
 	
+	private QuestionSessionDAO questionSessionDAO;
+	
+	public QuestionDAO getQuestionDAO() {
+		return questionDAO;
+	}
+
+	public void setQuestionDAO(QuestionDAO questionDAO) {
+		this.questionDAO = questionDAO;
+	}
+
+	public QuestionSessionDAO getQuestionSessionDAO() {
+		return questionSessionDAO;
+	}
+
+	public void setQuestionSessionDAO(QuestionSessionDAO questionSessionDAO) {
+		this.questionSessionDAO = questionSessionDAO;
+	}
+
 	public UserSubjectDAO getUserSubjectDAO() {
 		return userSubjectDAO;
 	}
@@ -326,7 +350,11 @@ public class SessionService implements ISessionService{
 				sessionUserDAO.insert(sessionUser);
 			}
 			
-			//select all user of subject 
+			//create 2 slider questions “EXCITED” and “DIFFICULT” with the status is “1”
+			
+			createQuestion("EXCITED", sessionId, userId);
+			
+			createQuestion("DIFFICULT", sessionId, userId);
 			
 		}catch(Exception e){
 			e.printStackTrace();
@@ -335,6 +363,30 @@ public class SessionService implements ISessionService{
 		
 		return URIRequest.SUCCESS_MESSAGE;
 		
+	}
+	
+	public void createQuestion(String questionText, long sessionId, long userId){
+		
+		//search question if it exists already
+		List<Question> questions = questionDAO.findByQuestionText(questionText);
+		Question question = null;
+		QuestionSession questionSession = null;
+		if (questions != null && !questions.isEmpty()){
+			question = questions.get(0);
+			questionSession = new QuestionSession(question.getId(), sessionId);
+			
+		}else{
+			//if not exist, create a new one
+			question = new Question(QuestionType.SLIDER
+					, userId
+					, questionText
+					, new Timestamp(System.currentTimeMillis())
+					, 0);
+			question.setStatus(1);
+			long questionId = questionDAO.insert(question);
+			questionSession = new QuestionSession(questionId, sessionId);
+		}
+		questionSessionDAO.insert(questionSession);
 	}
 
 	/**

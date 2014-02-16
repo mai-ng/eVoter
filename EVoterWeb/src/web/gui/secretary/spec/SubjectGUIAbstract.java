@@ -203,11 +203,12 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 
 	/**
 	 * Check pre-condition to send request to server.<br>
-	 * Used in {@link AddUser}, {@link EditUser} when click button "Add" or
-	 * "Save".
+	 * Used in {@link AddUser}, {@link EditUser} when click button "Add" or "Save".
 	 * 
-	 * @return true if: <li>full name field is valid. <li>user name field is
-	 *         valid. <li>and email field is valid.<br>
+	 * @return true if: <
+	 * li>full name field is valid. 
+	 * <li>user name field is valid. 
+	 * <li>and email field is valid.<br>
 	 *         else false.
 	 */
 	protected boolean readyToSendRequest() {
@@ -269,6 +270,41 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 	 */
 	public JTextField getTxtTitle() {
 		return txtTitle;
+	}
+
+	/**
+	 * @return the lblTitle
+	 */
+	public JLabel getLblTitle() {
+		return lblTitle;
+	}
+
+	/**
+	 * @return the listTeacherView
+	 */
+	public JTextArea getListTeacherView() {
+		return listTeacherView;
+	}
+
+	/**
+	 * @return the listStudentView
+	 */
+	public JTextArea getListStudentView() {
+		return listStudentView;
+	}
+
+	/**
+	 * @return the btnAddTeacher
+	 */
+	public JButton getBtnAddTeacher() {
+		return btnAddTeacher;
+	}
+
+	/**
+	 * @return the btnAddStudent
+	 */
+	public JButton getBtnAddStudent() {
+		return btnAddStudent;
 	}
 
 }

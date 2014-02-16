@@ -102,7 +102,7 @@ public class URIRequest {
 	/**
 	 * Create subject request
 	 */
-	public static String CREATE_SUBJECT="create_subject";
+	public static String CREATE_SUBJECT="/create_subject";
 	
 	
 	//for session management

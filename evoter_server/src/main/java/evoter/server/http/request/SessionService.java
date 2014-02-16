@@ -99,35 +99,32 @@ public class SessionService implements ISessionService{
 			long userId = Long.valueOf(UserValidation.
 					getUserIdFromUserKey((String)parameters.get(UserDAO.USER_KEY)));
 			
-			//select all sessions in SESSION table in case user is teacher
-			List<Session> sessions = sessionDAO.findByProperty(
-					new String[]{SessionDAO.SUBJECT_ID, SessionDAO.USER_ID}, 
-					new Long[]{subjectId, userId});
+			//select only available sessions of requested subject
+			List<SessionUser> sessionUserList = sessionUserDAO.
+					findByProperty(new String[]{SessionUserDAO.USER_ID, 
+												SessionUserDAO.DELETE_INDICATOR}, 
+								   new Object[]{userId, false});
 			
-			//this is request is sent by student user
-			if (sessions == null || sessions.isEmpty()){
+			for (SessionUser sessionUser : sessionUserList){
 				
-				List<Session> sessionList = sessionDAO.findBySubjectId(subjectId);
-				for (Session session : sessionList){
-					List<SessionUser> sessionUsers = sessionUserDAO.
-							findByProperty(new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, 
-											new Object[]{session.getId(), userId});
+				List<Session> sessionList = sessionDAO.
+						findByProperty(new String[]{
+								SessionDAO.SUBJECT_ID, SessionDAO.ID}, 
+								new Long[]{subjectId, sessionUser.getSessionId()});
+				
+				for(Session session : sessionList){
+					JSONObject jsSession = session.toJSON();
 					
-					if (sessionUsers != null && !sessionUsers.isEmpty())
-						//get this session
-						sessions.add(session);
-				
+					//if the session creator is different from user session, add creator to response
+					if (sessionUser.getUserId() != session.getUserId()){
+						User creator = userDAO.findById(session.getUserId()).get(0);
+						jsSession.put(SessionUserDAO.ACCEPT_SESSION, sessionUser.isAcceptSession());
+						jsSession.put(CREATOR, creator.getUserName());
+					}
+					response.add(jsSession);
 				}
-			}
-			
-			//find session creator
-			for (Session ses : sessions){
-				User creator = userDAO.findById(ses.getUserId()).get(0);
-				JSONObject object = ses.toJSON(); 
-				object.put(CREATOR, creator.getUserName());
-				response.add(object);
 				
-			}
+			}//for
 			
 			//URIUtils.writeResponse(response, httpExchange);
 			System.out.println("sessions: " + response);
@@ -246,11 +243,12 @@ public class SessionService implements ISessionService{
 			long sessionId = Long.parseLong((String)parameters.get(SessionUserDAO.SESSION_ID));
 			String userKey = (String)parameters.get(UserDAO.USER_KEY);
 			Long userId = Long.valueOf(UserValidation.getUserIdFromUserKey(userKey));
+			
 			List<SessionUser> sessUserList = sessionUserDAO.findByProperty(
 					new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, 
 					new Object[]{sessionId, userId});
 			
-			if (sessUserList != null && !sessUserList.isEmpty()){
+			if (sessUserList != null){
 				
 				for (SessionUser sessUser : sessUserList){
 					sessUser.setDeleteIndicator(true);
@@ -287,24 +285,30 @@ public class SessionService implements ISessionService{
 	@Override
 	public  Object doCreate(Map<String,Object> parameters) {
 		
-		String creattionDate = (String)parameters.get(SessionDAO.CREATION_DATE);
-		String isActive = (String)parameters.get(SessionDAO.IS_ACTIVE);
-		String sessionName = (String)parameters.get(SessionDAO.NAME);
-		String subjectId = (String)parameters.get(SessionDAO.SUBJECT_ID);
-		long userId = Long.valueOf(UserValidation.getUserIdFromUserKey((String)parameters.get(UserDAO.USER_KEY)));
-		Session session = new Session(Long.valueOf(subjectId), 
-										sessionName, 
-										Timestamp.valueOf(creattionDate), 
-										Boolean.valueOf(isActive),
-										userId);
 		try{
+			
+			String creationDate = (String)parameters.get(SessionDAO.CREATION_DATE);
+			String isActive = (String)parameters.get(SessionDAO.IS_ACTIVE);
+			String sessionName = (String)parameters.get(SessionDAO.NAME);
+			String subjectId = (String)parameters.get(SessionDAO.SUBJECT_ID);
+			//this is session owner
+			long userId = Long.valueOf(UserValidation.getUserIdFromUserKey((String)parameters.get(UserDAO.USER_KEY)));
+			Session session = new Session(Long.valueOf(subjectId), 
+											sessionName, 
+											Timestamp.valueOf(creationDate), 
+											Boolean.valueOf(isActive),
+											userId);
+		
 		
 			long sessionId = sessionDAO.insert(session);
 			//create SessionUser object and insert to Database
 //			String userKey = (String)parameters.get(UserDAO.USER_KEY);
 			//Long userId = UserValidation.getUserIdFromUserKey(userKey);
-			SessionUser sessionUser = new SessionUser(userId, sessionId, false, false);
+			//insert a record to session_user table 
+			SessionUser sessionUser = new SessionUser(userId, sessionId, false, true);
 			sessionUserDAO.insert(sessionUser);
+			
+			//select all user of subject 
 			
 		}catch(Exception e){
 			e.printStackTrace();

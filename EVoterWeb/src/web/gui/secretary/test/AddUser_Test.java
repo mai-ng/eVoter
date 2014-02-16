@@ -1,5 +1,8 @@
 package web.gui.secretary.test;
 
+import evoter.share.model.UserType;
+import web.gui.secretary.AddUser;
+
 
 /**
  * Test add
@@ -10,6 +13,7 @@ public class AddUser_Test extends UserGUI_TestAbstract{
 	
 	public void setUp(){
 		super.setUp();
+		frame = new AddUser(UserType.TEACHER);
 	}
 
 	@Override

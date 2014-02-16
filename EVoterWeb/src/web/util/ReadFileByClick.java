@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -21,7 +22,6 @@ public class ReadFileByClick extends JFrame {
 
 	public static void readFile(final JTextArea txtArea)
 			throws IOException {
-
 		/* Enabling Multiple Selection */
 		fileChooser.setMultiSelectionEnabled(true);
 		fileChooser.setFileFilter(new TXTFileFilter());

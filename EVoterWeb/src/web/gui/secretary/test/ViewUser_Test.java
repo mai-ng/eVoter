@@ -8,6 +8,7 @@ import evoter.share.model.User;
 import evoter.share.model.UserType;
 
 /**
+ * Test view
  * @author maint
  * 
  */

@@ -73,16 +73,16 @@ public abstract class GUIAbstract extends JFrame{
 				if (readyToSendRequest()) {
 					List<NameValuePair> params = buildRequestParameters();
 					String urlRequest = getURLRequest();
+					System.out.println("URL: " + urlRequest);
 					String response = EVoterHTTPRequest.excutePost(urlRequest,
 							params);
 					if (response == null) {
 						Utils.informDialog("Cannot request to server!");
 					} else {
-						Utils.informDialog("Success!");
+						Utils.informDialog("Success with response message: "+response);
 						dispose();
 					}
 				}
-
 			}
 		});
 

@@ -30,6 +30,7 @@ import web.util.EVoterHTTPRequest;
 import web.util.ReadFileByClick;
 import web.util.RequestConfig;
 import web.util.Utils;
+import web.util.UserAccountValidation;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
@@ -55,6 +56,7 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 	protected JButton btnAddStudent;
 	protected ArrayList<String> listTeacherEmails;
 	protected ArrayList<String> listStudentEmails;
+	protected ArrayList<String> listInputEmails;
 
 	public SubjectGUIAbstract() {
 		super();
@@ -80,6 +82,10 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 
 		btnAddStudent = new JButton("Import");
 		btnAddTeacher = new JButton("Import");
+
+		listTeacherEmails = new ArrayList<String>();
+		listStudentEmails = new ArrayList<String>();
+		listInputEmails = new ArrayList<String>();
 	}
 
 	/**
@@ -203,12 +209,11 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 
 	/**
 	 * Check pre-condition to send request to server.<br>
-	 * Used in {@link AddUser}, {@link EditUser} when click button "Add" or "Save".
+	 * Used in {@link AddUser}, {@link EditUser} when click button "Add" or
+	 * "Save".
 	 * 
-	 * @return true if: <
-	 * li>full name field is valid. 
-	 * <li>user name field is valid. 
-	 * <li>and email field is valid.<br>
+	 * @return true if: < * li>full name field is valid. <li>user name field is
+	 *         valid. <li>and email field is valid.<br>
 	 *         else false.
 	 */
 	protected boolean readyToSendRequest() {
@@ -221,31 +226,69 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 	}
 
 	private boolean checkListEmails() {
-		getListEmailUsers(UserType.STUDENT,listStudentEmails);
-		getListEmailUsers(UserType.TEACHER,listTeacherEmails);
-		if(!validListEmails(listStudentEmails,listStudentView)) return false;
-		if(!validListEmails(listTeacherEmails,listTeacherView)) return false;
-		return true;
-	}
-
-	private boolean validListEmails(ArrayList<String> listEmails,
-			JTextArea textArea) {
-		StringBuffer bf = new StringBuffer();
-		String textAreaContent = textArea.getText();
-		
-		String[] arrayEmails = textAreaContent.split(", ");
-		for(int i=0;i<arrayEmails.length;i++){
-			String email = arrayEmails[i].replace(" ", "");
-			if(!listEmails.contains(email)) bf.append(email+"\n");
+		listStudentEmails.clear();
+		listTeacherEmails.clear();
+		listInputEmails.clear();
+		if (!validListEmails(UserType.STUDENT)){
+			return false;
 		}
-		if(!bf.toString().equals("")){
-			Utils.informDialog("There are some email does not exist in system: "+bf.toString());
+		if (!validListEmails(UserType.TEACHER)){
 			return false;
 		}
 		return true;
 	}
 
-	private void getListEmailUsers(long userType,ArrayList<String> listEmails) {
+	private boolean validListEmails(long userTypeID) {
+		getListEmailUsers(userTypeID);
+		ArrayList<String> listExtractEmails = getListEmailFromTextView(userTypeID);
+		if(listExtractEmails==null) {
+			Utils.informDialog("Cannot get list email from text are");
+			return false;
+		}
+		for (int i = 0; i < listExtractEmails.size(); i++) {
+			if (userTypeID == UserType.TEACHER) {
+				if (!listTeacherEmails.contains(listExtractEmails.get(i)))
+				{
+					Utils.informDialog(listExtractEmails.get(i)+" is not a professor of system");
+					return false;
+				}
+				else
+					listInputEmails.add(listExtractEmails.get(i));
+			} else if (userTypeID == UserType.STUDENT) {
+				if (!listStudentEmails.contains(listExtractEmails.get(i)))
+					{
+					Utils.informDialog(listExtractEmails.get(i)+" is not a student of system");
+					return false;
+					}
+				else
+					listInputEmails.add(listExtractEmails.get(i));
+			}
+		}
+		return true;
+	}
+
+	private ArrayList<String> getListEmailFromTextView(long userTypeID) {
+		ArrayList<String> listExtractEmails = new ArrayList<String>();
+		String textAreas = null;
+		if (userTypeID == UserType.TEACHER) {
+			textAreas = listTeacherView.getText();
+		} else if (userTypeID == UserType.STUDENT) {
+			textAreas = listStudentView.getText();
+		}
+		if (textAreas != null) {
+			String[] array = textAreas.split("\n");
+			for(int i=0;i<array.length;i++){
+				String email = array[i].replace(" ", "").replace("\t", "");
+				if(UserAccountValidation.isValidEmail(email)) listExtractEmails.add(email);
+				else {
+					return null;
+				}
+			}
+		}
+		return listExtractEmails;
+	}
+
+	protected void getListEmailUsers(long userType) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair(UserDAO.USER_KEY, RunningTimeData
 				.getCurrentUserKey()));
@@ -260,11 +303,16 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 			JSONArray array = new JSONArray(listTeacherResponse);
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject ob = array.getJSONObject(i);
-				listEmails.add(ob.getString(UserDAO.EMAIL));
+				if (userType == UserType.TEACHER) {
+					listTeacherEmails.add(ob.getString(UserDAO.EMAIL));
+				} else if (userType == UserType.STUDENT) {
+					listStudentEmails.add(ob.getString(UserDAO.EMAIL));
+				}
 			}
 		}
 
 	}
+
 	/**
 	 * @return the txtTitle is title field of a subject
 	 */

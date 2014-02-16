@@ -18,11 +18,13 @@ import evoter.server.http.request.interfaces.ISessionService;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
+import evoter.share.dao.UserSubjectDAO;
 import evoter.share.model.Question;
 import evoter.share.model.Session;
 import evoter.share.model.SessionUser;
 import evoter.share.model.Subject;
 import evoter.share.model.User;
+import evoter.share.model.UserSubject;
 import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
@@ -46,8 +48,17 @@ public class SessionService implements ISessionService{
 	private SessionUserDAO sessionUserDAO;
 	//@Autowired
 	private UserDAO userDAO;
+	private UserSubjectDAO userSubjectDAO;
 	
 	
+	public UserSubjectDAO getUserSubjectDAO() {
+		return userSubjectDAO;
+	}
+
+	public void setUserSubjectDAO(UserSubjectDAO userSubjectDAO) {
+		this.userSubjectDAO = userSubjectDAO;
+	}
+
 	public SessionDAO getSessionDAO() {
 		return sessionDAO;
 	}
@@ -287,26 +298,33 @@ public class SessionService implements ISessionService{
 		
 		try{
 			
-			String creationDate = (String)parameters.get(SessionDAO.CREATION_DATE);
-			String isActive = (String)parameters.get(SessionDAO.IS_ACTIVE);
+			Timestamp creationDate = Timestamp.valueOf((String)parameters.get(SessionDAO.CREATION_DATE));
+			boolean isActive = Boolean.valueOf((String)parameters.get(SessionDAO.IS_ACTIVE));
 			String sessionName = (String)parameters.get(SessionDAO.NAME);
-			String subjectId = (String)parameters.get(SessionDAO.SUBJECT_ID);
+			long subjectId = Long.valueOf((String)parameters.get(SessionDAO.SUBJECT_ID));
 			//this is session owner
-			long userId = Long.valueOf(UserValidation.getUserIdFromUserKey((String)parameters.get(UserDAO.USER_KEY)));
-			Session session = new Session(Long.valueOf(subjectId), 
-											sessionName, 
-											Timestamp.valueOf(creationDate), 
-											Boolean.valueOf(isActive),
-											userId);
-		
-		
+			long userId = Long.valueOf(UserValidation.getUserIdFromUserKey
+					((String)parameters.get(UserDAO.USER_KEY)));
+			
+			Session session = new Session(subjectId, sessionName, 
+										creationDate,isActive, userId);
+			/**
+			 * insert a record for session creator to session table
+			 */
 			long sessionId = sessionDAO.insert(session);
-			//create SessionUser object and insert to Database
-//			String userKey = (String)parameters.get(UserDAO.USER_KEY);
-			//Long userId = UserValidation.getUserIdFromUserKey(userKey);
-			//insert a record to session_user table 
-			SessionUser sessionUser = new SessionUser(userId, sessionId, false, true);
-			sessionUserDAO.insert(sessionUser);
+			/**
+			 * select all users of this subject and insert them to session_user_table
+			 * if users are  teacher, accept_session status is true
+			 * if users are student, accept_session status is false
+			 */
+			List<UserSubject> userSubjectList = userSubjectDAO.findBySubjectId(subjectId);
+			for (UserSubject userSubject : userSubjectList){
+				SessionUser sessionUser = new SessionUser(userSubject.getUserId(), sessionId, false, false);
+				if (userSubject.getUserId() == userId){
+					sessionUser.setAcceptSession(true);
+				}
+				sessionUserDAO.insert(sessionUser);
+			}
 			
 			//select all user of subject 
 			

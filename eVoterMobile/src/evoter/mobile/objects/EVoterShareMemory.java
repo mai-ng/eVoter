@@ -17,6 +17,54 @@ import evoter.share.model.Subject;
  */
 public class EVoterShareMemory {
 	
+	private static ArrayList<Subject> listSubject = new ArrayList<Subject>();
+	
+	private static ArrayList<Session> listSession = new ArrayList<Session>();
+	
+	private static ArrayList<Question> listQuestion = new ArrayList<Question>();
+	
+	/**
+	 * @return the listSubject
+	 */
+	public static ArrayList<Subject> getListSubject() {
+		return listSubject;
+	}
+
+	/**
+	 * @param listSubject the listSubject to set
+	 */
+	public static void setListSubject(ArrayList<Subject> listSubject) {
+		EVoterShareMemory.listSubject = listSubject;
+	}
+
+	/**
+	 * @return the listSession
+	 */
+	public static ArrayList<Session> getListSession() {
+		return listSession;
+	}
+
+	/**
+	 * @param listSession the listSession to set
+	 */
+	public static void setListSession(ArrayList<Session> listSession) {
+		EVoterShareMemory.listSession = listSession;
+	}
+
+	/**
+	 * @return the listQuestion
+	 */
+	public static ArrayList<Question> getListQuestion() {
+		return listQuestion;
+	}
+
+	/**
+	 * @param listQuestion the listQuestion to set
+	 */
+	public static void setListQuestion(ArrayList<Question> listQuestion) {
+		EVoterShareMemory.listQuestion = listQuestion;
+	}
+
 	/**
 	 * User_key of user
 	 */
@@ -40,14 +88,14 @@ public class EVoterShareMemory {
 	public static ItemDataActivity getPreviousContext() {
 		return previousContext;
 	}
-
+	
 	/**
 	 * @param previousContext the previousContext to set
 	 */
 	public static void setPreviousContext(ItemDataActivity previousContext) {
 		EVoterShareMemory.previousContext = previousContext;
 	}
-
+	
 	/**
 	 * @return the listAcceptedSessions
 	 */

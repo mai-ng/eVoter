@@ -21,14 +21,19 @@ import com.loopj.android.http.RequestParams;
 import evoter.mobile.adapters.QuestionAdapter;
 import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.objects.MainMenu;
 import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
+import evoter.share.dao.SessionDAO;
+import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
+import evoter.share.model.Answer;
 import evoter.share.model.ItemData;
 import evoter.share.model.Question;
+import evoter.share.model.QuestionType;
 import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
@@ -46,15 +51,15 @@ import evoter.share.utils.URIRequest;
 public class QuestionActivity extends ItemDataActivity {
 	private static final String EXCITED = "EXCITED";
 	private static final String DIFFICULT = "DIFFICULT";
-	long idExcitedBar;
-	long idDifficultBar;
+	long excitedAnswerID = -1;
+	long difficultAnswerID = -1;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//Set titlebar of current activity is the name of current session
 		this.tvTitleBarContent.setText(EVoterShareMemory
 				.getCurrentSessionName());
-		
+		EVoterMobileUtils.updateCurrentSession();
 		mainMenu.setQuestionActivityMenu();
 		
 		adapter = new QuestionAdapter(QuestionActivity.this);
@@ -100,6 +105,130 @@ public class QuestionActivity extends ItemDataActivity {
 			}
 		});
 		
+		mainMenu.getBtAcceptUsers().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Log.i("Main menu", "Request accepted user of a session");
+				mainMenu.dismiss();
+				Intent acceptedStudents = new Intent(QuestionActivity.this, AcceptedStudents.class);
+				startActivity(acceptedStudents);
+			}
+		});
+		
+		mainMenu.getBtStartSession().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.STOP_SESSION)) {
+					mainMenu.getBtStartSession().setText(MainMenu.START_SESSION);
+					startSession(false);
+					mainMenu.dismiss();
+				} else if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.START_SESSION)) {
+					mainMenu.getBtStartSession().setText(MainMenu.STOP_SESSION);
+					startSession(true);
+					mainMenu.dismiss();
+				} else if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.ACCEPT_SESSION)) {
+					acceptSession();
+					mainMenu.dismiss();
+				}
+				
+			}
+		});
+		
+	}
+	
+	/**
+	 * 
+	 */
+	protected void acceptSession() {
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(SessionUserDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		client.post(RequestConfig.getURL(URIRequest.ACCEPT_SESSION), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+							EVoterMobileUtils.showeVoterToast(
+									QuestionActivity.this,
+									"You joined to session");
+							mainMenu.getBtStartSession().setVisibility(View.GONE);
+							EVoterShareMemory.addToListAcceptedSessions(EVoterShareMemory.getCurrentSession().getId());
+						} else {
+							EVoterMobileUtils.showeVoterToast(
+									QuestionActivity.this,
+									response);
+						}
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								QuestionActivity.this,
+								"Cannot request to server!");
+						Log.e("Accept session", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
+		
+	}
+	
+	/**
+	 * 
+	 */
+	protected void startSession(final boolean start) {
+		if (okChangeStatus(start)) {
+			RequestParams params = new RequestParams();
+			params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+			params.add(SessionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+			String url = start ? URIRequest.ACTIVE_SESSION : URIRequest.INACTIVE_SESSION;
+			client.post(RequestConfig.getURL(url), params,
+					new AsyncHttpResponseHandler() {
+						// Request successfully - client receive a response
+						@Override
+						public void onSuccess(String response) {
+							if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+								EVoterMobileUtils.showeVoterToast(
+										QuestionActivity.this,
+										"Session is " + (start ? "running!" : "stop"));
+							} else {
+								EVoterMobileUtils.showeVoterToast(
+										QuestionActivity.this,
+										"Request failure");
+							}
+						}
+						
+						//Login fail
+						@Override
+						public void onFailure(Throwable error,
+								String content) {
+							EVoterMobileUtils.showeVoterToast(
+									QuestionActivity.this,
+									"Cannot request to server!");
+							Log.e("start session", "onFailure error : "
+									+ error.toString() + "content : "
+									+ content);
+						}
+					});
+		} else {
+			EVoterMobileUtils.showeVoterToast(this, "There is some question still waiting for answer, you cannot stop session");
+		}
+	}
+	
+	/**
+	 * @return
+	 */
+	private boolean okChangeStatus(boolean start) {
+		//		if(start) return true;
+		//		else{
+		//			refreshActivity();
+		//			for(int i=0;i<li)
+		return true;
 	}
 	
 	/**
@@ -113,7 +242,8 @@ public class QuestionActivity extends ItemDataActivity {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				Toast.makeText(QuestionActivity.this, "Your excited value: " + progressValue, Toast.LENGTH_SHORT).show();
-				submitStatisValue(idExcitedBar, progressValue);
+				eVoterRequest.doVote(excitedAnswerID, QuestionType.SLIDER, String.valueOf(progressValue),QuestionActivity.this);
+				
 			}
 			
 			@Override
@@ -133,7 +263,7 @@ public class QuestionActivity extends ItemDataActivity {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				Toast.makeText(QuestionActivity.this, "Your difficult level value: " + progressValue, Toast.LENGTH_SHORT).show();
-				submitStatisValue(idDifficultBar, progressValue);
+				eVoterRequest.doVote(difficultAnswerID, QuestionType.SLIDER, String.valueOf(progressValue),QuestionActivity.this);
 			}
 			
 			@Override
@@ -152,34 +282,39 @@ public class QuestionActivity extends ItemDataActivity {
 	 * @param idExcitedBar2
 	 * @param progressValue
 	 */
-	protected void submitStatisValue(long idExcitedBar2, int progressValue) {
-		//TODO: Submit answer
-		RequestParams params = new RequestParams();
-		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(4));
-		params.put(AnswerDAO.ID, String.valueOf(progressValue));
-		params.put(AnswerDAO.STATISTICS, progressValue);
-		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
-			@Override
-			public void onSuccess(String response) {
-				if (response.contains("SUCCESS")) {
-					EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
-							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
+	protected void submitStatisValue(long idExcitedBar2, final int progressValue) {
+		if (idExcitedBar2 != -1) {
+			Log.i("Send statitic value", "id: " + idExcitedBar2 + "\t statistic:" + progressValue);
+			RequestParams params = new RequestParams();
+			params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+			params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(QuestionType.SLIDER));
+			params.put(AnswerDAO.ID, String.valueOf(idExcitedBar2));
+			params.put(AnswerDAO.STATISTICS, String.valueOf(progressValue));
+			client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
+				@Override
+				public void onSuccess(String response) {
+					Log.i("Static response: ", response);
+					if (response.contains("SUCCESS")) {
+						EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+								"Sent static value: " + progressValue);
+					}
+					else {
+						EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+								"Cannot send evaluate value: " + response);
+					}
 				}
-				else {
+				
+				@Override
+				public void onFailure(Throwable error, String content)
+				{
 					EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
-							"Cannot send evaluate value: " + response);
+							"FAILURE: " + error.toString());
+					Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
 				}
-			}
-			
-			@Override
-			public void onFailure(Throwable error, String content)
-			{
-				EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
-						"FAILURE: " + error.toString());
-				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
-			}
-		});
+			});
+		} else {
+			EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "Cannot get the id of static slider bar!");
+		}
 	}
 	
 	public void refreshActivity() {
@@ -207,18 +342,28 @@ public class QuestionActivity extends ItemDataActivity {
 							for (int i = 0; i < array.length(); i++) {
 								
 								Question question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(i));
-								if (question.getTitle().contains(EXCITED)) idExcitedBar = question.getId();
-								if (question.getTitle().contains(DIFFICULT)) idDifficultBar = question.getId();
-								if (question != null && !question.getTitle().contains(EXCITED) && !question.getTitle().contains(DIFFICULT)) {
-									//With student, only load the question which already sent or finished.
-									if (!(EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && question.getStatus() == 0))
-										listQuestion.add(question);
+								if (question != null) {
+									if (excitedAnswerID == -1 || difficultAnswerID == -1) {
+										setStaticAnswerID(question);
+									}
+									if (!question.getTitle().contains(EXCITED) && !question.getTitle().contains(DIFFICULT)) {
+										//With student, only load the question which already sent or finished.
+										if (!(EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && question.getStatus() == 0))
+											listQuestion.add(question);
+									}
 								}
 							}
 							if (listQuestion.isEmpty()) {
 								EVoterMobileUtils.showeVoterToast(
 										QuestionActivity.this,
 										"There isn't any question!");
+							}
+							
+							if (excitedAnswerID == -1 || difficultAnswerID == -1) {
+								Log.i("STATIC SLIDER", "Cannot set id for static slider bar");
+							} else {
+								Log.i(EXCITED, String.valueOf(excitedAnswerID));
+								Log.i(DIFFICULT, String.valueOf(difficultAnswerID));
 							}
 							adapter.updateList(listQuestion);
 						} catch (JSONException e) {
@@ -344,6 +489,19 @@ public class QuestionActivity extends ItemDataActivity {
 	protected boolean userAcceptSession() {
 		// TODO Auto-generated method stub
 		return EVoterShareMemory.getListAcceptedSessions().contains(EVoterShareMemory.getCurrentSession().getId());
+	}
+	
+	/**
+	 * @param question
+	 */
+	private void setStaticAnswerID(Question question) {
+		ArrayList<Answer> listAnswers = EVoterMobileUtils.parserAnswer(question.getAnswerColumn1());
+		if (question.getTitle().contains(EXCITED)) {
+			excitedAnswerID = listAnswers.get(0).getId();
+		}
+		if (question.getTitle().contains(DIFFICULT)) {
+			difficultAnswerID = listAnswers.get(0).getId();
+		}
 	}
 	
 }

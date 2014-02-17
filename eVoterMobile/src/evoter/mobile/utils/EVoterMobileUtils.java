@@ -3,6 +3,7 @@ package evoter.mobile.utils;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,11 +23,13 @@ import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.RequestConfig;
+import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
+import evoter.share.model.Answer;
 import evoter.share.model.Question;
 import evoter.share.model.Session;
 import evoter.share.model.UserType;
@@ -87,15 +90,17 @@ public class EVoterMobileUtils {
 		params.add(QuestionDAO.ID,
 				String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
 		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		client.post(RequestConfig.getURL(URIRequest.VIEW_SESSION), params,
+		client.post(RequestConfig.getURL(URIRequest.VIEW_QUESTION), params,
 				new AsyncHttpResponseHandler() {
 					
 					@Override
 					public void onSuccess(String response) {
 						try {
 							JSONArray array = new JSONArray(response);
-							Question question = parserToQuestion(array.getJSONObject(0));
-							if(question!=null) EVoterShareMemory.setCurrentQuestion(question);
+							Question question = null;
+							if (array != null)
+								question = parserToQuestion(array.getJSONObject(0));
+							if (question != null) EVoterShareMemory.setCurrentQuestion(question);
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -172,7 +177,7 @@ public class EVoterMobileUtils {
 						try {
 							array = EVoterMobileUtils.getJSONArray(response);
 							Session session = parserSession(array.getJSONObject(0));
-							if(session!=null) EVoterShareMemory.setCurrentSession(session);
+							if (session != null) EVoterShareMemory.setCurrentSession(session);
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -224,5 +229,36 @@ public class EVoterMobileUtils {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	/**
+	 * @param answerColumn1
+	 * @return
+	 */
+	public static ArrayList<Answer> parserAnswer(String answerColumn1) {
+		ArrayList<Answer> listAnswers = new ArrayList<Answer>();
+		try {
+			JSONArray listAnswer1 = new JSONArray(answerColumn1);
+			for (int i = 0; i < listAnswer1.length(); i++) {
+				Answer answer = parserJSONObjectToAnswer(listAnswer1.getJSONObject(i));
+				if (answer != null) listAnswers.add(answer);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return listAnswers;
+	}
+	
+	/**
+	 * @param jsonObject
+	 * @return
+	 */
+	public static Answer parserJSONObjectToAnswer(JSONObject jsonObject) {
+		try {
+			return new Answer(jsonObject.getLong(AnswerDAO.ID), jsonObject.getLong(AnswerDAO.QUESTION_ID), jsonObject.getString(AnswerDAO.ANSWER_TEXT));
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

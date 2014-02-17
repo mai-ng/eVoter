@@ -33,7 +33,6 @@ import evoter.mobile.main.R;
 import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
-import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.SessionDAO;
@@ -80,11 +79,13 @@ public class QuestionDetailActivity extends EVoterActivity {
 		setContentView(R.layout.question_view_detail);
 		this.tvTitleBarContent.setText(EVoterShareMemory.getCurrentSessionName());
 		mainMenu.setQuestionActivityMenu();
+		EVoterMobileUtils.updateCurrentQuestion();
+		mainMenu.getBtStartSession().setVisibility(View.GONE);
 		Log.i("Current Question: ", EVoterShareMemory.getCurrentQuestion().getTitle());
 		tvQuestionText = (TextView) findViewById(R.id.tvQuestionText);
 		answerArea = (LinearLayout) findViewById(R.id.loAnswerArea);
 		//Parser the answer of question
-		answers = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
+		answers = EVoterMobileUtils.parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
 		
 		btSend = (Button) findViewById(R.id.btSendQuestion);
 		groups = new RadioGroup(this);
@@ -248,7 +249,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 						try {
 							array = new JSONArray(response);
 							Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
-							if(session!=null) EVoterShareMemory.setCurrentSession(session);
+							if (session != null) EVoterShareMemory.setCurrentSession(session);
 							submitToServer();
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
@@ -264,93 +265,62 @@ public class QuestionDetailActivity extends EVoterActivity {
 				});
 		
 	}
-
-	/**
-	 * 
-	 */
-	private void submitToServer() {
-		if(!EVoterShareMemory.getCurrentSession().isActive()){
-			EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Session is closed. You cannot send answer!");
-		}else{
-		switch ((int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId()) {
-			case QuestionType.YES_NO:
-			case QuestionType.MULTI_RADIOBUTTON:
-				if (idAnswer == -1) {
-					EVoterMobileUtils.showeVoterToast(this, "You have to choose one answer before submit");
-				} else {
-					doVote(idAnswer, statistic);
-				}
-				break;
-			case QuestionType.MULTI_CHECKBOX:
-				boolean hasAnswer = false;
-				for (int i = 0; i < listCheckBox.size(); i++) {
-					if (listCheckBox.get(i).isChecked()) {
-						doVote(answers.get(i).getId(), null);
-						hasAnswer = true;
-					}
-				}
-				if (!hasAnswer) {
-					EVoterMobileUtils.showeVoterToast(this, "You have to choose at least one answer before submit");
-				}
-				break;
-			case QuestionType.SLIDER:
-				if (statistic == null) {
-					EVoterMobileUtils.showeVoterToast(this, "You have to choose at least one answer before submit");
-				} else {
-					doVote(answers.get(0).getId(), statistic);
-				}
-				break;
-			case QuestionType.INPUT_ANSWER:
-				statistic = etAnswer.getText().toString();
-				if (statistic == null || statistic.equals("")) {
-					EVoterMobileUtils.showeVoterToast(this, "You have to fill an answer before submit");
-				} else {
-					doVote(answers.get(0).getId(), statistic);
-				}
-				break;
-			case QuestionType.MATCH:
-				EVoterMobileUtils.showeVoterToast(this, "Not implemented yet");
-				break;
-			default:
-				break;
-		}
-		}
-	}
 	
 	/**
 	 * 
 	 */
-	protected void doVote(long answerID, String statistic) {
-		//TODO: Submit answer
-		RequestParams params = new RequestParams();
-		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getQuestionTypeId()));
-		params.put(AnswerDAO.ID, String.valueOf(answerID));
-		if (statistic != null)
-			params.put(AnswerDAO.STATISTICS, statistic);
-		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
-			@Override
-			public void onSuccess(String response) {
-				if (response.contains("SUCCESS")) {
-					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
-					btSend.setText(VIEW_STATISTIC);
-				}
-				else {
-					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-							"Cannot send question: " + response);
-				}
+	private void submitToServer() {
+		if (!EVoterShareMemory.getCurrentSession().isActive()) {
+			EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Session is closed. You cannot send answer!");
+		} else {
+			long questionTypeID = EVoterShareMemory.getCurrentQuestion().getQuestionTypeId();
+			switch ((int) questionTypeID) {
+				case QuestionType.YES_NO:
+				case QuestionType.MULTI_RADIOBUTTON:
+					if (idAnswer == -1) {
+						EVoterMobileUtils.showeVoterToast(this, "You have to choose one answer before submit");
+					} else {
+						eVoterRequest.doVote(idAnswer, questionTypeID, statistic, QuestionDetailActivity.this);
+					}
+					break;
+				case QuestionType.MULTI_CHECKBOX:
+					boolean hasAnswer = false;
+					for (int i = 0; i < listCheckBox.size(); i++) {
+						if (listCheckBox.get(i).isChecked()) {
+							eVoterRequest.doVote(answers.get(i).getId(), questionTypeID, null, QuestionDetailActivity.this);
+							hasAnswer = true;
+						}
+					}
+					if (!hasAnswer) {
+						EVoterMobileUtils.showeVoterToast(this, "You have to choose at least one answer before submit");
+					}
+					break;
+				case QuestionType.SLIDER:
+					if (statistic == null) {
+						EVoterMobileUtils.showeVoterToast(this, "You have to choose at least one answer before submit");
+					} else {
+						eVoterRequest.doVote(answers.get(0).getId(), questionTypeID, statistic, QuestionDetailActivity.this);
+					}
+					break;
+				case QuestionType.INPUT_ANSWER:
+					statistic = etAnswer.getText().toString();
+					if (statistic == null || statistic.equals("")) {
+						EVoterMobileUtils.showeVoterToast(this, "You have to fill an answer before submit");
+					} else {
+						eVoterRequest.doVote(answers.get(0).getId(), questionTypeID, statistic, QuestionDetailActivity.this);
+					}
+					break;
+				case QuestionType.MATCH:
+					EVoterMobileUtils.showeVoterToast(this, "Not implemented yet");
+					break;
+				default:
+					break;
 			}
-			
-			@Override
-			public void onFailure(Throwable error, String content)
-			{
-				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-						"FAILURE: " + error.toString());
-				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
-			}
-		});
-		
+		}
+	}
+	
+	public void updateGUI() {
+		btSend.setText(VIEW_STATISTIC);
 	}
 	
 	/**
@@ -497,39 +467,6 @@ public class QuestionDetailActivity extends EVoterActivity {
 		answerArea.addView(groups);
 	}
 	
-	/**
-	 * @param answerColumn1
-	 * @return
-	 */
-	private ArrayList<Answer> parserAnswer(String answerColumn1) {
-		ArrayList<Answer> listAnswers = new ArrayList<Answer>();
-		try {
-			JSONArray listAnswer1 = new JSONArray(answerColumn1);
-			for (int i = 0; i < listAnswer1.length(); i++) {
-				Answer answer = parserJSONObjectToAnswer(listAnswer1.getJSONObject(i));
-				if (answer != null) listAnswers.add(answer);
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return listAnswers;
-	}
-	
-	/**
-	 * @param jsonObject
-	 * @return
-	 */
-	private Answer parserJSONObjectToAnswer(JSONObject jsonObject) {
-		try {
-			return new Answer(jsonObject.getLong(AnswerDAO.ID), jsonObject.getLong(AnswerDAO.QUESTION_ID), jsonObject.getString(AnswerDAO.ANSWER_TEXT));
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onBackPressed()
@@ -539,6 +476,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		// TODO Auto-generated method stub
 		super.onBackPressed();
 		EVoterShareMemory.getPreviousContext().refreshActivity();
+		//		mainMenu.getBtStartSession().setVisibility(View.GONE);
 	}
 	
 }

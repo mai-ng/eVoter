@@ -29,8 +29,6 @@ import evoter.mobile.objects.MainMenu;
 import evoter.mobile.objects.OfflineEVoterManager;
 import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
-import evoter.share.dao.SessionDAO;
-import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.utils.URIRequest;
 
@@ -95,6 +93,8 @@ public class EVoterActivity extends Activity {
 	
 	protected MainMenu mainMenu;
 	
+	EVoterRequest eVoterRequest;
+	
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -107,7 +107,7 @@ public class EVoterActivity extends Activity {
 		setContentView(R.layout.start);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
 				R.layout.evoter_title_bar);
-		
+		eVoterRequest = new EVoterRequest();
 		ivTitleBarIcon = (ImageView) findViewById(R.id.ivIconTitleBar);
 		ivTitleBarRefresh = (ImageView) findViewById(R.id.ivRefreshTitleBar);
 		tvTitleBarContent = (TextView) findViewById(R.id.tvTitleBar);
@@ -147,17 +147,6 @@ public class EVoterActivity extends Activity {
 			}
 		});
 		
-		mainMenu.getBtAcceptUsers().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Log.i("Main menu", "Request accepted user of a session");
-				mainMenu.dismiss();
-				Intent acceptedStudents = new Intent(EVoterActivity.this, AcceptedStudents.class);
-				startActivity(acceptedStudents);
-			}
-		});
-		
 		mainMenu.getBtListUsers().setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -169,106 +158,8 @@ public class EVoterActivity extends Activity {
 			}
 		});
 		
-		mainMenu.getBtStartSession().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.STOP_SESSION)) {
-					mainMenu.getBtStartSession().setText(MainMenu.START_SESSION);
-					startSession(false);
-					mainMenu.dismiss();
-				} else if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.START_SESSION)) {
-					mainMenu.getBtStartSession().setText(MainMenu.STOP_SESSION);
-					startSession(true);
-					mainMenu.dismiss();
-				} else if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.ACCEPT_SESSION)) {
-					acceptSession();
-					mainMenu.dismiss();
-				}
-				
-			}
-		});
-		
 	}
 	
-	/**
-	 * 
-	 */
-	protected void acceptSession() {
-		RequestParams params = new RequestParams();
-		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(SessionUserDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-		client.post(RequestConfig.getURL(URIRequest.ACCEPT_SESSION), params,
-				new AsyncHttpResponseHandler() {
-					// Request successfully - client receive a response
-					@Override
-					public void onSuccess(String response) {
-						if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-							EVoterMobileUtils.showeVoterToast(
-									EVoterActivity.this,
-									"You joined to session");
-							mainMenu.getBtStartSession().setVisibility(View.GONE);
-							EVoterShareMemory.addToListAcceptedSessions(EVoterShareMemory.getCurrentSession().getId());
-						} else {
-							EVoterMobileUtils.showeVoterToast(
-									EVoterActivity.this,
-									response);
-						}
-					}
-					
-					//Login fail
-					@Override
-					public void onFailure(Throwable error,
-							String content) {
-						EVoterMobileUtils.showeVoterToast(
-								EVoterActivity.this,
-								"Cannot request to server!");
-						Log.e("Accept session", "onFailure error : "
-								+ error.toString() + "content : "
-								+ content);
-					}
-				});
-		
-	}
-	
-	/**
-	 * 
-	 */
-	protected void startSession(final boolean start) {
-		RequestParams params = new RequestParams();
-		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(SessionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-		String url = start ? URIRequest.ACTIVE_SESSION : URIRequest.INACTIVE_SESSION;
-		client.post(RequestConfig.getURL(url), params,
-				new AsyncHttpResponseHandler() {
-					// Request successfully - client receive a response
-					@Override
-					public void onSuccess(String response) {
-						if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-							EVoterMobileUtils.showeVoterToast(
-									EVoterActivity.this,
-									"Session is " + (start ? "running!" : "stop"));
-						} else {
-							EVoterMobileUtils.showeVoterToast(
-									EVoterActivity.this,
-									"Request failure");
-						}
-					}
-					
-					//Login fail
-					@Override
-					public void onFailure(Throwable error,
-							String content) {
-						EVoterMobileUtils.showeVoterToast(
-								EVoterActivity.this,
-								"Cannot request to server!");
-						Log.e("start session", "onFailure error : "
-								+ error.toString() + "content : "
-								+ content);
-					}
-				});
-		
-	}
 	
 	/**
 	 * exit application from anywhere in application <br>
@@ -471,5 +362,12 @@ public class EVoterActivity extends Activity {
 		});
 	}
 	
+	public void updateGUI(){
+		
+	}
 	
+	public void shutdownByException(){
+		EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Exception! Restart eVoter and try again!");
+		exitApplication();
+	}
 }

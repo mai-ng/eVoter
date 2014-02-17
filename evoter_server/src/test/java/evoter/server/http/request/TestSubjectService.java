@@ -93,7 +93,7 @@ public class TestSubjectService {
 		
 		parameters.put(SubjectDAO.ID, String.valueOf(subjectId));
 		Object response = subjectService.doView(parameters);
-		assertEquals("doView", response.toString(), "FAILURE");
+		assertEquals("doView", response.toString(), "SUBJECT DOES NOT EXIST");
 		
 	}
 	/**

@@ -3,17 +3,13 @@
  */
 package evoter.server.http.request.interfaces;
 
-import java.util.List;
-import java.util.Map;
-import com.sun.net.httpserver.HttpExchange;
 
+import java.util.Map;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
-import evoter.share.model.Question;
 import evoter.share.model.Session;
 import evoter.share.model.SessionUser;
-import evoter.share.model.Subject;
 import evoter.share.model.User;
 import evoter.share.utils.URIRequest;
 
@@ -25,103 +21,125 @@ public interface ISessionService {
 
 	public static final String BEAN_NAME = "sessionService";
 	/**
-	 * This method will select all {@link Session} of a specific {@link Subject} </br>
-	 * and the result will be added to response to client application </br>
+	 * This method will select all {@link Session} of a given subject of parameter request </br>
 	 * There are two kind of requests. One is sent by teacher user and the other is sent by student user </br>
-	 * The first selection is made from session table. if a null or empty value is returned, that means </br>
-	 * the request is coming from student user application. So try to select all session in session_user table </br>
-	 * and get all session object from returned value above </br>
+	 * Teacher user request will receive all sessions created by him </br>
+	 * Student user request will receive all sessions invited </br>
 	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between server client application </br>
+	 * This method is called when receiving {@link URIRequest#GET_ALL_SESSION} </br>
+	 * 
+	 * @return {@link Session#toJSON()} array if subject has session. Otherwise, returning an empty array </br>
+	 * @return failure message if there is an exception </br>
+	 * 
 	 * @param parameters contains : </br>
-	 * 	</li> SessionDAO.SUBJECT_ID
+	 * 	</li> {@link SessionDAO.SUBJECT_ID}
 	 * 	</li> {@link UserDAO#USER_KEY}
 	 */
 	public Object doGetAll(Map<String,Object> parameters) ;
 
 	/**
-	 * Response client a {@link Session}  when receiving {@link URIRequest#VIEW_SESSION} request </br>
+	 * Get a {@link Session} that has the same sessionID in parameter request </br>
+	 * This method is called when receiving {@link URIRequest#VIEW_QUESTION} </br>
 	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between server client application </br>
+	 * @return {@link Session#toJSON()} if session is found otherwise, returning an empty array </br>
+	 * @return failure message if there is an exception </br>
+	 * 
 	 * @param parameters request parameter map contains </br>
-	 * 	</li> SessionDAO.ID
+	 * {@link SessionDAO.ID} </br>
+	 * {@link UserDAO#USER_KEY} </br>
 	 */
 	public Object doView(Map<String,Object> parameters) ; 
 
 	/**
-	 * Change the status of {@link Session} to inactive </br>
-	 * when receiving {@link URIRequest#ACTIVE_SESSION}</br>
+	 * Change the status of given session to active and update the changes to session table </br>
+	 * @return success message if there is no exception </br>
+	 * Otherwise, @return failure message </br>
+	 * this method is called when receiving {@link URIRequest#ACTIVE_SESSION}</br>
 	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
 	 * @param parameters contains : </br>
-	 *  </li> SessionDAO.ID
+	 *  </li> {@link SessionDAO.ID} </br>
 	 *  </li> {@link UserDAO#USER_KEY}
 	 */
 	public Object doActive(Map<String,Object> parameters) ;
 	/**
-	 * Change status of {@link Session} when an user accepts it </br>
+	 * Change status of {@link Session} to accepted and set the changes to session table </br>
+	 * @return success message if there is no exception </br>
+	 * Otherwise, @return failure message </br>
+     * This method is called when receiving {@link URIRequest#ACCEPT_SESSION} </br>
+     * 
 	 * @param parameters contains:
 	 * {@link UserDAO#USER_KEY} </br>
 	 * {@link SessionDAO#ID} </br>
-	 * @return SUCCESS message if status is updated successfully </br>
-	 * @return FAILURE message if status is updated failed </br>
 	 */
 	public Object doAccept(Map<String,Object> parameters); 
 
 	/**
-	 * Update delete_indicator field of SESSION_USER table </br>
-	 * when receiving {@link URIRequest#DELETE_SESSION} request from client application</br>
-	 * to mark that this session is deleted by a user </br>
 	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
+	 * Change delete_indicator of user with the session from o to 1 </br>
+	 * That means this session becomes invisible with user </br>
+	 * @return success message if there is no exception. Otherwise </br>
+	 * @return failure message
+	 * 
+	 * This method is called when receiving {@link URIRequest#DELETE_SESSION} </br>
+	 * 
 	 * @param parameters contains : </br>
-	 * 	</li> SessionUserDAO.SESSION_ID
-	 *  </li> UserDAO.USER_KEY
+	 * 	</li> {@link SessionUserDAO.SESSION_ID} </br>
+	 *  </li> {@link UserDAO.USER_KEY} </br>
 	 */
 	public Object doDelete(Map<String,Object> parameters);
 	/**
-	 * Create a new {@link Question} object when receiving {@link URIRequest#CREATE_SESSION} </br>
-	 * The order of steps are: </br>
-	 * </li>Create a new {@link Session} and insert to SESSION table </br>
-	 * </li>Create a new {@link SessionUser}  and insert to SESSION_USER table </br>
-	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
-	 * @param parameters contains 
-	 * 		</li> {@link SessionDAO#CREATION_DATE}
-	 * 		</li> {@link SessionDAO#IS_ACTIVE}
-	 * 		</li> {@link SessionDAO#NAME}
-	 * 		</li> {@link SessionDAO#SUBJECT_ID}
-	 * 		</li> {@link UserDAO#USER_KEY}
-	 * 		</li> 
+	 * 
+	 * Create a new {@link Session} object from values of parameter request </br>
+	 * Add new {@link Session} to session table </br>
+	 * Add a new {@link SessionUser} record to session_user table</br>
+	 * Add two questions:excited and difficult to calculate real time statistics </br>
+	 * 
+	 * @return success message if there is no exception. </br>
+	 * Otherwise, @return a failure message </br>
+	 * 
+	 * This method is called when receiving {@link URIRequest#CREATE_SESSION}</br>
+	 * 
+	 * @param parameters contains </br>
+	 * 		</li> {@link SessionDAO#CREATION_DATE} </br>
+	 * 		</li> {@link SessionDAO#IS_ACTIVE} </br>
+	 * 		</li> {@link SessionDAO#NAME} </br>
+	 * 		</li> {@link SessionDAO#SUBJECT_ID} </br>
+	 * 		</li> {@link UserDAO#USER_KEY} </br>
 	 */
 	public Object doCreate(Map<String,Object> parameters); 
 
 	/**
-	 * Change the status of {@link Session} to inactive </br>
-	 * when receiving {@link URIRequest#INACTIVE_SESSION}</br>
+	 * Change the status of the give session to inactive </br>
+	 * Set the change to session table </br>
+	 * @return success message if there is no exception. </br>
+	 * Otherwise, @return a failure message </br>
 	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
+	 * This method is called when receiving {@link URIRequest#INACTIVE_SESSION} </br>
 	 * @param parameters contains: </br>
 	 * 		</li> {@link SessionDAO#ID}
 	 * 		</li> {@link UserDAO#USER_KEY}
 	 */
 	public Object doInActive(Map<String,Object> parameters) ;
-	
-	
 	/**
-	 * Update {@link SessionDAO#NAME} of {@link Session} </br> 
-	 * when receiving {@link URIRequest#UPDATE_SESSION} </br>
+	 * Change name of session from parameter request and set the change to session table </br>
+	 * @return success message if there is no exception. </br>
+	 * Otherwise, @return a failure message </br>
 	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
+	 * this method is called when receiving {@link URIRequest#UPDATE_SESSION} </br>
+	 * 
 	 * @param parameters contains </br>
-	 * 		</li> {@link SessionDAO#NAME}
-	 * 		</li> {@link SessionDAO#ID} 
-	 * 		</li> {@link UserDAO#USER_KEY}
+	 * 		</li> {@link SessionDAO#NAME} </br>
+	 * 		</li> {@link SessionDAO#ID} </br>
+	 * 		</li> {@link UserDAO#USER_KEY} </br>
 	 */
 	public  Object doUpdate(Map<String,Object> parameters) ;
 	
 	/**
-	 * Response clients a {@link List} of {@link User} accepted or not accept {@link Session} </br>
-	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
+	 * 
+	 * Select all student {@link User} that invite to the given {@link Session} </br>
+	 * @return {@link User#toJSON()} array if session has user. Otherwise, returning an empty array </br>
+     * This method is called when receiving {@link URIRequest#GET_ALL_STUDENT} </br>
+     * 
 	 * @param parameters contains: </br>
 	 * </li> {@link UserDAO#USER_KEY} </br>
 	 * </li> {@link SessionUserDAO#ACCEPT_SESSION} </br>

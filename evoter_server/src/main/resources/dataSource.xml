@@ -110,7 +110,6 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
 		<property name="questionSessionDAO" ref="questionSessionDAO" />
 		<property name="sessionDAO" ref="sessionDAO" />
 		<property name="sessionUserDAO" ref="sessionUserDAO" />		
-		<property name="statisticsDAO" ref="statisticsDAO" />
 		<property name="subjectDAO" ref="subjectDAO" />
 		<property name="userDAO" ref="userDAO" />
 		<property name="userSubjectDAO" ref="userSubjectDAO" />

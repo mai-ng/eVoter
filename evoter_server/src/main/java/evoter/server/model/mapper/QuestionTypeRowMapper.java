@@ -8,6 +8,12 @@ import org.springframework.jdbc.core.RowMapper;
 import evoter.share.dao.QuestionTypeDAO;
 import evoter.share.model.QuestionType;
 
+/**
+ * 
+ * Mapping column values of row of {@link ResultSet} to {@link QuestionType} </br>
+ * @author btdiem </br>
+ *
+ */
 public class QuestionTypeRowMapper implements RowMapper<QuestionType> {
 
 	@Override

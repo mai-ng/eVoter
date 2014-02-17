@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import evoter.server.dao.impl.UserDAOImpl;
 import evoter.server.http.request.interfaces.IUserService;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.User;
@@ -28,7 +29,9 @@ import evoter.share.utils.URIRequest;
 @TransactionConfiguration(defaultRollback=true)
 public class UserService implements IUserService {
 
-//	@Autowired
+	/**
+	 * Define getter/setter for {@link UserDAOImpl} bean
+	 */
 	private UserDAO userDAO;
 	
 	
@@ -56,21 +59,17 @@ public class UserService implements IUserService {
 			keys = parameter.keySet().toArray(keys);
 			Object[] values = new Object[parameter.values().size()];
 			values = parameter.values().toArray(values);
-//			System.out.println("keys: " + keys.length);
-//			System.out.println("values: " + values.length);
 			
 			List<User> userList = userDAO.findByProperty(keys, values);
 			for (User user : userList){
 				response.add(user.toJSON());
 			}//for
 			
-			//URIUtils.writeResponse(response, httpExchange);
 			return response;
 			
 		}catch(Exception e){
 			
-			//e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
+			e.printStackTrace();
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
@@ -107,13 +106,11 @@ public class UserService implements IUserService {
 			}
 			userDAO.insert(user);
 			
-			//URIUtils.writeSuccessResponse(httpExchange);
 			return URIRequest.SUCCESS_MESSAGE;
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
@@ -185,11 +182,9 @@ public class UserService implements IUserService {
 			}
 			
 			return URIRequest.USER_NOT_EXIST_MESSAGE;
-			//URIUtils.writeSuccessResponse(httpExchange);
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
@@ -206,28 +201,21 @@ public class UserService implements IUserService {
 			
 			long userId = Long.valueOf((String)parameter.get(UserDAO.ID));
 			boolean isApproved = Boolean.valueOf((String)parameter.get(UserDAO.IS_APPROVED));
-			
-			System.out.println("userId " + userId);
-			System.out.println("isApproved " + isApproved);
-			
+						
 			List<User> userList = userDAO.findById(userId);
 			if (userList != null && !userList.isEmpty()){
 				
 				User user = userList.get(0);
 				user.setApproved(isApproved);
 				userDAO.update(user);
-				//URIUtils.writeSuccessResponse(httpExchange);
 				return URIRequest.SUCCESS_MESSAGE;
 				
 			}
 			return URIRequest.USER_NOT_EXIST_MESSAGE;
-				//URIUtils.writeResponse("User does not exist", httpExchange);
-			
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 

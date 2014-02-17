@@ -6,20 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
-//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sun.net.httpserver.HttpExchange;
-
-//import evoter.server.http.URIUtils;
+import evoter.server.dao.impl.QuestionSessionDAOImpl;
 import evoter.server.http.request.interfaces.ISubjectService;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
-import evoter.share.dao.StatisticsDAO;
 import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.dao.UserSubjectDAO;
@@ -32,8 +28,8 @@ import evoter.share.utils.UserValidation;
 
 /**
  * Process all {@link Subject} requests sent by client applications </br>
- * 
- * @author btdiem
+ * This class is an implementation of {@link ISubjectService} </br>
+ * @author btdiem </br>
  *
  */
 @Service
@@ -41,19 +37,30 @@ import evoter.share.utils.UserValidation;
 @TransactionConfiguration(defaultRollback=true)
 public class SubjectService implements ISubjectService{
 	
-	//@Autowired
+	/**
+	 * Define getter/setter for {@link QuestionSessionDAOImpl} bean
+	 */
 	private QuestionSessionDAO questionSessionDAO;
-	//@Autowired
+	/**
+	 * Define getter/setter for {@link SessionDAOImpl} bean
+	 */
 	private SessionDAO sessionDAO;
-	//@Autowired
+	/**
+	 * Define getter/setter for {@link SessionUserDAOImpl} bean
+	 */
 	private SessionUserDAO sessionUserDAO;
-	//@Autowired
-	private StatisticsDAO statisticsDAO;
-	//@Autowired
+
+	/**
+	 * Define getter/setter for {@link SubjectDAOImpl} bean
+	 */
 	private SubjectDAO subjectDAO;
-	//@Autowired
+	/**
+	 * Define getter/setter for {@link UserDAOImpl} bean
+	 */
 	private UserDAO userDAO;
-	//@Autowired
+	/**
+	 * Define getter/setter for {@link UserSubjectDAOImpl} bean
+	 */
 	private UserSubjectDAO userSubjectDAO;
 	
 	
@@ -82,13 +89,6 @@ public class SubjectService implements ISubjectService{
 		this.sessionUserDAO = sessionUserDAO;
 	}
 
-	public StatisticsDAO getStatisticsDAO() {
-		return statisticsDAO;
-	}
-
-	public void setStatisticsDAO(StatisticsDAO statisticsDAO) {
-		this.statisticsDAO = statisticsDAO;
-	}
 
 	public SubjectDAO getSubjectDAO() {
 		return subjectDAO;
@@ -114,8 +114,6 @@ public class SubjectService implements ISubjectService{
 		this.userSubjectDAO = userSubjectDAO;
 	}
 	
-	
-	
 	/*
 	 * (non-Javadoc)
 	 * @see evoter.server.http.request.interfaces.ISubjectRequest#doView(com.sun.net.httpserver.HttpExchange, java.util.Map)
@@ -125,16 +123,20 @@ public class SubjectService implements ISubjectService{
 		
 		try{
 			
+			long subjectId = Long.valueOf((String)parameters.get(SubjectDAO.ID));
+			List<Subject> subjectList = subjectDAO.findById(subjectId);
+			if (subjectList != null && !subjectList.isEmpty()){
+				
+				Subject subject = subjectList.get(0);
+				return subject.toJSON();
+			}
 			
-			long id = Long.valueOf((String)parameters.get(SubjectDAO.ID));
-			Subject subject = (Subject)subjectDAO.findById(id).get(0);
-			return subject.toJSON();
-			//URIUtils.writeResponse(subject.toJSON(), exchange);
+			
+			return URIRequest.SUBJECT_NOT_EXIST_MESSAGE;
 			
 		}catch(Exception e){
 			System.err.println(e);
 			return URIRequest.FAILURE_MESSAGE;
-			//URIUtils.writeFailureResponse(exchange);
 		}
 
 		
@@ -176,36 +178,20 @@ public class SubjectService implements ISubjectService{
 				response.add(subject.toJSON());
 			}
 			
-			System.out.println("SUBJECT : " + response.toJSONString());
-			//URIUtils.writeResponse(response.toJSONString(), exchange);
+//			System.out.println("SUBJECT : " + response.toJSONString());
 			return response;
 			
 		}catch(Exception e){
 			System.err.println(e);
-			//URIUtils.writeFailureResponse(exchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
 		
 	}
 	
-	/**
-	 * When deleting a subject: </br>
-	 *  </li> delete subject in SUBJECT table </br>
-	 *  </li> delete subject in USER_SUBJECT table </br>
-	 *  </li> delete all sessions of this subject in SESSION table </br>
-	 *  </li> delete all sessions of this subject in SESSION_USER table </br>
-	 *  </li> delete all sessions in QUESTION_SESSION table </br>
-	 *  </li> delete all sessions in STATISTICS table </br>
-	 * 
-	 * Remove {@link Subject} out database and response client a {@link URIRequest#SUCCESS_MESSAGE} </br>
-	 * when receiving {@link URIRequest#DELETE_SUBJECT} </br>
-	 * 
-	 * @param exchange {@link HttpExchange} communicates between client and server </br>
-	 * @param parameters contains </br>
-	 *  </li> {@link SubjectDAO.ID}
-	 *  </li> {@link UserDAO#USER_KEY}
-	 *  TESTED
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISubjectService#doDelete(java.util.Map)
 	 */
 	@Override
 	public  Object doDelete(Map<String,Object> parameters){
@@ -219,48 +205,20 @@ public class SubjectService implements ISubjectService{
 				subjectDAO.deleteById(subjectId);
 				return URIRequest.SUCCESS_MESSAGE;
 				
-			}else{
+			}
 				
-				return URIRequest.SUBJECT_NOT_EXIST_MESSAGE;
-			}
-			//get all session of subject in SESSION table
-			//this is on delete cascade
-/**			List<Session> sessionList = sessionDAO.findBySubjectId(subjectId);
-			for (Session session : sessionList){
-				// for each session
-				//    delete all session records in SESSION_USER table
-				//    delete all session records in STATISTICS table
-				//    delete all session records in SESSION_QUESTION table
-				//  
-				sessionUserDAO.deleteBySessionId(session.getId());
-				statisticsDAO.deleteBySessionId(session.getId());
-				questionSessionDAO.deleteBySessionId(session.getId());
-			}
-			sessionDAO.deleteBySubjectId(subjectId);
-			//remove session records in USER_SUBJECT table ==>ok
-			userSubjectDAO.deleteBySubjectId(subjectId);
-*/				
-
-			//URIUtils.writeSuccessResponse(exchange);
+			return URIRequest.SUBJECT_NOT_EXIST_MESSAGE;
 				
 		}catch(Exception e){
-		
-			System.out.println("delete subject error : " + e);
-			//URIUtils.writeFailureResponse(exchange);
+			e.printStackTrace();
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
 	}
 
-	/**
-	 * Response client a list of {@link Subject} matching search conditions when receiving </br>
-	 * {@link URIRequest#SEARCH_SUBJECT} </br>
-	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
-	 * @param parameters contains </br>
-	 *  </li> {@link SubjectDAO#TITLE} </br>
-	 *  </li> {@link SubjectDAO#CREATION_DATE} </br>
-	 *  </li> {@link UserDAO#USER_KEY} </br>
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISubjectService#doSearch(java.util.Map)
 	 */
 	@SuppressWarnings("unchecked")
 	public  Object doSearch(Map<String,Object> parameters) {
@@ -275,11 +233,9 @@ public class SubjectService implements ISubjectService{
 			for (Subject subject : subjects){
 				response.add(subject.toJSON());
 			}
-			//URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
 			return response;
 			
 		}catch(Exception e){
-			//URIUtils.writeFailureResponse(httpExchange);
 			System.err.println(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
@@ -307,13 +263,11 @@ public class SubjectService implements ISubjectService{
 					response.add(userList.get(0).toJSON());
 				}
 			}
-			//URIUtils.writeResponse(response, httpExchange);
 			return response;
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
@@ -371,7 +325,6 @@ public class SubjectService implements ISubjectService{
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
@@ -414,13 +367,11 @@ public class SubjectService implements ISubjectService{
 				}
 			}
 			
-			//URIUtils.writeSuccessResponse(httpExchange);
 			return URIRequest.SUCCESS_MESSAGE;
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 	}

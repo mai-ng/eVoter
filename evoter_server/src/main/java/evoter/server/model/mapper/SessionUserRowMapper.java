@@ -7,7 +7,11 @@ import org.springframework.jdbc.core.RowMapper;
 
 import evoter.share.dao.SessionUserDAO;
 import evoter.share.model.SessionUser;
-
+/**
+ * Mapping columns value of row of {@link ResultSet} to {@link SessionUser} </br>
+ * @author btdiem </br>
+ *
+ */
 public class SessionUserRowMapper implements RowMapper<SessionUser> {
 
 	@Override

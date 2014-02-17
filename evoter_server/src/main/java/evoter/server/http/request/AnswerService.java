@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import evoter.server.dao.impl.AnswerDAOImpl;
 import evoter.server.http.request.interfaces.IAnswerService;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
-import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
 import evoter.share.model.QuestionType;
 import evoter.share.utils.URIRequest;
@@ -31,6 +31,9 @@ import evoter.share.utils.URIRequest;
 @TransactionConfiguration(defaultRollback=true)
 public class AnswerService implements IAnswerService {
 
+	/**
+	 * Call {@link AnswerDAOImpl} bean 
+	 */
 	private AnswerDAO answerDAO;
 	
 	public AnswerDAO getAnswerDAO(){

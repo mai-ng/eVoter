@@ -8,17 +8,15 @@ import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-//import org.springframework.test.annotation.Rollback;
-//import org.springframework.transaction.annotation.Transactional;
 
-import com.sun.net.httpserver.HttpExchange;
+import evoter.server.dao.impl.UserDAOImpl;
 import evoter.server.http.request.interfaces.IAccountService;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.User;
 import evoter.share.utils.URIRequest;
 /**
  * Process all user account requests sent by client applications </br>
- * 
+ * This class is an implementation of {@link IAccountService} </br>
  * @author btdiem
  *
  */
@@ -34,9 +32,11 @@ public class AccountService implements IAccountService{
 		 userKeys.add(userKeyemp);
 		 userKeys.add("1333_1_2");
 		 userKeys.add("1333_3_3");
-		 }
+	 }
 	
-	 //@Autowired
+	 /**
+	  * get/set a {@link UserDAOImpl} instance  
+	  */
 	 private UserDAO userDAO;
 
 	
@@ -46,22 +46,13 @@ public class AccountService implements IAccountService{
 	 public UserDAO getUserDAO(){
 		 return this.userDAO;
 	 }
+	
 	 
-//	private  final String USER_KEY = "userkey";
 	
-	/**
-	 * Response clients a userkey generated from {@link UserDAO#USER_NAME} </br>
-	 * and {@link UserDAO#PASSWORD} if username and password exist in database </br> 
-	 * or response a null value if username and password do not exist in database </br>
-	 * or response a @ {@link URIRequest#FAILURE_MESSAGE } if there is an{@link Exception} </br>    
-	 * 
-	 * @param exchange {@link HttpExchange} communicates between server and clients </br>
-	 * @param parameters contains </br> 
-	 * 	UserDAO.USER_NAME </br> 
-	 *  UserDAO.PASSWORD </br>
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IAccountService#doLogin(java.util.Map)
 	 */
-	
-	//set transaction and rollback here
 	@SuppressWarnings("unchecked")
 	public  Object doLogin(Map<String,Object> parameters){
 		
@@ -77,16 +68,17 @@ public class AccountService implements IAccountService{
 					new Object[]{username, password});
 			String userKey = null;
 			if (users != null && !users.isEmpty()){
-				System.out.println("user exists in db");
+				
+				//System.out.println("user exists in db");
 				userKey = users.get(0).generateUserKey(System.currentTimeMillis());
 				addUserKey(userKey);
 				response.put(UserDAO.USER_KEY, userKey);
 				return response;
 				
-			}else{
-				
-				return URIRequest.USER_NOT_EXIST_MESSAGE;
 			}
+				
+			return URIRequest.USER_NOT_EXIST_MESSAGE;
+			
 			
 			//URIUtils.writeResponse(object, exchange);
 			
@@ -100,47 +92,43 @@ public class AccountService implements IAccountService{
 
 	}
 	
-	/**
-	 * 
-	 * @param parameters contain {@link UserDAO#USER_KEY} </br>
-	 * @return true if {@link UserDAO#USER_KEY} exists, otherwise return false </br>
-	 */
+
 	public  boolean hasUserKey(String userKey){
 		
 		return userKeys.contains(userKey);
 		//return true;
 	}
 
-	/**
-	 * Response clients a {@link URIRequest#SUCCESS_MESSAGE} if userkey value exists </br>
-	 * or response clients a {@link URIRequest#FAILURE_MESSAGE} if userkey does not exist </br>
-	 * 
-	 * @param exchange {@link HttpExchange} communicate between clients and server </br>
-	 * @param parameters contains {@link UserDAO#USER_KEY} </br>
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IAccountService#doLogout(java.util.Map)
 	 */
 	@Override
 	public  Object doLogout(Map<String,Object> parameters) {
 		
-		if (hasUserKey((String)parameters.get(UserDAO.USER_KEY))){
+		try{
 			
-			userKeys.remove(parameters.get(UserDAO.USER_KEY));
+			if (hasUserKey((String)parameters.get(UserDAO.USER_KEY))){
+				
+				userKeys.remove(parameters.get(UserDAO.USER_KEY));
+				
+				return URIRequest.SUCCESS_MESSAGE;
+				
+			}
+			return URIRequest.USER_NOT_EXIST_MESSAGE;
+		}catch(Exception e){
 			
-			return URIRequest.SUCCESS_MESSAGE;
-			//URIUtils.writeSuccessResponse(exchange);
-			
-		}else{
-			
+			e.printStackTrace();
 			return URIRequest.FAILURE_MESSAGE;
-			//URIUtils.writeFailureResponse(exchange);
 		}
+		
 	}
 
-	/**
-	 * Check if email exists in the database and return a success or failure response </br> 
-	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
-	 * @param parameters contains email address </br>
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IAccountService#doResetPassword(java.util.Map)
 	 */
-	
 	@Override
 	public  Object doResetPassword(Map<String, Object> parameters) {
 		
@@ -153,13 +141,9 @@ public class AccountService implements IAccountService{
 			if (userList != null && !userList.isEmpty()){
 				
 				return URIRequest.EMAIL_EXIST_MESSAGE;
-				//URIUtils.writeResponse(URIRequest.EMAIL_EXIST_MESSAGE, httpExchange);
 				
-			}else{
-				
-				return URIRequest.EMAIL_NOT_EXIST_MESSAGE;
-				//URIUtils.writeResponse(URIRequest.EMAIL_NOT_EXIST_MESSAGE, httpExchange);
 			}
+			return URIRequest.EMAIL_NOT_EXIST_MESSAGE;
 			
 		}catch(Exception e){
 			
@@ -169,20 +153,11 @@ public class AccountService implements IAccountService{
 		
 	}
 
-	/**
-	 * Response clients a {@link URIRequest#SUCCESS_MESSAGE} if user name and password are valid </br>
-	 * and they do not exist in the database when receiving {@link URIRequest#LOGOUT} request from client applications</br>
-	 * Otherwise, response a {@link URIRequest#FAILURE_MESSAGE} </br>
-	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between clients and server </br>
-	 * @param parameters contains: </br>
-	 * 		</li> {@link UserDAO#USER_NAME} </br>
-	 * 		</li> {@link UserDAO#EMAIL} </br>
-	 * 		</li> {@link UserDAO#PASSWORD} </br>
-	 * 		</li> {@link UserDAO#USER_TYPE_ID} </br>
-	 * 
-	 */
 	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IAccountService#doRegister(java.util.Map)
+	 */
 	@Override
 	public  Object doRegister(Map<String, Object> parameters) {
 		
@@ -197,19 +172,12 @@ public class AccountService implements IAccountService{
 															, new Object[]{username, userTypeId});
 			if (checkUsername != null && !checkUsername.isEmpty())
 				return URIRequest.USER_EXIST_MESSAGE;
-//				URIUtils.writeResponse(URIRequest.USER_EXIST_MESSAGE, httpExchange);
-//				return;
-			
 			
 			//search database if this email exists
 			List<User> checkEmail = userDAO.findByProperty(new String[]{UserDAO.EMAIL, UserDAO.USER_TYPE_ID}
 														, new Object[]{email, userTypeId});
 			if (checkEmail != null && !checkEmail.isEmpty())
 				return URIRequest.EMAIL_EXIST_MESSAGE;
-//			{
-//				URIUtils.writeResponse(URIRequest.EMAIL_EXIST_MESSAGE, httpExchange);
-//				return;
-//			}
 			
 			//create User object and insert to database
 			String password = (String)parameters.get(UserDAO.PASSWORD);
@@ -217,13 +185,10 @@ public class AccountService implements IAccountService{
 			userDAO.insert(user);
 
 			return URIRequest.SUCCESS_MESSAGE;
-			//URIUtils.writeSuccessResponse(httpExchange);
 				
 		}catch(Exception e){
 
 			e.printStackTrace();
-			//System.err.println(e);
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 			
 		}

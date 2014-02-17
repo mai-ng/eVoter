@@ -9,7 +9,9 @@ import evoter.share.dao.AnswerDAO;
 import evoter.share.model.Answer;
 /**
  * 
- * @author btdiem
+ * Mapping column value of row of {@link ResultSet} to {@link Answer} </br>
+ * 
+ * @author btdiem </br>
  *
  */
 public class AnswerRowMapper implements RowMapper<Answer> {

@@ -7,7 +7,11 @@ import org.springframework.jdbc.core.RowMapper;
 
 import evoter.share.dao.SubjectDAO;
 import evoter.share.model.Subject;
-
+/**
+ * Mapping column values of row of {@link ResultSet} to {@link Subject} </br>
+ * @author btdiem </br>
+ *
+ */
 public class SubjectRowMapper implements RowMapper<Subject> {
 
 

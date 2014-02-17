@@ -120,7 +120,7 @@ public class TestAccountService {
 		
 		assertFalse("userkey does not exist ", accountService.hasUserKey(userKey));
 		Object response = accountService.doLogout(parameters);
-		assertEquals("doLogout() returns failure message", response,"FAILURE");
+		assertEquals("doLogout() returns failure message", response,"USER DOES NOT EXIST");
 
 	}
 	/**

@@ -12,7 +12,8 @@ import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.model.QuestionSession;
 
 /**
- * @author btdiem
+ * Mapping column values of row of {@link ResultSet} to {@link QuestionSession} </br>
+ * @author btdiem </br>
  *
  */
 public class QuestionSessionRowMapper implements RowMapper<QuestionSession> {

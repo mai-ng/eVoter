@@ -7,7 +7,12 @@ import org.springframework.jdbc.core.RowMapper;
 
 import evoter.share.dao.UserSubjectDAO;
 import evoter.share.model.UserSubject;
-
+/**
+ * 
+ * Mapping column values of row of {@link ResultSet} to {@link UserSubject} </br>
+ * @author btdiem </br>
+ *
+ */
 public class UserSubjectRowMapper implements RowMapper<UserSubject> {
 
 	@Override

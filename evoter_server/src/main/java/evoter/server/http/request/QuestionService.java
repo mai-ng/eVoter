@@ -7,14 +7,17 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-//import org.springframework.test.annotation.Rollback;
-//import org.springframework.transaction.annotation.Transactional;
 
+
+import evoter.server.dao.impl.AnswerDAOImpl;
+import evoter.server.dao.impl.QuestionDAOImpl;
+import evoter.server.dao.impl.QuestionSessionDAOImpl;
+import evoter.server.dao.impl.QuestionTypeDAOImpl;
+import evoter.server.dao.impl.UserDAOImpl;
 import evoter.server.http.request.interfaces.IAnswerService;
 import evoter.server.http.request.interfaces.IQuestionService;
 import evoter.share.dao.AnswerDAO;
@@ -22,7 +25,6 @@ import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.QuestionTypeDAO;
 import evoter.share.dao.UserDAO;
-import evoter.share.model.Answer;
 import evoter.share.model.Question;
 import evoter.share.model.QuestionSession;
 import evoter.share.utils.URIRequest;
@@ -39,15 +41,25 @@ import evoter.share.utils.UserValidation;
 @TransactionConfiguration(defaultRollback=true)
 public class QuestionService implements IQuestionService{
 	
-	//@Autowired
+	/**
+	 * Define getter/setter of {@link AnswerDAOImpl} bean
+	 */
 	private AnswerDAO answerDAO;
-	//@Autowired
+	/**
+	 * Define getter/setter of {@link QuestionDAOImpl} bean 
+	 */
 	private QuestionDAO questionDAO;
-	//@Autowired
+	/**
+	 * Define getter/setter of {@link QuestionSessionDAOImpl} bean
+	 */
 	private QuestionSessionDAO questionSessionDAO;
-	//@Autowired
+	/**
+	 * Define getter/setter of {@link QuestionTypeDAOImpl} bean
+	 */
 	private QuestionTypeDAO questionTypeDAO;
-	//@Autowired
+	/**
+	 * Define getter/setter of {@link UserDAOImpl} </br>
+	 */
 	private UserDAO userDAO;
 	
 	public IAnswerService getAnswerService() {
@@ -57,7 +69,9 @@ public class QuestionService implements IQuestionService{
 	public void setAnswerService(IAnswerService answerService) {
 		this.answerService = answerService;
 	}
-
+	/**
+	 * Define getter/setter of {@link IAnswerService} bean
+	 */
 	private IAnswerService answerService;
 	
 	public AnswerDAO getAnswerDAO() {
@@ -100,24 +114,15 @@ public class QuestionService implements IQuestionService{
 		this.userDAO = userDAO;
 	}
 
-	//This value is updated when receiving a /send_question request 
-	//private  Map<Long,Long> mapSentQuestion = new HashMap<Long, Long>();
 	/**
-	 * Map has key: session ID and value:Question being sending status of that session </br>
+	 * Map has key is session ID and and value is Question that is sending  of the current session </br>
 	 */
 	private  Map<Long,Question> mapSentQuestion = new HashMap<Long, Question>();
 
-	/**
-	 * This method will response a list of {@link Question} and {@link Answer} when server </br>
-	 * receives request {@link URIRequest#GET_ALL_QUESTION} </br>
-	 * 
-	 * @param httpExchange </br>
-	 * @param parameters contains : </br>
-	 * 	</li> QuestionSessionDAO.SESSION_ID </br>
-	 *  </li> {@link UserDAO#USER_KEY} </br>
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IQuestionService#doGetAll(java.util.Map)
 	 */
-	
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	@Rollback(false)
@@ -157,19 +162,20 @@ public class QuestionService implements IQuestionService{
 				}
 				
 			}
-			System.out.println("QUESTION : " + response.toJSONString());
-			//URIUtils.writeResponse(jsArray, httpExchange);
 			return response;
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IQuestionService#doView(java.util.Map)
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	@Rollback(false)
@@ -182,18 +188,14 @@ public class QuestionService implements IQuestionService{
 			if (questionList != null && !questionList.isEmpty()){
 				
 				for (Question question : questionList){
-					//JSONObject jsObject = question.toJSON();
-					//question.toJSON().put("answers", getAnswersOfQuestion(question.getId()));
 					question.toJSON().put("answers", answerService.doGetAllAnswer(question.getId()));
 					response.add(question.toJSON());
 				}
 			}
-			//URIUtils.writeResponse(jsArray, httpExchange);
 			return response;
 			
 		}catch(Exception e){
 			System.err.println(e);
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
@@ -203,7 +205,7 @@ public class QuestionService implements IQuestionService{
 	 * 
 	 * @param questionId
 	 * @return a {@link JSONArray} 
-	 */
+	 *
 	@Override
 	@SuppressWarnings("unchecked")
 	@Rollback(false)
@@ -221,23 +223,11 @@ public class QuestionService implements IQuestionService{
 		return arrays;
 		
 		
-	}
+	}*/
 	
-	/**
-	 * Insert {@link Question} object to QUESTION table </br>
-	 * Insert {@link QuestionSession} object to QUESTION_SESSION table </br>
-	 * Insert {@link Answer} object to ANSWER table </br>
-	 * 
-	 * 
-	 * @param httpExchange
-	 * @param parameters contains: </br>
-	 * 	</li> {@link QuestionDAO#QUESTION_TEXT} is a string [] </br>
-	 * 	</li> {@link QuestionDAO#QUESTION_TYPE_ID} </br>
-	 *  </li> {@link QuestionDAO#CREATION_DATE} </br>
-	 *  </li> {@link UserDAO#USER_KEY} </br>
-	 *  </li> {@link QuestionSessionDAO#SESSION_ID} </br>
-	 *  </li> {@link AnswerDAO#ANSWER_TEXT}  is a string[] </br>
-	 *  
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IQuestionService#doCreate(java.util.Map)
 	 */
 	@Override
 	public  Object doCreate(Map<String, Object> parameters) {
@@ -250,13 +240,7 @@ public class QuestionService implements IQuestionService{
 			String userKey = (String)parameters.get(UserDAO.USER_KEY);
 			long userId = UserValidation.getUserIdFromUserKey(userKey);
 			long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
-			String[] answerTexts = null;
-			/**
-			 * If the question is yes/no, agree/disagree, there is no answer anymore
-			 */
-			if (parameters.containsKey(AnswerDAO.ANSWER_TEXT)){
-				answerTexts = (String[])parameters.get(AnswerDAO.ANSWER_TEXT);
-			}
+
 
 			Question question = null;
 			long parentId = 0;
@@ -290,13 +274,12 @@ public class QuestionService implements IQuestionService{
 			/**
 			 * Create Answer object and insert it to ANSWER table
 			 */
-			if (answerTexts != null){
-				
+			/**
+			 * If the question is yes/no, agree/disagree, there is no answer anymore
+			 */
+			if (parameters.containsKey(AnswerDAO.ANSWER_TEXT)){
+				String[] answerTexts = (String[])parameters.get(AnswerDAO.ANSWER_TEXT);
 				answerService.doCreate(questionId, answerTexts);
-//				for (String answerText : answerTexts){
-//					Answer answer = new Answer(questionId, answerText);
-//					answerDAO.insert(answer);
-//				}
 			}
 
 			/**
@@ -313,56 +296,33 @@ public class QuestionService implements IQuestionService{
 		}
 		
 		return URIRequest.SUCCESS_MESSAGE;
-		//URIUtils.writeSuccessResponse(httpExchange);
 		
 	}
 
-	/**
-	 * Delete {@link Answer} in ANSWER table </br>
-	 * Delete {@link Statistics} in STATISTICS table </br>
-	 * Delete {@link QuestionSession} in QUESTION_SESSION table </br>
-	 * Delete {@link Question} in QUESTION table</br>
-	 * 
-	 * @param httpExchange
-	 * @param parameters contains: </br>
-	 * 	{@link QuestionDAO#ID}
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IQuestionService#doDelete(java.util.Map)
 	 */
-	
-	
 	@Override
 	public  Object doDelete(Map<String,Object> parameters) {
 		
 		long questionId = (Long.valueOf((String)parameters.get(QuestionDAO.ID)));
 		
 		try{
-			// ANSWER table
-//			answerDAO.deleteByQuestionId(questionId);
-			// QUESTION_SESSION table
-//			questionSessionDAO.deleteByQuestionId(questionId);
-			// QUESTION table
+
 			questionDAO.deleteById(questionId);
-			
 			return URIRequest.SUCCESS_MESSAGE;
-			//URIUtils.writeSuccessResponse(httpExchange);
 			
 		}catch(Exception e){
 			e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
 	}
 
-	/**
-	 * When receiving {@link URIRequest#SEND_QUESTION} from teacher application </br>
-	 * keep the questionId and sessionId of request and wait for request {@link URIRequest#GET_LATEST_QUESTION} </br>
-	 * from student application </br>
-	 * Change {@link QuestionDAO#STATUS} from 0 to 1 </br>
-	 * @param httpExchange </br>
-	 * @param parameters contains: </br>
-	 * 	</li> {@link QuestionDAO#ID} : questionID
-	 * 	</li> {@link QuestionSessionDAO#SESSION_ID} : current session ID
-	 * 	</li> {@link UserDAO#USER_KEY}
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IQuestionService#doSend(java.util.Map)
 	 */
 	@Override
 	@Transactional
@@ -380,7 +340,6 @@ public class QuestionService implements IQuestionService{
 				questionDAO.update(question);
 				
 				long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
-				//mapSentQuestion.put(sessionId, questionId);
 				addSentQuestion(sessionId, question);
 				
 				return URIRequest.SUCCESS_MESSAGE;
@@ -394,17 +353,10 @@ public class QuestionService implements IQuestionService{
 		}
 	}
 
-	/**
-	 * This request is sent by student application within a certain time </br>
-	 * This request will receive a response if server receives a {@link URIRequest#SEARCH_QUESTION} </br>
-	 * 
-	 * @param httpExchange</br>
-	 * @param parameters contains: </br>
-	 * 	</li> QuestionSessionDAO.SESSION_ID
-	 * 	</li> {@link UserDAO#USER_KEY}
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.IQuestionService#doGetLatest(java.util.Map)
 	 */
-	
-	
 	@Override
 	@SuppressWarnings("unchecked")
 	@Rollback(false)
@@ -427,26 +379,15 @@ public class QuestionService implements IQuestionService{
 				
 			}
 			
-			//URIUtils.writeResponse(response, httpExchange);
 			return response;
 			
 		}catch(Exception e){
 			System.err.println(e);
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
 	}
 
-	/** 
-	 * This method is called when teacher sends the request </br>
-	 * {@link URIRequest#STOP_SEND_QUESTION} to server </br>
-	 *  
-	 * @param httpExchange </br>
-	 * @param parameters contains : </br>
-	 * 	</li> QuestionSessionDAO.SESSION_ID
-	 */
-	
 	/*
 	 * (non-Javadoc)
 	 * @see evoter.server.http.request.interfaces.IQuestionService#doStopSend(com.sun.net.httpserver.HttpExchange, java.util.Map)
@@ -457,11 +398,11 @@ public class QuestionService implements IQuestionService{
 		try{
 			
 			long sessionId = (Long.valueOf((String)parameters.get(QuestionSessionDAO.SESSION_ID)));
-			//mapSentQuestion.remove(sessionId);
+			
 			Question question = removeSentQuestion(sessionId);
 			question.setStatus(2);
 			questionDAO.update(question);
-			//URIUtils.writeSuccessResponse(httpExchange);
+			
 			return URIRequest.SUCCESS_MESSAGE;
 
 		}catch(Exception e){
@@ -482,15 +423,6 @@ public class QuestionService implements IQuestionService{
 			String questionText = (String)parameters.get(QuestionDAO.QUESTION_TEXT);
 			long questionId = (Long.valueOf((String)parameters.get(QuestionDAO.ID)));
 
-//			String [] answerIds = null;
-			/**
-			 * if this is match type question, this question is a parent </br>
-			 * continue inserting the sub questions to the database </br>
-			 */
-//			if (parameters.containsKey(QuestionDAO.ANSWER_ID)){
-//				answerIds = (String[]) parameters.get(QuestionDAO.ANSWER_ID);
-//			}
-			
 			List<Question> questions = questionDAO.findById(questionId);
 			if (questions != null && !questions.isEmpty()){
 				
@@ -512,15 +444,12 @@ public class QuestionService implements IQuestionService{
 			}
 
 				
-
-			//URIUtils.writeSuccessResponse(httpExchange);
 			return URIRequest.SUCCESS_MESSAGE;
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
 			return URIRequest.FAILURE_MESSAGE;
-			//URIUtils.writeFailureResponse(httpExchange);
 		}
 		
 		

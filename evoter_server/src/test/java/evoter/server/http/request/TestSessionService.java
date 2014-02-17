@@ -113,9 +113,21 @@ public class TestSessionService {
 	@Test
 	public void test_doView(){
 		
+		String username = "nvluong";
+		String password = "12345678";
+		
+		parameters.put(UserDAO.USER_NAME, username);
+		parameters.put(UserDAO.PASSWORD, password);
+		
+		JSONObject userKey = (JSONObject)accountService.doLogin(parameters);
+		parameters.remove(UserDAO.USER_NAME);
+		parameters.remove(UserDAO.PASSWORD);
+		
+		parameters.put("userkey", userKey.get("userkey"));
+
 		long sessionId = 1;
 		String expected_response = ""+
-				"[{\"NAME\":\"subject_1_session_1\",\"USER_ID\":1,\"SUBJECT_ID\":1,\"ID\":1," +
+				"[{\"NAME\":\"subject_1_session_1\",\"ACCEPT_STT\":false,\"USER_ID\":1,\"SUBJECT_ID\":1,\"ID\":1," +
 				"\"CREATOR\":\"paul_gibson\",\"CREATION_DATE\":\"2013-12-28 00:00:00.0\",\"IS_ACTIVE\":true}]";
 		parameters.put(SessionDAO.ID, String.valueOf(sessionId));
 		Object response = sessionService.doView(parameters);

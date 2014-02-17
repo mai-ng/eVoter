@@ -20,7 +20,6 @@ import evoter.server.http.request.interfaces.IAccountService;
 import evoter.server.http.request.interfaces.IAnswerService;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
-import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
 import evoter.share.model.QuestionType;

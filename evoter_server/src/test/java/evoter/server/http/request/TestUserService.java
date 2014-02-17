@@ -51,7 +51,7 @@ public class TestUserService {
 
 	/**
 	 * Test for {@link IUserService#doGetAll(Map)} </br>
-	 * Select all users whose is teacher </br>
+	 * Select all users who are teacher </br>
 	 * Expect returning an {@link User#toJSON()} array </br>
 	 */
 	@Test
@@ -228,8 +228,6 @@ public class TestUserService {
 		Object response = userService.doChangeApprove(parameters);
 		System.out.println("response :" + response);
 		assertEquals("doChangeApprove() returns SUCCESS", response.toString(), "SUCCESS");
-		
-		
 	}
 	/**
 	 * Test for {@link IUserService#doChangeApprove(Map)} </br>

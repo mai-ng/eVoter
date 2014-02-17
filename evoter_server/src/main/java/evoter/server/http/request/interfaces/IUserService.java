@@ -3,19 +3,16 @@
  */
 package evoter.server.http.request.interfaces;
 
-import java.util.List;
 import java.util.Map;
-
-
-import com.sun.net.httpserver.HttpExchange;
 
 import evoter.share.dao.UserDAO;
 import evoter.share.model.User;
+import evoter.share.utils.URIRequest;
 
 
 /**
  * 
- * This class is an interface of User </br>
+ * Define methods to handle the coming request involving User </br>
  * @author btdiem </br>
  *
  */
@@ -23,8 +20,13 @@ public interface IUserService {
 
 	public static final String BEAN_NAME = "userService";
 	/**
-	 * Response client request {@link List} of {@link User} </br>
-	 * @param httpExchange {@link HttpExchange} communicates between server and clients </br>
+	 * 
+	 * Select all {@link User} matching conditions of the input parameter </br>
+	 * @return {@link User#toJSON()} if user list can be found </br>
+	 * Otherwise, returning an empty array </br>
+	 * @return failure message if there is an exception </br>
+	 * This method is called when receiving {@link URIRequest#GET_ALL_USER} </br>
+	 * 
 	 * @param parameter  possibly contains one or some or all of the values below  </br>
 	 * @return An array of {@link User#toJSON()} if the search condition match the database </br>
 	 * </li> {@link UserDAO#USER_KEY} </br>
@@ -38,8 +40,11 @@ public interface IUserService {
 	 */
 	public Object doGetAll(Map<String, Object> parameter);
 	/**
-	 * Insert {@link User} to the {@link Database} </br> 
-	 * @param httpExchange {@link HttpExchange} communicate between server and clients </br>
+	 * Create and insert a new {@link User} from values of the input parameter to database </br>
+     * @return success message if there is no exception. Otherwise, returning a failure message </br>
+     * 
+     * This method is called when receiving {@link URIRequest#CREATE_USER} </br>
+     * 
 	 * @param parameter contains : </br>
 	 * 	{@link UserDAO#USER_KEY} </br>
 	 * 	{@link UserDAO#USER_TYPE_ID} </br>
@@ -48,14 +53,17 @@ public interface IUserService {
 	 *  {@link UserDAO#USER_NAME} </br>
 	 *  {@link UserDAO#PASSWORD} </br>
 	 *  {@link UserDAO#FULL_NAME} </br>
-	 *  @return SUCCESS message if creating {@link User} successfully </br>
-	 *  @return FAILURE message if creating {@link User} failure </br>
 	 */
 	public Object doCreate(Map<String, Object> parameter);
 	
 	/**
-	 * Update the changes of {@link User} to the database </br>
-	 * @param parameter contains </br>
+	 * 
+	 * Update the changes of {@link User} from the input parameter </br>
+     * @return success message if there is no exception. Otherwise, returning a failure message </br>
+     * @return "user does not exist" if there is no user found from the given userId </br> 
+     * This method is called when receiving {@link URIRequest#EDIT_USER} </br>
+ 
+ 	 * @param parameter contains </br>
 	 * {@link UserDAO#USER_KEY} </br> - mandatory
 	 * {@link UserDAO#ID} </br> - mandatory
 	 * {@link UserDAO#EMAIL} </br> - optional
@@ -64,34 +72,33 @@ public interface IUserService {
 	 * {@link UserDAO#IS_APPROVED} </br> - optional
 	 * {@link UserDAO#USER_NAME} </br> - optional
 	 * {@value UserDAO#USER_TYPE_ID} </br> - optional
-	 *  @return SUCCESS message if creating {@link User} successfully </br>
-	 *  @return FAILURE message if creating {@link User} failure </br>
-	 * @return USER DOES NOT EXIST message if user doesn't exist in the system </br>
+	 * 
 	 */
 	public Object doEdit(Map<String, Object> parameter);
 	
 	/**
-	 * Remove {@link User} out the system </br>
-	 * @param httpExchange {@link tHttpExchange} communicate between server and clients </br>
+	 * Delete {@link User} having then same userId value in the input parameter </br>
+     * @return success message if there is no exception. Otherwise, returning a failure message </br>
+     * @return "user does not exist" if there is no user found from the given userId </br>
+     * 
+     * This method is called when receiving {@link URIRequest#DELETE_USER} </br>
+     *  
 	 * @param parameter contains: </br>
 	 *  {@link UserDAO#USER_KEY} </br>
 	 *  {@link UserDAO#ID} </br>
-	 * @return SUCCESS of user is deleted successfully </br>
-	 * @return FAILURE if there is an error </br>
-	 * @return USER DOES NOT EXIST message if user doesn't exist in the system </br>
-   
 	 */
 	public Object doDelete(Map<String, Object> parameter);
 	/**
-	 * Change approve status of  {@link User} 
-	 * @param httpExchange {@link HttpExchange} communicates between server and clients </br>
+	 * Change approve status of  {@link User} and set the change to database </br>
+	 * @return SUCCESS of approved status is change successfully </br>
+	 * @return FAILURE if there is an error </br>
+	 * @return USER DOES NOT EXIST message if user doesn't exist in the system </br
+	 * 
 	 * @param parameter contains: </br>
 	 * {@link UserDAO#USER_KEY} </br>
 	 * {@link UserDAO#ID} </br>
 	 * {@link UserDAO#IS_APPROVED} </br> a boolean value
-	 * @return SUCCESS of approved status is change successfully </br>
-	 * @return FAILURE if there is an error </br>
-	 * @return USER DOES NOT EXIST message if user doesn't exist in the system </br>
+>
 	 */
 	public Object doChangeApprove(Map<String, Object> parameter);
 	

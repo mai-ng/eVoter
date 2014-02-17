@@ -7,7 +7,11 @@ import org.springframework.jdbc.core.RowMapper;
 
 import evoter.share.dao.StatisticsDAO;
 import evoter.share.model.Statistics;
-
+/**
+ * Mapping column values of row of {@link ResultSet} to {@link Statistics} </br>
+ * @author btdiem </br>
+ *
+ */
 public class StatisticsRowMapper implements RowMapper<Statistics> {
 
 	@Override

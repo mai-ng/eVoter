@@ -11,4 +11,6 @@
     <string name="no_button">No</string>
     <string name="yes_button">Yes</string>
     <string name="retry_button">Retry</string>
+    <string name="delete_button">Delete</string>
+    <string name="edit_button">Edit</string>
 </resources>

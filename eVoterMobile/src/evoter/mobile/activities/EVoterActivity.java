@@ -164,7 +164,7 @@ public class EVoterActivity extends Activity {
 	 */
 	public void exit() {
 		Dialog dialog = new AlertDialog.Builder(this)
-				.setTitle("Are you really want to exit!")
+				.setTitle("Exit application?")
 				.setIcon(android.R.drawable.ic_dialog_alert)
 				.setPositiveButton(R.string.yes_button, new DialogInterface.OnClickListener() {
 					

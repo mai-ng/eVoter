@@ -18,7 +18,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.SubjectAdapter;
-import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;

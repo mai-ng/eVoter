@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +19,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.SessionAdapter;
-import evoter.mobile.objects.DialogInfor;
+import evoter.mobile.main.R;
 import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
@@ -54,7 +57,7 @@ public class SessionActivity extends ItemDataActivity {
 						.getItemAtPosition(position);
 				EVoterShareMemory.setCurrentSession(selectedSession);
 				EVoterShareMemory.setPreviousContext(SessionActivity.this);
-				Intent questionActivity = new Intent(SessionActivity.this,QuestionActivity.class);
+				Intent questionActivity = new Intent(SessionActivity.this, QuestionActivity.class);
 				startActivity(questionActivity);
 			}
 		});
@@ -111,32 +114,23 @@ public class SessionActivity extends ItemDataActivity {
 	 * @param selectedSession
 	 */
 	private void longClickSessionAction() {
-		final DialogInfor dialog = new DialogInfor(
-				SessionActivity.this, "Session");
-		dialog.setMessageContent(EVoterShareMemory.getCurrentSession().getTitle());
-		dialog.getBtOK().setText("Edit");
-		dialog.getBtOK().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Log.i("SESSION LONG ITEM CLICK", "Edit session" + EVoterShareMemory.getCurrentSession().getTitle());
-				dialog.dismiss();
-				Intent editSession = new Intent(SessionActivity.this, EditSessionActivity.class);
-				EVoterShareMemory.setPreviousContext(SessionActivity.this);
-				startActivity(editSession);
-			}
-		});
-		
-		dialog.getBtKO().setText("Delete");
-		dialog.getBtKO().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				deleteSessionRequest();
-				dialog.dismiss();
-			}
-		});
-		dialog.show();
+		Dialog dialog = new AlertDialog.Builder(this)
+				.setTitle("Session: " + EVoterShareMemory.getCurrentSessionName())
+				.setIcon(android.R.drawable.ic_dialog_info)
+				.setPositiveButton(R.string.edit_button, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int whichButton) {
+						Intent editSession = new Intent(SessionActivity.this, EditSessionActivity.class);
+						EVoterShareMemory.setPreviousContext(SessionActivity.this);
+						startActivity(editSession);
+					}
+				})
+				.setNegativeButton(R.string.delete_button, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int whichButton) {
+						deleteSessionRequest();
+					}
+				}).show();
 	}
 	
 	/**
@@ -163,7 +157,7 @@ public class SessionActivity extends ItemDataActivity {
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 	}
 	
 	/**

@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -141,21 +140,14 @@ public class QuestionDetailActivity extends EVoterActivity {
 				} else if (btSend.getText().toString().equals(STOP)) {
 					stopReceiveAnswer();
 				} else if (btSend.getText().toString().equals(VIEW_STATISTIC)) {
-					viewStatistic();
+					ActivityManager.viewQuestionStatistic(EVoterShareMemory.getCurrentQuestion(),QuestionDetailActivity.this);
 				}
 				
 			}
 		});
 	}
 	
-	/**
-	 * 
-	 */
-	protected void viewStatistic() {
-		Intent statisticActivity = new Intent(QuestionDetailActivity.this, QuestionStatisticActivity.class);
-		startActivity(statisticActivity);
-	}
-	
+
 	/**
 	 * 
 	 */
@@ -280,14 +272,14 @@ public class QuestionDetailActivity extends EVoterActivity {
 					if (idAnswer == -1) {
 						EVoterMobileUtils.showeVoterToast(this, "You have to choose one answer before submit");
 					} else {
-						eVoterRequest.doVote(idAnswer, questionTypeID, statistic, QuestionDetailActivity.this);
+						EVoterRequestManager.doVote(idAnswer, questionTypeID, statistic, QuestionDetailActivity.this);
 					}
 					break;
 				case QuestionType.MULTI_CHECKBOX:
 					boolean hasAnswer = false;
 					for (int i = 0; i < listCheckBox.size(); i++) {
 						if (listCheckBox.get(i).isChecked()) {
-							eVoterRequest.doVote(answers.get(i).getId(), questionTypeID, null, QuestionDetailActivity.this);
+							EVoterRequestManager.doVote(answers.get(i).getId(), questionTypeID, null, QuestionDetailActivity.this);
 							hasAnswer = true;
 						}
 					}
@@ -299,7 +291,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 					if (statistic == null) {
 						EVoterMobileUtils.showeVoterToast(this, "You have to choose at least one answer before submit");
 					} else {
-						eVoterRequest.doVote(answers.get(0).getId(), questionTypeID, statistic, QuestionDetailActivity.this);
+						EVoterRequestManager.doVote(answers.get(0).getId(), questionTypeID, statistic, QuestionDetailActivity.this);
 					}
 					break;
 				case QuestionType.INPUT_ANSWER:
@@ -307,7 +299,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 					if (statistic == null || statistic.equals("")) {
 						EVoterMobileUtils.showeVoterToast(this, "You have to fill an answer before submit");
 					} else {
-						eVoterRequest.doVote(answers.get(0).getId(), questionTypeID, statistic, QuestionDetailActivity.this);
+						EVoterRequestManager.doVote(answers.get(0).getId(), questionTypeID, statistic, QuestionDetailActivity.this);
 					}
 					break;
 				case QuestionType.MATCH:

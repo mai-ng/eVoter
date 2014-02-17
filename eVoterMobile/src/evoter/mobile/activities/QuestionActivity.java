@@ -136,8 +136,24 @@ public class QuestionActivity extends ItemDataActivity {
 			}
 		});
 		
+		mainMenu.getBtStatistic().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				showStudentFeedback();
+			}
+		});
+		
 	}
 	
+	/**
+	 * 
+	 */
+	protected void showStudentFeedback() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * 
 	 */
@@ -242,7 +258,7 @@ public class QuestionActivity extends ItemDataActivity {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				Toast.makeText(QuestionActivity.this, "Your excited value: " + progressValue, Toast.LENGTH_SHORT).show();
-				eVoterRequest.doVote(excitedAnswerID, QuestionType.SLIDER, String.valueOf(progressValue),QuestionActivity.this);
+				EVoterRequestManager.doVote(excitedAnswerID, QuestionType.SLIDER, String.valueOf(progressValue),QuestionActivity.this);
 				
 			}
 			
@@ -263,7 +279,7 @@ public class QuestionActivity extends ItemDataActivity {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				Toast.makeText(QuestionActivity.this, "Your difficult level value: " + progressValue, Toast.LENGTH_SHORT).show();
-				eVoterRequest.doVote(difficultAnswerID, QuestionType.SLIDER, String.valueOf(progressValue),QuestionActivity.this);
+				EVoterRequestManager.doVote(difficultAnswerID, QuestionType.SLIDER, String.valueOf(progressValue),QuestionActivity.this);
 			}
 			
 			@Override

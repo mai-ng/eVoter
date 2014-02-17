@@ -20,17 +20,13 @@ import evoter.share.utils.URIRequest;
 /**
  * @author luongnv89
  */
-public class EVoterRequest {
-	/**
-	 * 
-	 */
-	public EVoterRequest() {
-	}
+public class EVoterRequestManager {
+
 	
 	/**
 	 * 
 	 */
-	public void doVote(long answerID, long questionTypeID, String statistic,final EVoterActivity context) {
+	public static void doVote(long answerID, long questionTypeID, String statistic,final EVoterActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());

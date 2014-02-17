@@ -7,7 +7,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +25,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
-import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.MainMenu;
 import evoter.mobile.objects.OfflineEVoterManager;
@@ -93,8 +94,6 @@ public class EVoterActivity extends Activity {
 	
 	protected MainMenu mainMenu;
 	
-	EVoterRequest eVoterRequest;
-	
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -107,7 +106,6 @@ public class EVoterActivity extends Activity {
 		setContentView(R.layout.start);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
 				R.layout.evoter_title_bar);
-		eVoterRequest = new EVoterRequest();
 		ivTitleBarIcon = (ImageView) findViewById(R.id.ivIconTitleBar);
 		ivTitleBarRefresh = (ImageView) findViewById(R.id.ivRefreshTitleBar);
 		tvTitleBarContent = (TextView) findViewById(R.id.tvTitleBar);
@@ -160,33 +158,27 @@ public class EVoterActivity extends Activity {
 		
 	}
 	
-	
 	/**
 	 * exit application from anywhere in application <br>
 	 * Show a dialog to confirm exiting application
 	 */
 	public void exit() {
-		final DialogInfor dialogExit = new DialogInfor(EVoterActivity.this, "Do you really want to exit application?");
-		dialogExit.setMessageContent("");
-		dialogExit.getBtOK().setText("Exit");
-		dialogExit.getBtOK().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Goodbye....");
-				exitApplication();
-			}
-		});
-		dialogExit.getBtKO().setText("Cancel");
-		dialogExit.getBtKO().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				dialogExit.dismiss();
-				
-			}
-		});
-		dialogExit.show();
+		Dialog dialog = new AlertDialog.Builder(this)
+				.setTitle("Are you really want to exit!")
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setPositiveButton(R.string.yes_button, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int whichButton) {
+						EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Goodbye....");
+						exitApplication();
+					}
+				})
+				.setNegativeButton(R.string.no_button, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int whichButton) {
+						dialog.dismiss();
+					}
+				}).show();
 	};
 	
 	/**
@@ -340,33 +332,33 @@ public class EVoterActivity extends Activity {
 	 * 
 	 */
 	protected void errorConnection() {
-		DialogInfor dialog = new DialogInfor(
-				EVoterActivity.this, "Error connection!");
-		dialog.setMessageContent("Cannot connect to internet. Check your mobile internet connection an try again!");
-		dialog.show();
-		dialog.getBtOK().setText("Retry");
-		dialog.getBtOK().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				refreshActivity();
-			}
-		});
-		dialog.getBtKO().setText("Exit");
-		dialog.getBtKO().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				exitApplication();
-			}
-		});
+		Dialog dialog = new AlertDialog.Builder(this)
+				.setTitle("Internet connection")
+				.setMessage("Cannot connect to internet. Check your mobile internet connection an try again!")
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setPositiveButton(R.string.exit_button, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int whichButton) {
+						exitApplication();
+					}
+				})
+				.setNegativeButton(R.string.retry_button, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int whichButton) {
+						Intent exitIntent = new Intent(EVoterActivity.this,
+								StartActivity.class);
+						exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						exitIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						startActivity(exitIntent);
+					}
+				}).show();
 	}
 	
-	public void updateGUI(){
+	public void updateGUI() {
 		
 	}
 	
-	public void shutdownByException(){
+	public void shutdownByException() {
 		EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Exception! Restart eVoter and try again!");
 		exitApplication();
 	}

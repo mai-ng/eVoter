@@ -32,6 +32,7 @@ public class MainMenu extends Dialog {
 	Button btNewSession;
 	Button btAcceptUsers;
 	Button btStartSession;
+	Button btStatistic;
 	
 	LinearLayout lo_questionActivityMenu;
 	Button btNewQuestion;
@@ -70,6 +71,8 @@ public class MainMenu extends Dialog {
 		btNewQuestion = (Button) findViewById(R.id.btNewQuestion);
 		btNewQuestion.setVisibility(View.GONE);
 		btStartSession = (Button) findViewById(R.id.btStartSession);
+		btStatistic = (Button)findViewById(R.id.btStatitisticBar);
+		btStatistic.setVisibility(View.GONE);
 		if (EVoterShareMemory.getCurrentSession() != null) {
 			if (EVoterShareMemory.getCurrentSession().isActive()) {
 				btStartSession.setText(STOP_SESSION);
@@ -87,6 +90,7 @@ public class MainMenu extends Dialog {
 			btNewSession.setVisibility(View.VISIBLE);
 			btNewQuestion.setVisibility(View.VISIBLE);
 			btStartSession.setVisibility(View.VISIBLE);
+			btStatistic.setVisibility(View.VISIBLE);
 		}
 		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
 			btStartSession.setText(ACCEPT_SESSION);
@@ -218,5 +222,13 @@ public class MainMenu extends Dialog {
 	public Button getBtStartSession() {
 		return btStartSession;
 	}
+
+	/**
+	 * @return the btStatistic
+	 */
+	public Button getBtStatistic() {
+		return btStatistic;
+	}
+	
 	
 }

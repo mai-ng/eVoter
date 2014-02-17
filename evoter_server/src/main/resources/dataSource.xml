@@ -103,7 +103,7 @@ http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springfram
 		<property name="userSubjectDAO" ref="userSubjectDAO"/>	
 		<property name="questionSessionDAO" ref="questionSessionDAO" />
 		<property name="questionDAO" ref="questionDAO" />
-		
+		<property name="answerDAO" ref="answerDAO" />
 	</bean>    
     	    
    <bean id="subjectService" class="evoter.server.http.request.SubjectService" lazy-init="true">

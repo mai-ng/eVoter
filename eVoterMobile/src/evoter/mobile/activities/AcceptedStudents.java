@@ -55,13 +55,13 @@ public class AcceptedStudents extends EVoterActivity {
 		lvTeacher.setVisibility(View.GONE);
 		TextView tv = (TextView)findViewById(R.id.tvListProfessors);
 		tv.setVisibility(View.GONE);
-		loadListItemData();
+		refreshActivity();
 	}
 	
 	/**
 	 * 
 	 */
-	private void loadListItemData() {
+	public void refreshActivity() {
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 //		parameters.put(SessionUserDAO.SESSION_ID, String.valueOf(sessionId));

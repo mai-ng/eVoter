@@ -6,6 +6,7 @@ package evoter.mobile.activities;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -53,7 +54,8 @@ public abstract class ItemDataActivity extends EVoterActivity {
 		this.ivTitleBarRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				loadListItemData();
+				Log.i("Refresh Icon click", "yeah");
+				refreshActivity();
 			}
 		});
 		
@@ -84,14 +86,14 @@ public abstract class ItemDataActivity extends EVoterActivity {
 				
 			}
 		});
-		loadListItemData();
+		refreshActivity();
 	}
 	
 	/**
 	 * Load data for list view.
 	 * Request data from server according to context of activity.
 	 */
-	protected abstract void loadListItemData();
+//	protected abstract void loadListItemData();
 
 	/* (non-Javadoc)
 	 * @see evoter.mobile.activities.EVoterActivity#onBackPressed()
@@ -99,8 +101,7 @@ public abstract class ItemDataActivity extends EVoterActivity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		EVoterShareMemory.getPreviousContext().loadListItemData();
+		EVoterShareMemory.getPreviousContext().refreshActivity();
 	}
-
 	
 }

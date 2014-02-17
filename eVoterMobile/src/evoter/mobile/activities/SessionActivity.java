@@ -1,11 +1,9 @@
 package evoter.mobile.activities;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +25,6 @@ import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.ItemData;
 import evoter.share.model.Session;
-import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
@@ -57,7 +54,8 @@ public class SessionActivity extends ItemDataActivity {
 						.getItemAtPosition(position);
 				EVoterShareMemory.setCurrentSession(selectedSession);
 				EVoterShareMemory.setPreviousContext(SessionActivity.this);
-				startActivity(new Intent("android.intent.action.SESSIONVIEW"));
+				Intent questionActivity = new Intent(SessionActivity.this,QuestionActivity.class);
+				startActivity(questionActivity);
 			}
 		});
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -85,10 +83,10 @@ public class SessionActivity extends ItemDataActivity {
 		
 	}
 	
-	protected void loadListItemData() {
+	public void refreshActivity() {
 		RequestParams params = new RequestParams();
 		params.add(SessionDAO.SUBJECT_ID,
-				String.valueOf(EVoterShareMemory.getCurrentSubjectID()));
+				String.valueOf(EVoterShareMemory.getCurrentSubject().getId()));
 		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		Log.i("SUBJECT_ID",
 				String.valueOf(EVoterShareMemory.getCurrentSubjectID()));
@@ -97,7 +95,7 @@ public class SessionActivity extends ItemDataActivity {
 					
 					@Override
 					public void onSuccess(String response) {
-						loadItemDataResponseProcess(response);
+						parserListSessionFromResponse(response);
 					}
 					
 					@Override
@@ -144,33 +142,15 @@ public class SessionActivity extends ItemDataActivity {
 	/**
 	 * @param response
 	 */
-	private void loadItemDataResponseProcess(String response) {
+	private void parserListSessionFromResponse(String response) {
 		try {
 			EVoterShareMemory.resetListAcceptedSessions();
 			ArrayList<ItemData> listSession = new ArrayList<ItemData>();
 			JSONArray array = EVoterMobileUtils.getJSONArray(response);
 			for (int i = 0; i < array.length(); i++) {
-				String sString = array.get(i).toString();
-				JSONObject s = new JSONObject(sString);
-				long sessionID = Long.parseLong(s
-						.getString(SessionDAO.ID));
-				String creator;
-				if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
-					creator = EVoterShareMemory.getCurrentUserName();
-				} else {
-					creator = s.getString("CREATOR");
-					boolean isAccepted = s.getBoolean(SessionUserDAO.ACCEPT_SESSION);
-					if (isAccepted) EVoterShareMemory.addToListAcceptedSessions(sessionID);
-				}
-				Session session = new Session(sessionID, Long.parseLong(s
-						.getString(SessionDAO.SUBJECT_ID)), s
-						.getString(SessionDAO.NAME), EVoterMobileUtils
-						.convertToDate(s
-								.getString(SessionDAO.CREATION_DATE)),
-						Boolean.parseBoolean(s
-								.getString(SessionDAO.IS_ACTIVE)), Long.parseLong(s.getString(SessionDAO.USER_ID)), creator);
-				
-				listSession.add(session);
+				Session session = EVoterMobileUtils.parserSession(array.getJSONObject(i));
+				if (session != null)
+					listSession.add(session);
 			}
 			if (listSession.isEmpty()) {
 				EVoterMobileUtils.showeVoterToast(SessionActivity.this,
@@ -183,11 +163,7 @@ public class SessionActivity extends ItemDataActivity {
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Log.i("Get All Session Test", "response : " + response);
+		} 
 	}
 	
 	/**

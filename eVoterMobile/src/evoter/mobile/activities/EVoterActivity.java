@@ -169,7 +169,6 @@ public class EVoterActivity extends Activity {
 			}
 		});
 		
-		
 		mainMenu.getBtStartSession().setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -426,5 +425,51 @@ public class EVoterActivity extends Activity {
 			EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Error! Username and password is not correct. Please try again!");
 		}
 	}
+	
+	public void refreshActivity() {
+		
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onResume()
+	 */
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		if (!EVoterMobileUtils.hasInternetConnection(this)) {
+			errorConnection();
+		} else {
+			refreshActivity();
+		}
+	};
+	
+	/**
+	 * 
+	 */
+	protected void errorConnection() {
+		DialogInfor dialog = new DialogInfor(
+				EVoterActivity.this, "Error connection!");
+		dialog.setMessageContent("Cannot connect to internet. Check your mobile internet connection an try again!");
+		dialog.show();
+		dialog.getBtOK().setText("Retry");
+		dialog.getBtOK().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				refreshActivity();
+			}
+		});
+		dialog.getBtKO().setText("Exit");
+		dialog.getBtKO().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				exitApplication();
+			}
+		});
+	}
+	
 	
 }

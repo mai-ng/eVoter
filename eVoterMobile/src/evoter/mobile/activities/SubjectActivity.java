@@ -69,7 +69,7 @@ public class SubjectActivity extends ItemDataActivity {
 		
 	}
 	
-	protected void loadListItemData() {
+	public void refreshActivity() {
 		RequestParams params = new RequestParams();
 		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		client.post(RequestConfig.getURL(URIRequest.GET_ALL_SUBJECT), params,
@@ -77,8 +77,7 @@ public class SubjectActivity extends ItemDataActivity {
 					
 					@Override
 					public void onSuccess(String response) {
-						
-						loadListItemDataResponseProcess(response);
+						parserListSubjectFromResponse(response);
 					}
 					
 					@Override
@@ -102,30 +101,20 @@ public class SubjectActivity extends ItemDataActivity {
 	/**
 	 * @param response
 	 */
-	private void loadListItemDataResponseProcess(String response) {
+	private void parserListSubjectFromResponse(String response) {
 		try {
 			ArrayList<ItemData> newList = new ArrayList<ItemData>();
-			JSONArray array = EVoterMobileUtils.getJSONArray(response);
+			JSONArray array = new JSONArray(response);
 			
 			for (int i = 0; i < array.length(); i++) {
-				String sItem = array.get(i).toString();
-				JSONObject item = new JSONObject(sItem);
-//				Log.i("JSON TEST: ", item.toString());
-				Subject subject = null;
-				try {
-					subject = new Subject(
-							Long.parseLong(item
-									.getString(SubjectDAO.ID)),
-							item.getString(SubjectDAO.TITLE),
-							EVoterMobileUtils.convertToDate(item
-									.getString(SubjectDAO.CREATION_DATE)));
-				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				JSONObject item = array.getJSONObject(i);
+				Subject subject = new Subject(
+						Long.parseLong(item
+								.getString(SubjectDAO.ID)),
+						item.getString(SubjectDAO.TITLE),
+						EVoterMobileUtils.convertToDate(item
+								.getString(SubjectDAO.CREATION_DATE)));
+				
 				newList.add(subject);
 			}
 			if (newList.isEmpty()) {
@@ -134,6 +123,12 @@ public class SubjectActivity extends ItemDataActivity {
 			}
 			adapter.updateList(newList);
 		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

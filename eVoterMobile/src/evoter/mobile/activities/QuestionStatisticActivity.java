@@ -41,17 +41,17 @@ public class QuestionStatisticActivity extends EVoterActivity {
 			
 			@Override
 			public void onClick(View v) {
-				loadStatistic();
+				refreshActivity();
 			}
 		});
 		ivTitleBarRefresh.setVisibility(View.VISIBLE);
-		loadStatistic();
+		refreshActivity();
 	}
 	
 	/**
 	 * 
 	 */
-	protected void loadStatistic() {
+	public void refreshActivity() {
 		RequestParams params = new RequestParams();
 		params.add(QuestionDAO.ID,
 				String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));

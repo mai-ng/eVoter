@@ -1,11 +1,9 @@
 package evoter.mobile.activities;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,6 +23,7 @@ import evoter.mobile.objects.DialogInfor;
 import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.UserDAO;
@@ -45,6 +44,10 @@ import evoter.share.utils.URIRequest;
  * on 06/12/13.
  */
 public class QuestionActivity extends ItemDataActivity {
+	private static final String EXCITED = "EXCITED";
+	private static final String DIFFICULT = "DIFFICULT";
+	long idExcitedBar;
+	long idDifficultBar;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,11 +56,6 @@ public class QuestionActivity extends ItemDataActivity {
 				.getCurrentSessionName());
 		
 		mainMenu.setQuestionActivityMenu();
-		if (userAcceptSession()) mainMenu.getBtStartSession().setVisibility(View.GONE);
-		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && EVoterShareMemory.currentSessionIsActive()) {
-			//Setup seekbar
-			buildStaticSlider();
-		}
 		
 		adapter = new QuestionAdapter(QuestionActivity.this);
 		listView.setAdapter(adapter);
@@ -69,9 +67,9 @@ public class QuestionActivity extends ItemDataActivity {
 				Question selectQuestion = (Question) parent
 						.getItemAtPosition(position);
 				EVoterShareMemory.setCurrentQuestion(selectQuestion);
+				EVoterShareMemory.setPreviousContext(QuestionActivity.this);
 				Log.i("Detail of question: ", selectQuestion.getTitle());
 				Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);
-				EVoterShareMemory.setPreviousContext(QuestionActivity.this);
 				startActivity(detailQuestion);
 			}
 		});
@@ -95,8 +93,8 @@ public class QuestionActivity extends ItemDataActivity {
 			public void onClick(View v) {
 				Log.i("Main menu", "Create new question");
 				mainMenu.dismiss();
-				Intent newQuestion = new Intent(QuestionActivity.this, NewQuestionActivity.class);
 				EVoterShareMemory.setPreviousContext(QuestionActivity.this);
+				Intent newQuestion = new Intent(QuestionActivity.this, NewQuestionActivity.class);
 				startActivity(newQuestion);
 				
 			}
@@ -114,14 +112,13 @@ public class QuestionActivity extends ItemDataActivity {
 			
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
-				Toast.makeText(QuestionActivity.this, String.valueOf(progressValue), Toast.LENGTH_SHORT).show();
-				
+				Toast.makeText(QuestionActivity.this, "Your excited value: " + progressValue, Toast.LENGTH_SHORT).show();
+				submitStatisValue(idExcitedBar, progressValue);
 			}
 			
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
-				Toast.makeText(QuestionActivity.this, "Slide the seekbar to the value of Bored!", Toast.LENGTH_SHORT).show();
-				
+				Toast.makeText(QuestionActivity.this, "Evaluate the exciting of session. Max value: " + 10, Toast.LENGTH_SHORT).show();
 			}
 			
 			@Override
@@ -131,29 +128,67 @@ public class QuestionActivity extends ItemDataActivity {
 		});
 		
 		sbDifficult.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			int value;
+			int progressValue;
 			
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
-				Toast.makeText(QuestionActivity.this, String.valueOf(value), Toast.LENGTH_SHORT).show();
-				
+				Toast.makeText(QuestionActivity.this, "Your difficult level value: " + progressValue, Toast.LENGTH_SHORT).show();
+				submitStatisValue(idDifficultBar, progressValue);
 			}
 			
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
-				Toast.makeText(QuestionActivity.this, "Slide the seekbar to the value of Bored!", Toast.LENGTH_SHORT).show();
-				
+				Toast.makeText(QuestionActivity.this, "Evaluate the difficult level of session. Max value: " + 10, Toast.LENGTH_SHORT).show();
 			}
 			
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				
-				value = progress;
+				progressValue = progress;
 			}
 		});
 	}
 	
-	protected void loadListItemData() {
+	/**
+	 * @param idExcitedBar2
+	 * @param progressValue
+	 */
+	protected void submitStatisValue(long idExcitedBar2, int progressValue) {
+		//TODO: Submit answer
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(4));
+		params.put(AnswerDAO.ID, String.valueOf(progressValue));
+		params.put(AnswerDAO.STATISTICS, progressValue);
+		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				if (response.contains("SUCCESS")) {
+					EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
+				}
+				else {
+					EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+							"Cannot send evaluate value: " + response);
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
+	}
+	
+	public void refreshActivity() {
+		EVoterMobileUtils.updateCurrentSession();
+		if (userAcceptSession()) mainMenu.getBtStartSession().setVisibility(View.GONE);
+		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && EVoterShareMemory.currentSessionIsActive()) {
+			//Setup seekbar
+			buildStaticSlider();
+		}
 		RequestParams params = new RequestParams();
 		params.add(QuestionSessionDAO.SESSION_ID,
 				String.valueOf(EVoterShareMemory.getCurrentSessionID()));
@@ -171,37 +206,14 @@ public class QuestionActivity extends ItemDataActivity {
 									.getJSONArray(response);
 							for (int i = 0; i < array.length(); i++) {
 								
-								String sString = array.get(i).toString();
-								JSONObject s = new JSONObject(sString);
-								String answerColumn1 = "null";
-								String answerColumn2 = "null";
-								if (s.toString().contains(Question.COL1)) {
-									answerColumn1 = s
-											.getString(Question.COL1);
+								Question question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(i));
+								if (question.getTitle().contains(EXCITED)) idExcitedBar = question.getId();
+								if (question.getTitle().contains(DIFFICULT)) idDifficultBar = question.getId();
+								if (question != null && !question.getTitle().contains(EXCITED) && !question.getTitle().contains(DIFFICULT)) {
+									//With student, only load the question which already sent or finished.
+									if (!(EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && question.getStatus() == 0))
+										listQuestion.add(question);
 								}
-								if (s.toString().contains(Question.COL2)) {
-									answerColumn2 = s
-											.getString(Question.COL2);
-								}
-								Question question = new Question(
-										Long.parseLong(s
-												.getString(QuestionDAO.ID)),
-										s.getString(QuestionDAO.QUESTION_TEXT),
-										Long.parseLong(s
-												.getString(QuestionDAO.QUESTION_TYPE_ID)),
-										Long.parseLong(s
-												.getString(QuestionDAO.USER_ID)),
-										EVoterMobileUtils.convertToDate(s
-												.getString(QuestionDAO.CREATION_DATE)),
-										Long.parseLong(s
-												.getString(QuestionSessionDAO.SESSION_ID)),
-										Long.parseLong(s
-												.getString(QuestionDAO.PARENT_ID)),
-										answerColumn1, answerColumn2);
-								question.setStatus(s.getInt(QuestionDAO.STATUS));
-								//With student, only load the question which already sent or finished.
-								if (!(EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && question.getStatus() == 0))
-									listQuestion.add(question);
 							}
 							if (listQuestion.isEmpty()) {
 								EVoterMobileUtils.showeVoterToast(
@@ -213,12 +225,6 @@ public class QuestionActivity extends ItemDataActivity {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (NumberFormatException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						// Log.i("Get All Quesion Test", "response : " +
-						// response);
-						catch (ParseException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}

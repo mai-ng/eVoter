@@ -36,9 +36,11 @@ import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
+import evoter.share.dao.SessionDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
 import evoter.share.model.QuestionType;
+import evoter.share.model.Session;
 import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
@@ -77,21 +79,21 @@ public class QuestionDetailActivity extends EVoterActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.question_view_detail);
 		this.tvTitleBarContent.setText(EVoterShareMemory.getCurrentSessionName());
-		this.ivTitleBarRefresh.setVisibility(View.GONE);
 		mainMenu.setQuestionActivityMenu();
 		Log.i("Current Question: ", EVoterShareMemory.getCurrentQuestion().getTitle());
 		tvQuestionText = (TextView) findViewById(R.id.tvQuestionText);
-		tvQuestionText.setText(EVoterShareMemory.getCurrentQuestion().getQuestionText());
-		
 		answerArea = (LinearLayout) findViewById(R.id.loAnswerArea);
-		
 		//Parser the answer of question
 		answers = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
 		
-		//		type = 1;
-		buidAnswerArea();
-		
 		btSend = (Button) findViewById(R.id.btSendQuestion);
+		groups = new RadioGroup(this);
+		groups.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		listCheckBox = new ArrayList<CheckBox>();
+		etAnswer = new EditText(this);
+		etAnswer.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		tvQuestionText.setText(EVoterShareMemory.getCurrentQuestion().getQuestionText());
+		buidAnswerArea();
 		setButtonLabel();
 		setupButtonAction();
 	}
@@ -137,7 +139,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 					submitAnswer();
 				} else if (btSend.getText().toString().equals(STOP)) {
 					stopReceiveAnswer();
-				}else if(btSend.getText().toString().equals(VIEW_STATISTIC)){
+				} else if (btSend.getText().toString().equals(VIEW_STATISTIC)) {
 					viewStatistic();
 				}
 				
@@ -152,7 +154,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		Intent statisticActivity = new Intent(QuestionDetailActivity.this, QuestionStatisticActivity.class);
 		startActivity(statisticActivity);
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -203,11 +205,12 @@ public class QuestionDetailActivity extends EVoterActivity {
 					int status = ob.getInt(QuestionDAO.STATUS);
 					Log.i("Get question status", String.valueOf(status));
 					EVoterShareMemory.getCurrentQuestion().setStatus(status);
+					setButtonLabel();
 					if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
-						submitToServer();
+						checkSessionStatus();
 					} else {
 						EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Time out! Your will not be count in the statistic of question!");
-						btSend.setVisibility(View.GONE);
+						btSend.setText(VIEW_STATISTIC);
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -230,7 +233,45 @@ public class QuestionDetailActivity extends EVoterActivity {
 	/**
 	 * 
 	 */
+	protected void checkSessionStatus() {
+		RequestParams params = new RequestParams();
+		params.add(SessionDAO.ID,
+				String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		client.post(RequestConfig.getURL(URIRequest.VIEW_SESSION), params,
+				new AsyncHttpResponseHandler() {
+					
+					@Override
+					public void onSuccess(String response) {
+						Log.i("View session", response);
+						JSONArray array;
+						try {
+							array = new JSONArray(response);
+							Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
+							if(session!=null) EVoterShareMemory.setCurrentSession(session);
+							submitToServer();
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
+					@Override
+					public void onFailure(Throwable error, String content) {
+						Log.e("View session", "onFailure error : "
+								+ error.toString() + "content : " + content);
+					}
+				});
+		
+	}
+
+	/**
+	 * 
+	 */
 	private void submitToServer() {
+		if(!EVoterShareMemory.getCurrentSession().isActive()){
+			EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Session is closed. You cannot send answer!");
+		}else{
 		switch ((int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId()) {
 			case QuestionType.YES_NO:
 			case QuestionType.MULTI_RADIOBUTTON:
@@ -273,8 +314,8 @@ public class QuestionDetailActivity extends EVoterActivity {
 			default:
 				break;
 		}
+		}
 	}
-	
 	
 	/**
 	 * 
@@ -350,11 +391,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 	 * @param column1
 	 */
 	private void buidAnswerArea() {
-		groups = new RadioGroup(this);
-		groups.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-		listCheckBox = new ArrayList<CheckBox>();
-		etAnswer = new EditText(this);
-		etAnswer.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		
 		switch ((int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId()) {
 			case QuestionType.YES_NO:
 				mutiRadioButtonArea();
@@ -501,7 +538,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
 		super.onBackPressed();
-		EVoterShareMemory.getPreviousContext().loadListItemData();
+		EVoterShareMemory.getPreviousContext().refreshActivity();
 	}
 	
 }

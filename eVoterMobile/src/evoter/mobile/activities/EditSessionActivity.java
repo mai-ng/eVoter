@@ -82,7 +82,7 @@ public class EditSessionActivity extends NewSessionActivity {
 							Log.i("Response", response);
 							if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 								EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Session is updated!");
-								EVoterShareMemory.getPreviousContext().loadListItemData();
+								EVoterShareMemory.getPreviousContext().refreshActivity();
 							} else {
 								EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Cannot update session!");
 							}

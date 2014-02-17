@@ -32,9 +32,11 @@ import evoter.share.dao.UserDAO;
 import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
-/**<br>Updated by @author luongnv89 on 12-Feb-2014:<br>
- * <li> Completed loadListItemData() method
- *<br>Created by @author luongnv89
+/**
+ * <br>
+ * Updated by @author luongnv89 on 12-Feb-2014:<br>
+ * <li>Completed loadListItemData() method <br>
+ * Created by @author luongnv89
  */
 public class SubjectUserActivity extends EVoterActivity {
 	
@@ -61,7 +63,7 @@ public class SubjectUserActivity extends EVoterActivity {
 			public void onClick(View v) {
 				listStudents.clear();
 				listTeachers.clear();
-				loadListItemData();
+				refreshActivity();
 			}
 			
 		});
@@ -96,10 +98,10 @@ public class SubjectUserActivity extends EVoterActivity {
 		lvStudent = (ListView) findViewById(R.id.lvSubjectStudents);
 		studentAdapter = new ArrayAdapter<String>(SubjectUserActivity.this, R.layout.user_item, listStudents);
 		lvStudent.setAdapter(studentAdapter);
-		loadListItemData();
+		refreshActivity();
 	}
 	
-	private void loadListItemData() {
+	public void refreshActivity() {
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		params.add(SubjectDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSubjectID()));

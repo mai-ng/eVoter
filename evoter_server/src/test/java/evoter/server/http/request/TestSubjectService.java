@@ -76,7 +76,7 @@ public class TestSubjectService {
 	}
 	/**
 	 * Test for {@link ISubjectService#doView(Map)} </br>
-	 * Expect returning FAILURE message</br>
+	 * Expect returning "SUBJECT DOES NOT EXIST" message</br>
 	 */
 	@Test
 	public void test_doView_2(){
@@ -121,27 +121,7 @@ public class TestSubjectService {
 		assertEquals("doGetAll", expected_response, response.toString());
 		
 	}
-//	/**
-//	 * Test for {@link ISubjectService#doGetAll(Map)} </br>
-//	 * Select all {@link Subject} created by user who did not exist in the system</br>
-//	 * Expecting returning empty array </br>
-//	 */
-//	@Test
-//	public void test_doGetAll_2(){
-//		
-//		String username = "someone else";
-//		String password = "12345678";
-//		
-//		parameters.put(UserDAO.USER_NAME, username);
-//		parameters.put(UserDAO.PASSWORD, password);
-//		
-//		JSONObject userKey = (JSONObject)accountService.doLogin(parameters);
-//		parameters.put("userkey", userKey.get("userkey"));
-//		
-//		Object response = subjectService.doGetAll(parameters);
-//		assertEquals("doGetAll", "[]", response.toString());
-//		
-//	}
+
 	/**
 	 * Test for {@link ISubjectService#doDelete(Map)} </br>
 	 * Expect returning SUCCESS message </br>
@@ -150,7 +130,6 @@ public class TestSubjectService {
 	public void test_doDelete_1(){
 		
 		long subjectId = 1;
-		//String userKey = "123456789_1_2";
 		String username = "paul_gibson";
 		String password = "12345678";
 		
@@ -164,8 +143,6 @@ public class TestSubjectService {
 		Object response = subjectService.doDelete(parameters);
 		
 		assertEquals("doDelete", response.toString(), "SUCCESS");
-		//accountService.addUserKey(userKey);
-		//parameters
 	}
 	/**
 	 * Test for {@link ISubjectService#doDelete(Map)} </br>
@@ -175,7 +152,6 @@ public class TestSubjectService {
 	public void test_doDelete_2(){
 		
 		long subjectId = 10000;
-		//String userKey = "123456789_1_2";
 		String username = "paul_gibson";
 		String password = "12345678";
 		

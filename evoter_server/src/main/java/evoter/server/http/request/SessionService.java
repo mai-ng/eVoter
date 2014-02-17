@@ -14,19 +14,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sun.net.httpserver.HttpExchange;
 
+import evoter.server.dao.impl.AnswerDAOImpl;
 import evoter.server.dao.impl.QuestionDAOImpl;
 import evoter.server.dao.impl.QuestionSessionDAOImpl;
 import evoter.server.dao.impl.SessionDAOImpl;
 import evoter.server.dao.impl.SessionUserDAOImpl;
 import evoter.server.dao.impl.UserDAOImpl;
 import evoter.server.dao.impl.UserSubjectDAOImpl;
+import evoter.server.http.request.interfaces.IAnswerService;
 import evoter.server.http.request.interfaces.ISessionService;
+import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.dao.UserSubjectDAO;
+import evoter.share.model.Answer;
 import evoter.share.model.Question;
 import evoter.share.model.QuestionSession;
 import evoter.share.model.QuestionType;
@@ -76,7 +80,21 @@ public class SessionService implements ISessionService{
 	 * Define getter/setter of {@link QuestionSessionDAOImpl} bean
 	 */
 	private QuestionSessionDAO questionSessionDAO;
+	/**
+	 * Define getter/setter of {@link AnswerDAOImpl} bean
+	 */
+	private AnswerDAO answerDAO;
 	
+
+
+	public AnswerDAO getAnswerDAO() {
+		return answerDAO;
+	}
+
+	public void setAnswerDAO(AnswerDAO answerDAO) {
+		this.answerDAO = answerDAO;
+	}
+
 	public QuestionDAO getQuestionDAO() {
 		return questionDAO;
 	}
@@ -385,7 +403,12 @@ public class SessionService implements ISessionService{
 		return URIRequest.SUCCESS_MESSAGE;
 		
 	}
-	
+	/**
+	 * 
+	 * @param questionText question content </br>
+	 * @param sessionId the current active session </br>
+	 * @param userId user creates session </br>
+	 */
 	public void createQuestion(String questionText, long sessionId, long userId){
 		
 		//search question if it exists already
@@ -406,6 +429,12 @@ public class SessionService implements ISessionService{
 			question.setStatus(1);
 			long questionId = questionDAO.insert(question);
 			questionSession = new QuestionSession(questionId, sessionId);
+			
+			//create an answer with default statistics value = 10
+			Answer answer = new Answer(questionId, "slider");
+			answer.setStatistics("10");
+			answerDAO.insert(answer);
+			
 		}
 		questionSessionDAO.insert(questionSession);
 	}

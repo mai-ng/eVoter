@@ -1,6 +1,7 @@
 package evoter.server.http.request;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -153,24 +154,28 @@ public class SubjectService implements ISubjectService{
 			//long id = Long.valueOf(parameters.get(UserSubjectDAO.USER_ID));
 			String userKey = (String)parameters.get(UserDAO.USER_KEY);
 			long userTypeId = UserValidation.getUserTypeIdFromUserKey(userKey);
-			List<UserSubject> userSubjectList = null;
+			List<Subject> subjectList = new ArrayList<Subject>();
 			/**
 			 * if user type is secrectary, select all subjects
 			 * Otherwise, select subject of requested user
 			 */
 			
 			if (userTypeId == UserType.SECRETARY){
-				userSubjectList = userSubjectDAO.findAll();
+				subjectList = subjectDAO.findAll();
 			}else{
 				Long id = UserValidation.getUserIdFromUserKey(userKey);
-				userSubjectList = userSubjectDAO.findByUserId(id);
-			}
+				List<UserSubject> userSubjectList = userSubjectDAO.findByUserId(id);
+				for (UserSubject userSubject : userSubjectList){
+					Subject subject = (Subject)subjectDAO.findById(userSubject.getSubjectId()).get(0);
+					subjectList.add(subject);
+				}
 
+			}
 			JSONArray response = new JSONArray();
-			for (UserSubject userSubject : userSubjectList){
-				Subject subject = (Subject)subjectDAO.findById(userSubject.getSubjectId()).get(0);
+			for (Subject subject : subjectList){
 				response.add(subject.toJSON());
 			}
+			
 			System.out.println("SUBJECT : " + response.toJSONString());
 			//URIUtils.writeResponse(response.toJSONString(), exchange);
 			return response;

@@ -12,7 +12,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sun.net.httpserver.HttpExchange;
 
 import evoter.server.dao.impl.AnswerDAOImpl;
 import evoter.server.dao.impl.QuestionDAOImpl;
@@ -21,7 +20,6 @@ import evoter.server.dao.impl.SessionDAOImpl;
 import evoter.server.dao.impl.SessionUserDAOImpl;
 import evoter.server.dao.impl.UserDAOImpl;
 import evoter.server.dao.impl.UserSubjectDAOImpl;
-import evoter.server.http.request.interfaces.IAnswerService;
 import evoter.server.http.request.interfaces.ISessionService;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
@@ -36,7 +34,6 @@ import evoter.share.model.QuestionSession;
 import evoter.share.model.QuestionType;
 import evoter.share.model.Session;
 import evoter.share.model.SessionUser;
-import evoter.share.model.Subject;
 import evoter.share.model.User;
 import evoter.share.model.UserSubject;
 import evoter.share.model.UserType;
@@ -144,18 +141,10 @@ public class SessionService implements ISessionService{
 	}
 	
 	
-	/**
-	 * This method will select all {@link Session} of a specific {@link Subject} </br>
-	 * and the result will be added to response to client application </br>
-	 * There are two kind of requests. One is sent by teacher user and the other is sent by student user </br>
-	 * The first selection is made from session table. if a null or empty value is returned, that means </br>
-	 * the request is coming from student user application. So try to select all session in session_user table </br>
-	 * and get all session object from returned value above </br>
-	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between server client application </br>
-	 * @param parameters contains : </br>
-	 * 	</li> SessionDAO.SUBJECT_ID </br>
-	 * 	</li> {@link UserDAO#USER_KEY} </br>
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISessionService#doGetAll(java.util.Map)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -197,26 +186,20 @@ public class SessionService implements ISessionService{
 				
 			}//for
 			
-			//URIUtils.writeResponse(response, httpExchange);
-			System.out.println("sessions: " + response);
+			//System.out.println("sessions: " + response);
 			return response;
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
 	}
 
-	/**
-	 * Response client a {@link Session}  when receiving {@link URIRequest#VIEW_SESSION} request </br>
-	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between server client application </br>
-	 * @param parameters request parameter map contains </br>
-	 * 	</li> SessionDAO.ID </br>
-	 *  </li> {@link UserDAO#USER_KEY} </br>
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISessionService#doView(java.util.Map)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -240,7 +223,6 @@ public class SessionService implements ISessionService{
 				object.put(SessionUserDAO.ACCEPT_SESSION, sessionUser.isAcceptSession());
 				response.add(object);
 			}
-			//URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);
 			return response;
 			
 		}catch(Exception e){
@@ -251,14 +233,10 @@ public class SessionService implements ISessionService{
 
 	}
 
-	/**
-	 * Change the status of {@link Session} to inactive </br>
-	 * when receiving {@link URIRequest#ACTIVE_SESSION}</br>
-	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
-	 * @param parameters contains : </br>
-	 *  </li> SessionDAO.ID
-	 *  </li> {@link UserDAO#USER_KEY}
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISessionService#doActive(java.util.Map)
 	 */
 	@Override
 	public  Object doActive(Map<String,Object> parameters) {
@@ -266,6 +244,10 @@ public class SessionService implements ISessionService{
 		return updateStatus(parameters, true);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISessionService#doAccept(java.util.Map)
+	 */
 	@Override
 	public  Object doAccept(Map<String,Object> parameters) {
 		
@@ -287,27 +269,19 @@ public class SessionService implements ISessionService{
 				
 			}
 			return URIRequest.SUCCESS_MESSAGE;
-			//URIUtils.writeSuccessResponse(httpExchange);
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 			
 		}
 	
 	}
 
-	/**
-	 * Update delete_indicator field of SESSION_USER table </br>
-	 * when receiving {@link URIRequest#DELETE_SESSION} request from client application</br>
-	 * to mark that this session is deleted by a user </br>
-	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
-	 * @param parameters contains : </br>
-	 * 	</li> SessionUserDAO.SESSION_ID
-	 *  </li> UserDAO.USER_KEY
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISessionService#doDelete(java.util.Map)
 	 */
 	@Override
 	public  Object doDelete(Map<String,Object> parameters) {
@@ -342,19 +316,9 @@ public class SessionService implements ISessionService{
 
 	}
 
-	/**
-	 * Create a new {@link Question} object when receiving {@link URIRequest#CREATE_SESSION} </br>
-	 * The order of steps are: </br>
-	 * </li>Create a new {@link Session} and insert to SESSION table </br>
-	 * </li>Create a new {@link SessionUser}  and insert to SESSION_USER table </br>
-	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
-	 * @param parameters contains 
-	 * 		</li> {@link SessionDAO#CREATION_DATE}
-	 * 		</li> {@link SessionDAO#IS_ACTIVE}
-	 * 		</li> {@link SessionDAO#NAME}
-	 * 		</li> {@link SessionDAO#SUBJECT_ID}
-	 * 		</li> {@link UserDAO#USER_KEY}
-	 * 		</li> 
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISessionService#doCreate(java.util.Map)
 	 */
 	@Override
 	public  Object doCreate(Map<String,Object> parameters) {
@@ -404,6 +368,8 @@ public class SessionService implements ISessionService{
 		
 	}
 	/**
+	 * Create a specific {@link Question}  for this session </br>
+	 * Create an slider answer with default value is 10 for this question </br>
 	 * 
 	 * @param questionText question content </br>
 	 * @param sessionId the current active session </br>
@@ -411,42 +377,27 @@ public class SessionService implements ISessionService{
 	 */
 	public void createQuestion(String questionText, long sessionId, long userId){
 		
-		//search question if it exists already
-		List<Question> questions = questionDAO.findByQuestionText(questionText);
-		Question question = null;
-		QuestionSession questionSession = null;
-		if (questions != null && !questions.isEmpty()){
-			question = questions.get(0);
-			questionSession = new QuestionSession(question.getId(), sessionId);
-			
-		}else{
-			//if not exist, create a new one
-			question = new Question(QuestionType.SLIDER
-					, userId
-					, questionText
-					, new Timestamp(System.currentTimeMillis())
-					, 0);
-			question.setStatus(1);
-			long questionId = questionDAO.insert(question);
-			questionSession = new QuestionSession(questionId, sessionId);
-			
-			//create an answer with default statistics value = 10
-			Answer answer = new Answer(questionId, "slider");
-			answer.setStatistics("10");
-			answerDAO.insert(answer);
-			
-		}
+		Question question = new Question(QuestionType.SLIDER
+				, userId
+				, questionText
+				, new Timestamp(System.currentTimeMillis())
+				, 0);
+		question.setStatus(1);
+		long questionId = questionDAO.insert(question);
+		QuestionSession questionSession = new QuestionSession(questionId, sessionId);
 		questionSessionDAO.insert(questionSession);
+		//create an answer with default statistics value = 10
+		Answer answer = new Answer(questionId, "slider");
+		answer.setStatistics("10");
+		answerDAO.insert(answer);
+		
+
 	}
 
-	/**
-	 * Change the status of {@link Session} to inactive </br>
-	 * when receiving {@link URIRequest#INACTIVE_SESSION}</br>
-	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
-	 * @param parameters contains: </br>
-	 * 		</li> {@link SessionDAO#ID}
-	 * 		</li> {@link UserDAO#USER_KEY}
+
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISessionService#doInActive(java.util.Map)
 	 */
 	@Override
 	public  Object doInActive(Map<String,Object> parameters) {
@@ -459,7 +410,6 @@ public class SessionService implements ISessionService{
 	 * Update the session status when session changes from active to inactive or </br>
 	 * from inactive to active </br>
 	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
 	 * @param parameters contains: </br>
 	 * 		</li> {@link SessionDAO#ID}
 	 * 		</li> {@link UserDAO#USER_KEY}
@@ -476,12 +426,10 @@ public class SessionService implements ISessionService{
 			sessionDAO.update(session);
 			
 			return URIRequest.SUCCESS_MESSAGE;
-			//URIUtils.writeSuccessResponse(httpExchange);
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 			
 		}
@@ -489,15 +437,9 @@ public class SessionService implements ISessionService{
 	}
 
 	
-	/**
-	 * Update {@link SessionDAO#NAME} of {@link Session} </br> 
-	 * when receiving {@link URIRequest#UPDATE_SESSION} </br>
-	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between server and client </br>
-	 * @param parameters contains </br>
-	 * 		</li> {@link SessionDAO#NAME}
-	 * 		</li> {@link SessionDAO#ID} 
-	 * 		</li> {@link UserDAO#USER_KEY}
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.server.http.request.interfaces.ISessionService#doUpdate(java.util.Map)
 	 */
 	@Override
 	public  Object doUpdate(Map<String,Object> parameters) {
@@ -549,13 +491,11 @@ public class SessionService implements ISessionService{
 				
 			}
 			System.out.println("response: " + response);//for
-			//URIUtils.writeResponse(response, httpExchange);
 			return response;
 			
 		}catch(Exception e){
 			
 			e.printStackTrace();
-			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 

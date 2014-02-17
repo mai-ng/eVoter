@@ -18,7 +18,8 @@ import evoter.share.dao.QuestionDAO;
  * <li>Updated for eVoterMobile
  * 
  * 
- * Created by btDiem
+ * Mapping columns of question table to properties of this class </br>
+ * @author btdiem </br>
  *
  */
 public class Question extends ItemData implements Serializable {

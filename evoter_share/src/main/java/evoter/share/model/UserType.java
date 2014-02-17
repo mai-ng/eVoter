@@ -2,14 +2,14 @@
  * 
  */
 package evoter.share.model;
-
 import java.io.Serializable;
 
 /**
  * Updated by @author luongnv89 on 18-Jan-2014<br>
  * <li> Add user type values
  *
- * Created by @author btdiem
+ * Mapping columns of user_type table to properties of this class </br>
+ * @author btdiem </br>
  *
  */
 public class UserType implements Serializable{

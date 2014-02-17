@@ -6,7 +6,9 @@ package evoter.share.model;
 import java.io.Serializable;
 
 /**
- * @author btdiem
+ * Mapping columns of statistics table to properties of this class </br>
+ * 
+ * @author btdiem </br>
  *
  */
 public class Statistics implements Serializable {

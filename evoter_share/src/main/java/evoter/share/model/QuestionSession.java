@@ -1,7 +1,12 @@
 package evoter.share.model;
 
 import java.io.Serializable;
-
+/**
+ * Mapping columns of question_session table to properties of this class </br>
+ * 
+ * @author btdiem </br>
+ *
+ */
 public class QuestionSession implements Serializable {
 
 	/**

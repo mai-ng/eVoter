@@ -6,7 +6,9 @@ import java.util.List;
 import evoter.share.model.Statistics;
 /**
  * 
- * @author btdiem
+ * This class is unused in this version </br>
+ * 
+ * @author btdiem </br>
  *
  */
 public interface StatisticsDAO {

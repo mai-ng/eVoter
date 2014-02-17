@@ -1,13 +1,16 @@
 package evoter.share.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.json.simple.JSONObject;
 
 import evoter.share.dao.UserDAO;
-
+/**
+ * Mapping columns of user table to properties of this class
+ * 
+ * @author btdiem </br>
+ *
+ */
 public class User implements Serializable{
 
 	/**

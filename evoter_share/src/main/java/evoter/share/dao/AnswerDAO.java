@@ -5,19 +5,24 @@ import java.util.List;
 import evoter.share.model.Answer;
 
 /**
- * This is an interface that maps fields of ANSWER table in database </br>
+ * This is an interface that maps properties to fields of ANSWER table in database </br>
  * It is responsible for insert, update, delete and search {@link Answer} object in database </br>
  * 
  * @author btdiem </br>
  *
  */
 public interface AnswerDAO {
-	
+	//ID  column 
 	public static final String ID = "ID";
+	//answer_text column
 	public static final String ANSWER_TEXT = "ANSWER_TEXT";
+	//question_id column
 	public static final String QUESTION_ID = "QUESTION_ID";
+	//statistics columns
 	public static final String STATISTICS = "STATISTICS";
+	//answer table name
 	public static final String TABLE_NAME = "ANSWER";
+	//spring bean name
 	public static final String BEAN_NAME = "answerDAO";
 	
 	/**
@@ -28,8 +33,9 @@ public interface AnswerDAO {
 	 */
 	public long insert (Answer answer);
 	/**
-	 * 
-	 * @return List of {@link Answer} existing in the databse </br>
+	 * Select all {@link Answer} in the databse
+	 * @return List of {@link Answer} if answer list can be found</br>
+	 * Otherwise, returning an empty list </br>
 	 */
 	public List<Answer> findAll();
 	/**
@@ -37,52 +43,57 @@ public interface AnswerDAO {
 	 * The length of property name array should have the same length with array of property value </br>
 	 * @param propertyName array of property name </br>
 	 * @param propertyValue array of property value </br>
-	 * @return {@link List} of {@link Answer} </br>
+	 * @return {@link List} of {@link Answer} if answer list can be found</br>
+	 * Otherwise, return an empty list </br>
 	 */
 	public List<Answer> findByProperty(String[] propertyNames, Object[] propertyValues);
 	/**
-	 * Return an {@link Answer} that has id matches input id </br>
-	 * @param id of searched {@link Answer} </br>
-	 * @return List of {@link Answer} </br>
+	 * Select {@link Answer} from the given id </br>
+	 * @param id given answer id </br>
+	 * @return List of {@link Answer} if there is an records found</br>
+	 * Otherwise, return an empty list </br>
 	 */
 	public List<Answer> findById(long id);
 	/**
-	 * Return a {@link List} of {@link Answer} that have answer text matching input value </br>
+	 * Select {@link Answer} from the given answer text </br>
+	 * Return a {@link List} of {@link Answer} if there are records returned </br>
+	 * Otherwise, returning an empty list </br>
 	 * 
-	 * @param answerText
-	 * @return  {@link List} of {@link Answer} </br>
+	 * @param answerText the searched answer text </br>
 	 */
 	public List<Answer> findByAnswerText(String answerText);
 	/**
-	 * Return a {@link List} of {@link Answer} that have question id matching input value </br>
 	 * 
-	 * @param questionId id of question of searched {@link Answer} </br>
-	 * @return a {@link List} of {@link Answer} </br>
+	 * Select {@link Answer} from the given questionId </br>
+	 * Return a {@link List} of {@link Answer} if there are records returned </br>
+	 * Otherwise, returning an empty list </br>
+	 * 
+	 * @param questionId id of {@link Answer} list searcher </br>
+
 	 */
 	public List<Answer> findByQuestionId(long questionId);
 	/**
 	 * 
-	 * Delete {@link Answer} objects in the database by input properties and their values </br> 
+	 * Delete {@link Answer} by the conditions of properties and their values </br> 
 	 * The length of property name array should have the same length with array of property value </br>
 	 * @param propertyName array of property name </br>
 	 * @param propertyValue array of property value </br>
-	 * @return {@link List} of {@link Answer} </br>
 	 */
 	public void deleteByProperty(String[] propertyNames, Object [] propertyValues);
 	/**
 	 * 
-	 * Delete {@link Answer} in database that has the same id with input value </br>
-	 * @param id {@link Answer} id </br>
+	 * Delete {@link Answer} having the same the given id </br>
+	 * @param id answer id should be deleted </br>
 	 */
 	public void deleteById(long id);
 	/**
-	 * Delete all {@link Answer} object in the database that has question id matching the input value </br>
-	 * @param questionId id of question of answer </br>
+	 * Delete all {@link Answer} of given question id </br>
+	 * @param questionId id of answer should be deleted </br>
 	 */
 	public void deleteByQuestionId(long questionId);
 	/**
-	 * Delete all {@link Answer} objects in the database that has answer text matching the input value </br>
-	 * @param answerText {@link Answer} content </br>
+	 * Delete all {@link Answer} having answer_text matching the given answer text </br>
+	 * @param answerText  </br>
 	 */
 	public void deleteByAnswerText(String answerText);
 	/**

@@ -11,7 +11,9 @@ import evoter.share.dao.AnswerDAO;
  * <br>Update by @author luongnv89 on 09-Feb-2014:<br>
  * <li> Add {@link Answer#Answer(long, long, String)} constructor
  * 
+ * Mapping columns of answer table to properties of this class </br>
  * @author btdiem </br>
+ *
  */
 public class Answer extends ItemData implements Serializable {
 

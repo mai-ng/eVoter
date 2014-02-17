@@ -6,7 +6,12 @@ import java.sql.Timestamp;
 import org.json.simple.JSONObject;
 
 import evoter.share.dao.SessionDAO;
-
+/**
+ * Mapping columns of session table to properties of this class </br>
+ * 
+ * @author btdiem </br>
+ *
+ */
 public class Session extends ItemData implements Serializable {
 
 	/**

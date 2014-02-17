@@ -2,8 +2,9 @@ package evoter.share.model;
 
 import java.io.Serializable;
 /**
+ * Mapping columns of session_user table to properties of this class </br>
  * 
- * @author btdiem
+ * @author btdiem </br>
  *
  */
 public class SessionUser implements Serializable {

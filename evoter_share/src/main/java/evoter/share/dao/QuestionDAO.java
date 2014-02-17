@@ -3,40 +3,48 @@ package evoter.share.dao;
 import java.sql.Timestamp;
 import java.util.List;
 
+import evoter.share.model.Answer;
 import evoter.share.model.Question;
 import evoter.share.model.QuestionType;
 
 /**
- * This is an interface that maps fields of QUESTION table in database </br>
+ * This is an interface that maps properties in this class to fields of QUESTION table in database </br>
  * It is responsible for insert, update, delete and search {@link Question} object in database </br>
  * 
  * @author btdiem </br>
  *
  */
 public interface QuestionDAO {
-	
+	//id column
 	public static final String ID = "ID";
+	//question_text column
 	public static final String QUESTION_TEXT = "QUESTION_TEXT";
-//	public static final String SESSION_ID = "SESSION_ID";
+	//question_type_id column
 	public static final String QUESTION_TYPE_ID = "QUESTION_TYPE_ID";
+	//creation_date column
 	public static final String CREATION_DATE = "CREATION_DATE";
+	//user_id column
 	public static final String USER_ID = "USER_ID";
+	//parent_id column
 	public static final String PARENT_ID = "PARENT_ID";
+	//status column
 	public static final String STATUS = "STATUS";
-	
-	public static final String TABLE_NAME = "QUESTION";	
+	//table name
+	public static final String TABLE_NAME = "QUESTION";
+	//spring bean name
 	public static final String BEAN_NAME = "questionDAO";
 	
 	/**
 	 * Add new {@link Question} to the database and return the generated key of new record </br>
 	 * 
-	 * @param question  inserted {@link Question} </br>
-	 * @return the generated key of inserted record </br>
+	 * @param question  inserted Question </br>
+	 * @return the generated key of new record </br>
 	 */
 	public long insert (Question question);
 	/**
-	 * Return a {@link List} of {@link Question} in the database </br>
-	 * @return List of {@link Question} </br>
+	 * Select all {@link Question} in the database
+	 * @return List of {@link Question} if question list can be found</br>
+	 * Otherwise, returning an empty list </br>
 	 */
 	public List<Question> findAll();
 	/**
@@ -44,80 +52,113 @@ public interface QuestionDAO {
 	 * The length of property name array should have the same length with array of property value </br>
 	 * @param propertyName array of property name </br>
 	 * @param propertyValue array of property value </br>
-	 * @return {@link List} of {@link Question} </br>
+	 * @return {@link List} of {@link Question} if answer list can be found</br>
+	 * Otherwise, return an empty list </br>
 	 */
 	public List<Question> findByProperty(String[] propertyNames, Object[] propertyValues);
 	/**
-	 * Return a {@link Question} that has the same id with input value </br>
-	 * @param id searched question id </br>
-	 * @return a {@link List} of {@link Question} </br>
+	 * Select {@link Question} from the given id </br>
+	 * @param id given answer id </br>
+	 * @return List of {@link Question} if there is an records found</br>
+	 * Otherwise, return an empty list </br>
 	 */
 	public List<Question> findById(long id);
 	/**
-	 * Return a List of {@link Question} that have the user id the same with input value </br>
-	 * @param userId  id of user creating {@link Question} </br>
-	 * @return {@link List} of {@link Question} </br>
+	 * Select {@link Question} from the given user id </br>
+	 * @param user id user id who creates question </br>
+	 * @return List of {@link Question} if there is an records found</br>
+	 * Otherwise, return an empty list </br>
 	 */
 	public List<Question> findByUserId(long userId);
 	/**
-	 * Return a {@link List} of {@link Question} that have question text matching the input value </br>
-	 * @param questionText the content of {@link Question} </br>
-	 * @return {@link List} of {@link Question} </br>
+	 * Select {@link Question} from the given questionText </br>
+	 * @param questionText content of question </br>
+	 * @return List of {@link Question} if there is an records found</br>
+	 * Otherwise, return an empty list </br>
 	 */
 	public List<Question> findByQuestionText(String questionText);
 	/**
-	 * Return a {@link List} of {@link Question} that have question type id matching the input value </br>
-	 * @param questionTypeId id of {@link QuestionType} </br>
-	 * @return {@link List} of {@link Question} </br>
+	 * Select {@link Question} from the given question type id </br>
+	 * @param questionTypeId type value of question </br>
+	 * @return List of {@link Question} if there is an records found</br>
+	 * Otherwise, return an empty list </br>
 	 */
 	public List<Question> findByQuestionTypeId(long questionTypeId);
+	/**
+	 * Select {@link Question} from the creation date </br>
+	 * @param creationDate the date creating question </br>
+	 * @return List of {@link Question} if there is an records found</br>
+	 * Otherwise, return an empty list </br>
+	 */	
 	public List<Question> findByCreationDate(Timestamp creationDate);
+	/**
+	 * Select {@link Question} from the given parent id </br>
+	 * @param parentId parent id value of question </br>
+	 * @return List of {@link Question} if there is an records found</br>
+	 * Otherwise, return an empty list </br>
+	 */	
 	public List<Question> findByParentId(long parentId);
+	/**
+	 * Select {@link Question} from the status</br>
+	 * @param status status value of a question </br>
+	 * @return List of {@link Question} if there is an records found</br>
+	 * Otherwise, return an empty list </br>
+	 */
 	public List<Question> findByStatus(int status);
 	/**
 	 * 
-	 * Delete {@link Question} objects in the database by input properties and their values </br> 
+	 * Delete {@link Question} by the conditions of properties and their values </br> 
 	 * The length of property name array should have the same length with array of property value </br>
 	 * @param propertyName array of property name </br>
 	 * @param propertyValue array of property value </br>
-	 * @return {@link List} of {@link Question} </br>
 	 */
 	public void deleteByProperty(String[] propertyNames, Object [] propertyValues);
 	/**
-	 * Remove {@link Question} out the database that has the id value matching the input value </br>
-	 * @param id value of {@link Question} id </br>
+	 * 
+	 * Delete {@link Question} having the same the given id </br>
+	 * @param id question id should be deleted </br>
 	 */
 	public void deleteById(long id);
 	/**
-	 * Remove {@link Question} out the database that has the user id value matching the input value </br>
-	 * @param userId value of user id of {@link Question} </br>
+	 * 
+	 * Delete {@link Question} having the same the given user id </br>
+	 * @param userId user id of user who creates question</br>
 	 */
+
 	public void deleteByUserId(long userId);
 	/**
-	 * Remove {@link Question} out the database that has the creation date matching the input value </br>
-	 * @param creationDate value of creation date of {@link Question} </br>
+	 * 
+	 * Delete {@link Question} having the same the given creation date </br>
+	 * @param creationDate time creating question</br>
 	 */
 	public void deleteByCreationDate(Timestamp creationDate);
 	/**
-	 * Remove {@link Question} out the database that has the question text matching the input value </br>
-	 * @param questionText value of {@link Question} content </br>
+	 * 
+	 * Delete {@link Question} having the same the given questionText</br>
+	 * @param questionText question content</br>
 	 */
 	public void deleteByQuestionText(String questionText);
 	/**
-	 * Remove {@link Question} out the database that has question type id matching the input value </br>
-	 * @param questionTypeId value of {@link QuestionType} id
+	 * 
+	 * Delete {@link Question} having the same the given question type id </br>
+	 * @param questionTypeId user id of user who creates question</br>
 	 */
 	public void deleteByQuestionTypeId(long questionTypeId);
 	/**
-	 * Remove {@link Question} out the database that has the parent id value matching the input value </br>
-	 * @param parentId value of parent question id
+	 * 
+	 * Delete {@link Question} having the same the given parent id </br>
+	 * @param parentId parent id value of question</br>
 	 */
 	public void deleteByParentId(long parentId);
-	
+	/**
+	 * 
+	 * Delete {@link Question} having the same the given status</br>
+	 * @param status question status value</br>
+	 */	
 	public void deleteByStatus(int status);
 	/**
 	 * Update the changes values of {@link Question} to the database </br>
-	 * @param question {@link Question} object that is needed to update </br>
+	 * @param question contains the changed value needed to be updated </br>
 	 * @return a positive integer if updating successfully </br>
 	 */
 	public int update(Question question);

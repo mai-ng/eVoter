@@ -1,322 +1,106 @@
 package evoter.share.utils;
 
-import java.util.List;
-
-import org.json.simple.JSONObject;
-
-
-import evoter.share.model.Answer;
-import evoter.share.model.Question;
-import evoter.share.model.Session;
-import evoter.share.model.Subject;
-
 /**
- * define client request
- * @author btdiem
+ * Define URI request coming from clients </br>
+ * 
+ * @author btdiem </br>
  *
  */
 public class URIRequest {
-	
+	//Message is sent to client when request is processed successfully
 	public static final String SUCCESS_MESSAGE = "SUCCESS";
+	//Message is sent to client when request is processed failure
 	public static final String FAILURE_MESSAGE = "FAILURE";
+	//Message is sent to client when creating new user but this user exists in the database
 	public static final String USER_EXIST_MESSAGE = "USER EXISTS ALREADY";
+	//Message is sent to client when searching for user but getting back an empty response
 	public static final String USER_NOT_EXIST_MESSAGE = "USER DOES NOT EXIST";
+	//Message is sent to client when creating new user but email of this user exists in the database
 	public static final String EMAIL_EXIST_MESSAGE = "EMAIL EXISTS";
+	//Message is sent to client when searching for email but getting back an empty response
 	public static final String EMAIL_NOT_EXIST_MESSAGE = "EMAIL DOES NOT EXIST";
+	//Message is sent to client when searching for subject but getting back an empty response
 	public static final String SUBJECT_NOT_EXIST_MESSAGE = "SUBJECT DOES NOT EXIST";
+	//Message is sent to client when searching for answer but getting back an empty response
 	public static final String ANSWER_NOT_EXIST = "ANSWER DOES NOT EXIST";
-	/**
-	 * Message is sent to client when the question could not be found in the database </br>
-	 */
+	//Message is sent to client when the question could not be found in the database
 	public static String QUESTION_NOT_EXIST="QUESTION NOT EXIST";
 	
-	//for login
-	/**
-	 * request parameters:
-	 * 	</li> user name
-	 * 	</li> password
-	 * response: 
-	 * 	</li> boolean
-	 */
+	//login user request
 	public static final String LOGIN="/login";
-	//for reset password
-	/**
-	 * request parameters:
-	 * 	</li> email
-	 * 	</li> 
-	 * response: 
-	 * 	</li> boolean
-	 */
+	//reset password request
 	public static final String RESET_PASSWORD="/reset_password";	
-	//for account registration
-	/**
-	 * request parameters:
-	 * 	</li> email
-	 * 	</li> 
-	 * response: 
-	 * 	</li> boolean
-	 */
+	//register account request
 	public static final String REGISTER="/register";
-	//for login
-	/**
-	 * request parameters:
-	 * 	</li> user key
-	 * response: 
-	 * 	</li> boolean
-	 */
+	//logout request
 	public static final String LOGOUT="/logout";	
-	//for subject management
-	/**
-	 * request parameter 
-	 * 	</li> user key
-	 * response
-	 * 	</li> {@link List} of {@link Subject} 
-	 */
+	//get all subject request
 	public static final String GET_ALL_SUBJECT="/get_all_subject";
-	/**
-	 * request parameter 
-	 * 	</li> user key
-	 *  </li> subject id
-	 * response
-	 * 	</li> {@link Subject} 
-	 */
+	//view a subject request
 	public static final String VIEW_SUBJECT="/view_subject";
-	/**
-	 * request parameter  </br>
-	 * 	</li> user key
-	 * 	</li> subject id
-	 * response </br>
-	 * 	</li>Boolean 
-	 */
+	//delete a subject request
 	public static final String DELETE_SUBJECT="/delete_subject";
-	/**
-	 * request parameter 
-	 * 	</li> user key
-	 *  </li> subject title
-	 *  </li> creation date
-	 * response
-	 * 	</li> {@link List} of {@link Subject} 
-	 */
+	//search subject request
 	public static final String SEARCH_SUBJECT="/search_subject";
-	/**
-	 * Edit subject request
-	 */
-
+	//edit a subject request
 	public static final String UPDATE_SUBJECT = "/update_subject";
-	/**
-	 * Create subject request
-	 */
+	//create a subject request
 	public static String CREATE_SUBJECT="/create_subject";
-
-	
-	
-	//for session management
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> subject id
-	 * response </br>
-	 * 	</li> {@link List} of {@link Session}  
-	 */
+	// get all sessions of a subject request
 	public static final String GET_ALL_SESSION="/get_all_session";
-	
-	
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> session id
-	 * response </br>
-	 * 	</li> {@link Session}  
-	 */
+	//view a session request
 	public static final String VIEW_SESSION="/view_session";
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> session id
-	 * response </br>
-	 * 	</li> Boolean  
-	 */
+	//create a session request
 	public static final String CREATE_SESSION="/create_session";
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> session id
-	 * response </br>
-	 * 	</li> Boolean  
-	 */
+	//change active status of a session request
 	public static final String ACTIVE_SESSION="/active_session";//start a session
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> session id
-	 * response </br>
-	 * 	</li> Boolean  
-	 */
+	//change inactive status of a session request
 	public static final String INACTIVE_SESSION="/inactive_session";//start a session
-	
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> session id
-	 *  </i> user id
-	 * response </br>
-	 * 	</li> Boolean  
-	 */
+	//accept session of student user request
 	public static final String ACCEPT_SESSION="/accept_session";//accept a session	
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> session id
-	 * response </br>
-	 * 	</li> Boolean  
-	 */
+	//delete a session request
 	public static final String DELETE_SESSION="/delete_session";
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> {@link Session} object under {@link JSONObject} format
-	 * response </br>
-	 * 	</li> {@link List} of {@link Session}  
-	 */
+	//edit a session request 
 	public static final String UPDATE_SESSION="/update_session";
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> session name
-	 *  </li> creation date
-	 *  </li> isActive
-	 * response </br>
-	 * 	</li> {@link List} of {@link Session}  
-	 */
+	//search a session request
 	public static final String SEARCH_SESSION="/search_session";
-	/**
-	 * Get all students of a session that accepted or not accepted yet </br>
-	 */
+	//Get all students of a session that accepted or not accepted yet </br>
 	public static final String GET_ALL_STUDENT="/get_all_students";
-
-	
-	//for question management
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> session id
-	 * response </br>
-	 * 	</li> {@link List} of {@link Question}  
-	 */
+	//get all questions of a session request
 	public static final String GET_ALL_QUESTION="/get_all_question";
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> question id
-	 * response </br>
-	 * 	</li> {@link Question}  
-	 */
+	//view a question request
 	public static final String VIEW_QUESTION="/view_question";
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> {@link Question} object under JSon format
-	 *  </li> session id
-	 * response </br>
-	 * 	</li> {@link Boolean}  
-	 */
+	//create a question request
 	public static final String CREATE_QUESTION="/create_question";
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> question id
-	 * response </br>
-	 * 	</li> {@link Boolean}  
-	 */
+	//delete a question request
 	public static final String DELETE_QUESTION="/delete_question";
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> question id
-	 *  </li> {@link Question} object under Json format
-	 * response </br>
-	 * 	</li> {@link Boolean}  
-	 */
+	//update a question request
 	public static final String UPDATE_QUESTION="/update_question";
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> question id
-	 *  </li> session id
-	 * response </br>
-	 * 	</li> {@link Boolean}  
-	 */
+	//send a question request
 	public static final String SEND_QUESTION="/send_question";
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 *  </li> session id
-	 * response </br>
-	 * 	</li> {@link Boolean}  
-	 */
+	//get a question request
 	public static final String GET_QUESTION="/get_question";	
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> question id
-	 *  </li> session id
-	 * response </br>
-	 * 	</li> {@link Boolean}  
-	 */
+	//stop sending a question request
 	public static final String STOP_SEND_QUESTION="/stop_send_question";	
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> question type
-	 *  </li> question text
-	 * response </br>
-	 * 	</li> {@link List} of {@link Question}  
-	 */
+	//search a question request
 	public static final String SEARCH_QUESTION="/search_question";
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> session id
-	 * response </br>
-	 * 	</li> {@link Question}  
-	 */
+	//get the sending question request
 	public static final String GET_LATEST_QUESTION="/get_latest_question";
-	/**
-	 * request parameter </br>
-	 * 	</li> user key
-	 * 	</li> session id
-	 *  </li> question id
-	 * response </br>
-	 * 	</li> {@link Answer}  
-	 */
+	//get statistics of a question request
 	public static final String GET_STATISTICS="/get_statistics";
-	/**
-	 * Select all users of 1 subject
-	 */
+	//get all users that are invited to a subject request
 	public static final String GET_ALL_USERS_OF_SUBJECT="/get_allusers_ofsubject";
-	/**
-	 * Select all users based on the search conditions 
-	 */
+	//get all users in the database request
 	public static final String GET_ALL_USER="get_all_user";
-	/**
-	 * Create a new user request
-	 */
+	//create a new user request
 	public static final String CREATE_USER="create_user";
-	/**
-	 * Edit an user that exists in the system
-	 */
+	//update a new user request
 	public static final String EDIT_USER="edit_user";
-	/**
-	 * Delete an user that exists in the system
-	 */
+	//delete a user request
 	public static final String DELETE_USER="delete_user";
-	/**
-	 * Change the approved status of user request
-	 */
+	//Change the approved status of user request
 	public static final String CHANGE_APPROVE_USER="change_approve_user";
-	/**
-	 * Select an answer of question and send to server </br>
-	 */
+	//vote for a question request
 	public static final String VOTE_ANSWER="vote_answer";
 
 

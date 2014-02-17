@@ -4,9 +4,12 @@ import java.io.Serializable;
 
 /**Updated by @author luongnv89 on 18-Jan-2014:<br>
  * <li>Add question types
- * Created by @author btdiem
+ * 
+ * Mapping columns of question_type table to properties of this class </br>
+ * @author btdiem </br>
  *
  */
+
 public class QuestionType implements Serializable {
 
 	/**

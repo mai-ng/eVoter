@@ -7,9 +7,10 @@ import org.json.simple.JSONObject;
 import evoter.share.dao.SubjectDAO;
 
 /**
+ * Mapping columns of subject table to properties of this class </br>
  * 
- * @author btdiem
- * 
+ * @author btdiem </br>
+ *
  */
 public class Subject extends ItemData implements Serializable {
 

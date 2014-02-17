@@ -6,6 +6,10 @@ package evoter.mobile.activities;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,9 +28,8 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
-import evoter.mobile.objects.DialogInfor;
-import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
@@ -102,7 +105,6 @@ public class NewQuestionActivity extends EVoterActivity {
 			}
 		});
 		
-		
 		btCancel.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -111,7 +113,6 @@ public class NewQuestionActivity extends EVoterActivity {
 				
 			}
 		});
-		
 		
 		spQuestionType.setOnItemSelectedListener(new OnItemSelectedListener() {
 			
@@ -167,7 +168,7 @@ public class NewQuestionActivity extends EVoterActivity {
 		spQuestionType.setAdapter(adaterSpinner);
 		btSave = (Button) findViewById(R.id.btSaveNewQuestion);
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -179,7 +180,7 @@ public class NewQuestionActivity extends EVoterActivity {
 		typeArray.add(INPUT_ANSWER);
 		typeArray.add(MATCH);
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -218,7 +219,7 @@ public class NewQuestionActivity extends EVoterActivity {
 			listAnswser.clear();
 			listAnswser.add("Input answer");
 		}
-		if(typeID == QuestionType.YES_NO){
+		if (typeID == QuestionType.YES_NO) {
 			listAnswser.clear();
 			listAnswser.add("Yes");
 			listAnswser.add("No");
@@ -239,37 +240,25 @@ public class NewQuestionActivity extends EVoterActivity {
 		if (selected.equals(MATCH)) return 6;
 		return -1;
 	}
-
+	
 	/**
 	 * @param itemClick
 	 */
 	private void clickAnswerAction(final String itemClick) {
-		final DialogInfor dialog = new DialogInfor(
-				NewQuestionActivity.this, "Delete answer");
-		dialog.setMessageContent("Delete the answer: " + itemClick);
-		dialog.getBtOK().setText("Delete");
-		dialog.getBtOK().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Log.i("Answer click", "edit answer" + itemClick);
-				dialog.dismiss();
-				listAnswser.remove(itemClick);
-				adaterListView.notifyDataSetChanged();
-			}
-		});
-		
-		dialog.getBtKO().setText("Cancel");
-		dialog.getBtKO().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-			}
-		});
-		dialog.show();
+		Dialog dialog = new AlertDialog.Builder(this)
+				.setTitle("Answer: " + itemClick)
+				.setIcon(android.R.drawable.ic_dialog_info)
+				.setPositiveButton(R.string.delete_button, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int whichButton) {
+						listAnswser.remove(itemClick);
+						adaterListView.notifyDataSetChanged();
+					}
+				})
+				.setNegativeButton(R.string.cancel_button, null
+				).show();
 	}
-
+	
 	/**
 	 * @param idItem
 	 */
@@ -310,7 +299,7 @@ public class NewQuestionActivity extends EVoterActivity {
 				break;
 		}
 	}
-
+	
 	/**
 	 * 
 	 */

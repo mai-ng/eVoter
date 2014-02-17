@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +22,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.adapters.QuestionAdapter;
-import evoter.mobile.objects.DialogInfor;
+import evoter.mobile.main.R;
 import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.MainMenu;
 import evoter.mobile.objects.RequestConfig;
@@ -153,7 +156,7 @@ public class QuestionActivity extends ItemDataActivity {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -258,7 +261,7 @@ public class QuestionActivity extends ItemDataActivity {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				Toast.makeText(QuestionActivity.this, "Your excited value: " + progressValue, Toast.LENGTH_SHORT).show();
-				EVoterRequestManager.doVote(excitedAnswerID, QuestionType.SLIDER, String.valueOf(progressValue),QuestionActivity.this);
+				EVoterRequestManager.doVote(excitedAnswerID, QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
 				
 			}
 			
@@ -279,7 +282,7 @@ public class QuestionActivity extends ItemDataActivity {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				Toast.makeText(QuestionActivity.this, "Your difficult level value: " + progressValue, Toast.LENGTH_SHORT).show();
-				EVoterRequestManager.doVote(difficultAnswerID, QuestionType.SLIDER, String.valueOf(progressValue),QuestionActivity.this);
+				EVoterRequestManager.doVote(difficultAnswerID, QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
 			}
 			
 			@Override
@@ -404,67 +407,24 @@ public class QuestionActivity extends ItemDataActivity {
 	 * @param selectQuestion
 	 */
 	private void longClickQuestionAction() {
-		final DialogInfor dialog = new DialogInfor(
-				QuestionActivity.this, "Question");
-		dialog.setMessageContent(EVoterShareMemory.getCurrentQuestion().getTitle());
-		dialog.getBtOK().setText("Edit");
-		dialog.getBtOK().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Log.i("QUESTION LONG ITEM CLICK", "Edit question" + EVoterShareMemory.getCurrentQuestion().getTitle());
-				dialog.dismiss();
-				Intent editQuestion = new Intent(QuestionActivity.this, EditQuestionActivity.class);
-				EVoterShareMemory.setPreviousContext(QuestionActivity.this);
-				startActivity(editQuestion);
-			}
-		});
+		Dialog dialog = new AlertDialog.Builder(this)
+				.setTitle("Session: " + EVoterShareMemory.getCurrentQuestion().getQuestionText())
+				.setIcon(android.R.drawable.ic_dialog_info)
+				.setPositiveButton(R.string.edit_button, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int whichButton) {
+						Intent editQuestion = new Intent(QuestionActivity.this, EditQuestionActivity.class);
+						EVoterShareMemory.setPreviousContext(QuestionActivity.this);
+						startActivity(editQuestion);
+					}
+				})
+				.setNegativeButton(R.string.delete_button, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int whichButton) {
+						deleteQuestionRequest();
+					}
+				}).show();
 		
-		dialog.getBtKO().setText("Delete");
-		dialog.getBtKO().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				deleteQuestionRequest();
-				dialog.dismiss();
-			}
-		});
-		if (questionHasStatistic()) dialog.getBtOK().setEnabled(false);
-		dialog.show();
-	}
-	
-	/**
-	 * @return
-	 */
-	private boolean questionHasStatistic() {
-		return false;
-		//		RequestParams params = new RequestParams();
-		//		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		//		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
-		//		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-		//		params.put(AnswerDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-		//		client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
-		//			@Override
-		//			public void onSuccess(String response) {
-		//				if (response.contains("SUCCESS")) {
-		//					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-		//							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
-		//					btSend.setEnabled(false);
-		//				}
-		//				else {
-		//					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-		//							"Cannot send question: " + response);
-		//				}
-		//			}
-		//			
-		//			@Override
-		//			public void onFailure(Throwable error, String content)
-		//			{
-		//				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-		//						"FAILURE: " + error.toString());
-		//				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
-		//			}
-		//		});
 	}
 	
 	/**

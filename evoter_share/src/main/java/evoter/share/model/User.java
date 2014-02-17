@@ -6,7 +6,7 @@ import org.json.simple.JSONObject;
 
 import evoter.share.dao.UserDAO;
 /**
- * Mapping columns of user table to properties of this class
+ * Mapping columns of user table to properties of this class </br>
  * 
  * @author btdiem </br>
  *

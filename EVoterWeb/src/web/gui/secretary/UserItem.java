@@ -57,6 +57,12 @@ public class UserItem extends ItemViewAbstract {
 					String res = EVoterHTTPRequest.excutePost(
 							RequestConfig.getURL(URIRequest.DELETE_USER),
 							teacherParams);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					if (res == null) {
 						Utils.informDialog("Cannot request to server!");
 					} else {

@@ -66,10 +66,17 @@ public class SubjectItem extends ItemViewAbstract{
 					String res = EVoterHTTPRequest.excutePost(
 							RequestConfig.getURL(URIRequest.DELETE_SUBJECT),
 							teacherParams);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					System.out.println("Response: " + res);
 					if (res == null) {
 						Utils.informDialog("Cannot request to server!");
 					} else {
-						if (res.equals(URIRequest.SUCCESS_MESSAGE)) {
+						if (res.contains(URIRequest.SUCCESS_MESSAGE)) {
 							Utils.informDialog("Delete successfully!");
 						} else {
 							Utils.informDialog("Cannot delete!");

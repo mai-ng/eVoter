@@ -78,7 +78,7 @@ public abstract class GUIAbstract extends JFrame{
 					if (response == null) {
 						Utils.informDialog("Cannot request to server!");
 					} else {
-						Utils.informDialog("Success with response message: "+response);
+						Utils.informDialog("Successful!");
 						dispose();
 					}
 				}

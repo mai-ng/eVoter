@@ -59,10 +59,10 @@ public class QuestionDetailActivity extends EVoterActivity {
 	private final String STOP = "Stop receive answer";
 	private final String SEND = "Send";
 	private final String SUBMIT = "Submit";
+	private final String VIEW_STATISTIC = "View statistic";
 	TextView tvQuestionText;
 	LinearLayout answerArea;
 	Button btSend;
-	Button btView;
 	RadioGroup groups;
 	ArrayList<Answer> answers;
 	ArrayList<CheckBox> listCheckBox;
@@ -92,43 +92,40 @@ public class QuestionDetailActivity extends EVoterActivity {
 		buidAnswerArea();
 		
 		btSend = (Button) findViewById(R.id.btSendQuestion);
-		
-		setupAction();
-		btView = (Button) findViewById(R.id.btViewStatistic);
-		btView.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent statisticActivity = new Intent(QuestionDetailActivity.this, QuestionStatisticActivity.class);
-				startActivity(statisticActivity);
-			}
-		});
+		setButtonLabel();
+		setupButtonAction();
 	}
 	
 	/**
 	 * 
 	 */
-	private void setupAction() {
-		if (!EVoterShareMemory.getCurrentSession().isActive()) {
-			btSend.setVisibility(View.GONE);
-		} else {
-			btSend.setVisibility(View.VISIBLE);
-		}
+	private void setButtonLabel() {
 		if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
 			if (EVoterShareMemory.getCurrentQuestion().getStatus() == 0) {
 				btSend.setText(SEND);
 			} else if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
 				btSend.setText(STOP);
 			} else if (EVoterShareMemory.getCurrentQuestion().getStatus() == 2) {
-				btSend.setVisibility(View.GONE);
+				btSend.setText(VIEW_STATISTIC);
 			}
 		} else if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
 			if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
 				btSend.setText(SUBMIT);
 			} else if (EVoterShareMemory.getCurrentQuestion().getStatus() == 2) {
-				btSend.setVisibility(View.GONE);
+				btSend.setText(VIEW_STATISTIC);
 			}
 		}
+		
+		if (!EVoterShareMemory.getCurrentSession().isActive()) {
+			if (!btSend.getText().toString().equals(VIEW_STATISTIC)) btSend.setEnabled(false);
+		}
+		
+	}
+	
+	/**
+	 * 
+	 */
+	private void setupButtonAction() {
 		
 		btSend.setOnClickListener(new OnClickListener() {
 			
@@ -140,12 +137,22 @@ public class QuestionDetailActivity extends EVoterActivity {
 					submitAnswer();
 				} else if (btSend.getText().toString().equals(STOP)) {
 					stopReceiveAnswer();
+				}else if(btSend.getText().toString().equals(VIEW_STATISTIC)){
+					viewStatistic();
 				}
 				
 			}
 		});
 	}
 	
+	/**
+	 * 
+	 */
+	protected void viewStatistic() {
+		Intent statisticActivity = new Intent(QuestionDetailActivity.this, QuestionStatisticActivity.class);
+		startActivity(statisticActivity);
+	}
+
 	/**
 	 * 
 	 */
@@ -159,7 +166,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				if (response.contains("SUCCESS")) {
 					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
-					btSend.setVisibility(View.GONE);
+					btSend.setText(VIEW_STATISTIC);
 				}
 				else {
 					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
@@ -246,7 +253,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				}
 				break;
 			case QuestionType.SLIDER:
-				if (idAnswer == -1) {
+				if (statistic == null) {
 					EVoterMobileUtils.showeVoterToast(this, "You have to choose at least one answer before submit");
 				} else {
 					doVote(answers.get(0).getId(), statistic);
@@ -268,12 +275,6 @@ public class QuestionDetailActivity extends EVoterActivity {
 		}
 	}
 	
-	/**
-	 * 
-	 */
-	private void updateStatusCurrentQuestion() {
-		
-	}
 	
 	/**
 	 * 
@@ -292,7 +293,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				if (response.contains("SUCCESS")) {
 					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
-					btSend.setVisibility(View.GONE);
+					btSend.setText(VIEW_STATISTIC);
 				}
 				else {
 					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,

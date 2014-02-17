@@ -14,6 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sun.net.httpserver.HttpExchange;
 
+import evoter.server.dao.impl.QuestionDAOImpl;
+import evoter.server.dao.impl.QuestionSessionDAOImpl;
+import evoter.server.dao.impl.SessionDAOImpl;
+import evoter.server.dao.impl.SessionUserDAOImpl;
+import evoter.server.dao.impl.UserDAOImpl;
+import evoter.server.dao.impl.UserSubjectDAOImpl;
 import evoter.server.http.request.interfaces.ISessionService;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
@@ -35,8 +41,8 @@ import evoter.share.utils.UserValidation;
 
 /**
  * Process all {@link Session} requests sent by client applications </br> 
- * 
- * @author btdiem
+ * This class is an implementation of {@link ISessionService} </br>
+ * @author btdiem </br>
  *
  */
 @Service
@@ -46,17 +52,29 @@ public class SessionService implements ISessionService{
 
 	public static final String CREATOR = "CREATOR";
 	
-	//@Autowired
+	/**
+	 * Define getter/setter of {@link SessionDAOImpl} bean
+	 */
 	private SessionDAO sessionDAO;
-	//@Autowired
+	/**
+	 * Define getter/setter of {@link SessionUserDAOImpl} bean
+	 */
 	private SessionUserDAO sessionUserDAO;
-	//@Autowired
+	/**
+	 * Define getter/setter of {@link UserDAOImpl} bean
+	 */
 	private UserDAO userDAO;
-	
+	/**
+	 * Define getter/setter of {@link UserSubjectDAOImpl} bean
+	 */
 	private UserSubjectDAO userSubjectDAO;
-	
+	/**
+	 * Define getter/setter of {@link QuestionDAOImpl} bean
+	 */
 	private QuestionDAO questionDAO;
-	
+	/**
+	 * Define getter/setter of {@link QuestionSessionDAOImpl} bean
+	 */
 	private QuestionSessionDAO questionSessionDAO;
 	
 	public QuestionDAO getQuestionDAO() {
@@ -188,17 +206,20 @@ public class SessionService implements ISessionService{
 	public  Object doView(Map<String,Object> parameters) {
 		try{
 			
-//			System.out.println("array tested : " + (String[])parameters.get("colors"));
-//			String s = (String)parameters.get("ARRAY[]");
-//			System.out.println("array " + s);
-
 			long id = Long.valueOf((String)parameters.get(SessionDAO.ID));
+			String userKey = (String)parameters.get(UserDAO.USER_KEY);
+			long userId = UserValidation.getUserIdFromUserKey(userKey);
+			
 			List<Session> sessions = sessionDAO.findById(id);
 			JSONArray response = new JSONArray();
 			for (Session ses : sessions){
 				User creator = userDAO.findById(ses.getUserId()).get(0);
+				SessionUser sessionUser = sessionUserDAO.
+						findByProperty(new String[]{SessionUserDAO.SESSION_ID, SessionUserDAO.USER_ID}, 
+									   new Object[]{id, userId}).get(0);
 				JSONObject object = ses.toJSON();
 				object.put(CREATOR, creator.getUserName());
+				object.put(SessionUserDAO.ACCEPT_SESSION, sessionUser.isAcceptSession());
 				response.add(object);
 			}
 			//URIUtils.writeResponse(jsArray.toJSONString(), httpExchange);

@@ -23,20 +23,21 @@ import web.applet.RunningTimeData;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import evoter.share.dao.UserDAO;
+import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
 public class LoginPanel extends JPanel {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	public static final String SIGNIN = "Sign in";
-
+	
 	/**
 	 * display error
 	 */
 	private JLabel lblError;
-
+	
 	/**
 	 * user name field
 	 */
@@ -46,21 +47,22 @@ public class LoginPanel extends JPanel {
 	 * password field
 	 */
 	private JPasswordField txtPassword;
-
+	
 	/**
 	 * button "Sign in"
 	 */
 	private JButton btnSignIn;
-
-
+	
 	/**
 	 * the main framework (a JPanel) of the whole web app.
 	 * It contains two parts: menu and content panels.
 	 */
 	private MainPanel mainPanel;
-
+	
 	/**
-	 * constructor log in panel where to enter user name and password to sign in.
+	 * constructor log in panel where to enter user name and password to sign
+	 * in.
+	 * 
 	 * @param main
 	 */
 	public LoginPanel(MainPanel main) {
@@ -69,53 +71,53 @@ public class LoginPanel extends JPanel {
 		buildGUI();
 		actionPerformed();
 	}
-
+	
 	/**
 	 * design user's interface
 	 */
-	public void buildGUI(){
+	public void buildGUI() {
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		GridBagLayout gridbag = new GridBagLayout();
 		GridBagConstraints c = new GridBagConstraints();
 		this.setLayout(gridbag);
-
+		
 		c.fill = GridBagConstraints.BOTH;
 		c.insets = new Insets(1, 1, 1, 1);
-
+		
 		// Row 0: Error alert
 		c.gridy = 0;
 		c.weightx = 0;
 		c.gridx = 1;
 		c.insets = new Insets(5, 15, 5, 0);
 		this.add(lblError, c);
-
+		
 		// Row 1: Password
 		c.gridy = 1;
 		c.gridx = 0;
 		c.weightx = 0;
 		c.insets = new Insets(5, 15, 5, 0);
 		this.add(new JLabel("User name"), c);
-
+		
 		c.gridx = 1;
 		c.weightx = 0.5;
 		c.ipady = 10;
 		c.insets = new Insets(10, 40, 5, 20);
 		this.add(txtUserName, c);
-
+		
 		// Row 2: Email
 		c.gridy = 2;
-
+		
 		c.gridx = 0;
 		c.weightx = 0;
 		c.insets = new Insets(5, 15, 5, 0);
 		this.add(new JLabel("Password"), c);
-
+		
 		c.gridx = 1;
 		c.weightx = 0.5;
 		c.ipady = 10;
 		c.insets = new Insets(10, 40, 5, 20);
 		this.add(txtPassword, c);
-
+		
 		// Row 3: Create panel Buttons with BorderLayout
 		c.gridy = 3;
 		c.gridx = 1;
@@ -132,11 +134,11 @@ public class LoginPanel extends JPanel {
 		//set up error field
 		lblError = new JLabel();
 		lblError.setForeground(Color.RED);
-
+		
 		// set up user name and password fields
 		txtPassword = new JPasswordField();
 		txtUserName = new JTextField();
-
+		
 		// create button log in
 		btnSignIn = new JButton(SIGNIN);
 	}
@@ -144,9 +146,9 @@ public class LoginPanel extends JPanel {
 	/**
 	 * create action for button "Log in"
 	 */
-	public void actionPerformed(){
+	public void actionPerformed() {
 		btnSignIn.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				final String i_Usrname = getTxtUserName().getText();
@@ -186,19 +188,34 @@ public class LoginPanel extends JPanel {
 								.getString(UserDAO.USER_KEY);
 						if (userkey != null) {
 							System.out.println(userkey);
-							RunningTimeData.setCurrentUserKey(userkey);
-							mainPanel.updateAccountName(i_Usrname);
-							mainPanel.buildGUI();
-							mainPanel.setContentPanel(new EmptyPage("Welcome "
-									+ i_Usrname + " to eVoter System!"));
+							if (extractUserType(userkey) != (int) UserType.SECRETARY) {
+								lblError.setText("Only secretary has permisson to login!");
+								mainPanel.doLogout(userkey);
+							} else {
+								RunningTimeData.setCurrentUserKey(userkey);
+								mainPanel.updateAccountName(i_Usrname);
+								mainPanel.buildGUI();
+								mainPanel.setContentPanel(new EmptyPage("Welcome "
+										+ i_Usrname + " to eVoter System!"));
+							}
 						}
 					} else {
 						lblError.setText("Login fail!!! ");
 					}
 				}
-
+				
 			}
 		});
+	}
+
+	/**
+	 * Extract user type from user_key
+	 * @param userkey
+	 * @return
+	 */
+	protected int extractUserType(String userkey) {
+		String[] array = userkey.split("_");
+		return Integer.parseInt(array[array.length-1]);
 	}
 
 	/**
@@ -207,7 +224,7 @@ public class LoginPanel extends JPanel {
 	public JTextField getTxtUserName() {
 		return txtUserName;
 	}
-
+	
 	/**
 	 * @return txtPassword is password field
 	 */

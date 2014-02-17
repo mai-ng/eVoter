@@ -6,14 +6,23 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import evoter.share.dao.UserDAO;
 import evoter.share.model.UserType;
+import evoter.share.utils.URIRequest;
 
 import web.applet.RunningTimeData;
+import web.util.EVoterHTTPRequest;
+import web.util.RequestConfig;
 
 /**
  * the main framework (a {@link JPanel}) for the whole web application.
@@ -130,6 +139,7 @@ public class MainPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				doLogout(RunningTimeData.getCurrentUserKey());
 				restart();
 			}
 		});
@@ -217,5 +227,20 @@ public class MainPanel extends JPanel {
 
 	public void updateAccountName(String acc) {
 		userName.setText(acc);
+	}
+	
+	/**
+	 *Send a logout request to server <br>
+	 *<li> {@link MainPanel#btnLogout} click
+	 *<li> {@link LoginPanel#actionPerformed()} in case of a teacher or student try to login web app
+	 * @param userkey
+	 */
+	protected void doLogout(String userkey) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(UserDAO.USER_KEY,
+				userkey));
+			String response = EVoterHTTPRequest.excutePost(
+					RequestConfig.getURL(URIRequest.LOGOUT), params);
+			System.out.println(response);
 	}
 }

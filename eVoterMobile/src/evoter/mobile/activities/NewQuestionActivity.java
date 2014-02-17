@@ -328,7 +328,7 @@ public class NewQuestionActivity extends EVoterActivity {
 								EVoterMobileUtils.showeVoterToast(
 										NewQuestionActivity.this,
 										"A new question is created successfully!");
-								EVoterShareMemory.getPreviousContext().refreshActivity();
+								EVoterShareMemory.getPreviousContext().refreshData();
 							} else {
 								EVoterMobileUtils.showeVoterToast(
 										NewQuestionActivity.this,

@@ -336,7 +336,7 @@ public class QuestionActivity extends ItemDataActivity {
 		}
 	}
 	
-	public void refreshActivity() {
+	public void refreshData() {
 		EVoterMobileUtils.updateCurrentSession();
 		if (userAcceptSession()) mainMenu.getBtStartSession().setVisibility(View.GONE);
 		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && EVoterShareMemory.currentSessionIsActive()) {

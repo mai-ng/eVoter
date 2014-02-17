@@ -63,7 +63,7 @@ public class SubjectUserActivity extends EVoterActivity {
 			public void onClick(View v) {
 				listStudents.clear();
 				listTeachers.clear();
-				refreshActivity();
+				refreshData();
 			}
 			
 		});
@@ -98,10 +98,10 @@ public class SubjectUserActivity extends EVoterActivity {
 		lvStudent = (ListView) findViewById(R.id.lvSubjectStudents);
 		studentAdapter = new ArrayAdapter<String>(SubjectUserActivity.this, R.layout.user_item, listStudents);
 		lvStudent.setAdapter(studentAdapter);
-		refreshActivity();
+		refreshData();
 	}
 	
-	public void refreshActivity() {
+	public void refreshData() {
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		params.add(SubjectDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSubjectID()));

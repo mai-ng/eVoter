@@ -149,7 +149,7 @@ public class EditQuestionActivity extends NewQuestionActivity {
 								EVoterMobileUtils.showeVoterToast(
 										EditQuestionActivity.this,
 										"Updated successfully!");
-								EVoterShareMemory.getPreviousContext().refreshActivity();
+								EVoterShareMemory.getPreviousContext().refreshData();
 							} else {
 								EVoterMobileUtils.showeVoterToast(
 										EditQuestionActivity.this,

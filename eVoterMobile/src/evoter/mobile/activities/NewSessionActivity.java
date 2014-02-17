@@ -102,7 +102,7 @@ public class NewSessionActivity extends EVoterActivity {
 						Log.i("Response", response);
 						if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 							EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "A new session is created!");
-							EVoterShareMemory.getPreviousContext().refreshActivity();
+							EVoterShareMemory.getPreviousContext().refreshData();
 						} else {
 							EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "Cannot create new session!");
 						}

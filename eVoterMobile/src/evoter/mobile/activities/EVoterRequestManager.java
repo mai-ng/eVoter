@@ -20,6 +20,7 @@ import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.UserDAO;
+import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
@@ -46,10 +47,10 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				if (response.contains("SUCCESS")) {
+				if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 					EVoterMobileUtils.showeVoterToast(context,
 							"Successful!");
-					context.updateGUI();
+					context.updateRequestCallBack();
 				}
 				else {
 					EVoterMobileUtils.showeVoterToast(context,
@@ -148,6 +149,84 @@ public class EVoterRequestManager {
 		else {
 			EVoterMobileUtils.showeVoterToast(context, "Error! Username and password is not correct. Please try again!");
 		}
+	}
+
+	/**
+	 * @param i_email
+	 */
+	public static void resetPassword(final String i_email,final Context context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.put(UserDAO.EMAIL, i_email);
+		client.post(RequestConfig.getURL(URIRequest.RESET_PASSWORD), params, new AsyncHttpResponseHandler() {
+			
+			@Override
+			public void onSuccess(String response) {
+				Log.i("Reset password",response);
+				if (response.contains(URIRequest.FAILURE_MESSAGE)) {
+					EVoterMobileUtils.showeVoterToast(context,
+							"Email not exists. Please try again or register new account!");
+				}
+				else if (response.contains(URIRequest.EMAIL_EXIST_MESSAGE)) {
+					// TODO: Send request to sever: email to change the password
+					EVoterMobileUtils.showeVoterToast(context,
+							"You will receive an email confirm to reset your password! Email send to address: " + i_email);
+					ActivityManager.gotoLogin(context);
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content) {
+				Log.e("Reset password", "onFailure error : "
+						+ error.toString() + "content : " + content);
+			}
+		});
+		
+	}
+
+	/**
+	 * @param i_email
+	 * @param i_usrname
+	 * @param i_password
+	 * @param registerActivity
+	 */
+	public static void createNewUser(String i_email, final String i_usrname, String i_password, final Context context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		
+		RequestParams params = new RequestParams();
+		params.put(UserDAO.EMAIL, i_email);
+		params.put(UserDAO.PASSWORD, i_password);
+		params.put(UserDAO.USER_NAME, i_usrname);
+		params.put(UserDAO.USER_TYPE_ID, String.valueOf(UserType.STUDENT));
+		
+		client.post(RequestConfig.getURL(URIRequest.REGISTER), params, new AsyncHttpResponseHandler() {
+			
+			@Override
+			public void onSuccess(String response) {
+				Log.i("REGISTER", "Successful: " + response);
+				if (response.contains("USER EXISTS ALREADY")) {
+					EVoterMobileUtils.showeVoterToast(context,
+							"Username already used by other user. Please choose another username");
+				}
+				else if (response.contains("EMAIL EXISTS ALREADY")) {
+					EVoterMobileUtils.showeVoterToast(context,
+							"Email already registered in system. Please register by another email or use reset password!");
+				}
+				else {
+					EVoterMobileUtils.showeVoterToast(context,
+							"You will receive an email to confirm your register!");
+					EVoterShareMemory.setCurrentUserName(i_usrname);
+					ActivityManager.gotoLogin(context);
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content) {
+				Log.e("REGISTER", "onFailure error : "
+						+ error.toString() + "content : " + content);
+			}
+		});
+		
 	}
 	
 }

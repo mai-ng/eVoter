@@ -68,7 +68,7 @@ public class SubjectActivity extends ItemDataActivity {
 		
 	}
 	
-	public void refreshActivity() {
+	public void refreshData() {
 		RequestParams params = new RequestParams();
 		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		client.post(RequestConfig.getURL(URIRequest.GET_ALL_SUBJECT), params,
@@ -85,16 +85,6 @@ public class SubjectActivity extends ItemDataActivity {
 								+ error.toString() + "content : " + content);
 					}
 				});
-	}
-	
-	/**
-	 * Called when the activity has detected the user's press of the back key.
-	 * The default implementation simply finishes the current activity, but you
-	 * can override this to do whatever you want.
-	 */
-	@Override
-	public void onBackPressed() {
-		exit();
 	}
 	
 	/**
@@ -130,6 +120,16 @@ public class SubjectActivity extends ItemDataActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Called when the activity has detected the user's press of the back key.
+	 * The default implementation simply finishes the current activity, but you
+	 * can override this to do whatever you want.
+	 */
+	@Override
+	public void onBackPressed() {
+		exit();
 	}
 	
 }

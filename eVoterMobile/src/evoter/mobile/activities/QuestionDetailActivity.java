@@ -311,7 +311,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		}
 	}
 	
-	public void updateGUI() {
+	public void updateRequestCallBack() {
 		btSend.setText(VIEW_STATISTIC);
 	}
 	
@@ -467,7 +467,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
 		super.onBackPressed();
-		EVoterShareMemory.getPreviousContext().refreshActivity();
+		EVoterShareMemory.getPreviousContext().refreshData();
 		//		mainMenu.getBtStartSession().setVisibility(View.GONE);
 	}
 	

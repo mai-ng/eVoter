@@ -55,7 +55,7 @@ public abstract class ItemDataActivity extends EVoterActivity {
 			@Override
 			public void onClick(View v) {
 				Log.i("Refresh Icon click", "yeah");
-				refreshActivity();
+				refreshData();
 			}
 		});
 		
@@ -86,7 +86,7 @@ public abstract class ItemDataActivity extends EVoterActivity {
 				
 			}
 		});
-		refreshActivity();
+		refreshData();
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public abstract class ItemDataActivity extends EVoterActivity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		EVoterShareMemory.getPreviousContext().refreshActivity();
+		EVoterShareMemory.getPreviousContext().refreshData();
 	}
 	
 }

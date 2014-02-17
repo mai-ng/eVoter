@@ -228,7 +228,7 @@ public class EVoterActivity extends Activity {
 	
 	
 	
-	public void refreshActivity() {
+	public void refreshData() {
 		
 	}
 	
@@ -243,7 +243,7 @@ public class EVoterActivity extends Activity {
 		if (!EVoterMobileUtils.hasInternetConnection(this)) {
 			errorConnection();
 		} else {
-			refreshActivity();
+			refreshData();
 		}
 	};
 	
@@ -273,7 +273,7 @@ public class EVoterActivity extends Activity {
 				}).show();
 	}
 	
-	public void updateGUI() {
+	public void updateRequestCallBack() {
 		
 	}
 	

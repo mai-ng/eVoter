@@ -19,11 +19,10 @@ import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
-/**Update by @author luongnv89 on 19-Jan-2014
- * <br>
- * <li> completed registering by request to server.
- * Only student can register new account
- * Created by luongnv89 on 05/12/13.
+/**
+ * Update by @author luongnv89 on 19-Jan-2014 <br>
+ * <li>completed registering by request to server. Only student can register new
+ * account Created by luongnv89 on 05/12/13.
  */
 public class RegisterActivity extends EVoterActivity {
 	
@@ -79,49 +78,13 @@ public class RegisterActivity extends EVoterActivity {
 					EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 							"Password and confirm password are not the same!");
 				} else {
-					// TODO: request to sever: email,username,password,user_type
 					
-					RequestParams params = new RequestParams();
-					params.put(UserDAO.EMAIL, i_email);
-					params.put(UserDAO.PASSWORD, i_password);
-					params.put(UserDAO.USER_NAME, i_usrname);
-					params.put(UserDAO.USER_TYPE_ID, String.valueOf(UserType.STUDENT));
-					
-					client.post(RequestConfig.getURL(URIRequest.REGISTER), params, new AsyncHttpResponseHandler() {
-						
-						@Override
-						public void onSuccess(String response) {
-							Log.i("REGISTER", "Successful: " + response);
-							if (response.contains("USER EXISTS ALREADY")) {
-								EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
-										"Username already used by other user. Please choose another username");
-							}
-							else if (response.contains("EMAIL EXISTS ALREADY")) {
-								EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
-										"Email already registered in system. Please register by another email or use reset password!");
-							}
-							else {
-								EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
-										"You will receive an email to confirm your register!");
-								EVoterShareMemory.setCurrentUserName(i_usrname);
-								Intent intent = new Intent(RegisterActivity.this,
-										LoginActivity.class);
-								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-								startActivity(intent);
-							}
-						}
-						
-						@Override
-						public void onFailure(Throwable error, String content) {
-							Log.e("REGISTER", "onFailure error : "
-									+ error.toString() + "content : " + content);
-						}
-					});
+					EVoterRequestManager.createNewUser(i_email, i_usrname, i_password, RegisterActivity.this);
 				}
 				
 			}
 		});
 		
 	}
+	
 }

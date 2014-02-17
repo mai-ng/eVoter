@@ -86,7 +86,7 @@ public class SessionActivity extends ItemDataActivity {
 		
 	}
 	
-	public void refreshActivity() {
+	public void refreshData() {
 		RequestParams params = new RequestParams();
 		params.add(SessionDAO.SUBJECT_ID,
 				String.valueOf(EVoterShareMemory.getCurrentSubject().getId()));

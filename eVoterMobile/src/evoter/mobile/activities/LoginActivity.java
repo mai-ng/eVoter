@@ -51,6 +51,14 @@ public class LoginActivity extends EVoterActivity {
 		
 		this.ivTitleBarIcon.setEnabled(false);
 		
+		createLoginGUI();
+		
+	}
+
+	/**
+	 * Create login interface
+	 */
+	private void createLoginGUI() {
 		etUsrName = (EditText) findViewById(R.id.usrname);
 		if (EVoterShareMemory.getCurrentUserName() != null) {
 			etUsrName.setText(EVoterShareMemory.getCurrentUserName());
@@ -95,7 +103,6 @@ public class LoginActivity extends EVoterActivity {
 				startActivity(registerIntent);
 			}
 		});
-		
 	}
 	
 	/**

@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import evoter.server.dao.impl.UserSubjectDAOImpl;
 import evoter.share.dao.UserSubjectDAO;
 import evoter.share.model.UserSubject;
 /**
@@ -27,6 +28,9 @@ import evoter.share.model.UserSubject;
 @TransactionConfiguration(defaultRollback=true)
 public class TestUserSubjectDAO {
 
+	/**
+	 * Create {@link UserSubjectDAOImpl} instance
+	 */
 	@Autowired
 	UserSubjectDAO userSubjectDAO;
 	/**
@@ -34,15 +38,15 @@ public class TestUserSubjectDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindAll(){
+	public void test_findAll(){
 		List<UserSubject> userSubjects = userSubjectDAO.findAll();
-		assertTrue("testFindAll", userSubjects.size() > 0);
+		assertTrue("test_findAll", userSubjects.size() > 0);
 	}
 	/**
 	 * Test for {@link UserSubjectDAO#insert(UserSubject)} </br>
 	 */
 	@Test
-	public void testInsert(){
+	public void test_insert(){
 		UserSubject userSubject = new UserSubject();
 		userSubject.setUserId(1);
 		userSubject.setSubjectId(2);
@@ -52,7 +56,7 @@ public class TestUserSubjectDAO {
 				new String[]{UserSubjectDAO.USER_ID, UserSubjectDAO.SUBJECT_ID}, 
 				new Object[]{1, 2});
 		
-		assertTrue("testInsert", userSubjects.size() == 1);
+		assertTrue("test_insert", userSubjects.size() == 1);
 	}	
 
 	/**
@@ -61,18 +65,18 @@ public class TestUserSubjectDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByUserId(){
+	public void test_findByUserId(){
 		List<UserSubject> userSubjects = userSubjectDAO.findByUserId(2);
-		assertTrue("testFindByUserId", userSubjects.size() > 0);
+		assertTrue("test_findByUserId", userSubjects.size() > 0);
 	}
 	/**
 	 * Test for {@link UserSubjectDAO#findBySubjectId(Long)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindBySubjectId(){
+	public void test_findBySubjectId(){
 		List<UserSubject> userSubjects = userSubjectDAO.findBySubjectId(2);
-		assertTrue("testFindBySubjectId", userSubjects.size() > 0);
+		assertTrue("test_findBySubjectId", userSubjects.size() > 0);
 	}
 	
 	/**
@@ -81,19 +85,19 @@ public class TestUserSubjectDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByProperty(){
+	public void test_findByProperty(){
 		List<UserSubject> userSubjects = userSubjectDAO.findByProperty(
 				new String[]{UserSubjectDAO.USER_ID, UserSubjectDAO.SUBJECT_ID}, 
 				new Object[]{1, 3});
 		
-		assertTrue("testFindByProperty", userSubjects.size() == 1);
+		assertTrue("test_findByProperty", userSubjects.size() == 1);
 	}
 	/**
 	 * Test {@link UserSubjectDAO#deleteByProperty(String[], Object[])} </br>
 	 * 
 	 */
 	@Test
-	public void testDeleteByProperty(){
+	public void test_deleteByProperty(){
 		
 		userSubjectDAO.deleteByProperty(
 				new String[]{UserSubjectDAO.USER_ID, UserSubjectDAO.SUBJECT_ID}, 
@@ -103,27 +107,27 @@ public class TestUserSubjectDAO {
 				new String[]{UserSubjectDAO.USER_ID, UserSubjectDAO.SUBJECT_ID}, 
 				new Object[]{1, 3});
 		
-		assertTrue("testDeleteByProperty", userSubjects.size() == 0);
+		assertTrue("test_deleteByProperty", userSubjects.size() == 0);
 	}	
 	/**
 	 * Test {@link UserSubjectDAO#deleteByUserId(long)} </br>
 	 */
 	@Test
-	public void testDeleteByUserId(){
+	public void test_deleteByUserId(){
 		
 		userSubjectDAO.deleteByUserId(1);
 		List<UserSubject> userSubjects = userSubjectDAO.findByUserId(1);
-		assertTrue("testDeleteByUserId", userSubjects.size() == 0);
+		assertTrue("test_deleteByUserId", userSubjects.size() == 0);
 	}
 	/**
 	 * Test {@link UserSubjectDAO#deleteBySubjectId(long)} </br>
 	 */
 	@Test
-	public void testDeleteSubjectId(){
+	public void test_deleteSubjectId(){
 		
 		userSubjectDAO.deleteBySubjectId(2);
 		List<UserSubject> userSubjects = userSubjectDAO.findBySubjectId(2);
-		assertTrue("testDeleteById", userSubjects.size() == 0);
+		assertTrue("test_deleteById", userSubjects.size() == 0);
 	}	
 
 }

@@ -27,6 +27,9 @@ import evoter.share.model.SessionUser;
 @TransactionConfiguration(defaultRollback=true)
 public class TestSessionUserDAO {
 
+	/**
+	 * Create a {@link SessionUserDAO} instance
+	 */
 	@Autowired
 	SessionUserDAO sessionUserDAO;
 	
@@ -35,7 +38,7 @@ public class TestSessionUserDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindAll(){
+	public void test_findAll(){
 		List<SessionUser> sessionUsers = sessionUserDAO.findAll(); 
 		assertTrue(sessionUsers.size() > 0);
 	}
@@ -44,7 +47,7 @@ public class TestSessionUserDAO {
 	 */
 	@Test
 	@Rollback(true)
-	public void testDeleteByProperty(){
+	public void test_deleteByProperty(){
 		
 		sessionUserDAO.deleteByProperty(
 				new String[]{SessionUserDAO.USER_ID, SessionUserDAO.SESSION_ID}, 
@@ -54,87 +57,87 @@ public class TestSessionUserDAO {
 				new String[]{SessionUserDAO.USER_ID, SessionUserDAO.SESSION_ID}, 
 				new Object[]{3, 1});
 		
-		assertTrue("testDeleteByProperty", sessionUsers.size() == 0);
+		assertTrue("test_deleteByProperty", sessionUsers.size() == 0);
 	}
 	/**
 	 * Test {@link SessionUserDAO#findByUserId(Long)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByUserId(){
+	public void test_findByUserId(){
 		
 		List<SessionUser> sessionUsers = sessionUserDAO.findByUserId(1);
-		assertTrue("testFindByUserId", sessionUsers.size() > 0);
+		assertTrue("test_findByUserId", sessionUsers.size() > 0);
 	}
 	/**
 	 * Test {@link SessionUserDAO#findBySessionId(Long)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindBySessionId(){
+	public void test_findBySessionId(){
 		
 		List<SessionUser> sessionUsers = sessionUserDAO.findBySessionId(1);
-		assertTrue("testFindBySessionId", sessionUsers.size() > 0);
+		assertTrue("test_findBySessionId", sessionUsers.size() > 0);
 	}
 	/**
 	 * Test {@link SessionUserDAO#findByDeleteIndicator(Boolean)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByDeleteIndicator(){
+	public void test_findByDeleteIndicator(){
 		
 		List<SessionUser> sessionUsers = sessionUserDAO.findByDeleteIndicator(true);
-		assertTrue("testFindByDeleteIndicator", sessionUsers.size() > 0);
+		assertTrue("test_findByDeleteIndicator", sessionUsers.size() > 0);
 	}
 	/**
 	 * Test {@link SessionUserDAO#deleteByDeleteIndicator(Boolean)} </br>
 	 */
 	@Test
-	public void testDeleteByDeleteIndicator(){
+	public void test_deleteByDeleteIndicator(){
 		
 		sessionUserDAO.deleteByDeleteIndicator(true);
 		List<SessionUser> sessionUsers = sessionUserDAO.findByDeleteIndicator(true);
-		assertTrue("testDeleteByDeleteIndicator", sessionUsers.size() == 0);
+		assertTrue("test_deleteByDeleteIndicator", sessionUsers.size() == 0);
 	}	
 	/**
 	 * Test {@link SessionUserDAO#findByAcceptSession(Boolean)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByAcceptSession(){
+	public void test_findByAcceptSession(){
 		
 		List<SessionUser> sessionUsers = sessionUserDAO.findByAcceptSession(false);
-		assertTrue("testFindByAcceptSession", sessionUsers.size() > 0);
+		assertTrue("test_findByAcceptSession", sessionUsers.size() > 0);
 	}
 	/**
 	 * Test {@link SessionUserDAO#deleteByAcceptSession(Boolean)} </br>
 	 */
 	@Test
-	public void testDeleteByAcceptSession(){
+	public void test_deleteByAcceptSession(){
 		
 		sessionUserDAO.deleteByAcceptSession(false);
 		List<SessionUser> sessionUsers = sessionUserDAO.findByAcceptSession(false);
-		assertTrue("testDeleteByAcceptSession", sessionUsers.size() == 0);
+		assertTrue("test_deleteByAcceptSession", sessionUsers.size() == 0);
 	}	
 	/**
 	 * Test {@link SessionUserDAO#deleteByUserId(Long)} </br>
 	 */
 	@Test
-	public void testDeleteByUserId(){
+	public void test_deleteByUserId(){
 		
 		sessionUserDAO.deleteByUserId(1);
 		List<SessionUser> sessionUsers = sessionUserDAO.findByUserId(1);
-		assertTrue("testDeleteByUserId", sessionUsers.size() == 0);
+		assertTrue("test_deleteByUserId", sessionUsers.size() == 0);
 	}	
 	/**
 	 * Test {@link SessionUserDAO#findBySessionId(Long)} </br>
 	 */
 	@Test
-	public void testDeleteBySessionId(){
+	public void test_deleteBySessionId(){
 		
 		sessionUserDAO.deleteBySessionId(1);
 		List<SessionUser> sessionUsers = sessionUserDAO.findBySessionId(1);
-		assertTrue("testDeleteBySessionId", sessionUsers.size() == 0);
+		assertTrue("test_deleteBySessionId", sessionUsers.size() == 0);
 	}	
 
 	/**
@@ -142,7 +145,7 @@ public class TestSessionUserDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByByProperty(){
+	public void test_findByByProperty(){
 		
 		List<SessionUser> sessionUsers = sessionUserDAO.findByProperty(
 				new String[]{SessionUserDAO.USER_ID, SessionUserDAO.SESSION_ID}, 
@@ -153,7 +156,7 @@ public class TestSessionUserDAO {
 	 * Test for {@link SessionUserDAO#update(SessionUser)} </br>
 	 */
 	@Test
-	public void testUpdate(){
+	public void test_update(){
 		
 		List<SessionUser> sessionUsers = sessionUserDAO.findByProperty(
 				new String[]{SessionUserDAO.USER_ID, SessionUserDAO.SESSION_ID}, 
@@ -168,7 +171,7 @@ public class TestSessionUserDAO {
 		sessionUsers = sessionUserDAO.findByProperty(
 				new String[]{SessionUserDAO.USER_ID, SessionUserDAO.SESSION_ID}, 
 				new Object[]{3, 1}); 
-		assertTrue("testUpdate", sessionUsers.get(0).isAcceptSession());
+		assertTrue("test_update", sessionUsers.get(0).isAcceptSession());
 		
 	}
 		

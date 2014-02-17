@@ -29,6 +29,9 @@ import evoter.share.model.Subject;
 @TransactionConfiguration(defaultRollback=true)
 public class TestSubjectDAO {
 
+	/**
+	 * Create {@link SubjectDAO} instance
+	 */
 	@Autowired
 	SubjectDAO subjectDAO;
 	/**
@@ -36,9 +39,9 @@ public class TestSubjectDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindAll(){
+	public void test_findAll(){
 		List<Subject> subjects = subjectDAO.findAll();
-		assertTrue("testFindAll", subjects.size() > 0);
+		assertTrue("test_findAll", subjects.size() > 0);
 	}
 
 	/**
@@ -49,28 +52,28 @@ public class TestSubjectDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindById(){
+	public void test_findById(){
 		List<Subject> subjects = subjectDAO.findById(2);
-		assertTrue("testFindById", subjects.size() == 1);
+		assertTrue("test_findById", subjects.size() == 1);
 	}
 	/**
 	 * Test for {@link subjectDAO#findByTitle(String)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByTitle(){
+	public void test_findByTitle(){
 		List<Subject> subjects = subjectDAO.findByTitle("Object Oriented Programming");
-		assertTrue("testFindByTitle", subjects.size() > 0);
+		assertTrue("test_findByTitle", subjects.size() > 0);
 	}
 	/**
 	 * Test for {@link SubjectDAO#findByCreationDate(Timestamp)} </br>
 	 */
 	@Test
-	public void testFindByCreationDate(){
+	public void test_findByCreationDate(){
 		
 		List<Subject> subjects = subjectDAO.
 				findByCreationDate(Timestamp.valueOf("2013-12-28 12:50:24"));
-		assertTrue("testFindByCreationDate", subjects.size() > 1);
+		assertTrue("test_findByCreationDate", subjects.size() > 1);
 	}
 	/**
 	 * Test {@link SubjectDAO#findByProperty(String[], Object[])} </br>
@@ -80,19 +83,19 @@ public class TestSubjectDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByProperty(){
+	public void test_findByProperty(){
 		List<Subject> subjects = subjectDAO.findByProperty(
 				new String[]{SubjectDAO.ID, SubjectDAO.TITLE}, 
 				new Object[]{1, "Object Oriented Programming"});
 		
-		assertTrue("testFindByProperty", subjects.size() == 1);
+		assertTrue("test_findByProperty", subjects.size() == 1);
 	}
 	/**
 	 * Test {@link SubjectDAO#deleteByProperty(String[], Object[])} </br>
 	 * 
 	 */
 	@Test
-	public void testDeleteByProperty(){
+	public void test_deleteByProperty(){
 		
 		subjectDAO.deleteByProperty(
 				new String[]{SubjectDAO.ID, SubjectDAO.TITLE}, 
@@ -102,38 +105,38 @@ public class TestSubjectDAO {
 				new String[]{SubjectDAO.ID, SubjectDAO.TITLE}, 
 				new Object[]{2,"Testing Metrics"});
 		
-		assertTrue("testDeleteByProperty", subjects.size() == 0);
+		assertTrue("test_deleteByProperty", subjects.size() == 0);
 	}	
 	/**
 	 * Test {@link SubjectDAO#deleteById(long)} </br>
 	 */
 	@Test
-	public void testDeleteById(){
+	public void test_deleteById(){
 		
 		subjectDAO.deleteById(1);
 		List<Subject> subjects = subjectDAO.findById(1);
-		assertTrue("testDeleteById", subjects.size() == 0);
+		assertTrue("test_deleteById", subjects.size() == 0);
 	}
 	/**
 	 * Test {@link SubjectDAO#deleteByTitle(String)} </br>
 	 */
 	@Test
-	public void testDeleteByTitle(){
+	public void test_deleteByTitle(){
 		
 		subjectDAO.deleteByTitle("Testing Metrics");
 		List<Subject> subjects = subjectDAO.findByTitle("Testing Metrics");
-		assertTrue("testDeleteByTitle", subjects.size() == 0);
+		assertTrue("test_deleteByTitle", subjects.size() == 0);
 	}	
 	/**
 	 * Test {@link SubjectDAO#deleteByCreationDate(Timestamp)} </br>
 	 */
 	@Test
-	public void testDeleteByCreationDate(){
+	public void test_deleteByCreationDate(){
 		
 		subjectDAO.deleteByCreationDate(Timestamp.valueOf("2013-12-28 12:50:24"));
 		List<Subject> subjects = subjectDAO.
 				findByCreationDate(Timestamp.valueOf("2013-12-28 12:50:24"));
-		assertTrue("testDeleteByCreationDate", subjects.size() == 0);
+		assertTrue("test_deleteByCreationDate", subjects.size() == 0);
 	}	
 
 }

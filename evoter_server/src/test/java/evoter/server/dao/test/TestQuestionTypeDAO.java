@@ -29,6 +29,9 @@ import evoter.share.model.QuestionType;
 @TransactionConfiguration(defaultRollback=true)
 public class TestQuestionTypeDAO {
 
+	/**
+	 * Create a {@link QuestionTypeDAOImpl} instance
+	 */
 	@Autowired
 	QuestionTypeDAO questionTypeDAO;
 	
@@ -37,7 +40,7 @@ public class TestQuestionTypeDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindAll(){
+	public void test_findAll(){
 		List<QuestionType> types = questionTypeDAO.findAll(); 
 		assertTrue(types.size() > 0);
 	}
@@ -46,7 +49,7 @@ public class TestQuestionTypeDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindById(){
+	public void test_findById(){
 		
 		List<QuestionType> types = questionTypeDAO.findById(3); 
 		assertTrue(types.size() == 1);
@@ -56,7 +59,7 @@ public class TestQuestionTypeDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByQuestionTypeValue(){
+	public void test_findByQuestionTypeValue(){
 		
 		List<QuestionType> types = questionTypeDAO.findByQuestionTypeValue("Multi Radio Button"); 
 		assertTrue(types.size() == 1);
@@ -66,7 +69,7 @@ public class TestQuestionTypeDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByByProperty(){
+	public void test_findByByProperty(){
 		
 		List<QuestionType> types = questionTypeDAO.findByProperty(
 				new String[]{QuestionTypeDAO.ID, QuestionTypeDAO.QUESTION_TYPE_VALUE}, 
@@ -78,7 +81,7 @@ public class TestQuestionTypeDAO {
 	 * Test for {@link QuestionTypeDAO#deleteByProperty(String[], Object[])} </br>
 	 */
 	@Test
-	public void testDeleteByByProperty(){
+	public void test_deleteByByProperty(){
 		
 		questionTypeDAO.deleteByProperty(
 				new String[]{QuestionTypeDAO.ID, QuestionTypeDAO.QUESTION_TYPE_VALUE}, 
@@ -94,7 +97,7 @@ public class TestQuestionTypeDAO {
 	 * Test for {@link QuestionTypeDAO#deleteById(long id)} </br>
 	 */
 	@Test
-	public void testDeleteById(){
+	public void test_deleteById(){
 		
 		questionTypeDAO.deleteById(2);
 		List<QuestionType> types = questionTypeDAO.findById(2); 
@@ -104,7 +107,7 @@ public class TestQuestionTypeDAO {
 	 * Test for {@link QuestionTypeDAO#deleteByQuestionTypeValue(String)} </br>
 	 */
 	@Test
-	public void testDeleteByQuestionTypeValue(){
+	public void test_deleteByQuestionTypeValue(){
 		
 		String text = "Multi Radio Button";
 		questionTypeDAO.deleteByQuestionTypeValue(text);
@@ -115,7 +118,7 @@ public class TestQuestionTypeDAO {
 	 * Test for {@link QuestionTypeDAO#insert()} </br>
 	 */
 	@Test
-	public void testInsert(){
+	public void test_insert(){
 		
 		QuestionType questionType = new QuestionType("question type for test");
 		long id = questionTypeDAO.insert(questionType);

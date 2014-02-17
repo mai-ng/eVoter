@@ -29,13 +29,18 @@ import evoter.share.model.UserType;
 @TransactionConfiguration(defaultRollback=true)
 public class TestUserTypeDAO{
 
+	/**
+	 * Create {@link UserTypeDAOImpl} 
+	 */
 	@Autowired
 	UserTypeDAO userTypeDAO;
-	
+	/**
+	 * Test for {@link UserTypeDAO#findAll()} </br>
+	 */
 	@Test
-	public void testFindAll(){
+	public void test_findAll(){
 		List<UserType> userTypes = userTypeDAO.findAll();
-		assertTrue("testFindAll", userTypes.size() > 0);
+		assertTrue("test_findAll", userTypes.size() > 0);
 	}
 
 	/**
@@ -46,18 +51,18 @@ public class TestUserTypeDAO{
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindById(){
+	public void test_findById(){
 		List<UserType> userTypes = userTypeDAO.findById(2);
-		assertTrue("testFindById", userTypes.size() == 1);
+		assertTrue("test_findById", userTypes.size() == 1);
 	}
 	/**
 	 * Test for {@link UserTypeDAO#findByUserTypeValue(String)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByUserTypeValue(){
+	public void test_findByUserTypeValue(){
 		List<UserType> userTypes = userTypeDAO.findByUserTypeValue("Teacher");
-		assertTrue("testFindByUserTypeValue", userTypes.size() == 1);
+		assertTrue("test_findByUserTypeValue", userTypes.size() == 1);
 	}
 	/**
 	 * Test {@link UserTypeDAO#findByProperty(String[], Object[])} </br>
@@ -67,19 +72,19 @@ public class TestUserTypeDAO{
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByProperty(){
+	public void test_findByProperty(){
 		List<UserType> userTypes = userTypeDAO.findByProperty(
 				new String[]{UserTypeDAO.ID, UserTypeDAO.USER_TYPE_VALUE}, 
 				new Object[]{2,"Teacher"});
 		
-		assertTrue("testFindByProperty", userTypes.size() == 1);
+		assertTrue("test_findByProperty", userTypes.size() == 1);
 	}
 	/**
 	 * Test {@link UserTypeDAO#deleteByProperty(String[], Object[])} </br>
 	 * 
 	 */
 	@Test
-	public void testDeleteByProperty(){
+	public void test_deleteByProperty(){
 		
 		userTypeDAO.deleteByProperty(
 				new String[]{UserTypeDAO.ID, UserTypeDAO.USER_TYPE_VALUE}, 
@@ -89,34 +94,34 @@ public class TestUserTypeDAO{
 				new String[]{UserTypeDAO.ID, UserTypeDAO.USER_TYPE_VALUE}, 
 				new Object[]{2,"Teacher"});
 		
-		assertTrue("testDeleteByProperty", userTypes.size() == 0);
+		assertTrue("test_deleteByProperty", userTypes.size() == 0);
 	}	
 	/**
 	 * Test {@link UserTypeDAO#deleteById(long)} </br>
 	 */
 	@Test
-	public void testDeleteById(){
+	public void test_deleteById(){
 		
 		userTypeDAO.deleteById(1);
 		List<UserType> userTypes = userTypeDAO.findById(1);
-		assertTrue("testDeleteById", userTypes.size() == 0);
+		assertTrue("test_deleteById", userTypes.size() == 0);
 	}
 
 	/**
 	 * Test {@link UserTypeDAO#deleteByUserTypeValue(String)} </br>
 	 */
 	@Test
-	public void testDeleteByUserTypeValue(){
+	public void test_deleteByUserTypeValue(){
 		
 		String userTypeValue = "Teacher";
 		userTypeDAO.deleteByUserTypeValue(userTypeValue);
 		
 		List<UserType> userTypes = userTypeDAO.findByUserTypeValue(userTypeValue);
-		assertTrue("testDeleteByUserTypeValue", userTypes.size() == 0);		
+		assertTrue("test_deleteByUserTypeValue", userTypes.size() == 0);		
 	}
 	
 	@Test
-	public void testInsert(){
+	public void test_insert(){
 		
 		UserType insert = new UserType("user type value for testing");
 		long id = userTypeDAO.insert(insert);

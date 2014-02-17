@@ -33,6 +33,9 @@ import evoter.share.model.Question;
 @TransactionConfiguration(defaultRollback=true)
 public class TestQuestionDAO {
 	
+	/**
+	 * Create an {@link QuestionDAOImpl} instance
+	 */
 	@Autowired
 	QuestionDAO questionDAO;
 	/**
@@ -41,9 +44,9 @@ public class TestQuestionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindAll(){
+	public void test_findAll(){
 		List<Question> questions = questionDAO.findAll();
-		assertTrue("testFindAll", questions.size() > 0);
+		assertTrue("test_findAll", questions.size() > 0);
 	}
 	/**
 	 * Test {@link QuestionDAO#findByProperty(String[], Object[])} </br>
@@ -51,10 +54,11 @@ public class TestQuestionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByProperty(){
+	public void test_findByProperty(){
 		List<Question> questions = questionDAO.findByProperty(
-				new String[]{QuestionDAO.ID, QuestionDAO.QUESTION_TYPE_ID}, new Object[]{2, 1});
-		assertTrue("testFindByProperty", questions.size() > 0);
+				new String[]{QuestionDAO.ID, QuestionDAO.QUESTION_TYPE_ID}
+				, new Object[]{2, 1});
+		assertTrue("test_findByProperty", questions.size() > 0);
 	}
 	/**
 	 * Test {@link QuestionDAO#findById(long)} </br>
@@ -63,11 +67,11 @@ public class TestQuestionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindById(){
+	public void test_findById(){
 		List<Question> questions = questionDAO.findById(1);
 		assertTrue("testFindById - Case 1", questions.size() == 1);	
 		questions = questionDAO.findById(10000);
-		assertTrue("testFindById - Case 2", questions.size() == 0);
+		assertTrue("test_findById - Case 2", questions.size() == 0);
 	}
 	/**
 	 * Test {@link QuestionDAO#findByUserId(long)} </br>
@@ -76,11 +80,11 @@ public class TestQuestionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByUserId(){
+	public void test_findByUserId(){
 		List<Question> questions = questionDAO.findByUserId(1);
-		assertTrue("testFindByUserId - Case 1", questions.size() > 0);	
+		assertTrue("test_findByUserId - Case 1", questions.size() > 0);	
 		questions = questionDAO.findByUserId(89);
-		assertTrue("testFindByUserId - Case 2", questions.size() == 0);
+		assertTrue("test_findByUserId - Case 2", questions.size() == 0);
 
 	}
 	/**
@@ -90,11 +94,11 @@ public class TestQuestionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByQuestionTypeId(){
+	public void test_findByQuestionTypeId(){
 		List<Question> questions = questionDAO.findByQuestionTypeId(6);
-		assertTrue("testFindByQuestionTypeId - Case 1", questions.size() > 0);	
+		assertTrue("test_findByQuestionTypeId - Case 1", questions.size() > 0);	
 		questions = questionDAO.findByQuestionTypeId(89);
-		assertTrue("testFindByQuestionTypeId - Case 2", questions.size() == 0);
+		assertTrue("test_findByQuestionTypeId - Case 2", questions.size() == 0);
 
 	}
 	/**
@@ -105,15 +109,15 @@ public class TestQuestionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByCreationDate() throws ParseException{
+	public void test_findByCreationDate() throws ParseException{
 		
 		List<Question> questions = questionDAO.
 				findByCreationDate(Timestamp.valueOf("2014-01-09 22:39:24"));
-		assertTrue("testFindByCreationDate - Case 1", questions.size() > 0);
+		assertTrue("test_findByCreationDate - Case 1", questions.size() > 0);
 		
 		questions = questionDAO.
 				findByCreationDate(Timestamp.valueOf("2014-10-09 22:39:24"));
-		assertTrue("testFindByCreationDate - Case 2", questions.size() == 0);
+		assertTrue("test_findByCreationDate - Case 2", questions.size() == 0);
 	}
 	/**
 	 * Test {@link QuestionDAO#findByParentId(long)} </br>
@@ -122,11 +126,11 @@ public class TestQuestionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByParentId(){
+	public void test_findByParentId(){
 		List<Question> questions = questionDAO.findByParentId(0);
-		assertTrue("testFindByParentId - Case 1", questions.size() > 0);	
+		assertTrue("test_findByParentId - Case 1", questions.size() > 0);	
 		questions = questionDAO.findByParentId(2);
-		assertTrue("testFindByParentId - Case 2", questions.size() == 0);
+		assertTrue("test_findByParentId - Case 2", questions.size() == 0);
 
 	}	
 	/**
@@ -136,11 +140,11 @@ public class TestQuestionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByQuestionText(){
+	public void test_findByQuestionText(){
 		List<Question> questions = questionDAO.findByQuestionText("Who are you waiting for?");
-		assertTrue("findByQuestionText - Case 1", questions.size() > 0);	
+		assertTrue("test_findByQuestionText - Case 1", questions.size() > 0);	
 		questions = questionDAO.findByQuestionText("anything else");
-		assertTrue("findByQuestionText - Case 2", questions.size() == 0);
+		assertTrue("test_findByQuestionText - Case 2", questions.size() == 0);
 
 	}
 	/**
@@ -148,7 +152,7 @@ public class TestQuestionDAO {
 	 * Expect the number of records of QUESTION table inscreasing 1 </br>
 	 */
 	@Test
-	public void testInsert(){
+	public void test_insert(){
 		Question question = new Question(2, 1, "question test", new Timestamp(System.currentTimeMillis()), 0);
 		long id = questionDAO.insert(question);
 		List<Question> questions2 = questionDAO.findById(id);
@@ -158,7 +162,7 @@ public class TestQuestionDAO {
 	 * Test for {@link QuestionDAO#deleteByProperty(String[], Object[])} </br>
 	 */
 	@Test
-	public void testDeleteByProperty(){
+	public void test_deleteByProperty(){
 		questionDAO.deleteByProperty(new String[]{
 				QuestionDAO.ID, QuestionDAO.QUESTION_TYPE_ID}, 
 				new Object[]{5, 6});
@@ -171,7 +175,7 @@ public class TestQuestionDAO {
 	 * Test for {@link QuestionDAO#findById(long)} </br>
 	 */
 	@Test
-	public void testDeleteById(){
+	public void test_deleteById(){
 		Question question = new Question(2, 1, "question test", 
 				new Timestamp(System.currentTimeMillis()), 0);
 		long id = questionDAO.insert(question);
@@ -186,17 +190,17 @@ public class TestQuestionDAO {
 	 * Test for {@link QuestionDAO#deleteByUserId(long)} </br>
 	 */
 	@Test
-	public void testDeleteByUserId(){
+	public void test_deleteByUserId(){
 		questionDAO.deleteByUserId(2);
 		List<Question> questions = questionDAO.findByUserId(2);
-		assertTrue("testDeleteByUserId", questions.size() == 0);
+		assertTrue("test_deleteByUserId", questions.size() == 0);
 	}
 	/**
 	 * Test for {@link QuestionDAO#deleteByCreationDate(Timestamp)} </br>
 	 * @throws ParseException 
 	 */
 	@Test
-	public void testDeleteByCreationDate() throws ParseException{
+	public void test_deleteByCreationDate() throws ParseException{
 		
 		Timestamp sqlDate = Timestamp.valueOf("2014-01-09 22:39:24");
 		
@@ -212,7 +216,7 @@ public class TestQuestionDAO {
 	 * 
 	 */
 	@Test
-	public void testDeleteByQuestionText(){
+	public void test_deleteByQuestionText(){
 		
 		String questionText = "Interface can implement an interface?";
 		List<Question> questions = questionDAO.findByQuestionText(questionText);
@@ -225,7 +229,7 @@ public class TestQuestionDAO {
 	 * Test for {@link QuestionDAO#deleteByQuestionTypeId(long)} </br>
 	 */
 	@Test
-	public void testDeleteByQuestionTypeId(){
+	public void test_deleteByQuestionTypeId(){
 		
 		long questionTypeId = 6;
 		List<Question> questions = questionDAO.findByQuestionTypeId(questionTypeId);
@@ -238,7 +242,7 @@ public class TestQuestionDAO {
 	 * Test for {@link QuestionDAO#deleteByParentId(long)} </br>
 	 */
 	@Test
-	public void testDeleteByParentId(){
+	public void test_deleteByParentId(){
 		
 		long parentId = 0;
 		List<Question> questions = questionDAO.findByParentId(parentId);
@@ -251,7 +255,7 @@ public class TestQuestionDAO {
 	 * Test for {@link QuestionDAO#update(Question)}
 	 */
 	@Test
-	public void testUpdate(){
+	public void test_update(){
 
 		long questionId = 1;
 		Question question = questionDAO.findById(questionId).get(0);

@@ -28,15 +28,20 @@ import evoter.share.model.User;
 @TransactionConfiguration(defaultRollback=true)
 public class TestUserDAO {
 
+	/**
+	 * Create a {@link UserDAOImpl} instance
+	 */
 	@Autowired
 	UserDAO userDAO;
 	
-	
+	/**
+	 * Test for {@link UserDAO#findAll()} </br>
+	 */
 	@Test
 	@Rollback(false)
-	public void testFindAll(){
+	public void test_findAll(){
 		List<User> users = userDAO.findAll();
-		assertTrue("testFindAll", users.size() > 0);
+		assertTrue("test_findAll", users.size() > 0);
 	}
 
 	/**
@@ -47,54 +52,54 @@ public class TestUserDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindById(){
+	public void test_findById(){
 		List<User> users = userDAO.findById(2);
-		assertTrue("testFindById", users.size() == 1);
+		assertTrue("test_findById", users.size() == 1);
 	}
 	/**
 	 * Test for {@link UserDAO#findByUserName(String)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByUserName(){
+	public void test_findByUserName(){
 		List<User> users = userDAO.findByUserName("paul_gibson");
-		assertTrue("testFindByUserName", users.size() == 1);
+		assertTrue("test_findByUserName", users.size() == 1);
 	}
 	/**
 	 * Test for {@link UserDAO#findByUserTypeId(Long)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByUserTypeId(){
+	public void test_findByUserTypeId(){
 		List<User> users = userDAO.findByUserTypeId(2);
-		assertTrue("testFindByUserTypeId", users.size() > 0);
+		assertTrue("test_findByUserTypeId", users.size() > 0);
 	}
 	/**
 	 * Test for {@link UserDAO#findByEmail(Long)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByEmail(){
+	public void test_findByEmail(){
 		List<User> users = userDAO.findByEmail("diemth@gmail.com");
-		assertTrue("testFindByEmail", users.size() == 1);
+		assertTrue("test_findByEmail", users.size() == 1);
 	}
 	/**
 	 * Test for {@link UserDAO#findByFullName(Long)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByFullname(){
+	public void test_findByFullname(){
 		List<User> users = userDAO.findByFullName("Paul Gibson");
-		assertTrue("testFindByFullname", users.size() == 1);
+		assertTrue("test_findByFullname", users.size() == 1);
 	}
 	/**
 	 * Test for {@link UserDAO#findByApproved(Boolean)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByApproved(){
+	public void test_findByApproved(){
 		List<User> users = userDAO.findByApproved(true);
-		assertTrue("testFindByApproved", users.size() > 0);
+		assertTrue("test_findByApproved", users.size() > 0);
 	}
 	
 	/**
@@ -105,19 +110,20 @@ public class TestUserDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByProperty(){
+	public void test_findByProperty(){
 		List<User> users = userDAO.findByProperty(
-				new String[]{UserDAO.ID, UserDAO.USER_TYPE_ID, UserDAO.IS_APPROVED}, 
+				new String[]{UserDAO.ID, UserDAO.USER_TYPE_ID, 
+							UserDAO.IS_APPROVED}, 
 				new Object[]{2, 2, true});
 		
-		assertTrue("testFindByProperty", users.size() == 1);
+		assertTrue("test_findByProperty", users.size() == 1);
 	}
 	/**
 	 * Test {@link UserDAO#deleteByProperty(String[], Object[])} </br>
 	 * 
 	 */
 	@Test
-	public void testDeleteByProperty(){
+	public void test_deleteByProperty(){
 		
 		userDAO.deleteByProperty(
 				new String[]{UserDAO.ID, UserDAO.USER_TYPE_ID}, 
@@ -127,73 +133,73 @@ public class TestUserDAO {
 				new String[]{UserDAO.ID, UserDAO.USER_TYPE_ID}, 
 				new Object[]{2,2});
 		
-		assertTrue("testDeleteByProperty", users.size() == 0);
+		assertTrue("test_deleteByProperty", users.size() == 0);
 	}	
 	/**
 	 * Test {@link UserDAO#deleteById(long)} </br>
 	 */
 	@Test
-	public void testDeleteById(){
+	public void test_deleteById(){
 		
 		userDAO.deleteById(1);
 		List<User> users = userDAO.findById(1);
-		assertTrue("testDeleteById", users.size() == 0);
+		assertTrue("test_deleteById", users.size() == 0);
 	}
 	/**
 	 * Test {@link UserDAO#deleteByUserTypeId(long)} </br>
 	 */
 	@Test
-	public void testDeleteByUserTypeId(){
+	public void test_deleteByUserTypeId(){
 		
 		userDAO.deleteByUserTypeId(2);
 		List<User> users = userDAO.findByUserTypeId(2);
-		assertTrue("testDeleteById", users.size() == 0);
+		assertTrue("test_deleteById", users.size() == 0);
 	}	
 	/**
 	 * Test {@link UserDAO#deleteByEmail(String)} </br>
 	 */
 	@Test
-	public void testDeleteByEmail(){
+	public void test_deleteByEmail(){
 		
 		userDAO.deleteByEmail("diemth@gmail.com");
 		List<User> users = userDAO.findByEmail("diemth@gmail.com");
-		assertTrue("testDeleteByEmail", users.size() == 0);
+		assertTrue("test_deleteByEmail", users.size() == 0);
 	}	
 	/**
 	 * Test {@link UserDAO#deleteByFullName(String)} </br>
 	 */
 	@Test
-	public void testDeleteByFullName(){
+	public void test_deleteByFullName(){
 		
 		userDAO.deleteByFullName("Paul Gibson");
 		List<User> users = userDAO.findByFullName("Paul Gibson");
-		assertTrue("testDeleteByFullName", users.size() == 0);
+		assertTrue("test_deleteByFullName", users.size() == 0);
 	}	
 	/**
 	 * Test {@link UserDAO#deleteByApproved(String)} </br>
 	 */
 	@Test
-	public void testDeleteByApproved(){
+	public void test_deleteByApproved(){
 		
 		userDAO.deleteByApproved(true);
 		List<User> users = userDAO.findByApproved(true);
-		assertTrue("testDeleteByApproved", users.size() == 0);
+		assertTrue("test_deleteByApproved", users.size() == 0);
 	}		
 	/**
 	 * Test for {@link UserDAO#deleteByUserName(String)} </br>
 	 */
 	@Test
-	public void testDeleteByUserName(){
+	public void test_deleteByUserName(){
 		
 		userDAO.deleteByUserName("btdiem");
 		List<User> users = userDAO.findByUserName("btdiem");
-		assertTrue("testDeleteByUserName", users.size() == 0);
+		assertTrue("test_deleteByUserName", users.size() == 0);
 	}
 	/**
 	 * Test for {@link UserDAO#update(User)} </br>
 	 */
 	@Test
-	public void testUpdate(){
+	public void test_update(){
 		
 		User user = userDAO.findById(28).get(0);
 		//change email

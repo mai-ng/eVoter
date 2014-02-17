@@ -29,7 +29,9 @@ import evoter.share.model.Session;
 @Transactional
 @TransactionConfiguration(defaultRollback=true)
 public class TestSessionDAO {
-	
+	/**
+	 * Create a {@link SessionDAOImpl} instance
+	 */
 	@Autowired
 	SessionDAO sessionDAO;
 	
@@ -38,7 +40,7 @@ public class TestSessionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindAll(){
+	public void test_findAll(){
 		List<Session> sessions = sessionDAO.findAll(); 
 		assertTrue(sessions.size() > 0);
 	}
@@ -47,7 +49,7 @@ public class TestSessionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindById(){
+	public void test_findById(){
 		
 		List<Session> sessions = sessionDAO.findById(3); 
 		assertTrue(sessions.size() == 1);
@@ -57,7 +59,7 @@ public class TestSessionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindBySubjectId(){
+	public void test_findBySubjectId(){
 		
 		List<Session> sessions = sessionDAO.findBySubjectId(1); 
 		assertTrue(sessions.size() > 0);
@@ -67,7 +69,7 @@ public class TestSessionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByName(){
+	public void test_findByName(){
 		
 		List<Session> sessions = sessionDAO.findByName("subject_1_session_1"); 
 		assertTrue(sessions.size() > 0);
@@ -80,27 +82,27 @@ public class TestSessionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByCreationDate() throws ParseException{
+	public void test_findByCreationDate() throws ParseException{
 		
 		List<Session> sessions = sessionDAO.
 				findByCreationDate(Timestamp.valueOf("2013-12-28 12:50:24"));
-		assertTrue("testFindByCreationDate - Case 1", sessions.size() > 0);
+		assertTrue("test_findByCreationDate - Case 1", sessions.size() > 0);
 		
 		sessions = sessionDAO.
 				findByCreationDate(Timestamp.valueOf("2014-10-09 22:39:24"));
-		assertTrue("testFindByCreationDate - Case 2", sessions.size() == 0);
+		assertTrue("test_findByCreationDate - Case 2", sessions.size() == 0);
 	}	
 	/**
 	 * Test {@link SessionDAO#deleteByCreationDate(Timestamp)} </br>
 	 */
 	@Test
-	public void testDeleteByCreationDate() throws ParseException{
+	public void test_deleteByCreationDate() throws ParseException{
 		
 		Timestamp sqlDate = Timestamp.valueOf("2013-12-28 12:50:24");
 
 		sessionDAO.deleteByCreationDate(sqlDate);
 		List<Session> sessions = sessionDAO.findByCreationDate(sqlDate);
-		assertTrue("testDeleteByCreationDate", sessions.size() == 0);
+		assertTrue("test_deleteByCreationDate", sessions.size() == 0);
 		
 	}		
 	/**
@@ -108,7 +110,7 @@ public class TestSessionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindBySessionIsActive(){
+	public void test_findBySessionIsActive(){
 		
 		boolean isActive = true;
 		
@@ -116,25 +118,25 @@ public class TestSessionDAO {
 		assertTrue("testFindBySessionIsActive - return a Session Object", sessions.size() == 1);
 		
 		sessions = sessionDAO.findBySessionIsActive(!isActive);
-		assertTrue("testFindBySessionIsActive - return 8 Session Objects", sessions.size() == 8);
+		assertTrue("test_findBySessionIsActive - return 8 Session Objects", sessions.size() == 8);
 	}
 	
 	/**
 	 * Test {@link SessionDAO#deleteBySessionIsActive(Boolean)} </br>
 	 */
 	@Test
-	public void testDeleteBySessionIsActive(){
+	public void test_deleteBySessionIsActive(){
 		
 		boolean isActive = true;
 		sessionDAO.deleteBySessionIsActive(isActive);
 		List<Session> sessions = sessionDAO.findBySessionIsActive(isActive);
-		assertTrue("testDeleteBySessionIsActive", sessions.size() == 0);
+		assertTrue("test_deleteBySessionIsActive", sessions.size() == 0);
 	}
 	/**
 	 * Test for {@link SessionDAO#deleteByProperty(String[], Object[])} </br>
 	 */
 	@Test
-	public void testDeleteByProperty(){
+	public void test_deleteByProperty(){
 		
 		sessionDAO.deleteByProperty(
 				new String[]{SessionDAO.ID, SessionDAO.NAME, SessionDAO.IS_ACTIVE}, 
@@ -144,27 +146,27 @@ public class TestSessionDAO {
 				new String[]{SessionDAO.ID, SessionDAO.NAME, SessionDAO.IS_ACTIVE}, 
 				new Object[]{2, "subject_1_session_2", false});
 		
-		assertTrue("testDeleteByProperty", sessions.size() == 0);
+		assertTrue("test_deleteByProperty", sessions.size() == 0);
 	}
 	/**
 	 * Test {@link SessionDAO#findBySessionUserId(Long)} </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByUserId(){
+	public void test_findByUserId(){
 		
 		List<Session> sessions = sessionDAO.findBySessionUserId(1);
-		assertTrue("testFindByUserId", sessions.size() > 0);
+		assertTrue("test_findByUserId", sessions.size() > 0);
 	}
 	/**
 	 * Test {@link SessionDAO#deleteByUserId(Long)} </br>
 	 */
 	@Test
-	public void testDeleteByUserId(){
+	public void test_deleteByUserId(){
 		
 		sessionDAO.deleteByUserId(1);
 		List<Session> sessions = sessionDAO.findBySessionUserId(1);
-		assertTrue("testDeleteByUserId", sessions.size() == 0);
+		assertTrue("test_deleteByUserId", sessions.size() == 0);
 	}	
 	
 
@@ -173,7 +175,7 @@ public class TestSessionDAO {
 	 */
 	@Test
 	@Rollback(false)
-	public void testFindByByProperty(){
+	public void test_findByByProperty(){
 		
 		List<Session> sessions = sessionDAO.findByProperty(
 				new String[]{SessionDAO.ID, SessionDAO.IS_ACTIVE}, 
@@ -185,7 +187,7 @@ public class TestSessionDAO {
 	 * Test for {@link SessionDAO#deleteById(long id)} </br>
 	 */
 	@Test
-	public void testDeleteById(){
+	public void test_deleteById(){
 		
 		sessionDAO.deleteById(2);
 		List<Session> sessions = sessionDAO.findById(2); 
@@ -195,7 +197,7 @@ public class TestSessionDAO {
 	 * Test for {@link SessionDAO#deleteBySubjectId(long)} </br>
 	 */
 	@Test
-	public void testDeleteBySubjectId(){
+	public void test_deleteBySubjectId(){
 		
 		sessionDAO.deleteBySubjectId(2);
 		List<Session> sessions = sessionDAO.findBySubjectId(2); 
@@ -205,7 +207,7 @@ public class TestSessionDAO {
 	 * Test for {@link SessionDAO#deleteByName(String)} </br>
 	 */
 	@Test
-	public void testDeleteByName(){
+	public void test_deleteByName(){
 		
 		String sessionName = "subject_2_session_4";
 		sessionDAO.deleteByName(sessionName);

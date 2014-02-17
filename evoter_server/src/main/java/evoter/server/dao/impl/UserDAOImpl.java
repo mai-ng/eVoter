@@ -4,17 +4,25 @@ package evoter.server.dao.impl;
 import java.util.List;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Repository;
-//import org.springframework.test.annotation.Rollback;
-//import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.model.mapper.UserRowMapper;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.User;
+
+/**
+ * 
+ * This is an implementation of {@link UserDAO} </br>
+ * @author btdiem </br>
+ *
+ */
 @Repository("userDAO")
 public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#findById(long)
+	 */
 	@Override
 	public List<User> findById(long id) {
 		
@@ -22,7 +30,10 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#insert(evoter.share.model.User)
+	 */
 	@Override
 	public int insert(User user) {
 		
@@ -44,7 +55,10 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 		
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#findAll()
+	 */
 	@SuppressWarnings({})
 	@Override
 	public List<User> findAll() {
@@ -55,14 +69,20 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 	}
 
 	
-		
+	/*
+	 * 	(non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#findByUserName(java.lang.String)
+	 */
 	@Override
 	public List<User> findByUserName(String userName) {
 
 		return findByProperty(new String[]{USER_NAME}, new String[]{userName});
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#findByUserTypeId(long)
+	 */
 	@Override
 	public List<User> findByUserTypeId(long userTypeId) {
 
@@ -70,7 +90,10 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#findByEmail(java.lang.String)
+	 */
 	@Override
 	public List<User> findByEmail(String email) {
 
@@ -78,15 +101,10 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 
 	}
 	
-	
-//	@Override
-//	public List<User> findByPassword(String password) {
-//
-//		return findByProperty(new String[]{PASSWORD}, new String[]{password});
-//
-//	}
-	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#findByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public List<User> findByProperty(String[] propertyNames, Object[] propertyValues) {
 
@@ -98,12 +116,14 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 			if (i<len-1)
 				sql += " AND ";
 		}
-//		System.out.println("sql " + sql);
 		return (List<User>)getJdbcTemplate().query(sql, propertyValues, new UserRowMapper());
 
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#deleteByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public void deleteByProperty(String[] propertyNames, Object[] propertyValues) {
 		
@@ -120,63 +140,80 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 		
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#deleteById(long)
+	 */
 	@Override
 	public void deleteById(long id) {
 		
 		deleteByProperty(new String[]{ID}, new Long[]{id});
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#deleteByUserName(java.lang.String)
+	 */
 	@Override
 	public void deleteByUserName(String userName) {
 		
 		deleteByProperty(new String[]{USER_NAME}, new String[]{userName});
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#deleteByUserTypeId(long)
+	 */
 	@Override
 	public void deleteByUserTypeId(long userTypeId) {
 		
 		deleteByProperty(new String[]{USER_TYPE_ID}, new Long[]{userTypeId});
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#deleteByEmail(java.lang.String)
+	 */
 	@Override
 	public void deleteByEmail(String email) {
 		
 		deleteByProperty(new String[]{EMAIL}, new String[]{email});
 	}
 	
-	
-//	@Override
-//	public void deleteByPassword(String password) {
-//		
-//		deleteByProperty(new String[]{PASSWORD}, new String[]{password});
-//	}
-
-
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#findByFullName(java.lang.String)
+	 */
 	@Override
 	public List<User> findByFullName(String fullName) {
 		
 		return findByProperty(new String[]{FULL_NAME}, new String[]{fullName});
 	}
 
-
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#findByApproved(boolean)
+	 */
 	@Override
 	public List<User> findByApproved(boolean isApproved) {
 		
 		return findByProperty(new String[]{IS_APPROVED}, new Boolean[]{isApproved});
 	}
 
-
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserDAO#deleteByFullName(java.lang.String)
+	 */
 	@Override
 	public void deleteByFullName(String fullName) {
 		
 		deleteByProperty(new String[]{FULL_NAME}, new String[]{fullName});
 	}
 
-
+/*
+ * (non-Javadoc)
+ * @see evoter.share.dao.UserDAO#deleteByApproved(boolean)
+ */
 	@Override
 	public void deleteByApproved(boolean isApproved) {
 		

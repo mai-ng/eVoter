@@ -12,15 +12,18 @@ import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.model.QuestionSession;
 /**
  * 
- * @author btdiem
+ * This class is an implementation of {@link QuestionSessionDAO} </br>
+ * @author btdiem </br>
  *
  */
 @Repository("questionSessionDAO")
 public class QuestionSessionDAOImpl extends JdbcDaoSupport implements
 		QuestionSessionDAO {
 
-	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionSessionDAO#insert(evoter.share.model.QuestionSession)
+	 */
 	@Override
 	public int insert(QuestionSession questionSession) {
 		String sql = "INSERT INTO " + TABLE_NAME + "(" 
@@ -32,7 +35,10 @@ public class QuestionSessionDAOImpl extends JdbcDaoSupport implements
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionSessionDAO#findAll()
+	 */
 	@Override
 	public List<QuestionSession> findAll() {
 		String sql = "SELECT * FROM " + TABLE_NAME ;
@@ -40,7 +46,10 @@ public class QuestionSessionDAOImpl extends JdbcDaoSupport implements
 	}
 
 	
-		
+	/*
+	 * 	(non-Javadoc)
+	 * @see evoter.share.dao.QuestionSessionDAO#findByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public List<QuestionSession> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {
@@ -58,21 +67,32 @@ public class QuestionSessionDAOImpl extends JdbcDaoSupport implements
 
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionSessionDAO#findByQuestionId(java.lang.String)
+	 */
 	@Override
 	public List<QuestionSession> findByQuestionId(String questionId) {
-		return findByProperty(new String[]{QuestionSessionDAO.QUESTION_ID}, new Object[]{questionId});
+		return findByProperty(new String[]{QuestionSessionDAO.QUESTION_ID}
+							, new Object[]{questionId});
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionSessionDAO#findBySessionId(long)
+	 */
 	@Override
 	public List<QuestionSession> findBySessionId(long sessionId) {
-		return findByProperty(new String[]{QuestionSessionDAO.SESSION_ID}, new Object[]{sessionId});
+		return findByProperty(new String[]{QuestionSessionDAO.SESSION_ID}
+							, new Object[]{sessionId});
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionSessionDAO#deleteByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public void deleteByProperty(String[] propertyNames, Object[] propertyValues) {
 		
@@ -87,17 +107,25 @@ public class QuestionSessionDAOImpl extends JdbcDaoSupport implements
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionSessionDAO#deleteByQuestionId(long)
+	 */
 	@Override
 	public void deleteByQuestionId(long questionId) {
-		deleteByProperty(new String[]{QuestionSessionDAO.QUESTION_ID}, new Object[]{questionId});
+		deleteByProperty(new String[]{QuestionSessionDAO.QUESTION_ID}
+						, new Object[]{questionId});
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionSessionDAO#deleteBySessionId(long)
+	 */
 	@Override
 	public void deleteBySessionId(long sessionId) {
-		deleteByProperty(new String[]{QuestionSessionDAO.SESSION_ID}, new Object[]{sessionId});
+		deleteByProperty(new String[]{QuestionSessionDAO.SESSION_ID}
+						, new Object[]{sessionId});
 	}
 
 }

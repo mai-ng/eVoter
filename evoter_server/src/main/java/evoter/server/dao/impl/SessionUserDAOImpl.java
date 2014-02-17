@@ -10,12 +10,19 @@ import org.springframework.stereotype.Repository;
 import evoter.server.model.mapper.SessionUserRowMapper;
 import evoter.share.dao.SessionUserDAO;
 import evoter.share.model.SessionUser;
-
+/**
+ * This class is an implementation of {@link SessionUserDAO} </br>
+ * @author btdiem </br>
+ *
+ */
 @Repository("sessionUserDAO")
 public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO {
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#insert(evoter.share.model.SessionUser)
+	 */
 	@Override
 	public int insert(SessionUser sessionUser) {
 		
@@ -29,7 +36,10 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#findAll()
+	 */
 	@Override
 	public List<SessionUser> findAll() {
 		
@@ -39,7 +49,10 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#findByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public List<SessionUser> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {
@@ -57,7 +70,10 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#findByUserId(long)
+	 */
 	@Override
 	public List<SessionUser> findByUserId(long userId) {
 		
@@ -65,7 +81,10 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#findBySessionId(long)
+	 */
 	@Override
 	public List<SessionUser> findBySessionId(long sessionId) {
 		
@@ -73,7 +92,10 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#findByDeleteIndicator(boolean)
+	 */
 	@Override
 	public List<SessionUser> findByDeleteIndicator(boolean deleteIndicator) {
 		
@@ -81,7 +103,10 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#findByAcceptSession(boolean)
+	 */
 	@Override
 	public List<SessionUser> findByAcceptSession(boolean acceptSession) {
 	
@@ -90,7 +115,10 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#deleteByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public void deleteByProperty(String[] propertyNames, Object[] propertyValues) {
 		
@@ -107,7 +135,10 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#deleteByUserId(long)
+	 */
 	@Override
 	public void deleteByUserId(long userId) {
 		
@@ -116,7 +147,10 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#deleteBySessionId(long)
+	 */
 	@Override
 	public void deleteBySessionId(long sessionId) {
 		
@@ -125,7 +159,10 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#deleteByDeleteIndicator(boolean)
+	 */
 	@Override
 	public void deleteByDeleteIndicator(boolean deleteIndicator) {
 		
@@ -134,7 +171,10 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#deleteByAcceptSession(boolean)
+	 */
 	@Override
 	public void deleteByAcceptSession(boolean acceptSession) {
 		
@@ -143,7 +183,10 @@ public class SessionUserDAOImpl extends JdbcDaoSupport implements SessionUserDAO
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionUserDAO#update(evoter.share.model.SessionUser)
+	 */
 	@Override
 	public int update(SessionUser sessUser) {
 		

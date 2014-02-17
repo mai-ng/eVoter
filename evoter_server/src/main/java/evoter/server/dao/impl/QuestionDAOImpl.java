@@ -19,8 +19,8 @@ import evoter.share.dao.QuestionDAO;
 import evoter.share.model.Question;
 
 /**
- * 
- * @author btdiem
+ * This class is an implementation of {@link QuestionDAO} </br>
+ * @author btdiem </br>
  *
  */
 @Repository("questionDAO")
@@ -28,7 +28,10 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 
 	
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#insert(evoter.share.model.Question)
+	 */
 	@Override
 	public long insert(final Question question) {
 
@@ -61,16 +64,13 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 		
 		 return keyHolder.getKey().longValue();
 		
-//		return getJdbcTemplate().update(sql, 
-//				new Object[]{	question.getUserId(),
-//								question.getQuestionTypeId(), 
-//								question.getQuestionText(),
-//								question.getCreationDate(),
-//								question.getParentId()});
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#findAll()
+	 */
 	@Override
 	public List<Question> findAll() {
 		
@@ -80,7 +80,10 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 	}
 	
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#findByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public List<Question> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {
@@ -98,7 +101,10 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 	}
 	
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#findById(long)
+	 */
 	@Override
 	public List<Question> findById(long id) {
 		
@@ -106,7 +112,10 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 	}
 	
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#findByUserId(long)
+	 */
 	@Override
 	public List<Question> findByUserId(long userId) {
 		
@@ -115,25 +124,36 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#findByQuestionText(java.lang.String)
+	 */
 	@Override
 	public List<Question> findByQuestionText(String questionText) {
 		
-		return findByProperty(new String[]{QUESTION_TEXT}, new String[]{questionText});
+		return findByProperty(new String[]{QUESTION_TEXT}
+							, new String[]{questionText});
 		
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#findByQuestionTypeId(long)
+	 */
 	@Override
 	public List<Question> findByQuestionTypeId(long questionTypeId) {
 		
-		return findByProperty(new String[]{QUESTION_TYPE_ID}, new Long[]{questionTypeId});
+		return findByProperty(new String[]{QUESTION_TYPE_ID}
+							, new Long[]{questionTypeId});
 		
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#deleteByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public void deleteByProperty(String[] propertyNames, Object[] propertyValues) {
 		
@@ -148,60 +168,86 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#deleteById(long)
+	 */
 	@Override
 	public void deleteById(long id) {
 		deleteByProperty(new String[]{ID}, new Long[]{id});
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#deleteByUserId(long)
+	 */
 	@Override
 	public void deleteByUserId(long userId) {
 		deleteByProperty(new String[]{USER_ID}, new Long[]{userId});
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#deleteByQuestionText(java.lang.String)
+	 */
 	@Override
 	public void deleteByQuestionText(String questionText) {
 		
-		deleteByProperty(new String[]{QUESTION_TEXT}, new String[]{questionText});
+		deleteByProperty(new String[]{QUESTION_TEXT}
+						, new String[]{questionText});
 		
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#deleteByQuestionTypeId(long)
+	 */
 	@Override
 	public void deleteByQuestionTypeId(long questionTypeId) {
 		
-		deleteByProperty(new String[]{QUESTION_TYPE_ID}, new Long[]{questionTypeId});
+		deleteByProperty(new String[]{QUESTION_TYPE_ID}
+						, new Long[]{questionTypeId});
 		
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#findByCreationDate(java.sql.Timestamp)
+	 */
 	@Override
 	public List<Question> findByCreationDate(Timestamp creationDate) {
 		
-		return findByProperty(new String[]{CREATION_DATE}, new Object[]{creationDate});
+		return findByProperty(new String[]{CREATION_DATE}
+							, new Object[]{creationDate});
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#deleteByCreationDate(java.sql.Timestamp)
+	 */
 	@Override
 	public void deleteByCreationDate(Timestamp creationDate) {
 		
-		deleteByProperty(new String[]{CREATION_DATE}, new Object[]{creationDate});
+		deleteByProperty(new String[]{CREATION_DATE}
+						, new Object[]{creationDate});
 		
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#findByParentId(long)
+	 */
 	@Override
 	public List<Question> findByParentId(long parentId) {
 		
-		return findByProperty(new String[]{PARENT_ID}, new Long[]{parentId});
+		return findByProperty(new String[]{PARENT_ID}
+							, new Long[]{parentId});
 	}
 
 	
@@ -247,7 +293,10 @@ public class QuestionDAOImpl extends JdbcDaoSupport implements QuestionDAO {
 	}
 
 
-
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionDAO#deleteByStatus(int)
+	 */
 	@Override
 	public void deleteByStatus(int status) {
 		deleteByProperty(new String[]{STATUS}, new Object[]{status});

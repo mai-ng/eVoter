@@ -25,12 +25,10 @@ import evoter.share.model.Answer;
  * @author btdiem </br>
  *
  */
-//@ContextConfiguration(locations = {"/resources/applicationContext.xml"})
 @Repository("answerDAO")
 public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 
-//	@Autowired
-//	JdbcTemplate getJdbcTemplate();
+
 	/*
 	 * (non-Javadoc)
 	 * @see evoter.share.dao.AnswerDAO#insert(evoter.share.model.Answer)
@@ -59,13 +57,7 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 				}
 		    }, keyHolder);
 		
-//		return getJdbcTemplate().update(sql, 
-//				new Object[]{answer.getQuestionId(),
-//								answer.getAnswerText()});
-		
 		 return keyHolder.getKey().longValue();
-		//getJdbcTemplate().
-		//return getJdbcTemplate().getMaxRows();
 	}
 
 	/*
@@ -122,7 +114,8 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 	@Override
 	public List<Answer> findByAnswerText(String answerText) {
 		
-		return findByProperty(new String[]{ANSWER_TEXT}, new String[]{answerText});
+		return findByProperty(new String[]{ANSWER_TEXT}, 
+							  new String[]{answerText});
 	}
 
 	/*
@@ -134,7 +127,8 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 	@Override
 	public List<Answer> findByQuestionId(long questionId) {
 
-		return findByProperty(new String[]{QUESTION_ID}, new Long[]{questionId});
+		return findByProperty(new String[]{QUESTION_ID}, 
+							  new Long[]{questionId});
 	}
 
 	/*
@@ -206,7 +200,6 @@ public class AnswerDAOImpl extends JdbcDaoSupport implements AnswerDAO {
 		final String sql = 
 				"UPDATE " + TABLE_NAME 
 				+ " SET " 
-//				+ QUESTION_ID + "=" + answer.getQuestionId() 
 				+  ANSWER_TEXT +"='" + answer.getAnswerText() + "'" 
 				+ ","+STATISTICS + "='" + answer.getStatistics() + "'"
 				+ " WHERE " + ID + "=" + answer.getId();

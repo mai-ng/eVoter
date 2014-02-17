@@ -3,12 +3,21 @@ package evoter.server.http;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
+import org.springframework.http.HttpRequest;
+
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 
 import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.server.http.HttpConnection;
 
+/**
+ * This is a main class to start evoter server </br>
+ * The connection information is provided by {@link HttpConnection} bean loaded by {@link BeanDAOFactory} </br>
+ * Create a {@link HttpServer} and handle mult-thread {@link HttpRequest} </br>
+ * @author btdiem </br>
+ *
+ */
 public class Server {
 
 	/**
@@ -17,9 +26,7 @@ public class Server {
 	public static void main(String[] args) {
 		
 		try {
-			//System.out.println("IP:"+ip);
 			HttpConnection http = (HttpConnection)BeanDAOFactory.getBean("httpConnection");
-//			System.out.println("here");
 			HttpServer server = HttpServer.create(new InetSocketAddress(http.getIp(),http.getPort()), 0);
 			HttpContext  context = server.createContext("/"+http.getContext(), new ServerHandler());
 			server.setExecutor(Executors.newCachedThreadPool()); // creates a default executor

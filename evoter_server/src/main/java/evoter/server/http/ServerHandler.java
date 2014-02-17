@@ -1,16 +1,16 @@
 package evoter.server.http;
 
 import java.io.IOException;
+
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import evoter.server.dao.impl.BeanDAOFactory;
-//import evoter.server.dao.impl.BeanDAOFactory;
 import evoter.server.http.request.interfaces.IAccountService;
 import evoter.server.http.request.interfaces.IAnswerService;
 import evoter.server.http.request.interfaces.IQuestionService;
@@ -18,19 +18,21 @@ import evoter.server.http.request.interfaces.ISessionService;
 import evoter.server.http.request.interfaces.ISubjectService;
 import evoter.server.http.request.interfaces.IUserService;
 import evoter.share.dao.UserDAO;
-
+/**
+ * 
+ * This class is an extension of {@link HttpHandler} to manage {@link HttpRequest} </br>
+ * It receives all requests sent to {@link Server} and forward requests to correct services </br>
+ * After service classes finish processing request, a response is returned and it is written back
+ * client request </br>
+ * @author btdiem </br>
+ *
+ */
 @Service
 public class ServerHandler implements HttpHandler {
-	
-	@Autowired
-	IAccountService accountService; 
-	@Autowired
-	IQuestionService questionService;
-	@Autowired
-	ISubjectService subjectService;
-	@Autowired
-	ISessionService sessionService;
-	
+	/**
+	 * All coming requests will handled by this method </br>
+	 * Each request is processed by a thread {@link ThreadHandler} </br>
+	 */
 	@Override
 	public void handle(HttpExchange httpExchange) throws IOException {
 		
@@ -38,7 +40,14 @@ public class ServerHandler implements HttpHandler {
 		new Thread(new ThreadHandler(httpExchange)).start();
 		
 	}
-	
+	/**
+	 * This class will get parameter map from {@link HttpExchange} </br>
+	 * and request uri and forward this request to service </br>
+	 * All requests has been checked {@link UserDAO#USER_KEY} to guarantee the security </br>
+	 * except login, logout, reset password and register account requests </br>
+	 * @author btdiem</br>
+	 *
+	 */
 	class ThreadHandler implements Runnable{
 
 		private HttpExchange httpExchange;
@@ -46,7 +55,6 @@ public class ServerHandler implements HttpHandler {
 		public ThreadHandler(HttpExchange httpExchange){
 			this.httpExchange = httpExchange;
 		}
-//		@SuppressWarnings("unchecked")
 		@Override
 		public void run() {
 		
@@ -62,12 +70,11 @@ public class ServerHandler implements HttpHandler {
 			IUserService userService = (IUserService)BeanDAOFactory.getBean(IUserService.BEAN_NAME);
 			IAnswerService answerService = (IAnswerService)BeanDAOFactory.getBean(IAnswerService.BEAN_NAME);
 			
-			System.out.println("accountService: " + accountService);
-			System.out.println("subjectService: " + subjectService);
-			System.out.println("sessionService: " + sessionService);
-			System.out.println("questionService: " + questionService);
-
-			
+			/**
+			 * IAccountService will work with all requests 
+			 * that involves account management part
+			 * 
+			 */	
 			if (URIUtils.isLoginRequest(uri)){
 				response = accountService.doLogin(parameters);
 			}else if (URIUtils.isLogoutRequest(uri)){
@@ -80,12 +87,18 @@ public class ServerHandler implements HttpHandler {
 			
 			
 			else{
-				//verify the user key 1st
+				/**
+				 * verify the user key 1st whether user is logging successfully
+				 */
 				if (accountService.hasUserKey(
 						(String)parameters.get(UserDAO.USER_KEY))){
 					
 					System.out.println("has userKey" + parameters.get(UserDAO.USER_KEY) );
-					//subject management
+					/**
+					 * ISubjectService will work with all requests 
+					 * that involves subject management part
+					 * 
+					 */
 					if (URIUtils.isViewSubjectRequest(uri)){
 						response = subjectService.doView(parameters);
 					}else if (URIUtils.isGetAllSubjectRequest(uri)){
@@ -101,7 +114,11 @@ public class ServerHandler implements HttpHandler {
 					}else if (URIUtils.isCreateSubject(uri)){
 						response = subjectService.doCreate(parameters);
 						
-						//start with session management part
+					/**
+					 * ISessionService will work with all requests 
+					 * that involves session management part
+					 * 
+					 */	
 					}else if (URIUtils.isGetAllSessionRequest(uri)){
 						response = sessionService.doGetAll(parameters);
 					}else if (URIUtils.isViewSessionRequest(uri)){
@@ -125,7 +142,11 @@ public class ServerHandler implements HttpHandler {
 					}else if (URIUtils.isGetAllStudentOfSession(uri)){
 						response = sessionService.doGetStudentsOfSession(parameters);
 							
-						//start with question management part
+					/**
+					 * IQuestionService will work with all requests 
+					 * that involves question management part
+					 * 
+					 */	
 					}else if (URIUtils.isGetAllQuestionRequest(uri)){
 						response = questionService.doGetAll(parameters);
 					}else if (URIUtils.isViewQuestionRequest(uri)){
@@ -144,7 +165,11 @@ public class ServerHandler implements HttpHandler {
 						response = questionService.doEdit(parameters);
 					
 					
-					//user management
+					/**
+					 * IUserService will work with all requests 
+					 * that involves user management part
+					 * 
+					 */	
 					}else if (URIUtils.isGetAllUserRequest(uri)){
 						response = userService.doGetAll(parameters);
 					}else if (URIUtils.isCreateUserRequest(uri)){
@@ -157,7 +182,11 @@ public class ServerHandler implements HttpHandler {
 						response = userService.doChangeApprove(parameters);
 					}
 					
-					//statistic management
+					/**
+					 * IAnswerService will work with all requests 
+					 * that involves question statistics management part
+					 * 
+					 */	
 					else if (URIUtils.isVoteAnswer(uri)){
 						response = answerService.doVote(parameters);
 					}else if (URIUtils.isGetStatisticsRequest(uri)){

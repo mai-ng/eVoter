@@ -1,20 +1,25 @@
 package evoter.server.dao.impl;
 
 import java.util.List;
-
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Repository;
-//import org.springframework.test.annotation.Rollback;
-//import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.model.mapper.StatisticsRowMapper;
 import evoter.share.dao.StatisticsDAO;
 import evoter.share.model.Statistics;
+/**
+ * This class is an implementation of {@link StatisticsDAO} </br>
+ * @author btdiem </br>
+ *
+ */
 @Repository("statisticsDAO")
 public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.StatisticsDAO#insert(evoter.share.model.Statistics)
+	 */
 	@Override
 	public int insert(Statistics statistics) {
 
@@ -27,7 +32,10 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.StatisticsDAO#findAll()
+	 */
 	@Override
 	public List<Statistics> findAll() {
 
@@ -37,7 +45,10 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.StatisticsDAO#findByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public List<Statistics> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {
@@ -54,7 +65,10 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.StatisticsDAO#findBySessionId(long)
+	 */
 	@Override
 	public List<Statistics> findBySessionId(long sessionId) {
 		
@@ -62,7 +76,10 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.StatisticsDAO#findByStatisticsValue(java.lang.String)
+	 */
 	@Override
 	public List<Statistics> findByStatisticsValue(String statisticsValue) {
 
@@ -70,7 +87,10 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.StatisticsDAO#findByQuestionId(long)
+	 */
 	@Override
 	public List<Statistics> findByQuestionId(long questionId) {
 
@@ -78,7 +98,10 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.StatisticsDAO#deleteByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public void deleteByProperty(String[] propertyNames, Object[] propertyValues) {
 		
@@ -94,7 +117,10 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.StatisticsDAO#deleteBySessionId(long)
+	 */
 	@Override
 	public void deleteBySessionId(long sessionId) {
 		
@@ -103,7 +129,10 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.StatisticsDAO#deleteByQuestionId(long)
+	 */
 	@Override
 	public void deleteByQuestionId(long questionId) {
 
@@ -112,7 +141,10 @@ public class StatisticsDAOImpl extends JdbcDaoSupport implements StatisticsDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.StatisticsDAO#deleteByStatisticsValue(java.lang.String)
+	 */
 	@Override
 	public void deleteByStatisticsValue(String statisticsValue) {
 		

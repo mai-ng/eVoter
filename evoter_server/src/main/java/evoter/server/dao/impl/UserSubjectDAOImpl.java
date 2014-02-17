@@ -10,14 +10,18 @@ import evoter.share.dao.UserSubjectDAO;
 import evoter.share.model.UserSubject;
 /**
  * 
- * @author btdiem
+ * This is an implementation of {@link UserSubjectDAO} </br>
+ * @author btdiem </br>
  *
  */
 @Repository("userSubjectDAO")
 public class UserSubjectDAOImpl extends JdbcDaoSupport implements UserSubjectDAO {
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserSubjectDAO#insert(evoter.share.model.UserSubject)
+	 */
 	@Override
 	public long insert(final UserSubject us) {
 		
@@ -25,7 +29,10 @@ public class UserSubjectDAOImpl extends JdbcDaoSupport implements UserSubjectDAO
 		return getJdbcTemplate().update(sql, new Object[]{us.getUserId(), us.getSubjectId()});
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserSubjectDAO#findAll()
+	 */
 	@Override
 	public List<UserSubject> findAll() {
 		
@@ -33,7 +40,10 @@ public class UserSubjectDAOImpl extends JdbcDaoSupport implements UserSubjectDAO
 		return getJdbcTemplate().query(sql, new UserSubjectRowMapper());
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserSubjectDAO#findByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public List<UserSubject> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {
@@ -49,21 +59,30 @@ public class UserSubjectDAOImpl extends JdbcDaoSupport implements UserSubjectDAO
 		return getJdbcTemplate().query(sql, propertyValues, new UserSubjectRowMapper());
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserSubjectDAO#findByUserId(long)
+	 */
 	@Override
 	public List<UserSubject> findByUserId(long userId) {
 		
 		return findByProperty(new String[]{USER_ID}, new Long[]{userId});
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserSubjectDAO#findBySubjectId(long)
+	 */
 	@Override
 	public List<UserSubject> findBySubjectId(long subjectId) {
 
 		return findByProperty(new String[]{SUBJECT_ID}, new Long[]{subjectId});
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserSubjectDAO#deleteByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public void deleteByProperty(String[] propertyNames, Object[] propertyValues) {
 		
@@ -79,7 +98,10 @@ public class UserSubjectDAOImpl extends JdbcDaoSupport implements UserSubjectDAO
 		
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserSubjectDAO#deleteByUserId(long)
+	 */
 	@Override
 	public void deleteByUserId(long userId) {
 		
@@ -87,7 +109,10 @@ public class UserSubjectDAOImpl extends JdbcDaoSupport implements UserSubjectDAO
 		
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.UserSubjectDAO#deleteBySubjectId(long)
+	 */
 	@Override
 	public void deleteBySubjectId(long subjectId) {
 		

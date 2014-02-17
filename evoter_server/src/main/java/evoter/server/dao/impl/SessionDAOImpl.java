@@ -19,14 +19,18 @@ import evoter.share.model.Session;
 
 /**
  * 
- * @author btdiem
+ * This class is an implementation of {@link SessionDAO} </br>
+ * @author btdiem </br>
  *
  */
 @Repository("sessionDAO")
 public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#insert(evoter.share.model.Session)
+	 */
 	@Override
 	public long insert(final Session session) {
 		
@@ -56,12 +60,14 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 		    }, keyHolder);
 		
 		 return keyHolder.getKey().longValue();
-//		return getJdbcTemplate().update(sql, new Object[]{session.getSubjectId(),session.getName(), session.getCreationDate(), session.isActive()});
 
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#findAll()
+	 */
 	@Override
 	public List<Session> findAll() {
 		
@@ -71,7 +77,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#findByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public List<Session> findByProperty(String[] propertyNames,
 			Object[] propertyValues) {
@@ -90,7 +99,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#findById(long)
+	 */
 	@Override
 	public List<Session> findById(long id) {
 		
@@ -98,7 +110,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#findBySubjectId(long)
+	 */
 	@Override
 	public List<Session> findBySubjectId(long subjectId) {
 		
@@ -106,7 +121,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#findByName(java.lang.String)
+	 */
 	@Override
 	public List<Session> findByName(String name) {
 		
@@ -114,7 +132,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#findByCreationDate(java.sql.Timestamp)
+	 */
 	@Override
 	public List<Session> findByCreationDate(Timestamp date) {
 		
@@ -122,7 +143,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#deleteByProperty(java.lang.String[], java.lang.Object[])
+	 */
 	@Override
 	public void deleteByProperty(String[] propertyNames, Object[] propertyValues) {
 		
@@ -138,7 +162,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#deleteById(long)
+	 */
 	@Override
 	public void deleteById(long id) {
 		
@@ -147,7 +174,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#deleteBySubjectId(long)
+	 */
 	@Override
 	public void deleteBySubjectId(long subjectId) {
 		
@@ -156,7 +186,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#deleteByName(java.lang.String)
+	 */
 	@Override
 	public void deleteByName(String name) {
 		
@@ -165,7 +198,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#deleteByCreationDate(java.sql.Timestamp)
+	 */
 	@Override
 	public void deleteByCreationDate(Timestamp date) {
 
@@ -174,7 +210,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#findBySessionIsActive(boolean)
+	 */
 	@Override
 	public List<Session> findBySessionIsActive(boolean isActive) {
 
@@ -182,7 +221,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#deleteBySessionIsActive(boolean)
+	 */
 	@Override
 	public void deleteBySessionIsActive(boolean isActive) {
 
@@ -191,7 +233,10 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#update(evoter.share.model.Session)
+	 */
 	@Override
 	public int update(Session session) {
 		
@@ -210,14 +255,20 @@ public class SessionDAOImpl extends JdbcDaoSupport implements SessionDAO {
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#findBySessionUserId(long)
+	 */
 	@Override
 	public List<Session> findBySessionUserId(long userId) {
 		return findByProperty(new String[]{USER_ID}, new Long[]{userId});
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.SessionDAO#deleteByUserId(long)
+	 */
 	@Override
 	public void deleteByUserId(long userId) {
 		deleteByProperty(new String[]{USER_ID}, new Long[]{userId});

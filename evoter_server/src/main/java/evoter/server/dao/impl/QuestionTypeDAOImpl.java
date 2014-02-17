@@ -17,14 +17,18 @@ import evoter.share.dao.QuestionTypeDAO;
 import evoter.share.model.QuestionType;
 /**
  * 
- * @author btdiem
+ * This class is an implementation of {@link QuestionTypeDAO} </br>
+ * @author btdiem </br>
  *
  */
 @Repository("questionTypeDAO")
 public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeDAO {
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionTypeDAO#findAll()
+	 */
 	@Override
 	public List<QuestionType> findAll() {
 		
@@ -34,7 +38,10 @@ public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeD
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionTypeDAO#insert(evoter.share.model.QuestionType)
+	 */
 	@Override
 	public long insert(final QuestionType questionType) {
 		
@@ -54,18 +61,15 @@ public class QuestionTypeDAOImpl extends JdbcDaoSupport implements QuestionTypeD
 				}
 		    }, keyHolder);
 		
-//		return getJdbcTemplate().update(sql, 
-//				new Object[]{answer.getQuestionId(),
-//								answer.getAnswerText()});
-		
 		 return keyHolder.getKey().longValue();
-		//getJdbcTemplate().
-		//return getJdbcTemplate().getMaxRows();
 		
 	}
 
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.share.dao.QuestionTypeDAO#findById(long)
+	 */
 	@Override
 	public List<QuestionType> findById(long id) {
 

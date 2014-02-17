@@ -8,6 +8,7 @@ import evoter.share.dao.UserDAO;
 import evoter.share.model.Subject;
 import evoter.share.model.User;
 import evoter.share.model.UserSubject;
+import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
@@ -29,6 +30,8 @@ public interface ISubjectService {
 	
 	/**
 	 * Response client all {@link Subject} of user when receiving {@link URIRequest#VIEW_SUBJECT} </br>
+	 * If user type is {@link UserType#SECRETARY}, select all {@link Subject} </br>
+	 * Otherwise, select only subjects of requested {@link User} </br>
 	 * @param exchange {@link HttpExchange} communicates between client and server </br>
 	 * @param parameters contains : </br>
 	 *  </li> {@link UserDAO.USER_KEY} </br>

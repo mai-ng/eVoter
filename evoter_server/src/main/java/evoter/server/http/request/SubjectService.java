@@ -25,6 +25,7 @@ import evoter.share.dao.UserSubjectDAO;
 import evoter.share.model.Subject;
 import evoter.share.model.User;
 import evoter.share.model.UserSubject;
+import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
@@ -151,12 +152,23 @@ public class SubjectService implements ISubjectService{
 			
 			//long id = Long.valueOf(parameters.get(UserSubjectDAO.USER_ID));
 			String userKey = (String)parameters.get(UserDAO.USER_KEY);
-			Long id = UserValidation.getUserIdFromUserKey(userKey);
-			List<UserSubject> usList = userSubjectDAO.findByUserId(id);
+			long userTypeId = UserValidation.getUserTypeIdFromUserKey(userKey);
+			List<UserSubject> userSubjectList = null;
+			/**
+			 * if user type is secrectary, select all subjects
+			 * Otherwise, select subject of requested user
+			 */
 			
+			if (userTypeId == UserType.SECRETARY){
+				userSubjectList = userSubjectDAO.findAll();
+			}else{
+				Long id = UserValidation.getUserIdFromUserKey(userKey);
+				userSubjectList = userSubjectDAO.findByUserId(id);
+			}
+
 			JSONArray response = new JSONArray();
-			for (UserSubject us : usList){
-				Subject subject = (Subject)subjectDAO.findById(us.getSubjectId()).get(0);
+			for (UserSubject userSubject : userSubjectList){
+				Subject subject = (Subject)subjectDAO.findById(userSubject.getSubjectId()).get(0);
 				response.add(subject.toJSON());
 			}
 			System.out.println("SUBJECT : " + response.toJSONString());

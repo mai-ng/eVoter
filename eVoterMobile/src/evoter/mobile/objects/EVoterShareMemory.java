@@ -23,6 +23,22 @@ public class EVoterShareMemory {
 	
 	private static ArrayList<Question> listQuestion = new ArrayList<Question>();
 	
+	private static OfflineEVoterManager offlineEVoterManager;
+	
+	/**
+	 * @return the offlineEVoterManager
+	 */
+	public static OfflineEVoterManager getOfflineEVoterManager() {
+		return offlineEVoterManager;
+	}
+
+	/**
+	 * @param offlineEVoterManager the offlineEVoterManager to set
+	 */
+	public static void setOfflineEVoterManager(OfflineEVoterManager offlineEVoterManager) {
+		EVoterShareMemory.offlineEVoterManager = offlineEVoterManager;
+	}
+
 	/**
 	 * @return the listSubject
 	 */

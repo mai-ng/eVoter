@@ -5,7 +5,7 @@ import evoter.mobile.main.R;
 import evoter.mobile.utils.EVoterMobileUtils;
 
 public class StartActivity extends EVoterActivity {
-	
+	public static final String EXIT_APPLICATION = "EXIT";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -14,7 +14,7 @@ public class StartActivity extends EVoterActivity {
 		
 		this.ivTitleBarIcon.setEnabled(false);
 		
-		if (getIntent().getBooleanExtra("Exit application", false)) {
+		if (getIntent().getBooleanExtra(EXIT_APPLICATION, false)) {
 			finish();
 			return;
 		}

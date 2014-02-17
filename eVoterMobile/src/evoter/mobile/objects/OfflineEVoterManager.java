@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 import evoter.mobile.activities.EVoterActivity;
+import evoter.mobile.activities.EVoterRequestManager;
 import evoter.mobile.activities.LoginActivity;
 import evoter.share.dao.UserDAO;
 
@@ -22,7 +23,7 @@ public class OfflineEVoterManager {
 	
 	Editor editor;
 	
-	EVoterActivity contex;
+	EVoterActivity context;
 	
 	int PRIVATE_MODE = 0;
 	
@@ -32,7 +33,7 @@ public class OfflineEVoterManager {
 	
 	@SuppressLint("CommitPrefEdits")
 	public OfflineEVoterManager(EVoterActivity contex) {
-		this.contex = contex;
+		this.context = contex;
 		preferences = contex.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
 		editor = preferences.edit();
 	}
@@ -72,13 +73,13 @@ public class OfflineEVoterManager {
 	 */
 	public void checkLogin() {
 		if (!isLoggedIn()) {
-			Intent i = new Intent(contex, LoginActivity.class);
+			Intent i = new Intent(context, LoginActivity.class);
 			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			contex.startActivity(i);
+			context.startActivity(i);
 		} else {
 			HashMap<String, String> user = getSavedUserDetail();
-			contex.doLogin(user.get(UserDAO.USER_NAME), user.get(UserDAO.PASSWORD));
+			EVoterRequestManager.doLogin(user.get(UserDAO.USER_NAME), user.get(UserDAO.PASSWORD),context);
 			Log.i("Already login: ", "UserName: " + user.get(UserDAO.USER_NAME) + " | Userkey: " + user.get(UserDAO.USER_KEY));
 		}
 	}
@@ -90,10 +91,10 @@ public class OfflineEVoterManager {
 		editor.clear();
 		editor.commit();
 		
-		Intent i = new Intent(contex, LoginActivity.class);
+		Intent i = new Intent(context, LoginActivity.class);
 		i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		contex.startActivity(i);
+		context.startActivity(i);
 		
 	}
 	

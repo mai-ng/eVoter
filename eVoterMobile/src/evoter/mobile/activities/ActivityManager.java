@@ -6,6 +6,7 @@ package evoter.mobile.activities;
 import android.content.Context;
 import android.content.Intent;
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.objects.OfflineEVoterManager;
 import evoter.share.model.Question;
 
 /**

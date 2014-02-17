@@ -134,7 +134,7 @@ public class LoginActivity extends EVoterActivity {
 		} else
 		
 		{
-			doLogin(i_Usrname, i_Password);
+			EVoterRequestManager.doLogin(i_Usrname, i_Password,LoginActivity.this);
 		}
 	}
 

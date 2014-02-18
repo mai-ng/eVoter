@@ -18,7 +18,7 @@ import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
- * View detail information of full name, username and email of a user . <br>
+ * View detail information of full name, user-name and email of a user . <br>
  * If user is a student, approve him/her if he/she isn't approved.<br>
  * If user is a teacher, only view detail information.<br>
  * Extends {@link EditUser} class.
@@ -32,6 +32,7 @@ public class ViewUser extends EditUser{
 	 * initialize components.<br>
 	 * set title for the frame. <br>
 	 * try to approve a student if  he/she isn't approved.<br>
+	 * if user is a teacher, just view detail information and disable buttons.
 	 * @param user is a student or teacher.
 	 */
 	public ViewUser(User user) {
@@ -68,6 +69,10 @@ public class ViewUser extends EditUser{
 		txtEmail.setEditable(false);
 	}
 	
+	/**
+	 * Use to approve a student.<br>
+	 * Use in {@link ViewUser#ViewUser(User)} in case user is a student.
+	 */
 	public void approveStudent(){
 		btnSave.addActionListener(new ActionListener() {
 			

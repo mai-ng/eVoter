@@ -24,10 +24,11 @@ import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
- * content panel in {@link MainPanel} of Teacher tab or Student tab. Contains list of
- * {@link UserItem} and allow to add a new teacher.
+ * Content of page correspond to {@link UserTab} on the menu bar:
+ * <li> List of {@link UserItem}.
+ * <li> Button to create new {@link User}.
  * @author maint
- * 
+ *
  */
 public class UserTab extends MenuTabAbstract {
 
@@ -35,11 +36,11 @@ public class UserTab extends MenuTabAbstract {
 	private long userTypeId;
 
 	/**
-	 * constructor to initialize, design user interface and action performance
-	 * for Teacher tab on menu bar.
+	 * @param user_type_id to decide user is a teacher or student. 
 	 */
 	public UserTab(long user_type_id) {
 		super();
+		
 		userTypeId = user_type_id;
 		if(userTypeId==UserType.STUDENT){
 			btnNewItem.setText("New Student");
@@ -50,7 +51,8 @@ public class UserTab extends MenuTabAbstract {
 	}
 
 	/**
-	 * @return list of all existing users
+	 * List of uses is a list of teachers or students decided by {@link #userTypeId}.
+	 * @return list of all existing users.
 	 */
 	public ArrayList<ItemViewAbstract> loadListItems() {
 		ArrayList<ItemViewAbstract> list_teachers = new ArrayList<ItemViewAbstract>();
@@ -83,7 +85,8 @@ public class UserTab extends MenuTabAbstract {
 	}
 
 	/**
-	 * add a new subject when click {@link #btnNewTeacher}
+	 * add a new user.<br>
+	 * Click {@link #btnNewItem}, a window {@link AddUser} appears which allow to create a new user.
 	 */
 	public void addItem() {
 		btnNewItem.addActionListener(new ActionListener() {

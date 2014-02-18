@@ -4,8 +4,8 @@ import web.gui.secretary.spec.UserGUIAbstract;
 import evoter.share.model.User;
 import evoter.share.model.UserType;
 
-/**
- * Test properties of components such as visible, editable...
+/**.
+ * Test properties of components such as visible, editable...<br
  * Extends in {@link JUnit_AddUser}, {@link JUnit_ViewUser}, {@link JUnit_EditUser}.
  * @author maint
  *

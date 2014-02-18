@@ -11,16 +11,20 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import web.gui.secretary.SubjectItem;
+import web.gui.secretary.UserItem;
 import web.util.Utils;
 
 /**
- * present a line in the list of Teachers, Students, or Subjects. Each item contains: 
+ * Used in {@link MenuTabAbstract} as list of items in its content.<br>
+ * Extends by {@link SubjectItem} and {@link UserItem}. <br>
+ * Present a line in the list of Teachers, Students, or Subjects. <br>
+ * Each item contains: 
  * <li>title: teacher's email, student's email, or title of a subject
  * <li>button: edit 
  * <li>button: delete 
  * <li>button: detail <br>
  * Display: "Title------btnEdit---btnDelete---btnDetail".<br>
- * Used in {@link MenuTabAbstract} as list of items in its content.
  * 
  * @author maint<br>
  */
@@ -50,7 +54,7 @@ public abstract class ItemViewAbstract extends JPanel {
 	public ItemViewAbstract() {
 		initComponents();
 		buildGUI();
-		buttonEvent();
+		actionPerformed();
 	}
 
 	/**
@@ -94,19 +98,19 @@ public abstract class ItemViewAbstract extends JPanel {
 	public void initComponents() {
 		itemName = new JLabel("item name");
 
-		ImageIcon editIcon = Utils.createImageIcon("/resource/edit.png");
+		ImageIcon editIcon = Utils.findImageIcon("/resource/edit.png");
 		btnEdite = new JButton(editIcon);
 		btnEdite.setContentAreaFilled(false);
 		btnEdite.setOpaque(false);
 		btnEdite.setBorderPainted(false);
 
-		ImageIcon deleteIcon = Utils.createImageIcon("/resource/delete.png");
+		ImageIcon deleteIcon = Utils.findImageIcon("/resource/delete.png");
 		btnDelete = new JButton(deleteIcon);
 		btnDelete.setContentAreaFilled(false);
 		btnDelete.setOpaque(false);
 		btnDelete.setBorderPainted(false);
 
-		ImageIcon detailIcon = Utils.createImageIcon("/resource/detail.gif");
+		ImageIcon detailIcon = Utils.findImageIcon("/resource/detail.gif");
 		btnDetail = new JButton(detailIcon);
 		btnDetail.setContentAreaFilled(false);
 		btnDetail.setOpaque(false);
@@ -114,8 +118,8 @@ public abstract class ItemViewAbstract extends JPanel {
 	}
 
 	/**
-	 * create event for buttons.
+	 * create actions for button "Edit", "Detail", and "Delete"
 	 */
-	public abstract void buttonEvent();
+	public abstract void actionPerformed();
 
 }

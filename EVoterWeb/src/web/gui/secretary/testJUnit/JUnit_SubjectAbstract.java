@@ -8,9 +8,9 @@ import org.junit.Test;
 import web.gui.secretary.spec.SubjectGUIAbstract;
 import evoter.share.model.Subject;
 
-/**
- * Test properties of components such as visible, editable...
- * Extends in {@link AddStudent_Test}, {@link JUnit_ViewSubject}, {@link JUnit_EditSubject}.
+/**.
+ * Test properties of components such as visible, editable...<br
+ * Extends by {@link AddStudent_Test}, {@link JUnit_ViewSubject}, {@link JUnit_EditSubject}.
  * @author maint
  *
  */

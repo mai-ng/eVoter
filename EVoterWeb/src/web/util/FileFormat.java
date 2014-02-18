@@ -4,20 +4,17 @@
 package web.util;
 
 import java.io.File;
-import java.util.regex.Pattern;
 
 import javax.swing.filechooser.FileFilter;
 
 /**
+ * Define format of a file to read.
  * @author maint
  *
  */
-public class TXTFileFilter extends FileFilter {
+public class FileFormat extends FileFilter {
 	private static final String txtPattern = ".*\\.txt";
-	/* (non-Javadoc)
-	 * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
-	 */
-	@Override
+	
 	public boolean accept(File f) {
 		  if (f.isDirectory()) {
 		        return true;
@@ -26,12 +23,7 @@ public class TXTFileFilter extends FileFilter {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.swing.filechooser.FileFilter#getDescription()
-	 */
-	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -1,6 +1,5 @@
 package web.gui.secretary;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,6 @@ public class AddSubject extends SubjectGUIAbstract {
 
 	/**
 	 * set the title of the frame, and set properties for its components.<br>
-	 * @throws IOException 
 	 */
 	public AddSubject() {
 		super();
@@ -35,19 +33,24 @@ public class AddSubject extends SubjectGUIAbstract {
 	}
 
 	/**
-	 * set text for button "Invite"
+	 * set text for button "Add"
 	 */
 	public void initComponents() {
 		super.initComponents();
 		btnSave.setText("Add");
 	}
 
-	@Override
+	
+	/**
+	 * url request is {@link URIRequest#CREATE_SUBJECT}. 
+	 */
 	protected String getURLRequest() {
 		return RequestConfig.getURL(URIRequest.CREATE_SUBJECT);
 	}
 
-	@Override
+	/**
+	 * build params for {@link URIRequest#CREATE_SUBJECT}. 
+	 */
 	protected List<NameValuePair> buildRequestParameters() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair(UserDAO.USER_KEY,
@@ -56,7 +59,6 @@ public class AddSubject extends SubjectGUIAbstract {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		params.add(new BasicNameValuePair(SubjectDAO.CREATION_DATE,ts.toString()));
 		for(int i=0;i<listInputEmails.size();i++){
-//			System.out.println("Add email: " + listInputEmails.get(i));
 			params.add(new BasicNameValuePair(SubjectDAO.EMAIL_LIST,listInputEmails.get(i)));
 		}
 		return params;

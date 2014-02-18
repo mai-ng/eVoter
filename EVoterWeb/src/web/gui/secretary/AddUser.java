@@ -15,7 +15,7 @@ import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
- * Add a new user (Teacher or Student) with information of full name, user name , and email.<br> 
+ * Add a new user (Teacher or Student) by providing full name, user name , and email.<br> 
  * extends {@link UserGUIAbstract} class.
  * @author maint<br>
  */
@@ -49,12 +49,16 @@ public class AddUser extends UserGUIAbstract {
 		btnSave.setText("Add");
 	}
 
-	@Override
+	/**
+	 * url request is {@link URIRequest#CREATE_USER}. 
+	 */
 	protected String getURLRequest() {
 		return RequestConfig.getURL(URIRequest.CREATE_USER);
 	}
 
-	@Override
+	/**
+	 * build params for {@link URIRequest#CREATE_USER}. 
+	 */
 	protected List<NameValuePair> buildRequestParameters() {
 		List<NameValuePair> teacherParams = new ArrayList<NameValuePair>();
 		teacherParams.add(new BasicNameValuePair(UserDAO.USER_KEY,

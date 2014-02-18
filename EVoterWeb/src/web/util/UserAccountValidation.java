@@ -3,6 +3,11 @@ package web.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Define pattern for user-name, password, email.
+ * @author maint
+ *
+ */
 public class UserAccountValidation {
 	
 	public static final String DEFAULT_PASSWORD = "evoter2014";

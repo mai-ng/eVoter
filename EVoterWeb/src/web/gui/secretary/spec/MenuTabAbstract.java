@@ -1,6 +1,3 @@
-/**
- * 
- */
 package web.gui.secretary.spec;
 
 import java.awt.Dimension;
@@ -14,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import web.applet.StartApplet;
 import web.gui.secretary.MainPanel;
 import web.gui.secretary.SubjectItem;
 import web.gui.secretary.SubjectTab;
@@ -23,9 +21,9 @@ import web.gui.secretary.UserTab;
 /**
  * content panel in {@link MainPanel} of {@link SubjectTab}, {@link UserTab}, or
  * {@link StudentTab} tabs.
- * Contains list of {@link SubjectItem},
- * {@link UserItem}, or {@link StudentItem} and allow to add a new teacher.<br>
- * Extends in {@link SubjectTab}, {@link UserTab}, and {@link StudentTab} classes.
+ * Contains list of {@link SubjectItem}, or {@link UserItem} <br>
+ * and allow to add a new subject, or user.<br>
+ * Extends by {@link SubjectTab} and {@link UserTab} classes.
  * @author maint
  */
 public abstract class MenuTabAbstract extends JPanel {
@@ -48,19 +46,20 @@ public abstract class MenuTabAbstract extends JPanel {
 	protected ArrayList<ItemViewAbstract> listItems;
 
 	/**
-	 * constructor to initialize, design user interface and action performance
-	 * for tabs on menu bar.
+	 * constructor to initialize<br>
+	 * design user interface <br>
+	 * create action performance for tabs on menu bar <br>
+	 * allow to create new subject or user.
 	 */
 	public MenuTabAbstract() {
 		initComponents();
-//		createListView();
 		addItem();
 		buildGUI();
 	}
 
 	/**
-	 * user interface of {@link SubjectTab}, {@link UserTab}, or
-	 * {@link StudentTab} tabs on menu bar.
+	 * user interface of {@link SubjectTab}, {@link UserTab}
+	 * tabs on menu bar.
 	 */
 	public void buildGUI() {
 		setLayout(new GridBagLayout());
@@ -80,16 +79,17 @@ public abstract class MenuTabAbstract extends JPanel {
 	}
 
 	/**
-	 * create a panel for displaying list of {@link SubjectItem},
-	 * {@link UserItem}, or {@link StudentItem}
+	 * Display list of {@link SubjectItem}, or {@link UserItem}
 	 */
 	public void createListView() {
-		listView.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		listView.setPreferredSize(new Dimension(650, 400));
-		
+
+		listView.setPreferredSize(new Dimension(StartApplet.APPLET_WITH-120, StartApplet.APPLET_HEIGHT -200));
+		listView.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		listView.setWheelScrollingEnabled(true);
 		listItems.addAll(loadListItems());
 		
 		JPanel panelListItems = new JPanel();
+		panelListItems.setPreferredSize(new Dimension(StartApplet.APPLET_WITH-150, listItems.size()*40));
 		panelListItems.setLayout(new GridLayout(0, 1));
 		for (int i = 0; i < listItems.size(); i++) {
 			panelListItems.add(listItems.get(i));
@@ -102,13 +102,19 @@ public abstract class MenuTabAbstract extends JPanel {
 	 * initialize all components
 	 */
 	public void initComponents() {
-		btnNewItem = new JButton("New Subject");
+		btnNewItem = new JButton();
 		listItems = new ArrayList<ItemViewAbstract>();
 		listView = new JScrollPane();
 	}
 
 
+	/**
+	 * @return list of all existing subject, teacher, or student.
+	 */
 	public abstract ArrayList<ItemViewAbstract> loadListItems();
 
+	/**
+	 * Create a new subject, teacher or student.
+	 */
 	public abstract void addItem();
 }

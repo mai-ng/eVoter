@@ -23,6 +23,9 @@ import evoter.share.utils.URIRequest;
 public class EditUser extends UserGUIAbstract {
 
 	private static final long serialVersionUID = 1L;
+	/**
+	 * target user
+	 */
 	protected User currentUser;
 
 	/**
@@ -53,7 +56,7 @@ public class EditUser extends UserGUIAbstract {
 	}
 
 	/**
-	 * load information of a teacher
+	 * load information: full name, user name and email of a user.
 	 */
 	public void loadInfo(){
 		txtEmail.setText(currentUser.getEmail());
@@ -61,12 +64,16 @@ public class EditUser extends UserGUIAbstract {
 		txtUserName.setText(currentUser.getUserName());
 	}
 
-	@Override
+	/**
+	 * url request is {@link URIRequest#EDIT_USER}. 
+	 */
 	protected String getURLRequest() {
 		return RequestConfig.getURL(URIRequest.EDIT_USER);
 	}
 
-	@Override
+	/**
+	 * build params for {@link URIRequest#EDIT_USER}. 
+	 */
 	protected List<NameValuePair> buildRequestParameters() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair(UserDAO.USER_KEY,
@@ -88,10 +95,6 @@ public class EditUser extends UserGUIAbstract {
 		return params;
 	}
 
-	/* (non-Javadoc)
-	 * @see web.gui.secretary.spec.UserGUIAbstract#readyToSendRequest()
-	 */
-	@Override
 	protected boolean readyToSendRequest() {
 		String fullName = txtFullName.getText();
 		String email = txtEmail.getText();

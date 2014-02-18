@@ -4,7 +4,8 @@
 package web.applet;
 
 /**
- * @author luongnv89
+ * manage data while applet is running.
+ * @author maint
  *
  */
 public class RunningTimeData {

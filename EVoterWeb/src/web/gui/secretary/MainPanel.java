@@ -16,13 +16,12 @@ import javax.swing.JPanel;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import evoter.share.dao.UserDAO;
-import evoter.share.model.UserType;
-import evoter.share.utils.URIRequest;
-
 import web.applet.RunningTimeData;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
+import evoter.share.dao.UserDAO;
+import evoter.share.model.UserType;
+import evoter.share.utils.URIRequest;
 
 /**
  * the main framework (a {@link JPanel}) for the whole web application.
@@ -37,12 +36,12 @@ public class MainPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * fixed part: menu {@link JPanel}.
+	 * fixed part which contains Subject, Teacher, Student and Log out tabs.
 	 */
 	private JPanel menu;
 	
 	/**
-	 * changeable part: content {@link JPanel}.
+	 * changeable part which can be {@link SubjectTab}, {@link UserTab}, or {@link LoginPanel}.
 	 */
 	private JPanel content;
 
@@ -81,7 +80,7 @@ public class MainPanel extends JPanel {
 	
 	/**
 	 * initialize all components, set layout for this {@link MainPanel}.
-	 * But only contains {@link LoginPanel} as a components.
+	 * But only contains {@link LoginPanel} as a component.
 	 */
 	public void init() {
 		
@@ -131,7 +130,11 @@ public class MainPanel extends JPanel {
 	}
 
 	/**
-	 * create actions for buttons
+	 * create actions for menu tabs: Subject, Teacher, Student, Log out tabs.
+	 * <li> Click Subject tab -> the content panel is {@link SubjectTab}.
+	 * <li> Click Teacher tab -> the content panel is {@link UserTab} with users are teachers.
+	 * <li> Click Student tab -> the content panel is {@link UserTab} with users are students.
+	 * <li> Click Log out tab -> the page change to {@link LoginPanel}.
 	 */
 	public void actionPerformed() {
 		
@@ -225,6 +228,11 @@ public class MainPanel extends JPanel {
 		content.add(p);
 	}
 
+	/**
+	 * Use when change user using system. <br>
+	 * Use in {@link LoginPanel#doLogin()}.
+	 * @param acc
+	 */
 	public void updateAccountName(String acc) {
 		userName.setText(acc);
 	}
@@ -232,7 +240,7 @@ public class MainPanel extends JPanel {
 	/**
 	 *Send a logout request to server <br>
 	 *<li> {@link MainPanel#btnLogout} click
-	 *<li> {@link LoginPanel#actionPerformed()} in case of a teacher or student try to login web app
+	 *<li> {@link LoginPanel#doLogin()} in case of a teacher or student try to login web app
 	 * @param userkey
 	 */
 	protected void doLogout(String userkey) {

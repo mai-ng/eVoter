@@ -15,7 +15,6 @@ import org.apache.http.message.BasicNameValuePair;
 
 import web.applet.RunningTimeData;
 import web.gui.secretary.spec.ItemViewAbstract;
-import web.gui.secretary.spec.SubjectGUIAbstract;
 import web.util.EVoterHTTPRequest;
 import web.util.RequestConfig;
 import web.util.Utils;
@@ -27,7 +26,7 @@ import evoter.share.utils.URIRequest;
 
 /**
  * Extends {@link ItemViewAbstract}.<br>
- * Used in {@link SubjectTab} as its content.
+ * Used in {@link SubjectTab} which contains a list of {@link SubjectItem}.
  * @author maint
  * @see ItemViewAbstract
  */
@@ -35,19 +34,29 @@ public class SubjectItem extends ItemViewAbstract{
 
 	private static final long serialVersionUID = 1L;
 	private Subject subject;
-	private SubjectGUIAbstract targetSubject;
 	
+	/**
+	 * Get title of subject as name of item.
+	 * @param sub is target subject.
+	 */
 	public SubjectItem(Subject sub) {
+		super();
 		subject = sub;
 		itemName.setText(subject.getTitle());
 	}
 
-	public void buttonEvent(){
+	/**
+	 * create actions for button "Edit", "Detail", and "Delete".<br>
+	 * <li> Click button "Delete" -> open a window  {@link Utils#confirmDialog(String)} to ask the confirmation.
+	 * <li> Click button "Edit" -> open a window {@link EditSubject} to edit information.
+	 * <li> Click button "Detail" -> open a window {@link ViewSubject} to see detail about a user.
+	 */
+	public void actionPerformed(){
 		btnEdite.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setTargetSubject(new EditSubject(subject));
+				new EditSubject(subject);
 			}
 		});
 		
@@ -69,7 +78,6 @@ public class SubjectItem extends ItemViewAbstract{
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					System.out.println("Response: " + res);
@@ -93,22 +101,9 @@ public class SubjectItem extends ItemViewAbstract{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setTargetSubject(new ViewSubject(subject));
+				new ViewSubject(subject);
 			}
 		});
 	}
 
-	/**
-	 * @return the targetSubject
-	 */
-	public SubjectGUIAbstract getTargetSubject() {
-		return targetSubject;
-	}
-
-	/**
-	 * @param targetSubject the targetSubject to set
-	 */
-	public void setTargetSubject(SubjectGUIAbstract targetSubject) {
-		this.targetSubject = targetSubject;
-	}
 }

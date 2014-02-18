@@ -5,11 +5,9 @@ package web.util;
 
 
 /**
- * Update by @author luongnv89 on Sun 9-Feb-2014:<br>
  * <li> Delete all fix uri string
  * <li> create method {@link RequestConfig#getURL(String)} to build full url for request
  * <li> Change the class name from Configuration to RequestConfig
- * @author luongnv89
  */
 public class RequestConfig {
 	private static String IPAddress = "192.168.0.12";

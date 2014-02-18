@@ -25,6 +25,9 @@ import evoter.share.model.Subject;
 import evoter.share.utils.URIRequest;
 
 /**
+ * Content of page correspond to {@link SubjectTab} on the menu bar:
+ * <li> List of {@link SubjectItem}.
+ * <li> Button to create new {@link Subject}.
  * @author maint
  *
  */
@@ -34,11 +37,13 @@ public class SubjectTab extends MenuTabAbstract{
 
 	public SubjectTab(){
 		super();
+		btnNewItem.setText("New Subject");
 		createListView();
 	}
 
 	/**
-	 * add a new subject when click {@link #btnNewSubject}
+	 * add a new subject.<br>
+	 * Click {@link #btnNewItem}, a window {@link AddSubject} appears which allow to create a new subject.
 	 */
 	public void addItem() {
 		btnNewItem.addActionListener(new ActionListener() {
@@ -51,7 +56,7 @@ public class SubjectTab extends MenuTabAbstract{
 	}
 
 	/**
-	 * @return list of all existing subjects
+	 * @return list of all existing subjects from database.
 	 */
 	public ArrayList<ItemViewAbstract> loadListItems() {
 		ArrayList<ItemViewAbstract> listsubject = new ArrayList<ItemViewAbstract>();

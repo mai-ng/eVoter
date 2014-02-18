@@ -21,7 +21,7 @@ import web.util.Utils;
 
 /**
  * extended by {@link SubjectGUIAbstract}, {@link UserGUIAbstract}.<br>
- * Set layout for a frame, and initialize the button add?edit.<br>
+ * Set layout for a frame, and initialize the button add/save.<br>
  * @author maint
  */
 public abstract class GUIAbstract extends JFrame{
@@ -43,7 +43,7 @@ public abstract class GUIAbstract extends JFrame{
 	
 	public GUIAbstract(){
 		initComponents();
-		buttonEvent();
+		saveButtonEvent();
 	}
 
 
@@ -62,9 +62,12 @@ public abstract class GUIAbstract extends JFrame{
 	}
 	
 	/**
-	 * create an event for {@link #btnSave}.
+	 * create an event for {@link #btnSave}:
+	 * <li> Check pre-condition before send request to server.
+	 * <li> Build params for request.
+	 * <li> Get url for request.
 	 */
-	protected void buttonEvent() {
+	protected void saveButtonEvent() {
 		btnSave.addActionListener(new ActionListener() {
 
 			@Override
@@ -92,8 +95,14 @@ public abstract class GUIAbstract extends JFrame{
 	 */
 	protected abstract boolean readyToSendRequest();
 
+	/**
+	 * @return url for a request:
+	 */
 	protected abstract String getURLRequest();
 
+	/**
+	 * @return params which are sent to server.
+	 */
 	protected abstract List<NameValuePair> buildRequestParameters();
 
 

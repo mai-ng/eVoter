@@ -27,7 +27,7 @@ import web.gui.secretary.EditSubject;
 import web.gui.secretary.EditUser;
 import web.gui.secretary.ViewSubject;
 import web.util.EVoterHTTPRequest;
-import web.util.ReadFileByClick;
+import web.util.ReadFileToTextArea;
 import web.util.RequestConfig;
 import web.util.Utils;
 import web.util.UserAccountValidation;
@@ -37,8 +37,8 @@ import evoter.share.utils.URIRequest;
 
 /**
  * extended by {@link AddSubject}, {@link EditSubject}, and {@link ViewSubject}.<br>
- * Create common components, initialize them, and define a layout and user
- * interface. <br>
+ * Create common components, initialize them, and define a layout and design user
+ * interface.
  * 
  * @author maint<br>
  * 
@@ -54,8 +54,17 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 
 	protected JButton btnAddTeacher;
 	protected JButton btnAddStudent;
+	/**
+	 * list teachers' emails in databse.
+	 */
 	protected ArrayList<String> listTeacherEmails;
+	/**
+	 * list students' emails in database.
+	 */
 	protected ArrayList<String> listStudentEmails;
+	/**
+	 * list both students and teachers emails get from input.
+	 */
 	protected ArrayList<String> listInputEmails;
 
 	public SubjectGUIAbstract() {
@@ -185,7 +194,7 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					ReadFileByClick.readFile(listTeacherView);
+					ReadFileToTextArea.readFile(listTeacherView);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -198,7 +207,7 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					ReadFileByClick.readFile(listStudentView);
+					ReadFileToTextArea.readFile(listStudentView);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -212,7 +221,7 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 	 * Used in {@link AddUser}, {@link EditUser} when click button "Add" or
 	 * "Save".
 	 * 
-	 * @return true if: < * li>full name field is valid. <li>user name field is
+	 * @return true if: <li>full name field is valid. <li>user name field is
 	 *         valid. <li>and email field is valid.<br>
 	 *         else false.
 	 */
@@ -225,6 +234,12 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 		}
 	}
 
+	/**
+	 * Check validation list input email
+	 * @return <br>false if list input email of teacher is not valid
+	 * <br>false if list input email of student is not valid
+	 * <br> true if both are valid.
+	 */
 	private boolean checkListEmails() {
 		listStudentEmails.clear();
 		listTeacherEmails.clear();
@@ -238,6 +253,12 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 		return true;
 	}
 
+	/**
+	 * Valid input email of user
+	 * @param userTypeID
+	 * @return <br> userTypeID = {@link UserType#TEACHER} Check list input emails of teachers, if there is any email which is not a teacher's email of system, return false; 
+	 * <br> userTypeID = {@link UserType#STUDENT} Check list input emails of students, if there is any email which is not a student's email of system, return false;
+	 */
 	private boolean validListEmails(long userTypeID) {
 		getListEmailUsers(userTypeID);
 		ArrayList<String> listExtractEmails = getListEmailFromTextView(userTypeID);
@@ -267,6 +288,12 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 		return true;
 	}
 
+	/**
+	 * Get list email of user from textarea
+	 * @param userTypeID
+	 * @return <br> userTypeID = {@link UserType#TEACHER} List email of teacher get from input of {@link SubjectGUIAbstract#listTeacherView}
+	 *<br> userTypeID = {@link UserType#STUDENT} List email of student get from input of {@link SubjectGUIAbstract#listStudentView}
+	 */
 	private ArrayList<String> getListEmailFromTextView(long userTypeID) {
 		ArrayList<String> listExtractEmails = new ArrayList<String>();
 		String textAreas = null;
@@ -288,12 +315,18 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 		return listExtractEmails;
 	}
 
-	protected void getListEmailUsers(long userType) {
+	/**
+	 * Get list users' emails of subject from database: <br>
+	 * - userTypeID = {@link UserType#TEACHER} get list email of teacher
+	 * <br>- userTypeID = {@link UserType#STUDENT} get list email of student 
+	 * @param userTypeID is integer which represent for teacher or student.
+	 */
+	private void getListEmailUsers(long userTypeID) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair(UserDAO.USER_KEY, RunningTimeData
 				.getCurrentUserKey()));
 		params.add(new BasicNameValuePair(UserDAO.USER_TYPE_ID, String
-				.valueOf(userType)));
+				.valueOf(userTypeID)));
 		String listTeacherResponse = EVoterHTTPRequest.excutePost(
 				RequestConfig.getURL(URIRequest.GET_ALL_USER), params);
 		if (listTeacherResponse == null) {
@@ -303,9 +336,9 @@ public abstract class SubjectGUIAbstract extends GUIAbstract {
 			JSONArray array = new JSONArray(listTeacherResponse);
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject ob = array.getJSONObject(i);
-				if (userType == UserType.TEACHER) {
+				if (userTypeID == UserType.TEACHER) {
 					listTeacherEmails.add(ob.getString(UserDAO.EMAIL));
-				} else if (userType == UserType.STUDENT) {
+				} else if (userTypeID == UserType.STUDENT) {
 					listStudentEmails.add(ob.getString(UserDAO.EMAIL));
 				}
 			}

@@ -28,8 +28,17 @@ public class EditSubject extends SubjectGUIAbstract {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * target subject
+	 */
 	private Subject currentSubject;
 
+	/**
+	 * Define the target subject.<br>
+	 * Load information of the subject<br>
+	 * Set title for the frame.
+	 * @param sb is the subject going to be edited.
+	 */
 	public EditSubject(Subject sb){
 		super();
 		currentSubject = sb;
@@ -87,12 +96,16 @@ public class EditSubject extends SubjectGUIAbstract {
 
 	}
 
-	@Override
+	/**
+	 * url request is {@link URIRequest#UPDATE_SUBJECT}. 
+	 */
 	protected String getURLRequest() {
 		return RequestConfig.getURL(URIRequest.UPDATE_SUBJECT);
 	}
 
-	@Override
+	/**
+	 * build params for {@link URIRequest#UPDATE_SUBJECT}. 
+	 */
 	protected List<NameValuePair> buildRequestParameters() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair(UserDAO.USER_KEY,

@@ -84,7 +84,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		tvQuestionText = (TextView) findViewById(R.id.tvQuestionText);
 		answerArea = (LinearLayout) findViewById(R.id.loAnswerArea);
 		//Parser the answer of question
-		answers = EVoterMobileUtils.parserListAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
+		answers = EVoterMobileUtils.parserListAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1(), EVoterShareMemory.getCurrentQuestion().getId());
 		
 		btSend = (Button) findViewById(R.id.btSendQuestion);
 		groups = new RadioGroup(this);
@@ -111,10 +111,14 @@ public class QuestionDetailActivity extends EVoterActivity {
 				btSend.setText(VIEW_STATISTIC);
 			}
 		} else if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
-			if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
-				btSend.setText(SUBMIT);
-			} else if (EVoterShareMemory.getCurrentQuestion().getStatus() == 2) {
+			//			String answer = offlineEVoterManager.getAnswerForQuestion(EVoterShareMemory.getCurrentQuestion().getId());
+			//			Log.i("Answer save", answer);
+			//			|| (answer != null)
+			if (EVoterShareMemory.getCurrentQuestion().getStatus() == 2 || EVoterShareMemory.getListIDAnsweredQuestion().contains(EVoterShareMemory.getCurrentQuestion().getId())) {
 				btSend.setText(VIEW_STATISTIC);
+			}
+			else if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
+				btSend.setText(SUBMIT);
 			}
 		}
 		
@@ -140,14 +144,13 @@ public class QuestionDetailActivity extends EVoterActivity {
 				} else if (btSend.getText().toString().equals(STOP)) {
 					stopReceiveAnswer();
 				} else if (btSend.getText().toString().equals(VIEW_STATISTIC)) {
-					ActivityManager.viewQuestionStatistic(EVoterShareMemory.getCurrentQuestion(),QuestionDetailActivity.this);
+					ActivityManager.viewQuestionStatistic(EVoterShareMemory.getCurrentQuestion(), QuestionDetailActivity.this);
 				}
 				
 			}
 		});
 	}
 	
-
 	/**
 	 * 
 	 */
@@ -184,6 +187,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 	 * 
 	 */
 	protected void submitAnswer() {
+		
 		//TODO: Submit answer
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
@@ -311,8 +315,20 @@ public class QuestionDetailActivity extends EVoterActivity {
 		}
 	}
 	
-	public void updateRequestCallBack() {
-		btSend.setText(VIEW_STATISTIC);
+	public void updateRequestCallBack(String response) {
+		String[] array = response.split(":");
+		if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+			EVoterMobileUtils.showeVoterToast(this,
+					"Successful!");
+//			offlineEVoterManager.addAnswerQuestion(EVoterShareMemory.getCurrentQuestion().getId(), array[array.length - 1]);
+			EVoterShareMemory.addAnsweredQuestion(EVoterShareMemory.getCurrentQuestion().getId());
+			btSend.setText(VIEW_STATISTIC);
+		}
+		else {
+			EVoterMobileUtils.showeVoterToast(this,
+					"Fail: " + response);
+		}
+		
 	}
 	
 	/**

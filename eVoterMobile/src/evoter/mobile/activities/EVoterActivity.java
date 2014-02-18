@@ -273,7 +273,7 @@ public class EVoterActivity extends Activity {
 				}).show();
 	}
 	
-	public void updateRequestCallBack() {
+	public void updateRequestCallBack(String response) {
 		
 	}
 	

@@ -52,6 +52,16 @@ public class OfflineEVoterManager {
 		editor.commit();
 	}
 	
+	public void addAnswerQuestion(long questionID,String answer){
+		editor.putString(String.valueOf(questionID), answer);
+	}
+	
+	public String getAnswerForQuestion(long questionID){
+		HashMap<String, String> answer = new HashMap<String, String>();
+		answer.put(String.valueOf(questionID),
+				preferences.getString(String.valueOf(questionID), null));
+		return answer.get(String.valueOf(questionID));
+	}
 	/**
 	 * Get detail of saved user
 	 * 

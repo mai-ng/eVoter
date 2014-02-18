@@ -40,7 +40,7 @@ public class EVoterRequestManager {
 	 * @param statistic
 	 * @param context
 	 */
-	public static void doVote(long answerID, long questionTypeID, String statistic, final EVoterActivity context) {
+	public static void doVote(long answerID, long questionTypeID, final String statistic, final EVoterActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
@@ -51,15 +51,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-					EVoterMobileUtils.showeVoterToast(context,
-							"Successful!");
-					context.updateRequestCallBack();
-				}
-				else {
-					EVoterMobileUtils.showeVoterToast(context,
-							"Fail: " + response);
-				}
+				context.updateRequestCallBack(response+":"+statistic);
 			}
 			
 			@Override
@@ -249,7 +241,9 @@ public class EVoterRequestManager {
 							Question question = null;
 							if (array != null)
 								question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(0));
-							if (question != null) EVoterShareMemory.setCurrentQuestion(question);
+							if (question != null) {
+								EVoterShareMemory.getCurrentQuestion().setStatus(question.getStatus());
+							}
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -281,20 +275,99 @@ public class EVoterRequestManager {
 						try {
 							array = EVoterMobileUtils.getJSONArray(response);
 							Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
-							if (session != null) EVoterShareMemory.setCurrentSession(session);
+							if (session != null) {
+								EVoterShareMemory.getCurrentSession().setActive(session.isActive());
+							}
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
+							Log.i("Update session", "Exception");
 						}
 					}
 					
 					@Override
 					public void onFailure(Throwable error, String content) {
-						Log.e("View session", "onFailure error : "
+						Log.e("Update session", "onFailure error : "
 								+ error.toString() + "content : " + content);
 					}
 				});
 		
 	}
 	
+	
+	public static void getStatistic(long questionID,final EVoterActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(QuestionDAO.ID,
+				String.valueOf(questionID));
+		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		client.post(RequestConfig.getURL(URIRequest.GET_STATISTICS), params,
+				new AsyncHttpResponseHandler() {
+					
+					@Override
+					public void onSuccess(String response) {
+						Log.i("Statistic", response);
+						context.updateRequestCallBack(response);
+					}
+					
+					@Override
+					public void onFailure(Throwable error, String content) {
+						Log.e("Get All Session Test", "onFailure error : "
+								+ error.toString() + "content : " + content);
+					}
+				});
+	}
+
+	/**
+	 * @param subjectActivity 
+	 * 
+	 */
+	public static void getListSubject(final SubjectActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		client.post(RequestConfig.getURL(URIRequest.GET_ALL_SUBJECT), params,
+				new AsyncHttpResponseHandler() {
+					
+					@Override
+					public void onSuccess(String response) {
+						context.updateRequestCallBack(response);
+					}
+					
+					@Override
+					public void onFailure(Throwable error, String content) {
+						Log.e("Get All Subject Test", "onFailure error : "
+								+ error.toString() + "content : " + content);
+					}
+				});
+		
+	}
+
+	/**
+	 * @param sessionActivity
+	 */
+	public static void getListSession(final SessionActivity sessionActivity,long subjectID) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(SessionDAO.SUBJECT_ID,
+				String.valueOf(subjectID));
+		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		Log.i("SUBJECT_ID",
+				String.valueOf(subjectID));
+		client.post(RequestConfig.getURL(URIRequest.GET_ALL_SESSION), params,
+				new AsyncHttpResponseHandler() {
+					
+					@Override
+					public void onSuccess(String response) {
+						sessionActivity.updateRequestCallBack(response);
+					}
+					
+					@Override
+					public void onFailure(Throwable error, String content) {
+						Log.e("Get All Session Test", "onFailure error : "
+								+ error.toString() + "content : " + content);
+					}
+				});
+		
+	}
 }

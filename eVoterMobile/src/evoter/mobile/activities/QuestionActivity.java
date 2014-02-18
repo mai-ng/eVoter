@@ -477,7 +477,7 @@ public class QuestionActivity extends ItemDataActivity {
 	 * @param question
 	 */
 	private void setStaticAnswerID(Question question) {
-		ArrayList<Answer> listAnswers = EVoterMobileUtils.parserListAnswer(question.getAnswerColumn1());
+		ArrayList<Answer> listAnswers = EVoterMobileUtils.parserListAnswer(question.getAnswerColumn1(),question.getId());
 		if (question.getTitle().contains(EXCITED)) {
 			excitedAnswerID = listAnswers.get(0).getId();
 		}

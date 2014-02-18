@@ -69,28 +69,27 @@ public class SubjectActivity extends ItemDataActivity {
 	}
 	
 	public void refreshData() {
-		RequestParams params = new RequestParams();
-		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		client.post(RequestConfig.getURL(URIRequest.GET_ALL_SUBJECT), params,
-				new AsyncHttpResponseHandler() {
-					
-					@Override
-					public void onSuccess(String response) {
-						parserListSubjectFromResponse(response);
-					}
-					
-					@Override
-					public void onFailure(Throwable error, String content) {
-						Log.e("Get All Subject Test", "onFailure error : "
-								+ error.toString() + "content : " + content);
-					}
-				});
+		EVoterRequestManager.getListSubject(this);
 	}
 	
 	/**
-	 * @param response
+	 * Called when the activity has detected the user's press of the back key.
+	 * The default implementation simply finishes the current activity, but you
+	 * can override this to do whatever you want.
 	 */
-	private void parserListSubjectFromResponse(String response) {
+	@Override
+	public void onBackPressed() {
+		exit();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * evoter.mobile.activities.EVoterActivity#updateRequestCallBack(java.lang
+	 * .String)
+	 */
+	@Override
+	public void updateRequestCallBack(String response) {
 		try {
 			ArrayList<ItemData> newList = new ArrayList<ItemData>();
 			JSONArray array = new JSONArray(response);
@@ -120,16 +119,6 @@ public class SubjectActivity extends ItemDataActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	/**
-	 * Called when the activity has detected the user's press of the back key.
-	 * The default implementation simply finishes the current activity, but you
-	 * can override this to do whatever you want.
-	 */
-	@Override
-	public void onBackPressed() {
-		exit();
 	}
 	
 }

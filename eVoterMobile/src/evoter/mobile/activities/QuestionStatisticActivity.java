@@ -3,13 +3,20 @@
  */
 package evoter.mobile.activities;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -26,6 +33,7 @@ import evoter.share.utils.URIRequest;
  */
 public class QuestionStatisticActivity extends EVoterActivity {
 	LinearLayout layout;
+	TextView tv;
 	
 	/*
 	 * (non-Javadoc)
@@ -39,23 +47,44 @@ public class QuestionStatisticActivity extends EVoterActivity {
 		mainMenu.setQuestionActivityMenu();
 		tvTitleBarContent.setText(EVoterShareMemory.getCurrentQuestion().getTitle());
 		layout = (LinearLayout) findViewById(R.id.layout);
+		tv = new TextView(this);
+		tv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		layout.addView(tv);
 		ivTitleBarRefresh.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				refreshData();
+				EVoterRequestManager.updateCurrentQuestion();
+				drawStatistic();
 			}
 		});
 		ivTitleBarRefresh.setVisibility(View.VISIBLE);
-		refreshData();
+		drawStatistic();
 	}
 	
 	/**
 	 * 
 	 */
-	public void refreshData() {
-		EVoterRequestManager.updateCurrentQuestion();
-		EVoterMobileUtils.drawStatistic(EVoterShareMemory.getCurrentQuestion(), layout, QuestionStatisticActivity.this);
+	public void drawStatistic() {
+		//		tv.setText(EVoterMobileUtils.drawStatistic(EVoterShareMemory.getCurrentQuestion()).toString());
+		EVoterRequestManager.getStatistic(EVoterShareMemory.getCurrentQuestion().getId(),QuestionStatisticActivity.this);
+	}
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#updateRequestCallBack(java.lang.String)
+	 */
+	@Override
+	public void updateRequestCallBack(String response) {
+		layout.removeAllViews();
+		ArrayList<String> textToView = EVoterMobileUtils.drawStatistic(response,EVoterShareMemory.getCurrentQuestion());
+		for(int i=0;i<textToView.size();i++){
+			TextView tvShow = new TextView(this);
+			tvShow.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+			tvShow.setText(textToView.get(i));
+			layout.addView(tvShow);
+		}
 	}
 	
 }

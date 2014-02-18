@@ -9,26 +9,33 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager.LayoutParams;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.objects.RequestConfig;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
+import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
 import evoter.share.model.Question;
 import evoter.share.model.QuestionType;
 import evoter.share.model.Session;
 import evoter.share.model.UserType;
+import evoter.share.utils.URIRequest;
 
 /**
  * <br>
@@ -129,12 +136,12 @@ public class EVoterMobileUtils {
 	 * @param answerColumn1
 	 * @return
 	 */
-	public static ArrayList<Answer> parserListAnswer(String answerColumn1) {
+	public static ArrayList<Answer> parserListAnswer(String answerColumn1, long questionID) {
 		ArrayList<Answer> listAnswers = new ArrayList<Answer>();
 		try {
 			JSONArray listAnswer1 = new JSONArray(answerColumn1);
 			for (int i = 0; i < listAnswer1.length(); i++) {
-				Answer answer = parserJSONObjectToAnswer(listAnswer1.getJSONObject(i));
+				Answer answer = parserJSONObjectToAnswer(listAnswer1.getJSONObject(i), questionID);
 				if (answer != null) listAnswers.add(answer);
 			}
 		} catch (JSONException e) {
@@ -147,9 +154,9 @@ public class EVoterMobileUtils {
 	 * @param jsonObject
 	 * @return
 	 */
-	public static Answer parserJSONObjectToAnswer(JSONObject jsonObject) {
+	public static Answer parserJSONObjectToAnswer(JSONObject jsonObject, long questionID) {
 		try {
-			return new Answer(jsonObject.getLong(AnswerDAO.ID), jsonObject.getLong(AnswerDAO.QUESTION_ID), jsonObject.getString(AnswerDAO.ANSWER_TEXT));
+			return new Answer(jsonObject.getLong(AnswerDAO.ID), questionID, jsonObject.getString(AnswerDAO.ANSWER_TEXT));
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return null;
@@ -194,44 +201,68 @@ public class EVoterMobileUtils {
 		return null;
 	}
 	
-	public static void drawStatistic(Question question, LinearLayout layout, Context context) {
-		TextView qq = createTextView("QUESTION", context);
-		layout.addView(qq);
-		TextView questionText = createTextView(question.getTitle(), context);
-		layout.addView(questionText);
-		
-		TextView answerArea = createTextView("ANSWERS", context);
-		layout.addView(answerArea);
-		ArrayList<Answer> listAnswers = parserListAnswer(question.getAnswerColumn1());
-		if (question.getQuestionTypeId() == QuestionType.INPUT_ANSWER) {
-			String[] array = listAnswers.get(0).getStatistics().split(":");
-			for (int i = 1; i < array.length; i++) {
-				TextView ans = createTextView(array[i], context);
-				layout.addView(ans);
-			}
-		} else if (question.getQuestionTypeId() == QuestionType.SLIDER) {
-			String[] array = listAnswers.get(0).getStatistics().split(":");
-			ArrayList<AnswerData> listAnswerValue = new ArrayList<AnswerData>();
-			for (int i = 1; i < array.length; i++) {
-				int value = Integer.parseInt(array[0]);
-				int index = getIndex(value, listAnswerValue);
-				if (index == -1) {
-					listAnswerValue.add(new AnswerData(value, 0));
-				} else {
-					listAnswerValue.get(index).setValue(listAnswerValue.get(index).getValue() + 1);
+	public static ArrayList<String> drawStatistic(String response, Question question) {
+		ArrayList<AnswerData> listAnswerDatas = new ArrayList<AnswerData>();
+		try {
+			JSONArray arrayStatistic = new JSONArray(response);
+			ArrayList<String> listDataRow = new ArrayList<String>();
+			listDataRow.add("QUESTION \n");
+			listDataRow.add(question.getTitle() + "\n");
+			listDataRow.add("ANSWERS \n");
+			ArrayList<Answer> listAnswers = parserListAnswer(question.getAnswerColumn1(), question.getId());
+			if (question.getQuestionTypeId() == QuestionType.INPUT_ANSWER) {
+				String[] array = listAnswers.get(0).getStatistics().split(":");
+				for (int i = 1; i < array.length; i++) {
+					listDataRow.add(array[i] + "\n");
+				}
+			} else if (question.getQuestionTypeId() == QuestionType.SLIDER) {
+				JSONObject statisticObject =arrayStatistic.getJSONObject(0);
+				
+				String[] array = statisticObject.getString(AnswerDAO.STATISTICS).split(":");
+				ArrayList<AnswerData> listAnswerValue = new ArrayList<AnswerData>();
+				for (int i = 1; i < array.length; i++) {
+					int value = Integer.parseInt(array[0]);
+					int index = getIndex(value, listAnswerValue);
+					if (index == -1) {
+						listAnswerValue.add(new AnswerData(value, 0));
+					} else {
+						listAnswerValue.get(index).setStatistic(listAnswerValue.get(index).getStatistic()+ 1);
+					}
+				}
+				
+				for (int i = 0; i < listAnswerValue.size(); i++) {
+					listDataRow.add(listAnswerValue.get(i).getId() + ": " + listAnswerValue.get(i).getStatistic() + "\n");
+				}
+			} else {
+				for (int i = 0; i < arrayStatistic.length(); i++) {
+					JSONObject ans = arrayStatistic.getJSONObject(i);
+					long id = ans.getLong(AnswerDAO.ID);
+					int statistic = Integer.parseInt(ans.getString(AnswerDAO.STATISTICS));
+					listAnswerDatas.add(new AnswerData(id, statistic));
+				}
+				for (int i = 0; i < listAnswers.size(); i++) {
+					long id = listAnswers.get(i).getId();
+					int statistic = findStatistic(id, listAnswerDatas);
+					listDataRow.add(listAnswers.get(i).getAnswerText() + ": " + statistic);
 				}
 			}
-			
-			for(int i=0;i<listAnswerValue.size();i++){
-				TextView ans = createTextView(listAnswerValue.get(i).getValue() + ": " + listAnswerValue.get(i).getStatistic(), context);
-				layout.addView(ans);
-			}
-		} else {
-			for (int i = 0; i < listAnswers.size(); i++) {
-				TextView ans = createTextView(listAnswers.get(i).getAnswerText() + ": " + listAnswers.get(i).getStatistics(), context);
-				layout.addView(ans);
-			}
+			return listDataRow;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return null;
+	}
+	
+	/**
+	 * @param listAnswerDatas
+	 * @return
+	 */
+	private static int findStatistic(long id, ArrayList<AnswerData> listAnswerDatas) {
+		for (int i = 0; i < listAnswerDatas.size(); i++) {
+			if (listAnswerDatas.get(i).getId() == id) return listAnswerDatas.get(i).getStatistic();
+		}
+		return 0;
 	}
 	
 	/**
@@ -241,7 +272,7 @@ public class EVoterMobileUtils {
 	 */
 	private static int getIndex(int value, ArrayList<AnswerData> listAnswerValue) {
 		for (int i = 0; i < listAnswerValue.size(); i++) {
-			if (listAnswerValue.get(i).getValue() == value) return i;
+			if (listAnswerValue.get(i).getId() == value) return i;
 		}
 		return -1;
 	}

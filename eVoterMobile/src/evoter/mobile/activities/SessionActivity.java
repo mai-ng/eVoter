@@ -87,33 +87,14 @@ public class SessionActivity extends ItemDataActivity {
 	}
 	
 	public void refreshData() {
-		RequestParams params = new RequestParams();
-		params.add(SessionDAO.SUBJECT_ID,
-				String.valueOf(EVoterShareMemory.getCurrentSubject().getId()));
-		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		Log.i("SUBJECT_ID",
-				String.valueOf(EVoterShareMemory.getCurrentSubjectID()));
-		client.post(RequestConfig.getURL(URIRequest.GET_ALL_SESSION), params,
-				new AsyncHttpResponseHandler() {
-					
-					@Override
-					public void onSuccess(String response) {
-						parserListSessionFromResponse(response);
-					}
-					
-					@Override
-					public void onFailure(Throwable error, String content) {
-						Log.e("Get All Session Test", "onFailure error : "
-								+ error.toString() + "content : " + content);
-					}
-				});
+		EVoterRequestManager.getListSession(this,EVoterShareMemory.getCurrentSubject().getId());
 		
 	}
 	
 	/**
 	 * @param response
 	 */
-	private void parserListSessionFromResponse(String response) {
+	public void updateRequestCallBack(String response) {
 		try {
 			EVoterShareMemory.resetListAcceptedSessions();
 			ArrayList<ItemData> listSession = new ArrayList<ItemData>();
@@ -136,6 +117,8 @@ public class SessionActivity extends ItemDataActivity {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	
 	/**
 	 * @param selectedSession

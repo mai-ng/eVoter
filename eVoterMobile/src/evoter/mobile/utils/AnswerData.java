@@ -7,30 +7,39 @@ package evoter.mobile.utils;
  * @author  luongnv89
  */
 public class AnswerData {
-	int value;
+	long id;
 	int statistic;
 	
 	/**
 	 * @param value
 	 * @param statistic
 	 */
-	public AnswerData(int value, int statistic) {
+	public AnswerData(long id, int statistic) {
 		super();
-		this.value = value;
+		this.id = id;
 		this.statistic = statistic;
 	}
+
+	
+
 	/**
-	 * @return the value
+	 * @return the id
 	 */
-	public int getValue() {
-		return value;
+	public long getId() {
+		return id;
 	}
+
+
+
 	/**
-	 * @param value the value to set
+	 * @param id the id to set
 	 */
-	public void setValue(int value) {
-		this.value = value;
+	public void setId(long id) {
+		this.id = id;
 	}
+
+
+
 	/**
 	 * @return the statistic
 	 */

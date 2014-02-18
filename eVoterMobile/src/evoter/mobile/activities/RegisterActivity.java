@@ -1,22 +1,13 @@
 package evoter.mobile.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
 import evoter.mobile.main.R;
-import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
-import evoter.share.dao.UserDAO;
-import evoter.share.model.UserType;
-import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
 /**
@@ -85,6 +76,34 @@ public class RegisterActivity extends EVoterActivity {
 			}
 		});
 		
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * evoter.mobile.activities.EVoterActivity#updateRequestCallBack(java.lang
+	 * .String, java.lang.String)
+	 */
+	@Override
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.CREATE_USER_EVOTER_REQUEST)) {
+			if (response.contains("USER EXISTS ALREADY")) {
+				EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
+						"Username already used by other user. Please choose another username");
+			}
+			else if (response.contains("EMAIL EXISTS ALREADY")) {
+				EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
+						"Email already registered in system. Please register by another email or use reset password!");
+			}
+			else {
+				EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
+						"You will receive an email to confirm your register!");
+				EVoterShareMemory.setCurrentUserName(etUsrname.getText().toString());
+				ActivityManager.gotoLogin(RegisterActivity.this);
+			}
+		}else{
+			super.updateRequestCallBack(response, callBackMessage);
+		}
 	}
 	
 }

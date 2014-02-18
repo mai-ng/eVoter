@@ -10,19 +10,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
-import evoter.share.model.Question;
 import evoter.share.model.QuestionType;
 import evoter.share.utils.URIRequest;
 
@@ -37,14 +36,12 @@ public class EditQuestionActivity extends NewQuestionActivity {
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		etQuestionText.setText(EVoterShareMemory.getCurrentQuestion().getQuestionText());
 		int type = (int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId();
-		//Parser the answer of question
 		spQuestionType.setSelection(type - 1);
 		spQuestionType.setEnabled(false);
-		buildAnswerArea(type, EVoterShareMemory.getCurrentQuestion());
+		buildAnswerArea(type);
 		setBtSaveAction();
 	}
 	
@@ -52,8 +49,8 @@ public class EditQuestionActivity extends NewQuestionActivity {
 	 * @param type
 	 * @param column1
 	 */
-	private void buildAnswerArea(int type, Question question) {
-		ArrayList<Answer> column1 = parserAnswer(question.getAnswerColumn1());
+	private void buildAnswerArea(int type) {
+		ArrayList<Answer> column1 = EVoterMobileUtils.parserListAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1(), EVoterShareMemory.getCurrentQuestion().getId());
 		//		type = 1;
 		switch (type) {
 		
@@ -90,64 +87,20 @@ public class EditQuestionActivity extends NewQuestionActivity {
 			
 			@Override
 			public void onClick(View v) {
-				updateQuestionRequest();
-				
+				if (!readyToCreate()) {
+					EVoterMobileUtils.showeVoterToast(EditQuestionActivity.this, "Invalid parameter. Please input again!");
+				} else {
+					RequestParams params = new RequestParams();
+					params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+					params.put(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
+					params.put(QuestionDAO.QUESTION_TEXT, etQuestionText.getText().toString());
+					params.put(AnswerDAO.ANSWER_TEXT, listAnswser);
+					EVoterRequestManager.editQuestion(params, EditQuestionActivity.this);
+					
+				}
 			}
 		});
 		
-	}
-	
-	/**
-	 * @param answerColumn1
-	 * @return
-	 */
-	private ArrayList<Answer> parserAnswer(String answerColumn1) {
-		ArrayList<Answer> listAnswers = new ArrayList<Answer>();
-		try {
-			JSONArray listAnswer1 = new JSONArray(answerColumn1);
-			for (int i = 0; i < listAnswer1.length(); i++) {
-				Answer answer = parserJSONObjectToAnswer(listAnswer1.getJSONObject(i));
-				if (answer != null) listAnswers.add(answer);
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return listAnswers;
-	}
-	
-	/**
-	 * @param jsonObject
-	 * @return
-	 */
-	private Answer parserJSONObjectToAnswer(JSONObject jsonObject) {
-		try {
-			return new Answer(jsonObject.getLong(AnswerDAO.QUESTION_ID), jsonObject.getString(AnswerDAO.ANSWER_TEXT));
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	private void updateQuestionRequest() {
-		if (!readyToCreate()) {
-			EVoterMobileUtils.showeVoterToast(EditQuestionActivity.this, "Invalid parameter. Please input again!");
-		} else {
-			
-			//			parameters.put(QuestionDAO.ID, questionId);
-			
-			RequestParams params = new RequestParams();
-			params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-			params.put(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
-			params.put(QuestionDAO.QUESTION_TEXT, etQuestionText.getText().toString());
-			params.put(AnswerDAO.ANSWER_TEXT, listAnswser);
-			EVoterRequestManager.editQuestion(params,EditQuestionActivity.this);
-			
-		}
 	}
 	
 	/*
@@ -157,19 +110,22 @@ public class EditQuestionActivity extends NewQuestionActivity {
 	 * .lang.String)
 	 */
 	@Override
-	public void updateRequestCallBack(String response) {
-		Log.i("Response", response);
-		if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-			EVoterMobileUtils.showeVoterToast(
-					EditQuestionActivity.this,
-					"Updated successfully!");
-			EVoterShareMemory.getPreviousContext().refreshData();
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.EDIT_QUESTION_EVOTER_REQUEST)) {
+			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+				EVoterMobileUtils.showeVoterToast(
+						EditQuestionActivity.this,
+						"Updated successfully!");
+				EVoterShareMemory.getPreviousContext().refreshData();
+			} else {
+				EVoterMobileUtils.showeVoterToast(
+						EditQuestionActivity.this,
+						"Cannot update question");
+			}
+			finish();
 		} else {
-			EVoterMobileUtils.showeVoterToast(
-					EditQuestionActivity.this,
-					"Cannot update question");
+			super.updateRequestCallBack(response, callBackMessage);
 		}
-		finish();
 	}
 	
 }

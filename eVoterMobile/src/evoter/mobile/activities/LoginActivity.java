@@ -1,8 +1,12 @@
 package evoter.mobile.activities;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -11,7 +15,9 @@ import android.widget.TextView;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.OfflineEVoterManager;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.dao.UserDAO;
 import evoter.share.utils.UserValidation;
 
 /**
@@ -54,7 +60,7 @@ public class LoginActivity extends EVoterActivity {
 		createLoginGUI();
 		
 	}
-
+	
 	/**
 	 * Create login interface
 	 */
@@ -72,7 +78,6 @@ public class LoginActivity extends EVoterActivity {
 			@Override
 			public void onClick(View v) {
 				loginButtonAction();
-				
 			}
 		});
 		
@@ -141,8 +146,65 @@ public class LoginActivity extends EVoterActivity {
 		} else
 		
 		{
-			EVoterRequestManager.doLogin(i_Usrname, i_Password,LoginActivity.this);
+			EVoterRequestManager.doLogin(i_Usrname, i_Password, LoginActivity.this);
 		}
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * evoter.mobile.activities.EVoterActivity#updateRequestCallBack(java.lang
+	 * .String, java.lang.String)
+	 */
+	@Override
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.LOGIN_EVOTER_REQUEST)) {
+			String userKey = null;
+			try {
+				
+				JSONObject object = new JSONObject(
+						response);
+				userKey = object
+						.getString(UserDAO.USER_KEY);
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+				EVoterMobileUtils.showeVoterToast(LoginActivity.this, "Error! Cannot get user information");
+			}
+			
+			//Got the userkey
+			if (userKey != null && userKey != "null") {
+				Log.i("USER_KEY", userKey);
+				EVoterShareMemory.getOfflineEVoterManager()
+						.rememberCurrentUser(etUsrName.getText().toString(),
+								etPassword.getText().toString());
+				EVoterShareMemory
+						.setUSER_KEY(userKey);
+				EVoterShareMemory
+						.setCurrentUserName(etUsrName.getText().toString());
+				EVoterMobileUtils.showeVoterToast(
+						LoginActivity.this,
+						"Welcome "
+								+ EVoterShareMemory
+										.getCurrentUserName()
+								+ " to eVoter!");
+				
+				Intent subjectIntent = new Intent(
+						LoginActivity.this,
+						SubjectActivity.class);
+				subjectIntent
+						.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				subjectIntent
+						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(subjectIntent);
+				
+			}
+			else {
+				EVoterMobileUtils.showeVoterToast(LoginActivity.this, "Error! Username and password is not correct. Please try again!");
+			}
+		}else{
+			super.updateRequestCallBack(response, callBackMessage);
+		}
+	}
+	
 }

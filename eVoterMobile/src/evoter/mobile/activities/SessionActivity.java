@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import evoter.mobile.adapters.SessionAdapter;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.model.ItemData;
 import evoter.share.model.Session;
@@ -30,14 +31,20 @@ import evoter.share.utils.URIRequest;
 public class SessionActivity extends ItemDataActivity {
 	
 	public static final CharSequence DELETE_SESSION_REQUEST = "DELETE_SESSION_REQUEST";
-
+	
 	public void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
 		// Set title bar content is the subject of session
 		this.tvTitleBarContent.setText(EVoterShareMemory
 				.getCurrentSubjectName());
-		
+		this.ivTitleBarRefresh.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				refreshData();
+			}
+		});
 		mainMenu.setSessionActivityMenu();
 		adapter = new SessionAdapter(SessionActivity.this);
 		listView.setAdapter(adapter);
@@ -80,14 +87,14 @@ public class SessionActivity extends ItemDataActivity {
 	}
 	
 	public void refreshData() {
-		EVoterRequestManager.getListSession(SessionActivity.this, EVoterShareMemory.getCurrentSubject().getId());
+		EVoterRequestManager.getAllSession(SessionActivity.this, EVoterShareMemory.getCurrentSubject().getId());
 	}
 	
 	/**
 	 * @param response
 	 */
-	public void updateRequestCallBack(String response) {
-		if (response.contains(DELETE_SESSION_REQUEST)) {
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.DELETE_SESSION_EVOTER_REQUEST)) {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(SessionActivity.this,
 						"Deleted session: " + EVoterShareMemory.getCurrentSession().getTitle());
@@ -99,7 +106,7 @@ public class SessionActivity extends ItemDataActivity {
 				EVoterMobileUtils.showeVoterToast(SessionActivity.this,
 						"Cannot delete session: " + response);
 			}
-		} else {
+		} else if (callBackMessage.equals(CallBackMessage.GET_ALL_SESSION_EVOTER_REQUEST)) {
 			try {
 				EVoterShareMemory.resetListAcceptedSessions();
 				ArrayList<ItemData> listSession = new ArrayList<ItemData>();
@@ -121,6 +128,8 @@ public class SessionActivity extends ItemDataActivity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		} else {
+			super.updateRequestCallBack(response, callBackMessage);
 		}
 	}
 	

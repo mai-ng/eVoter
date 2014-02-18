@@ -30,6 +30,7 @@ import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.model.Answer;
+import evoter.share.model.Question;
 import evoter.share.model.QuestionType;
 import evoter.share.model.Session;
 import evoter.share.model.UserType;
@@ -71,25 +72,46 @@ public class QuestionDetailActivity extends EVoterActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.question_view_detail);
 		this.tvTitleBarContent.setText(EVoterShareMemory.getCurrentSessionName());
+		this.ivTitleBarRefresh.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				EVoterRequestManager.updateQuestion(QuestionDetailActivity.this);
+			}
+		});
+		this.ivTitleBarRefresh.setVisibility(View.VISIBLE);
 		mainMenu.setQuestionActivityMenu();
-		EVoterRequestManager.updateQuestion(EVoterShareMemory.getCurrentQuestion());
 		mainMenu.getBtStartSession().setVisibility(View.GONE);
-		Log.i("Current Question: ", EVoterShareMemory.getCurrentQuestion().getTitle());
 		tvQuestionText = (TextView) findViewById(R.id.tvQuestionText);
 		answerArea = (LinearLayout) findViewById(R.id.loAnswerArea);
-		//Parser the answer of question
-		answers = EVoterMobileUtils.parserListAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1(), EVoterShareMemory.getCurrentQuestion().getId());
-		
 		btSend = (Button) findViewById(R.id.btSendQuestion);
+		btSend.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				setupSendButtonAction();
+			}
+		});
 		groups = new RadioGroup(this);
 		groups.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		listCheckBox = new ArrayList<CheckBox>();
 		etAnswer = new EditText(this);
 		etAnswer.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		EVoterRequestManager.updateSession(QuestionDetailActivity.this);
+		builGUI();
+	}
+	
+	/**
+	 * 
+	 */
+	private void builGUI() {
+		answers = EVoterMobileUtils.parserListAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1(), EVoterShareMemory.getCurrentQuestion().getId());
 		tvQuestionText.setText(EVoterShareMemory.getCurrentQuestion().getQuestionText());
-		buidAnswerArea();
+		answerArea.removeAllViews();
+		listCheckBox.clear();
+		groups.removeAllViews();
 		setButtonLabel();
-		setupButtonAction();
+		buidAnswerArea();
 	}
 	
 	/**
@@ -114,32 +136,9 @@ public class QuestionDetailActivity extends EVoterActivity {
 		}
 		
 		if (!EVoterShareMemory.getCurrentSession().isActive()) {
-			if (!btSend.getText().toString().equals(VIEW_STATISTIC)) btSend.setEnabled(false);
+			if (!btSend.getText().equals(VIEW_STATISTIC)) btSend.setEnabled(false);
 		}
 		
-	}
-	
-	/**
-	 * 
-	 */
-	private void setupButtonAction() {
-		
-		btSend.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if (btSend.getText().toString().equals(SEND)) {
-					EVoterRequestManager.sendQuestion(EVoterShareMemory.getCurrentQuestion().getId(), EVoterShareMemory.getCurrentSession().getId(), QuestionDetailActivity.this);
-				} else if (btSend.getText().toString().equals(SUBMIT)) {
-					EVoterRequestManager.updateQuestionStatus(EVoterShareMemory.getCurrentQuestion().getId(), QuestionDetailActivity.this);
-				} else if (btSend.getText().toString().equals(STOP)) {
-					EVoterRequestManager.stopReceiveAnswer(EVoterShareMemory.getCurrentSession().getId(), QuestionDetailActivity.this);
-				} else if (btSend.getText().toString().equals(VIEW_STATISTIC)) {
-					ActivityManager.viewQuestionStatistic(EVoterShareMemory.getCurrentQuestion(), QuestionDetailActivity.this);
-				}
-				
-			}
-		});
 	}
 	
 	/**
@@ -195,9 +194,22 @@ public class QuestionDetailActivity extends EVoterActivity {
 		}
 	}
 	
-	public void updateRequestCallBack(String response) {
-		if (response.contains(CallBackMessage.EVOTER_REQUEST_CHECK_QUESTION_STATUS)) {
-			response = response.replace(CallBackMessage.EVOTER_REQUEST_CHECK_QUESTION_STATUS, "");
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.UPDATE_QUESTION_EVOTER_REQUEST)) {
+			try {
+				JSONArray array = new JSONArray(response);
+				Question question = null;
+				if (array != null)
+					question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(0));
+				if (question != null) {
+					EVoterShareMemory.setCurrentQuestion(question);
+					builGUI();
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+		} else if (callBackMessage.equals(CallBackMessage.CHECK_QUESTION_STATUS_EVOTER_REQUEST)) {
 			try {
 				JSONArray array = new JSONArray(response);
 				JSONObject ob = array.getJSONObject(0);
@@ -217,8 +229,8 @@ public class QuestionDetailActivity extends EVoterActivity {
 				
 			}
 		}
-		else if (response.contains(CallBackMessage.EVOTER_REQUEST_SEND_QUESTION)) {
-			if (response.contains("SUCCESS")) {
+		else if (callBackMessage.equals(CallBackMessage.SEND_QUESTION_EVOTER_REQUEST)) {
+			if (response.equals("SUCCESS")) {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 						"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
 				btSend.setText(STOP);
@@ -228,11 +240,9 @@ public class QuestionDetailActivity extends EVoterActivity {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 						"Cannot send question: " + response);
 			}
-		} else if (response.contains(CallBackMessage.EVOTER_REQUEST_CHECK_SESSION_STATUS)) {
-			Log.i("View session", response);
-			JSONArray array;
+		} else if (callBackMessage.equals(CallBackMessage.CHECK_SESSION_STATUS_EVOTER_REQUEST)) {
 			try {
-				array = new JSONArray(response);
+				JSONArray array = new JSONArray(response);
 				Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
 				if (session != null) EVoterShareMemory.setCurrentSession(session);
 				submitAnswerToServer();
@@ -240,17 +250,17 @@ public class QuestionDetailActivity extends EVoterActivity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else if (response.contains(CallBackMessage.EVOTER_REQUEST_SUBMIT_ANSWER)) {
+		} else if (callBackMessage.equals(CallBackMessage.SUBMIT_ANSWER_EVOTER_REQUEST)) {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Success!");
 				EVoterShareMemory.addAnsweredQuestion(EVoterShareMemory.getCurrentQuestion().getId());
 				btSend.setText(VIEW_STATISTIC);
 			} else {
-				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Cannot send answer : " + response.replace(CallBackMessage.EVOTER_REQUEST_SUBMIT_ANSWER, ""));
+				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Cannot send answer : " + response.replace(CallBackMessage.SUBMIT_ANSWER_EVOTER_REQUEST, ""));
 			}
 			
-		} else if (response.contains(CallBackMessage.EVOTER_REQUEST_STOP_RECEIVE_ANSWER)) {
-			if (response.contains("SUCCESS")) {
+		} else if (callBackMessage.equals(CallBackMessage.STOP_RECEIVE_ANSWER_EVOTER_REQUEST)) {
+			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 						response);
 				btSend.setText(VIEW_STATISTIC);
@@ -259,15 +269,19 @@ public class QuestionDetailActivity extends EVoterActivity {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 						"Fail: " + response);
 			}
-		} else if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-			EVoterMobileUtils.showeVoterToast(this,
-					"Successful!");
-			EVoterShareMemory.addAnsweredQuestion(EVoterShareMemory.getCurrentQuestion().getId());
-			btSend.setText(VIEW_STATISTIC);
-		}
-		else {
-			EVoterMobileUtils.showeVoterToast(this,
-					"Fail: " + response);
+		} else if (callBackMessage.equals(CallBackMessage.SUBMIT_ANSWER_EVOTER_REQUEST)) {
+			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+				EVoterMobileUtils.showeVoterToast(this,
+						"Successful!");
+				EVoterShareMemory.addAnsweredQuestion(EVoterShareMemory.getCurrentQuestion().getId());
+				btSend.setText(VIEW_STATISTIC);
+			}
+			else {
+				EVoterMobileUtils.showeVoterToast(this,
+						"Fail: " + response);
+			}
+		} else {
+			super.updateRequestCallBack(response, callBackMessage);
 		}
 		
 	}
@@ -393,6 +407,21 @@ public class QuestionDetailActivity extends EVoterActivity {
 		super.onBackPressed();
 		EVoterShareMemory.getPreviousContext().refreshData();
 		//		mainMenu.getBtStartSession().setVisibility(View.GONE);
+	}
+	
+	/**
+	 * 
+	 */
+	private void setupSendButtonAction() {
+		if (btSend.getText().toString().equals(SEND)) {
+			EVoterRequestManager.sendQuestion(EVoterShareMemory.getCurrentQuestion().getId(), EVoterShareMemory.getCurrentSession().getId(), QuestionDetailActivity.this);
+		} else if (btSend.getText().toString().equals(SUBMIT)) {
+			EVoterRequestManager.updateQuestionStatus(EVoterShareMemory.getCurrentQuestion().getId(), QuestionDetailActivity.this);
+		} else if (btSend.getText().toString().equals(STOP)) {
+			EVoterRequestManager.stopReceiveAnswer(EVoterShareMemory.getCurrentSession().getId(), QuestionDetailActivity.this);
+		} else if (btSend.getText().toString().equals(VIEW_STATISTIC)) {
+			ActivityManager.viewQuestionStatistic(EVoterShareMemory.getCurrentQuestion(), QuestionDetailActivity.this);
+		}
 	}
 	
 }

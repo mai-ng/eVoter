@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.utils.URIRequest;
 
@@ -80,13 +81,17 @@ public class NewSessionActivity extends EVoterActivity {
 	 * .String)
 	 */
 	@Override
-	public void updateRequestCallBack(String response) {
-		Log.i("Response", response);
-		if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-			EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "A new session is created!");
-			EVoterShareMemory.getPreviousContext().refreshData();
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.CREATE_SESSION_EVOTER_REQUEST)) {
+			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+				EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "A new session is created!");
+				EVoterShareMemory.getPreviousContext().refreshData();
+				finish();
+			} else {
+				EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "Cannot create new session!");
+			}
 		} else {
-			EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "Cannot create new session!");
+			super.updateRequestCallBack(response, callBackMessage);
 		}
 	}
 	

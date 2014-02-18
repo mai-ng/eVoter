@@ -4,19 +4,21 @@
 package evoter.mobile.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.utils.URIRequest;
 
-/**<br>Update by @author luongnv89 on 12-Feb-2014:<br>
- * <li> Completed send edit session request to server
- * <br>Created by @author luongnv89
+/**
+ * <br>
+ * Update by @author luongnv89 on 12-Feb-2014:<br>
+ * <li>Completed send edit session request to server <br>
+ * Created by @author luongnv89
  */
 public class EditSessionActivity extends NewSessionActivity {
 	
@@ -40,7 +42,7 @@ public class EditSessionActivity extends NewSessionActivity {
 			
 			@Override
 			public void onClick(View v) {
-				EVoterRequestManager.editSession(etTitle.getText().toString(),EVoterShareMemory.getCurrentSession().getId(),EditSessionActivity.this);
+				EVoterRequestManager.editSession(etTitle.getText().toString(), EVoterShareMemory.getCurrentSession().getId(), EditSessionActivity.this);
 				finish();
 			}
 		});
@@ -53,20 +55,26 @@ public class EditSessionActivity extends NewSessionActivity {
 			}
 		});
 	}
-
-	/* (non-Javadoc)
-	 * @see evoter.mobile.activities.NewSessionActivity#updateRequestCallBack(java.lang.String)
+	
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * evoter.mobile.activities.NewSessionActivity#updateRequestCallBack(java
+	 * .lang.String)
 	 */
 	@Override
-	public void updateRequestCallBack(String response) {
-		Log.i("Response", response);
-		if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-			EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Session is updated!");
-			EVoterShareMemory.getPreviousContext().refreshData();
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.EDIT_SESSION_EVOTER_REQUEST)) {
+			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+				EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Session is updated!");
+				EVoterShareMemory.getPreviousContext().refreshData();
+				finish();
+			} else {
+				EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Cannot update session!");
+			}
 		} else {
-			EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Cannot update session!");
+			super.updateRequestCallBack(response, callBackMessage);
 		}
 	}
-	
 	
 }

@@ -19,18 +19,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
 import evoter.mobile.main.R;
-import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.objects.EVoterShareMemory;
-import evoter.mobile.utils.EVoterMobileUtils;
-import evoter.share.dao.SubjectDAO;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.UserType;
-import evoter.share.utils.URIRequest;
 
 /**
  * <br>
@@ -102,35 +95,40 @@ public class SubjectUserActivity extends EVoterActivity {
 	}
 	
 	public void refreshData() {
-		EVoterRequestManager.getUserOfSubject(this,EVoterShareMemory.getCurrentSubject().getId());
+		EVoterRequestManager.getUserOfSubject(this, EVoterShareMemory.getCurrentSubject().getId());
 		
 	}
-
-	/* (non-Javadoc)
-	 * @see evoter.mobile.activities.EVoterActivity#updateRequestCallBack(java.lang.String)
+	
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * evoter.mobile.activities.EVoterActivity#updateRequestCallBack(java.lang
+	 * .String)
 	 */
 	@Override
-	public void updateRequestCallBack(String response) {
-		try {
-			JSONArray array = new JSONArray(response);
-			for (int i = 0; i < array.length(); i++) {
-				JSONObject ob = array.getJSONObject(i);
-				if (ob.getLong(UserDAO.USER_TYPE_ID) == UserType.TEACHER) {
-					listTeachers.add((listTeachers.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
-				} else if (ob.getLong(UserDAO.USER_TYPE_ID) == UserType.STUDENT) {
-					listStudents.add((listStudents.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.GET_USER_OF_SUBJECT_EVOTER_REQUEST)) {
+			try {
+				JSONArray array = new JSONArray(response);
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject ob = array.getJSONObject(i);
+					if (ob.getLong(UserDAO.USER_TYPE_ID) == UserType.TEACHER) {
+						listTeachers.add((listTeachers.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
+					} else if (ob.getLong(UserDAO.USER_TYPE_ID) == UserType.STUDENT) {
+						listStudents.add((listStudents.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
+					}
 				}
+				Log.i("Total teachers: ", String.valueOf(listTeachers.size()));
+				Log.i("Total students: ", String.valueOf(listStudents.size()));
+				studentAdapter.notifyDataSetChanged();
+				teacherAdapter.notifyDataSetChanged();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			Log.i("Total teachers: ", String.valueOf(listTeachers.size()));
-			Log.i("Total students: ", String.valueOf(listStudents.size()));
-			studentAdapter.notifyDataSetChanged();
-			teacherAdapter.notifyDataSetChanged();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} else {
+			super.updateRequestCallBack(response, callBackMessage);
 		}
 	}
-	
-	
 	
 }

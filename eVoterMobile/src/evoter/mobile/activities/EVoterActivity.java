@@ -3,6 +3,12 @@
  */
 package evoter.mobile.activities;
 
+import java.util.HashMap;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -26,8 +32,11 @@ import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.MainMenu;
 import evoter.mobile.objects.OfflineEVoterManager;
 import evoter.mobile.objects.RequestConfig;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.UserDAO;
+import evoter.share.model.Question;
+import evoter.share.model.Session;
 import evoter.share.utils.URIRequest;
 
 /**
@@ -307,7 +316,75 @@ public class EVoterActivity extends Activity {
 				}).show();
 	}
 	
-	public void updateRequestCallBack(String response) {
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.LOGIN_EVOTER_REQUEST)) {
+			String userKey = null;
+			try {
+				
+				JSONObject object = new JSONObject(
+						response);
+				userKey = object
+						.getString(UserDAO.USER_KEY);
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+				EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Error! Cannot get user information");
+			}
+			
+			//Got the userkey
+			if (userKey != null && userKey != "null") {
+				Log.i("USER_KEY", userKey);
+				HashMap<String, String> user = offlineEVoterManager.getSavedUserDetail();
+				EVoterShareMemory
+						.setUSER_KEY(userKey);
+				EVoterShareMemory
+						.setCurrentUserName(user.get(UserDAO.USER_NAME));
+				EVoterMobileUtils.showeVoterToast(
+						EVoterActivity.this,
+						"Welcome "
+								+ EVoterShareMemory
+										.getCurrentUserName()
+								+ " to eVoter!");
+				
+				Intent subjectIntent = new Intent(
+						EVoterActivity.this,
+						SubjectActivity.class);
+				subjectIntent
+						.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				subjectIntent
+						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(subjectIntent);
+				
+			}
+			else {
+				EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Error! Username and password is not correct. Please try again!");
+			}
+		}else if (callBackMessage.equals(CallBackMessage.UPDATE_QUESTION_EVOTER_REQUEST)) {
+			try {
+				JSONArray array = new JSONArray(response);
+				Question question = null;
+				if (array != null)
+					question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(0));
+				if (question != null) {
+					EVoterShareMemory.setCurrentQuestion(question);
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+		} else if (callBackMessage.equals(CallBackMessage.UPDATE_SESSION_EVOTER_REQUEST)) {
+			try {
+				JSONArray array = EVoterMobileUtils.getJSONArray(response);
+				Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
+				if (session != null) {
+					EVoterShareMemory.setCurrentSession(session);
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+				Log.i("Update session", "Exception");
+			}
+			
+		}
 		
 	}
 	

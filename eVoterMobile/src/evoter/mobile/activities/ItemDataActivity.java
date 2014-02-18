@@ -89,12 +89,6 @@ public abstract class ItemDataActivity extends EVoterActivity {
 		refreshData();
 	}
 	
-	/**
-	 * Load data for list view.
-	 * Request data from server according to context of activity.
-	 */
-//	protected abstract void loadListItemData();
-
 	/* (non-Javadoc)
 	 * @see evoter.mobile.activities.EVoterActivity#onBackPressed()
 	 */

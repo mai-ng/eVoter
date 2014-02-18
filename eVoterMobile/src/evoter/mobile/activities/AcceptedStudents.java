@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import evoter.mobile.main.R;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.share.dao.UserDAO;
 
 /**
@@ -51,9 +52,9 @@ public class AcceptedStudents extends EVoterActivity {
 		lvStudent = (ListView) findViewById(R.id.lvSubjectStudents);
 		studentAdapter = new ArrayAdapter<String>(AcceptedStudents.this, R.layout.user_item, listStudents);
 		lvStudent.setAdapter(studentAdapter);
-		ListView lvTeacher = (ListView)findViewById(R.id.lvSubjectProfessor);
+		ListView lvTeacher = (ListView) findViewById(R.id.lvSubjectProfessor);
 		lvTeacher.setVisibility(View.GONE);
-		TextView tv = (TextView)findViewById(R.id.tvListProfessors);
+		TextView tv = (TextView) findViewById(R.id.tvListProfessors);
 		tv.setVisibility(View.GONE);
 		refreshData();
 	}
@@ -64,28 +65,33 @@ public class AcceptedStudents extends EVoterActivity {
 	public void refreshData() {
 		EVoterRequestManager.getListAcceptedSutdent(this);
 	}
-
-	/* (non-Javadoc)
-	 * @see evoter.mobile.activities.EVoterActivity#updateRequestCallBack(java.lang.String)
+	
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * evoter.mobile.activities.EVoterActivity#updateRequestCallBack(java.lang
+	 * .String)
 	 */
 	@Override
-	public void updateRequestCallBack(String response) {
-		Log.i("Get accepted users:", response);
-		try {
-			JSONArray array = new JSONArray(response);
-			for (int i = 0; i < array.length(); i++) {
-				JSONObject ob = array.getJSONObject(i);
-				Log.i("Object: " + i, "User type: " + String.valueOf(ob.getLong(UserDAO.USER_TYPE_ID)));
-				listStudents.add((listStudents.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.ACCEPT_SESSION_EVOTER_REQUEST)) {
+			Log.i("Get accepted users:", response);
+			try {
+				JSONArray array = new JSONArray(response);
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject ob = array.getJSONObject(i);
+					Log.i("Object: " + i, "User type: " + String.valueOf(ob.getLong(UserDAO.USER_TYPE_ID)));
+					listStudents.add((listStudents.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
+				}
+				Log.i("Total students: ", String.valueOf(listStudents.size()));
+				studentAdapter.notifyDataSetChanged();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			Log.i("Total students: ", String.valueOf(listStudents.size()));
-			studentAdapter.notifyDataSetChanged();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}else{
+			super.updateRequestCallBack(response, callBackMessage);
 		}
 	}
-	
-	
 	
 }

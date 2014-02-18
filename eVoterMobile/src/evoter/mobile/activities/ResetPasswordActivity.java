@@ -1,11 +1,14 @@
 package evoter.mobile.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import evoter.mobile.main.R;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
 /**
@@ -42,6 +45,30 @@ public class ResetPasswordActivity extends EVoterActivity {
 			}
 			
 		});
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * evoter.mobile.activities.EVoterActivity#updateRequestCallBack(java.lang
+	 * .String, java.lang.String)
+	 */
+	@Override
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.RESET_PASSWORD_EVOTER_REQUEST)) {
+			if (response.contains(URIRequest.FAILURE_MESSAGE)) {
+				EVoterMobileUtils.showeVoterToast(ResetPasswordActivity.this,
+						"Email not exists. Please try again or register new account!");
+			}
+			else if (response.contains(URIRequest.EMAIL_EXIST_MESSAGE)) {
+				// TODO: Send request to sever: email to change the password
+				EVoterMobileUtils.showeVoterToast(ResetPasswordActivity.this,
+						"You will receive an email confirm to reset your password! Email send to address: " + etEmail.getText().toString());
+				ActivityManager.gotoLogin(ResetPasswordActivity.this);
+			}
+		}else{
+			super.updateRequestCallBack(response, callBackMessage);
+		}
 	}
 	
 }

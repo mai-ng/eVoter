@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,12 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.main.R;
 import evoter.mobile.objects.EVoterShareMemory;
-import evoter.mobile.objects.RequestConfig;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
@@ -213,7 +211,7 @@ public class NewQuestionActivity extends EVoterActivity {
 			listAnswser.add("Yes");
 			listAnswser.add("No");
 		}
-		if(typeID==QuestionType.MATCH){
+		if (typeID == QuestionType.MATCH) {
 			EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "Match question has not implemented yet!");
 			return false;
 		}
@@ -305,7 +303,7 @@ public class NewQuestionActivity extends EVoterActivity {
 			params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSessionID()));
 			params.put(AnswerDAO.ANSWER_TEXT, listAnswser);
 			Log.i("List Answer: ", listAnswser.get(0));
-			EVoterRequestManager.createNewQuestion(params,NewQuestionActivity.this);
+			EVoterRequestManager.createNewQuestion(params, NewQuestionActivity.this);
 		}
 	}
 	
@@ -332,19 +330,24 @@ public class NewQuestionActivity extends EVoterActivity {
 	 * .String)
 	 */
 	@Override
-	public void updateRequestCallBack(String response) {
-		Log.i("Response", response);
-		if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-			EVoterMobileUtils.showeVoterToast(
-					NewQuestionActivity.this,
-					"A new question is created successfully!");
-			EVoterShareMemory.getPreviousContext().refreshData();
-		} else {
-			EVoterMobileUtils.showeVoterToast(
-					NewQuestionActivity.this,
-					"Cannot create new question");
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.CREATE_QUESTION_EVOTER_REQUEST)) {
+			Log.i("Response", response);
+			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+				EVoterMobileUtils.showeVoterToast(
+						NewQuestionActivity.this,
+						"A new question is created successfully!");
+				EVoterShareMemory.getPreviousContext().refreshData();
+			} else {
+				EVoterMobileUtils.showeVoterToast(
+						NewQuestionActivity.this,
+						"Cannot create new question");
+			}
+			finish();
 		}
-		finish();
+		else {
+			super.updateRequestCallBack(response, callBackMessage);
+		}
 	}
 	
 }

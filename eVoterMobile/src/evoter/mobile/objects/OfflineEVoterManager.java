@@ -32,12 +32,10 @@ public class OfflineEVoterManager {
 	
 	private final String IS_LOGIN = "IsLoggedin";
 	
-	private final String QUESTION = "QUESTION_";
-	
 	@SuppressLint("CommitPrefEdits")
-	public OfflineEVoterManager(EVoterActivity contex) {
-		this.context = contex;
-		preferences = contex.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+	public OfflineEVoterManager(EVoterActivity context) {
+		this.context = context;
+		preferences = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
 		editor = preferences.edit();
 	}
 	

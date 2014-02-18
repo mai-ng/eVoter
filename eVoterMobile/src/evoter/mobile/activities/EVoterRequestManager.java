@@ -5,12 +5,6 @@ package evoter.mobile.activities;
 
 import java.sql.Timestamp;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -18,6 +12,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.objects.MainMenu;
 import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
@@ -28,8 +23,6 @@ import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
-import evoter.share.model.Question;
-import evoter.share.model.Session;
 import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
@@ -47,13 +40,6 @@ public class EVoterRequestManager {
 	 * @param context
 	 */
 	public static void doVote(long answerID, long questionTypeID, final String statistic, final EVoterActivity context) {
-//		String valueToSend = null;
-//		if (statistic != null) {
-//			if (statistic.contains(CallBackMessage.EVOTER_REQUEST_SUBMIT_ANSWER))
-//				valueToSend = statistic.replace(CallBackMessage.EVOTER_REQUEST_SUBMIT_ANSWER, "");
-//			else
-//				valueToSend = statistic;
-//		}
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
@@ -64,7 +50,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_SUBMIT_ANSWER);
+				context.updateRequestCallBack(response, CallBackMessage.SUBMIT_ANSWER_EVOTER_REQUEST);
 			}
 			
 			@Override
@@ -82,21 +68,18 @@ public class EVoterRequestManager {
 	 * @param i_Usrname
 	 * @param i_Password
 	 */
-	public static void doLogin(final String i_Usrname, final String i_Password, final Context context) {
+	public static void doLogin(final String i_Usrname, final String i_Password, final EVoterActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_NAME, i_Usrname);
 		params.add(UserDAO.PASSWORD, i_Password);
 		client.post(RequestConfig.getURL(URIRequest.LOGIN), params,
 				new AsyncHttpResponseHandler() {
-					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						Log.i("Response", response);
-						loginResponseProcess(i_Usrname, i_Password, response, context);
+						context.updateRequestCallBack(response, CallBackMessage.LOGIN_EVOTER_REQUEST);
 					}
 					
-					//Login fail
 					@Override
 					public void onFailure(Throwable error,
 							String content) {
@@ -111,59 +94,9 @@ public class EVoterRequestManager {
 	}
 	
 	/**
-	 * @param i_Usrname
-	 * @param response
-	 */
-	public static void loginResponseProcess(final String i_Usrname, final String i_password, String response, Context context) {
-		String userKey = null;
-		try {
-			
-			JSONObject object = new JSONObject(
-					response);
-			userKey = object
-					.getString(UserDAO.USER_KEY);
-			
-		} catch (JSONException e) {
-			e.printStackTrace();
-			EVoterMobileUtils.showeVoterToast(context, "Error! Cannot get user information");
-		}
-		
-		//Got the userkey
-		if (userKey != null && userKey != "null") {
-			Log.i("USER_KEY", userKey);
-			EVoterShareMemory.getOfflineEVoterManager()
-					.rememberCurrentUser(i_Usrname,
-							i_password);
-			EVoterShareMemory
-					.setUSER_KEY(userKey);
-			EVoterShareMemory
-					.setCurrentUserName(i_Usrname);
-			EVoterMobileUtils.showeVoterToast(
-					context,
-					"Welcome "
-							+ EVoterShareMemory
-									.getCurrentUserName()
-							+ " to eVoter!");
-			
-			Intent subjectIntent = new Intent(
-					context,
-					SubjectActivity.class);
-			subjectIntent
-					.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			subjectIntent
-					.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(subjectIntent);
-			
-		}
-		else {
-			EVoterMobileUtils.showeVoterToast(context, "Error! Username and password is not correct. Please try again!");
-		}
-	}
-	
-	/**
 	 * @param i_email
 	 */
-	public static void resetPassword(final String i_email, final Context context) {
+	public static void resetPassword(final String i_email, final ResetPasswordActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.put(UserDAO.EMAIL, i_email);
@@ -171,17 +104,7 @@ public class EVoterRequestManager {
 			
 			@Override
 			public void onSuccess(String response) {
-				Log.i("Reset password", response);
-				if (response.contains(URIRequest.FAILURE_MESSAGE)) {
-					EVoterMobileUtils.showeVoterToast(context,
-							"Email not exists. Please try again or register new account!");
-				}
-				else if (response.contains(URIRequest.EMAIL_EXIST_MESSAGE)) {
-					// TODO: Send request to sever: email to change the password
-					EVoterMobileUtils.showeVoterToast(context,
-							"You will receive an email confirm to reset your password! Email send to address: " + i_email);
-					ActivityManager.gotoLogin(context);
-				}
+				context.updateRequestCallBack(response, CallBackMessage.RESET_PASSWORD_EVOTER_REQUEST);
 			}
 			
 			@Override
@@ -199,7 +122,7 @@ public class EVoterRequestManager {
 	 * @param i_password
 	 * @param registerActivity
 	 */
-	public static void createNewUser(String i_email, final String i_usrname, String i_password, final Context context) {
+	public static void createNewUser(String i_email, final String i_usrname, String i_password, final EVoterActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		
 		RequestParams params = new RequestParams();
@@ -212,21 +135,7 @@ public class EVoterRequestManager {
 			
 			@Override
 			public void onSuccess(String response) {
-				Log.i("REGISTER", "Successful: " + response);
-				if (response.contains("USER EXISTS ALREADY")) {
-					EVoterMobileUtils.showeVoterToast(context,
-							"Username already used by other user. Please choose another username");
-				}
-				else if (response.contains("EMAIL EXISTS ALREADY")) {
-					EVoterMobileUtils.showeVoterToast(context,
-							"Email already registered in system. Please register by another email or use reset password!");
-				}
-				else {
-					EVoterMobileUtils.showeVoterToast(context,
-							"You will receive an email to confirm your register!");
-					EVoterShareMemory.setCurrentUserName(i_usrname);
-					ActivityManager.gotoLogin(context);
-				}
+				context.updateRequestCallBack(response, CallBackMessage.CREATE_USER_EVOTER_REQUEST);
 			}
 			
 			@Override
@@ -238,18 +147,18 @@ public class EVoterRequestManager {
 		
 	}
 	
-	public static void updateQuestion(final Question questionToUpdate) {
+	public static void updateQuestion(final EVoterActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(QuestionDAO.ID,
-				String.valueOf(questionToUpdate.getId()));
+				String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
 		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		client.post(RequestConfig.getURL(URIRequest.VIEW_QUESTION), params,
 				new AsyncHttpResponseHandler() {
 					
 					@Override
 					public void onSuccess(String response) {
-						updateQuestionCallBack(questionToUpdate, response);
+						context.updateRequestCallBack(response, CallBackMessage.UPDATE_QUESTION_EVOTER_REQUEST);
 					}
 					
 					@Override
@@ -260,37 +169,18 @@ public class EVoterRequestManager {
 				});
 	}
 	
-	/**
-	 * @param questionToUpdate
-	 */
-	protected static void updateQuestionCallBack(Question questionToUpdate, String response) {
-		try {
-			JSONArray array = new JSONArray(response);
-			Question question = null;
-			if (array != null)
-				question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(0));
-			if (question != null) {
-				questionToUpdate = question;
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public static void updateSession(final Session session) {
+	public static void updateSession(final EVoterActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(SessionDAO.ID,
-				String.valueOf(session.getId()));
+				String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
 		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		client.post(RequestConfig.getURL(URIRequest.VIEW_SESSION), params,
 				new AsyncHttpResponseHandler() {
 					
 					@Override
 					public void onSuccess(String response) {
-						updateSessionCallBack(session, response);
+						context.updateRequestCallBack(response, CallBackMessage.UPDATE_SESSION_EVOTER_REQUEST);
 					}
 					
 					@Override
@@ -299,27 +189,6 @@ public class EVoterRequestManager {
 								+ error.toString() + "content : " + content);
 					}
 				});
-		
-	}
-	
-	/**
-	 * @param session
-	 * @param response
-	 */
-	protected static void updateSessionCallBack(Session sessionToUpdate, String response) {
-		Log.i("View session", response);
-		JSONArray array;
-		try {
-			array = EVoterMobileUtils.getJSONArray(response);
-			Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
-			if (session != null) {
-				sessionToUpdate = session;
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			Log.i("Update session", "Exception");
-		}
 		
 	}
 	
@@ -334,8 +203,7 @@ public class EVoterRequestManager {
 					
 					@Override
 					public void onSuccess(String response) {
-						Log.i("Statistic", response);
-						context.updateRequestCallBack(response);
+						context.updateRequestCallBack(response, CallBackMessage.GET_STATISTIC_EVOTER_REQUEST);
 					}
 					
 					@Override
@@ -358,7 +226,7 @@ public class EVoterRequestManager {
 					
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response);
+						context.updateRequestCallBack(response, CallBackMessage.GET_ALL_SUBJECT_EVOTER_REQUEST);
 					}
 					
 					@Override
@@ -373,7 +241,7 @@ public class EVoterRequestManager {
 	/**
 	 * @param sessionActivity
 	 */
-	public static void getListSession(final SessionActivity sessionActivity, long subjectID) {
+	public static void getAllSession(final SessionActivity sessionActivity, long subjectID) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(SessionDAO.SUBJECT_ID,
@@ -386,7 +254,7 @@ public class EVoterRequestManager {
 					
 					@Override
 					public void onSuccess(String response) {
-						sessionActivity.updateRequestCallBack(response);
+						sessionActivity.updateRequestCallBack(response, CallBackMessage.GET_ALL_SESSION_EVOTER_REQUEST);
 					}
 					
 					@Override
@@ -414,7 +282,7 @@ public class EVoterRequestManager {
 					@Override
 					public void onSuccess(String response) {
 						Log.i("Request all user of subject", response);
-						subjectUserActivity.updateRequestCallBack(response);
+						subjectUserActivity.updateRequestCallBack(response, CallBackMessage.GET_USER_OF_SUBJECT_EVOTER_REQUEST);
 					}
 					
 					//Login fail
@@ -439,7 +307,7 @@ public class EVoterRequestManager {
 	public static void updateStaticValue(final StudentFeedbackActivity context, final String excited) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
-		if (excited.equals(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC)) {
+		if (excited.equals(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST)) {
 			params.add(QuestionDAO.ID,
 					String.valueOf(EVoterShareMemory.getExictedQuestion().getId()));
 		} else {
@@ -453,7 +321,7 @@ public class EVoterRequestManager {
 					@Override
 					public void onSuccess(String response) {
 						Log.i("Statistic", response);
-						context.updateRequestCallBack(response + excited);
+						context.updateRequestCallBack(response, excited);
 					}
 					
 					@Override
@@ -480,7 +348,7 @@ public class EVoterRequestManager {
 					
 					@Override
 					public void onSuccess(String response) {
-						questionActivity.updateRequestCallBack(response);
+						questionActivity.updateRequestCallBack(response, CallBackMessage.GET_ALL_QUESTION_EVOTER_REQUEST);
 					}
 					
 					@Override
@@ -507,7 +375,7 @@ public class EVoterRequestManager {
 					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response);
+						context.updateRequestCallBack(response, CallBackMessage.GET_LIST_ACCEPTED_STUDENT_EVOTER_REQUEST);
 					}
 					
 					//Login fail
@@ -543,7 +411,7 @@ public class EVoterRequestManager {
 					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response);
+						context.updateRequestCallBack(response, CallBackMessage.CREATE_SESSION_EVOTER_REQUEST);
 					}
 					
 					//Login fail
@@ -579,7 +447,7 @@ public class EVoterRequestManager {
 						// Request successfully - client receive a response
 						@Override
 						public void onSuccess(String response) {
-							context.updateRequestCallBack(response);
+							context.updateRequestCallBack(response, CallBackMessage.EDIT_SESSION_EVOTER_REQUEST);
 						}
 						
 						//Login fail
@@ -609,7 +477,7 @@ public class EVoterRequestManager {
 					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response);
+						context.updateRequestCallBack(response, CallBackMessage.CREATE_QUESTION_EVOTER_REQUEST);
 					}
 					
 					//Login fail
@@ -622,7 +490,6 @@ public class EVoterRequestManager {
 						Log.e("create question", "onFailure error : "
 								+ error.toString() + "content : "
 								+ content);
-						context.finish();
 					}
 				});
 		
@@ -638,7 +505,7 @@ public class EVoterRequestManager {
 				new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response);
+						context.updateRequestCallBack(response, CallBackMessage.EDIT_QUESTION_EVOTER_REQUEST);
 					}
 					
 					@Override
@@ -650,7 +517,6 @@ public class EVoterRequestManager {
 						Log.e("edit question", "onFailure error : "
 								+ error.toString() + "content : "
 								+ content);
-						context.finish();
 					}
 				});
 		
@@ -670,7 +536,7 @@ public class EVoterRequestManager {
 					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_ACCEPT_SESSION);
+						context.updateRequestCallBack(response, CallBackMessage.ACCEPT_SESSION_EVOTER_REQUEST);
 					}
 					
 					//Login fail
@@ -694,7 +560,7 @@ public class EVoterRequestManager {
 	 * @param url
 	 * @param questionActivity
 	 */
-	public static void changeSessionStatus(boolean start, long sessionID, final QuestionActivity context) {
+	public static void changeSessionStatus(final boolean start, long sessionID, final QuestionActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
@@ -705,7 +571,7 @@ public class EVoterRequestManager {
 					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_CHANGE_SESSION_STATUS);
+						context.updateRequestCallBack(response + (start ? MainMenu.STOP_SESSION : MainMenu.START_SESSION), CallBackMessage.CHANGE_SESSION_STATUS_EVOTER_REQUEST);
 					}
 					
 					//Login fail
@@ -732,7 +598,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_SUBMIT_STATISTIC);
+				context.updateRequestCallBack(response, CallBackMessage.SUBMIT_STATISTIC_EVOTER_REQUEST);
 			}
 			
 			@Override
@@ -758,7 +624,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_DELETE_QUESTION);
+				context.updateRequestCallBack(response, CallBackMessage.DELETE_QUESTION_EVOTER_REQUEST);
 			}
 			
 			@Override
@@ -784,7 +650,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.STOP_SEND_QUESTION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_STOP_RECEIVE_ANSWER);
+				context.updateRequestCallBack(response, CallBackMessage.STOP_RECEIVE_ANSWER_EVOTER_REQUEST);
 			}
 			
 			@Override
@@ -810,7 +676,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.VIEW_QUESTION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_CHECK_QUESTION_STATUS);
+				context.updateRequestCallBack(response, CallBackMessage.CHECK_QUESTION_STATUS_EVOTER_REQUEST);
 			}
 			
 			@Override
@@ -839,7 +705,7 @@ public class EVoterRequestManager {
 					
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_CHECK_SESSION_STATUS);
+						context.updateRequestCallBack(response, CallBackMessage.CHECK_SESSION_STATUS_EVOTER_REQUEST);
 					}
 					
 					@Override
@@ -856,16 +722,16 @@ public class EVoterRequestManager {
 	 * @param id2
 	 * @param questionDetailActivity
 	 */
-	public static void sendQuestion(long id, long id2, final QuestionDetailActivity context) {
+	public static void sendQuestion(long questionID, long sessionID, final QuestionDetailActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
-		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		params.add(QuestionDAO.ID, String.valueOf(questionID));
+		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(sessionID));
 		client.post(RequestConfig.getURL(URIRequest.SEND_QUESTION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_SEND_QUESTION);
+				context.updateRequestCallBack(response, CallBackMessage.SEND_QUESTION_EVOTER_REQUEST);
 			}
 			
 			@Override
@@ -883,15 +749,15 @@ public class EVoterRequestManager {
 	 * @param id
 	 * @param sessionActivity
 	 */
-	public static void deleteSession(long id, final SessionActivity context) {
+	public static void deleteSession(long sessionID, final SessionActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(SessionUserDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		params.add(SessionUserDAO.SESSION_ID, String.valueOf(sessionID));
 		client.post(RequestConfig.getURL(URIRequest.DELETE_SESSION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + SessionActivity.DELETE_SESSION_REQUEST);
+				context.updateRequestCallBack(response, CallBackMessage.DELETE_SESSION_EVOTER_REQUEST);
 			}
 			
 			@Override

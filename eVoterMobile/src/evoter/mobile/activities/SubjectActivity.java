@@ -10,22 +10,15 @@ import org.json.JSONObject;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
 import evoter.mobile.adapters.SubjectAdapter;
 import evoter.mobile.objects.EVoterShareMemory;
-import evoter.mobile.objects.RequestConfig;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.SubjectDAO;
-import evoter.share.dao.UserDAO;
 import evoter.share.model.ItemData;
 import evoter.share.model.Subject;
-import evoter.share.utils.URIRequest;
 
 /**
  * <br>
@@ -89,35 +82,39 @@ public class SubjectActivity extends ItemDataActivity {
 	 * .String)
 	 */
 	@Override
-	public void updateRequestCallBack(String response) {
-		try {
-			ArrayList<ItemData> newList = new ArrayList<ItemData>();
-			JSONArray array = new JSONArray(response);
-			
-			for (int i = 0; i < array.length(); i++) {
-				JSONObject item = array.getJSONObject(i);
-				Subject subject = new Subject(
-						Long.parseLong(item
-								.getString(SubjectDAO.ID)),
-						item.getString(SubjectDAO.TITLE),
-						EVoterMobileUtils.convertToDate(item
-								.getString(SubjectDAO.CREATION_DATE)));
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.GET_ALL_SUBJECT_EVOTER_REQUEST)) {
+			try {
+				ArrayList<ItemData> newList = new ArrayList<ItemData>();
+				JSONArray array = new JSONArray(response);
 				
-				newList.add(subject);
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject item = array.getJSONObject(i);
+					Subject subject = new Subject(
+							Long.parseLong(item
+									.getString(SubjectDAO.ID)),
+							item.getString(SubjectDAO.TITLE),
+							EVoterMobileUtils.convertToDate(item
+									.getString(SubjectDAO.CREATION_DATE)));
+					
+					newList.add(subject);
+				}
+				if (newList.isEmpty()) {
+					EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
+							"There isn't any subject!");
+				}
+				adapter.updateList(newList);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			if (newList.isEmpty()) {
-				EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
-						"There isn't any subject!");
-			}
-			adapter.updateList(newList);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} else {
+			super.updateRequestCallBack(response, callBackMessage);
 		}
 	}
 	

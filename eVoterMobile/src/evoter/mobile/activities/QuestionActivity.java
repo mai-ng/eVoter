@@ -27,6 +27,7 @@ import evoter.share.model.Answer;
 import evoter.share.model.ItemData;
 import evoter.share.model.Question;
 import evoter.share.model.QuestionType;
+import evoter.share.model.Session;
 import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
@@ -51,11 +52,10 @@ public class QuestionActivity extends ItemDataActivity {
 			
 			@Override
 			public void onClick(View v) {
-				EVoterRequestManager.updateSession(EVoterShareMemory.getCurrentSession());
-				refreshData();
+				EVoterRequestManager.updateSession(QuestionActivity.this);
 			}
 		});
-		EVoterRequestManager.updateSession(EVoterShareMemory.getCurrentSession());
+		EVoterRequestManager.updateSession(QuestionActivity.this);
 		mainMenu.setQuestionActivityMenu();
 		
 		adapter = new QuestionAdapter(QuestionActivity.this);
@@ -105,7 +105,6 @@ public class QuestionActivity extends ItemDataActivity {
 			@Override
 			public void onClick(View v) {
 				if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.STOP_SESSION)) {
-					mainMenu.getBtStartSession().setText(MainMenu.START_SESSION);
 					if (okChangeStatus(false)) {
 						EVoterRequestManager.changeSessionStatus(false, EVoterShareMemory.getCurrentSession().getId(), QuestionActivity.this);
 					} else {
@@ -113,11 +112,8 @@ public class QuestionActivity extends ItemDataActivity {
 					}
 					mainMenu.dismiss();
 				} else if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.START_SESSION)) {
-					mainMenu.getBtStartSession().setText(MainMenu.STOP_SESSION);
 					if (okChangeStatus(true)) {
 						EVoterRequestManager.changeSessionStatus(true, EVoterShareMemory.getCurrentSession().getId(), QuestionActivity.this);
-					} else {
-						EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "There is some question still waiting for answer, you cannot stop session");
 					}
 					mainMenu.dismiss();
 				} else if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.ACCEPT_SESSION)) {
@@ -135,17 +131,15 @@ public class QuestionActivity extends ItemDataActivity {
 	 * @return
 	 */
 	private boolean okChangeStatus(boolean start) {
-		if (start)
-			return true;
-		else {
+		if (!start) {
 			for (int i = 0; i < EVoterShareMemory.getListQuestions().size(); i++) {
 				if (EVoterShareMemory.getListQuestions().get(i).getStatus() == 1) {
-					EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "There is some question which is waiting for answer!");
+					EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "Question : " + EVoterShareMemory.getListQuestions().get(i).getTitle() + " is waiting for answer!");
 					return false;
 				}
 			}
-			return true;
 		}
+		return true;
 	}
 	
 	/**
@@ -159,9 +153,7 @@ public class QuestionActivity extends ItemDataActivity {
 				
 				@Override
 				public void onStopTrackingTouch(SeekBar seekBar) {
-					Toast.makeText(QuestionActivity.this, "Your excited value: " + progressValue, Toast.LENGTH_SHORT).show();
-					EVoterRequestManager.doVote(getstaticAnswerID(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
-					
+					EVoterRequestManager.doVote(getstaticAnswerID(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
 				}
 				
 				@Override
@@ -180,8 +172,7 @@ public class QuestionActivity extends ItemDataActivity {
 				
 				@Override
 				public void onStopTrackingTouch(SeekBar seekBar) {
-					Toast.makeText(QuestionActivity.this, "Your difficult level value: " + progressValue, Toast.LENGTH_SHORT).show();
-					EVoterRequestManager.doVote(getstaticAnswerID(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
+					EVoterRequestManager.doVote(getstaticAnswerID(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
 				}
 				
 				@Override
@@ -194,6 +185,8 @@ public class QuestionActivity extends ItemDataActivity {
 					progressValue = progress;
 				}
 			});
+		} else {
+			tbSessionValue.setVisibility(View.GONE);
 		}
 	}
 	
@@ -202,7 +195,7 @@ public class QuestionActivity extends ItemDataActivity {
 	 * @return
 	 */
 	protected long getstaticAnswerID(String difficult2) {
-		if (difficult2.equals(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC))
+		if (difficult2.equals(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST))
 			return getFirstAnswerID(EVoterShareMemory.getExictedQuestion());
 		else
 			return getFirstAnswerID(EVoterShareMemory.getDifficultQuestion());
@@ -231,7 +224,6 @@ public class QuestionActivity extends ItemDataActivity {
 	}
 	
 	public void refreshData() {
-		if (userAcceptSession()) mainMenu.getBtStartSession().setVisibility(View.GONE);
 		buildStaticSlider();
 		EVoterRequestManager.getListQuestion(this);
 	}
@@ -267,9 +259,9 @@ public class QuestionActivity extends ItemDataActivity {
 	 * .String)
 	 */
 	@Override
-	public void updateRequestCallBack(String response) {
-		if (response.contains(CallBackMessage.EVOTER_REQUEST_DELETE_QUESTION)) {
-			if (response.contains("SUCCESS")) {
+	public void updateRequestCallBack(String response, String callBackMessage) {
+		if (callBackMessage.equals(CallBackMessage.DELETE_QUESTION_EVOTER_REQUEST)) {
+			if (callBackMessage.equals("SUCCESS")) {
 				EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
 						"Deleted question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
 				adapter.deleteItem(EVoterShareMemory.getCurrentQuestion().getId());
@@ -280,27 +272,30 @@ public class QuestionActivity extends ItemDataActivity {
 						"Cannot delete question: " + response);
 			}
 		}
-		else if (response.contains(CallBackMessage.EVOTER_REQUEST_CHANGE_SESSION_STATUS)) {
+		else if (callBackMessage.equals(CallBackMessage.CHANGE_SESSION_STATUS_EVOTER_REQUEST)) {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(
 						QuestionActivity.this,
 						"Session is change status successfully");
-				if (EVoterShareMemory.getCurrentSession().isActive())
-					EVoterShareMemory.getCurrentSession().setActive(false);
-				else
+				if (response.contains(MainMenu.STOP_SESSION)) {
+					mainMenu.getBtStartSession().setText(MainMenu.STOP_SESSION);
 					EVoterShareMemory.getCurrentSession().setActive(true);
+				} else if (response.contains(MainMenu.START_SESSION)) {
+					mainMenu.getBtStartSession().setText(MainMenu.START_SESSION);
+					EVoterShareMemory.getCurrentSession().setActive(false);
+				}
 			} else {
 				EVoterMobileUtils.showeVoterToast(
 						QuestionActivity.this,
 						"Request failure" + response);
 			}
-		} else if (response.contains(CallBackMessage.EVOTER_REQUEST_ACCEPT_SESSION)) {
+		} else if (callBackMessage.equals(CallBackMessage.ACCEPT_SESSION_EVOTER_REQUEST)) {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(
 						QuestionActivity.this,
 						"You joined to session");
 				mainMenu.getBtStartSession().setVisibility(View.GONE);
-				if (EVoterShareMemory.getCurrentSession().isActive()) buildStaticSlider();
+				buildStaticSlider();
 				EVoterShareMemory.addToListAcceptedSessions(EVoterShareMemory.getCurrentSession().getId());
 			} else {
 				EVoterMobileUtils.showeVoterToast(
@@ -308,14 +303,14 @@ public class QuestionActivity extends ItemDataActivity {
 						response);
 			}
 		}
-		else if (response.contains(CallBackMessage.EVOTER_REQUEST_SUBMIT_ANSWER)) {
+		else if (callBackMessage.equals(CallBackMessage.SUBMIT_ANSWER_EVOTER_REQUEST)) {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE))
 				EVoterMobileUtils.showeVoterToast(this, response);
 			else {
 				EVoterMobileUtils.showeVoterToast(this, "Cannot send static value: " + response);
 			}
 		}
-		else {
+		else if (callBackMessage.equals(CallBackMessage.GET_ALL_QUESTION_EVOTER_REQUEST)) {
 			try {
 				EVoterShareMemory.getListQuestions().clear();
 				ArrayList<ItemData> listQuestion = new ArrayList<ItemData>();
@@ -325,10 +320,10 @@ public class QuestionActivity extends ItemDataActivity {
 					
 					Question question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(i));
 					if (question != null) {
-						if (question.getTitle().equals(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC) || question.getTitle().equals(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC)) {
+						if (question.getTitle().equals(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST) || question.getTitle().equals(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST)) {
 							setStaticAnswerID(question);
 						}
-						if (!question.getTitle().contains(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC) && !question.getTitle().contains(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC)) {
+						if (!question.getTitle().contains(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST) && !question.getTitle().contains(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST)) {
 							//With student, only load the question which already sent or finished.
 							if (!(EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && question.getStatus() == 0))
 								listQuestion.add(question);
@@ -345,8 +340,8 @@ public class QuestionActivity extends ItemDataActivity {
 				if (EVoterShareMemory.getExictedQuestion() == null || EVoterShareMemory.getDifficultQuestion() == null) {
 					Log.i("STATIC SLIDER", "Cannot set id for static slider bar");
 				} else {
-					Log.i(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC, String.valueOf(EVoterShareMemory.getExictedQuestion().getId()));
-					Log.i(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC, String.valueOf(EVoterShareMemory.getDifficultQuestion().getId()));
+					Log.i(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST, String.valueOf(EVoterShareMemory.getExictedQuestion().getId()));
+					Log.i(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST, String.valueOf(EVoterShareMemory.getDifficultQuestion().getId()));
 				}
 				if (!EVoterShareMemory.hasStaticBar()) {
 					tbSessionValue.setVisibility(View.GONE);
@@ -359,6 +354,23 @@ public class QuestionActivity extends ItemDataActivity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		} else if (callBackMessage.equals(CallBackMessage.UPDATE_SESSION_EVOTER_REQUEST)) {
+			try {
+				JSONArray array = EVoterMobileUtils.getJSONArray(response);
+				Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
+				Log.i("New session: ", session.toString());
+				Log.i("Session before update: ", EVoterShareMemory.getCurrentSession().toString());
+				if (session != null) {
+					EVoterShareMemory.setCurrentSession(session);
+					refreshData();
+				}
+				Log.i("Session after update: ", EVoterShareMemory.getCurrentSession().toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+				Log.i("Update session", "Exception");
+			}
+		} else {
+			super.updateRequestCallBack(response, callBackMessage);
 		}
 	}
 	
@@ -374,18 +386,18 @@ public class QuestionActivity extends ItemDataActivity {
 	 */
 	protected boolean userAcceptSession() {
 		// TODO Auto-generated method stub
-		return EVoterShareMemory.getListAcceptedSessions().contains(EVoterShareMemory.getCurrentSession().getId());
+		return EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && EVoterShareMemory.getListAcceptedSessions().contains(EVoterShareMemory.getCurrentSession().getId());
 	}
 	
 	/**
 	 * @param question
 	 */
 	private void setStaticAnswerID(Question question) {
-		if (question.getTitle().contains(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC)) {
+		if (question.getTitle().contains(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST)) {
 			if (EVoterShareMemory.getExictedQuestion() == null || question.getId() != EVoterShareMemory.getExictedQuestion().getId())
 				EVoterShareMemory.setExictedQuestion(question);
 		}
-		if (question.getTitle().contains(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC)) {
+		if (question.getTitle().contains(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST)) {
 			if (EVoterShareMemory.getDifficultQuestion() == null || question.getId() != EVoterShareMemory.getDifficultQuestion().getId())
 				EVoterShareMemory.setDifficultQuestion(question);
 		}

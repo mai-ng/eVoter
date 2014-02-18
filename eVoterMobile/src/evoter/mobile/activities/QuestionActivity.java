@@ -135,55 +135,66 @@ public class QuestionActivity extends ItemDataActivity {
 	 * @return
 	 */
 	private boolean okChangeStatus(boolean start) {
-		//TODO: Check condition
-		return true;
+		if (start)
+			return true;
+		else {
+			for (int i = 0; i < EVoterShareMemory.getListQuestions().size(); i++) {
+				if (EVoterShareMemory.getListQuestions().get(i).getStatus() == 1) {
+					EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "There is some question which is waiting for answer!");
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 	
 	/**
 	 * 
 	 */
 	private void buildStaticSlider() {
-		tbSessionValue.setVisibility(View.VISIBLE);
-		sbBored.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			int progressValue;
-			
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				Toast.makeText(QuestionActivity.this, "Your excited value: " + progressValue, Toast.LENGTH_SHORT).show();
-				EVoterRequestManager.doVote(getstaticAnswerID(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
+		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && userAcceptSession() && EVoterShareMemory.getCurrentSession().isActive()) {
+			tbSessionValue.setVisibility(View.VISIBLE);
+			sbBored.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+				int progressValue;
 				
-			}
+				@Override
+				public void onStopTrackingTouch(SeekBar seekBar) {
+					Toast.makeText(QuestionActivity.this, "Your excited value: " + progressValue, Toast.LENGTH_SHORT).show();
+					EVoterRequestManager.doVote(getstaticAnswerID(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
+					
+				}
+				
+				@Override
+				public void onStartTrackingTouch(SeekBar seekBar) {
+					Toast.makeText(QuestionActivity.this, "Evaluate the exciting of session. Max value: " + 10, Toast.LENGTH_SHORT).show();
+				}
+				
+				@Override
+				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+					progressValue = progress;
+				}
+			});
 			
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				Toast.makeText(QuestionActivity.this, "Evaluate the exciting of session. Max value: " + 10, Toast.LENGTH_SHORT).show();
-			}
-			
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				progressValue = progress;
-			}
-		});
-		
-		sbDifficult.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			int progressValue;
-			
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				Toast.makeText(QuestionActivity.this, "Your difficult level value: " + progressValue, Toast.LENGTH_SHORT).show();
-				EVoterRequestManager.doVote(getstaticAnswerID(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
-			}
-			
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				Toast.makeText(QuestionActivity.this, "Evaluate the difficult level of session. Max value: " + 10, Toast.LENGTH_SHORT).show();
-			}
-			
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				progressValue = progress;
-			}
-		});
+			sbDifficult.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+				int progressValue;
+				
+				@Override
+				public void onStopTrackingTouch(SeekBar seekBar) {
+					Toast.makeText(QuestionActivity.this, "Your difficult level value: " + progressValue, Toast.LENGTH_SHORT).show();
+					EVoterRequestManager.doVote(getstaticAnswerID(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
+				}
+				
+				@Override
+				public void onStartTrackingTouch(SeekBar seekBar) {
+					Toast.makeText(QuestionActivity.this, "Evaluate the difficult level of session. Max value: " + 10, Toast.LENGTH_SHORT).show();
+				}
+				
+				@Override
+				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+					progressValue = progress;
+				}
+			});
+		}
 	}
 	
 	/**
@@ -221,10 +232,7 @@ public class QuestionActivity extends ItemDataActivity {
 	
 	public void refreshData() {
 		if (userAcceptSession()) mainMenu.getBtStartSession().setVisibility(View.GONE);
-		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && userAcceptSession()) {
-			//Setup seekbar
-			buildStaticSlider();
-		}
+		buildStaticSlider();
 		EVoterRequestManager.getListQuestion(this);
 	}
 	
@@ -260,7 +268,7 @@ public class QuestionActivity extends ItemDataActivity {
 	 */
 	@Override
 	public void updateRequestCallBack(String response) {
-		if (response.contains(CallBackMessage.DELETE_QUESTION_MESSAGE)) {
+		if (response.contains(CallBackMessage.EVOTER_REQUEST_DELETE_QUESTION)) {
 			if (response.contains("SUCCESS")) {
 				EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
 						"Deleted question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
@@ -309,6 +317,7 @@ public class QuestionActivity extends ItemDataActivity {
 		}
 		else {
 			try {
+				EVoterShareMemory.getListQuestions().clear();
 				ArrayList<ItemData> listQuestion = new ArrayList<ItemData>();
 				JSONArray array = EVoterMobileUtils
 						.getJSONArray(response);
@@ -323,6 +332,7 @@ public class QuestionActivity extends ItemDataActivity {
 							//With student, only load the question which already sent or finished.
 							if (!(EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && question.getStatus() == 0))
 								listQuestion.add(question);
+							EVoterShareMemory.addQuestionToList(question);
 						}
 					}
 				}
@@ -371,7 +381,6 @@ public class QuestionActivity extends ItemDataActivity {
 	 * @param question
 	 */
 	private void setStaticAnswerID(Question question) {
-		ArrayList<Answer> listAnswers = EVoterMobileUtils.parserListAnswer(question.getAnswerColumn1(), question.getId());
 		if (question.getTitle().contains(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC)) {
 			if (EVoterShareMemory.getExictedQuestion() == null || question.getId() != EVoterShareMemory.getExictedQuestion().getId())
 				EVoterShareMemory.setExictedQuestion(question);

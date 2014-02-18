@@ -196,8 +196,8 @@ public class QuestionDetailActivity extends EVoterActivity {
 	}
 	
 	public void updateRequestCallBack(String response) {
-		if (response.contains(CallBackMessage.CHECK_QUESTION_STATUS)) {
-			response = response.replace(CallBackMessage.CHECK_QUESTION_STATUS, "");
+		if (response.contains(CallBackMessage.EVOTER_REQUEST_CHECK_QUESTION_STATUS)) {
+			response = response.replace(CallBackMessage.EVOTER_REQUEST_CHECK_QUESTION_STATUS, "");
 			try {
 				JSONArray array = new JSONArray(response);
 				JSONObject ob = array.getJSONObject(0);
@@ -217,7 +217,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				
 			}
 		}
-		else if (response.contains(CallBackMessage.SEND_QUESTION_REQUEST)) {
+		else if (response.contains(CallBackMessage.EVOTER_REQUEST_SEND_QUESTION)) {
 			if (response.contains("SUCCESS")) {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 						"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
@@ -228,7 +228,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 						"Cannot send question: " + response);
 			}
-		} else if (response.contains(CallBackMessage.CHECK_SESSION_STATUS)) {
+		} else if (response.contains(CallBackMessage.EVOTER_REQUEST_CHECK_SESSION_STATUS)) {
 			Log.i("View session", response);
 			JSONArray array;
 			try {
@@ -249,7 +249,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Cannot send answer : " + response.replace(CallBackMessage.EVOTER_REQUEST_SUBMIT_ANSWER, ""));
 			}
 			
-		} else if (response.contains(CallBackMessage.STOP_RECEIVE_ANSWER)) {
+		} else if (response.contains(CallBackMessage.EVOTER_REQUEST_STOP_RECEIVE_ANSWER)) {
 			if (response.contains("SUCCESS")) {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 						response);

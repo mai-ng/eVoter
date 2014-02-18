@@ -4,10 +4,12 @@
 package evoter.mobile.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filterable;
 import evoter.mobile.main.R;
+import evoter.share.model.Question;
 
 /**
  * @author luongnv89
@@ -62,6 +64,11 @@ public class QuestionAdapter extends ItemDataAdapter implements Filterable {
 		
 		holder.title = detail(convertView, R.id.tvQuestionShortDescript,
 				listItemDataToPublic.get(position).getTitle());
+		if(((Question)listItemDataToPublic.get(position)).getStatus()==1){
+			holder.title.setTextColor(Color.GREEN);
+		}else if(((Question)listItemDataToPublic.get(position)).getStatus()==2){
+			holder.title.setTextColor(Color.GRAY);
+		}
 		return convertView;
 	}
 	

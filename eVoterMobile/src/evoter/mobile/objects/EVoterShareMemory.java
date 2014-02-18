@@ -40,6 +40,26 @@ public class EVoterShareMemory {
 	
 	private static EVoterActivity previousContext;
 	
+	private static ArrayList<Question> listQuestions = new ArrayList<Question>();
+	
+	public static void addQuestionToList(Question question){
+		listQuestions.add(question);
+	}
+	
+	/**
+	 * @return the listQuestions
+	 */
+	public static ArrayList<Question> getListQuestions() {
+		return listQuestions;
+	}
+
+	/**
+	 * @param listQuestions the listQuestions to set
+	 */
+	public static void setListQuestions(ArrayList<Question> listQuestions) {
+		EVoterShareMemory.listQuestions = listQuestions;
+	}
+
 	/**
 	 * @return the exictedQuestion
 	 */

@@ -732,7 +732,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + CallBackMessage.SUBMIT_STATISTIC_MESSAGE);
+				context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_SUBMIT_STATISTIC);
 			}
 			
 			@Override
@@ -758,7 +758,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + CallBackMessage.DELETE_QUESTION_MESSAGE);
+				context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_DELETE_QUESTION);
 			}
 			
 			@Override
@@ -784,7 +784,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.STOP_SEND_QUESTION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + CallBackMessage.STOP_RECEIVE_ANSWER);
+				context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_STOP_RECEIVE_ANSWER);
 			}
 			
 			@Override
@@ -810,7 +810,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.VIEW_QUESTION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + CallBackMessage.CHECK_QUESTION_STATUS);
+				context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_CHECK_QUESTION_STATUS);
 			}
 			
 			@Override
@@ -839,7 +839,7 @@ public class EVoterRequestManager {
 					
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response + CallBackMessage.CHECK_SESSION_STATUS);
+						context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_CHECK_SESSION_STATUS);
 					}
 					
 					@Override
@@ -865,7 +865,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.SEND_QUESTION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + CallBackMessage.SEND_QUESTION_REQUEST);
+				context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_SEND_QUESTION);
 			}
 			
 			@Override

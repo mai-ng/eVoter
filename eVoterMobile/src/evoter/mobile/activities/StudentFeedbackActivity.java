@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import evoter.mobile.main.R;
 import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 
 /**
@@ -52,8 +53,8 @@ public class StudentFeedbackActivity extends EVoterActivity{
 	 * 
 	 */
 	protected void drawStatistic() {
-		EVoterRequestManager.updateStaticValue(this,QuestionActivity.EXCITED);
-		EVoterRequestManager.updateStaticValue(this,QuestionActivity.DIFFICULT);
+		EVoterRequestManager.updateStaticValue(this,CallBackMessage.EXCITED);
+		EVoterRequestManager.updateStaticValue(this,CallBackMessage.DIFFICULT);
 		
 	}
 	/* (non-Javadoc)
@@ -61,8 +62,8 @@ public class StudentFeedbackActivity extends EVoterActivity{
 	 */
 	@Override
 	public void updateRequestCallBack(String response) {
-		if(response.contains(QuestionActivity.EXCITED)){
-			response.replace(QuestionActivity.EXCITED, "");
+		if(response.contains(CallBackMessage.EXCITED)){
+			response.replace(CallBackMessage.EXCITED, "");
 			excitedLayout.removeAllViews();
 			ArrayList<String> textToView = EVoterMobileUtils.drawStatistic(response,EVoterShareMemory.getExictedQuestion());
 			for(int i=0;i<textToView.size();i++){
@@ -71,8 +72,8 @@ public class StudentFeedbackActivity extends EVoterActivity{
 				tvShow.setText(textToView.get(i));
 				excitedLayout.addView(tvShow);
 			}
-		}else if(response.contains(QuestionActivity.DIFFICULT)){
-			response.replace(QuestionActivity.DIFFICULT, "");
+		}else if(response.contains(CallBackMessage.DIFFICULT)){
+			response.replace(CallBackMessage.DIFFICULT, "");
 			difficultLayout.removeAllViews();
 			ArrayList<String> textToView = EVoterMobileUtils.drawStatistic(response,EVoterShareMemory.getDifficultQuestion());
 			for(int i=0;i<textToView.size();i++){

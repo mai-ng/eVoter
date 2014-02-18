@@ -19,6 +19,7 @@ import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.objects.RequestConfig;
+import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
@@ -48,8 +49,8 @@ public class EVoterRequestManager {
 	public static void doVote(long answerID, long questionTypeID, final String statistic, final EVoterActivity context) {
 		String valueToSend = null;
 		if (statistic != null) {
-			if (statistic.contains(QuestionActivity.ANSWER_SUBMIT))
-				valueToSend = statistic.replace(QuestionActivity.ANSWER_SUBMIT, "");
+			if (statistic.contains(CallBackMessage.ANSWER_SUBMIT))
+				valueToSend = statistic.replace(CallBackMessage.ANSWER_SUBMIT, "");
 			else
 				valueToSend = statistic;
 		}
@@ -63,7 +64,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + QuestionActivity.ANSWER_SUBMIT);
+				context.updateRequestCallBack(response + CallBackMessage.ANSWER_SUBMIT);
 			}
 			
 			@Override
@@ -438,7 +439,7 @@ public class EVoterRequestManager {
 	public static void updateStaticValue(final StudentFeedbackActivity context, final String excited) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
-		if (excited.equals(QuestionActivity.EXCITED)) {
+		if (excited.equals(CallBackMessage.EXCITED)) {
 			params.add(QuestionDAO.ID,
 					String.valueOf(EVoterShareMemory.getExictedQuestion().getId()));
 		} else {
@@ -666,7 +667,7 @@ public class EVoterRequestManager {
 					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response + QuestionActivity.ACCEPT_SESSION);
+						context.updateRequestCallBack(response + CallBackMessage.ACCEPT_SESSION);
 					}
 					
 					//Login fail
@@ -698,7 +699,7 @@ public class EVoterRequestManager {
 					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response + QuestionActivity.CHANGE_SESSION_STATUS);
+						context.updateRequestCallBack(response + CallBackMessage.CHANGE_SESSION_STATUS);
 					}
 					
 					//Login fail
@@ -725,7 +726,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + QuestionActivity.SUBMIT_STATISTIC_MESSAGE);
+				context.updateRequestCallBack(response + CallBackMessage.SUBMIT_STATISTIC_MESSAGE);
 			}
 			
 			@Override
@@ -751,7 +752,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + QuestionActivity.DELETE_QUESTION_MESSAGE);
+				context.updateRequestCallBack(response + CallBackMessage.DELETE_QUESTION_MESSAGE);
 			}
 			
 			@Override
@@ -841,6 +842,60 @@ public class EVoterRequestManager {
 								+ error.toString() + "content : " + content);
 					}
 				});
+		
+	}
+	
+	/**
+	 * @param id
+	 * @param id2
+	 * @param questionDetailActivity
+	 */
+	public static void sendQuestion(long id, long id2, final QuestionDetailActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
+		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		client.post(RequestConfig.getURL(URIRequest.SEND_QUESTION), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				context.updateRequestCallBack(response + QuestionDetailActivity.SEND_QUESTION_REQUEST);
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(context,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
+		
+	}
+	
+	/**
+	 * @param id
+	 * @param sessionActivity
+	 */
+	public static void deleteSession(long id, final SessionActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(SessionUserDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		client.post(RequestConfig.getURL(URIRequest.DELETE_SESSION), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				context.updateRequestCallBack(response + SessionActivity.DELETE_SESSION_REQUEST);
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(context,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
 		
 	}
 }

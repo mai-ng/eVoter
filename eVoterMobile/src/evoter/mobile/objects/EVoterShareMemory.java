@@ -5,7 +5,7 @@ package evoter.mobile.objects;
 
 import java.util.ArrayList;
 
-import evoter.mobile.activities.ItemDataActivity;
+import evoter.mobile.activities.EVoterActivity;
 import evoter.share.model.Question;
 import evoter.share.model.Session;
 import evoter.share.model.Subject;
@@ -38,7 +38,7 @@ public class EVoterShareMemory {
 	
 	private static ArrayList<Long> listAcceptedSessions = new ArrayList<Long>();
 	
-	private static ItemDataActivity previousContext;
+	private static EVoterActivity previousContext;
 	
 	/**
 	 * @return the exictedQuestion
@@ -99,14 +99,14 @@ public class EVoterShareMemory {
 	/**
 	 * @return the previousContext
 	 */
-	public static ItemDataActivity getPreviousContext() {
+	public static EVoterActivity getPreviousContext() {
 		return previousContext;
 	}
 	
 	/**
 	 * @param previousContext the previousContext to set
 	 */
-	public static void setPreviousContext(ItemDataActivity previousContext) {
+	public static void setPreviousContext(EVoterActivity previousContext) {
 		EVoterShareMemory.previousContext = previousContext;
 	}
 	

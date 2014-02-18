@@ -6,7 +6,6 @@ package evoter.mobile.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -155,6 +154,43 @@ public class EVoterActivity extends Activity {
 			}
 		});
 		
+		mainMenu.getBtStatistic().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if (EVoterShareMemory.getExictedQuestion() == null || EVoterShareMemory.getDifficultQuestion() == null) {
+					EVoterMobileUtils.showeVoterToast(EVoterActivity.this, EVoterShareMemory.getCurrentSession().getTitle() + " does not have feedback");
+				} else {
+					Intent feedback = new Intent(EVoterActivity.this, StudentFeedbackActivity.class);
+					startActivity(feedback);
+					mainMenu.dismiss();
+				}
+			}
+		});
+		
+		mainMenu.getBtNewQuestion().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Log.i("Main menu", "Create new question");
+				mainMenu.dismiss();
+				EVoterShareMemory.setPreviousContext(EVoterActivity.this);
+				Intent newQuestion = new Intent(EVoterActivity.this, NewQuestionActivity.class);
+				startActivity(newQuestion);
+				
+			}
+		});
+		mainMenu.getBtAcceptUsers().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Log.i("Main menu", "Request accepted user of a session");
+				mainMenu.dismiss();
+				Intent acceptedStudents = new Intent(EVoterActivity.this, AcceptedStudents.class);
+				startActivity(acceptedStudents);
+			}
+		});
+		
 	}
 	
 	/**
@@ -226,8 +262,6 @@ public class EVoterActivity extends Activity {
 				});
 	}
 	
-	
-	
 	public void refreshData() {
 		
 	}
@@ -281,6 +315,5 @@ public class EVoterActivity extends Activity {
 		EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Exception! Restart eVoter and try again!");
 		exitApplication();
 	}
-
+	
 }
-

@@ -34,7 +34,6 @@ import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
-import evoter.share.dao.SessionDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
 import evoter.share.model.QuestionType;
@@ -60,6 +59,12 @@ public class QuestionDetailActivity extends EVoterActivity {
 	private final String SEND = "Send";
 	private final String SUBMIT = "Submit";
 	private final String VIEW_STATISTIC = "View statistic";
+	
+	public static String STOP_RECEIVE_ANSWER = "STOP_RECEIVE_ANSWER";
+	public static String SUBMIT_ANSWER = "SUBMIT_ANSWER";
+	public static String CHECK_SESSION_STATUS = "CHECK_SESSION_STATUS";
+	public static String SEND_QUESTION_REQUEST = "SEND_QUESTION_REQUEST";
+	
 	TextView tvQuestionText;
 	LinearLayout answerArea;
 	Button btSend;
@@ -156,111 +161,21 @@ public class QuestionDetailActivity extends EVoterActivity {
 	 * 
 	 */
 	protected void stopReceiveAnswer() {
-		RequestParams params = new RequestParams();
-		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-		client.post(RequestConfig.getURL(URIRequest.STOP_SEND_QUESTION), params, new AsyncHttpResponseHandler() {
-			@Override
-			public void onSuccess(String response) {
-				if (response.contains("SUCCESS")) {
-					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-							"Sent question: " + EVoterShareMemory.getCurrentQuestion().getTitle());
-					btSend.setText(VIEW_STATISTIC);
-				}
-				else {
-					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-							"Cannot send question: " + response);
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable error, String content)
-			{
-				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-						"FAILURE: " + error.toString());
-				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
-			}
-		});
-		
+		EVoterRequestManager.stopReceiveAnswer(EVoterShareMemory.getCurrentSession().getId(), QuestionDetailActivity.this);
 	}
 	
 	/**
 	 * 
 	 */
 	protected void submitAnswer() {
-		
-		//TODO: Submit answer
-		RequestParams params = new RequestParams();
-		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
-		client.post(RequestConfig.getURL(URIRequest.VIEW_QUESTION), params, new AsyncHttpResponseHandler() {
-			@Override
-			public void onSuccess(String response) {
-				//						Log.i("Get question status", response);
-				try {
-					JSONArray array = new JSONArray(response);
-					JSONObject ob = array.getJSONObject(0);
-					int status = ob.getInt(QuestionDAO.STATUS);
-					Log.i("Get question status", String.valueOf(status));
-					EVoterShareMemory.getCurrentQuestion().setStatus(status);
-					setButtonLabel();
-					if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
-						checkSessionStatus();
-					} else {
-						EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Time out! Your will not be count in the statistic of question!");
-						btSend.setText(VIEW_STATISTIC);
-					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable error, String content)
-			{
-				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
-						"FAILURE: " + error.toString());
-				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
-			}
-		});
-		
+		EVoterRequestManager.submitAnswer(EVoterShareMemory.getCurrentQuestion().getId(), QuestionDetailActivity.this);
 	}
 	
 	/**
 	 * 
 	 */
 	protected void checkSessionStatus() {
-		RequestParams params = new RequestParams();
-		params.add(SessionDAO.ID,
-				String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		client.post(RequestConfig.getURL(URIRequest.VIEW_SESSION), params,
-				new AsyncHttpResponseHandler() {
-					
-					@Override
-					public void onSuccess(String response) {
-						Log.i("View session", response);
-						JSONArray array;
-						try {
-							array = new JSONArray(response);
-							Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
-							if (session != null) EVoterShareMemory.setCurrentSession(session);
-							submitToServer();
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					
-					@Override
-					public void onFailure(Throwable error, String content) {
-						Log.e("View session", "onFailure error : "
-								+ error.toString() + "content : " + content);
-					}
-				});
-		
+		EVoterRequestManager.checkSessionStatus(EVoterShareMemory.getCurrentSession().getId(),QuestionDetailActivity.this);
 	}
 	
 	/**
@@ -317,11 +232,51 @@ public class QuestionDetailActivity extends EVoterActivity {
 	}
 	
 	public void updateRequestCallBack(String response) {
-		String[] array = response.split(":");
-		if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+		if (response.contains(CHECK_SESSION_STATUS)) {
+			Log.i("View session", response);
+			JSONArray array;
+			try {
+				array = new JSONArray(response);
+				Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
+				if (session != null) EVoterShareMemory.setCurrentSession(session);
+				submitToServer();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else if (response.contains(SUBMIT_ANSWER)) {
+			//		Log.i("Get question status", response);
+			try {
+				JSONArray array = new JSONArray(response);
+				JSONObject ob = array.getJSONObject(0);
+				int status = ob.getInt(QuestionDAO.STATUS);
+				Log.i("Get question status", String.valueOf(status));
+				EVoterShareMemory.getCurrentQuestion().setStatus(status);
+				setButtonLabel();
+				if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
+					checkSessionStatus();
+				} else {
+					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Time out! Your will not be count in the statistic of question!");
+					btSend.setText(VIEW_STATISTIC);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+			}
+		} else if (response.contains(STOP_RECEIVE_ANSWER)) {
+			if (response.contains("SUCCESS")) {
+				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+						response);
+				btSend.setText(VIEW_STATISTIC);
+			}
+			else {
+				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
+						"Fail: " + response);
+			}
+		} else if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 			EVoterMobileUtils.showeVoterToast(this,
 					"Successful!");
-			//			offlineEVoterManager.addAnswerQuestion(EVoterShareMemory.getCurrentQuestion().getId(), array[array.length - 1]);
 			EVoterShareMemory.addAnsweredQuestion(EVoterShareMemory.getCurrentQuestion().getId());
 			btSend.setText(VIEW_STATISTIC);
 		}

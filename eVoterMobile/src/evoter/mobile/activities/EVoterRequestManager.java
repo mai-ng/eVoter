@@ -47,10 +47,12 @@ public class EVoterRequestManager {
 	 */
 	public static void doVote(long answerID, long questionTypeID, final String statistic, final EVoterActivity context) {
 		String valueToSend = null;
-		if (statistic.contains(QuestionActivity.STATIC_SEND))
-			valueToSend = statistic.replace(QuestionActivity.STATIC_SEND, "");
-		else
-			valueToSend = statistic;
+		if (statistic != null) {
+			if (statistic.contains(QuestionActivity.ANSWER_SUBMIT))
+				valueToSend = statistic.replace(QuestionActivity.ANSWER_SUBMIT, "");
+			else
+				valueToSend = statistic;
+		}
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
@@ -61,11 +63,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				if (statistic.contains(QuestionActivity.STATIC_SEND))
-					context.updateRequestCallBack(response + QuestionActivity.STATIC_SEND);
-				else {
-					context.updateRequestCallBack(response);
-				}
+				context.updateRequestCallBack(response + QuestionActivity.ANSWER_SUBMIT);
 			}
 			
 			@Override
@@ -652,6 +650,195 @@ public class EVoterRequestManager {
 								+ error.toString() + "content : "
 								+ content);
 						context.finish();
+					}
+				});
+		
+	}
+	
+	/**
+	 * @param params
+	 * @param questionActivity
+	 */
+	public static void acceptSession(RequestParams params, final QuestionActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.post(RequestConfig.getURL(URIRequest.ACCEPT_SESSION), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						context.updateRequestCallBack(response + QuestionActivity.ACCEPT_SESSION);
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								context,
+								"Cannot request to server!");
+						Log.e("Accept session", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
+		
+	}
+	
+	/**
+	 * @param start
+	 * @param params
+	 * @param url
+	 * @param questionActivity
+	 */
+	public static void changeSessionStatus(boolean start, RequestParams params, final QuestionActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		String url = start ? URIRequest.ACTIVE_SESSION : URIRequest.INACTIVE_SESSION;
+		client.post(RequestConfig.getURL(url), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						context.updateRequestCallBack(response + QuestionActivity.CHANGE_SESSION_STATUS);
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								context,
+								"Cannot request to server!");
+						Log.e("start session", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
+		
+	}
+	
+	/**
+	 * @param params
+	 * @param questionActivity
+	 */
+	public static void submitStatisticValue(RequestParams params, final QuestionActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				context.updateRequestCallBack(response + QuestionActivity.SUBMIT_STATISTIC_MESSAGE);
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(context,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
+		
+	}
+	
+	/**
+	 * @param id
+	 * @param questionActivity
+	 */
+	public static void deleteQuestion(long id, final QuestionActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
+		client.post(RequestConfig.getURL(URIRequest.DELETE_QUESTION), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				context.updateRequestCallBack(response + QuestionActivity.DELETE_QUESTION_MESSAGE);
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(context,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
+		
+	}
+	
+	/**
+	 * @param id
+	 * @param questionDetailActivity
+	 */
+	public static void stopReceiveAnswer(long sessionID, final QuestionDetailActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(sessionID));
+		client.post(RequestConfig.getURL(URIRequest.STOP_SEND_QUESTION), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				context.updateRequestCallBack(response + QuestionDetailActivity.STOP_RECEIVE_ANSWER);
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(context,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
+		
+	}
+	
+	/**
+	 * @param id
+	 * @param questionDetailActivity
+	 */
+	public static void submitAnswer(long questionID, final QuestionDetailActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(QuestionDAO.ID, String.valueOf(questionID));
+		client.post(RequestConfig.getURL(URIRequest.VIEW_QUESTION), params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				context.updateRequestCallBack(response + QuestionDetailActivity.SUBMIT_ANSWER);
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				EVoterMobileUtils.showeVoterToast(context,
+						"FAILURE: " + error.toString());
+				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
+			}
+		});
+		
+	}
+	
+	/**
+	 * @param id
+	 * @param questionDetailActivity
+	 */
+	public static void checkSessionStatus(long sessionID, final QuestionDetailActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(SessionDAO.ID,
+				String.valueOf(sessionID));
+		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		client.post(RequestConfig.getURL(URIRequest.VIEW_SESSION), params,
+				new AsyncHttpResponseHandler() {
+					
+					@Override
+					public void onSuccess(String response) {
+						context.updateRequestCallBack(response + QuestionDetailActivity.CHECK_SESSION_STATUS);
+					}
+					
+					@Override
+					public void onFailure(Throwable error, String content) {
+						Log.e("View session", "onFailure error : "
+								+ error.toString() + "content : " + content);
 					}
 				});
 		

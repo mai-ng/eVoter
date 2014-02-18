@@ -102,20 +102,20 @@ public class EVoterMobileUtils {
 				answerColumn2 = s
 						.getString(Question.COL2);
 			}
+			
+			long sessionID = EVoterShareMemory.getCurrentSession().getId();
+			if (s.toString().contains(QuestionSessionDAO.SESSION_ID)) {
+				sessionID = s.getLong(QuestionSessionDAO.SESSION_ID);
+			}
 			Question question = new Question(
-					Long.parseLong(s
-							.getString(QuestionDAO.ID)),
+					s.getLong(QuestionDAO.ID),
 					s.getString(QuestionDAO.QUESTION_TEXT),
-					Long.parseLong(s
-							.getString(QuestionDAO.QUESTION_TYPE_ID)),
-					Long.parseLong(s
-							.getString(QuestionDAO.USER_ID)),
+					s.getLong(QuestionDAO.QUESTION_TYPE_ID),
+					s.getLong(QuestionDAO.USER_ID),
 					EVoterMobileUtils.convertToDate(s
 							.getString(QuestionDAO.CREATION_DATE)),
-					Long.parseLong(s
-							.getString(QuestionSessionDAO.SESSION_ID)),
-					Long.parseLong(s
-							.getString(QuestionDAO.PARENT_ID)),
+					sessionID,
+					s.getLong(QuestionDAO.PARENT_ID),
 					answerColumn1, answerColumn2);
 			question.setStatus(s.getInt(QuestionDAO.STATUS));
 			return question;
@@ -213,13 +213,13 @@ public class EVoterMobileUtils {
 			ArrayList<Answer> listAnswers = parserListAnswer(question.getAnswerColumn1(), question.getId());
 			Log.i("List answer", listAnswers.toString());
 			if (question.getQuestionTypeId() == QuestionType.INPUT_ANSWER) {
-				JSONObject statisticObject =arrayStatistic.getJSONObject(0);
+				JSONObject statisticObject = arrayStatistic.getJSONObject(0);
 				String[] array = statisticObject.getString(AnswerDAO.STATISTICS).split(":");
 				for (int i = 1; i < array.length; i++) {
-					listDataRow.add(i+": "+array[i]);
+					listDataRow.add(i + ": " + array[i]);
 				}
 			} else if (question.getQuestionTypeId() == QuestionType.SLIDER) {
-				JSONObject statisticObject =arrayStatistic.getJSONObject(0);
+				JSONObject statisticObject = arrayStatistic.getJSONObject(0);
 				
 				String[] array = statisticObject.getString(AnswerDAO.STATISTICS).split(":");
 				ArrayList<AnswerData> listAnswerValue = new ArrayList<AnswerData>();
@@ -229,7 +229,7 @@ public class EVoterMobileUtils {
 					if (index == -1) {
 						listAnswerValue.add(new AnswerData(value, 1));
 					} else {
-						listAnswerValue.get(index).setStatistic(listAnswerValue.get(index).getStatistic()+ 1);
+						listAnswerValue.get(index).setStatistic(listAnswerValue.get(index).getStatistic() + 1);
 					}
 				}
 				
@@ -243,7 +243,7 @@ public class EVoterMobileUtils {
 					long id = ans.getLong(AnswerDAO.ID);
 					String statisticString = ans.getString(AnswerDAO.STATISTICS);
 					Log.i("Statistic String", statisticString);
-					if(statisticString==null||statisticString.equals("null"))
+					if (statisticString == null || statisticString.equals("null"))
 						listAnswerDatas.add(new AnswerData(id, 0));
 					else
 					{

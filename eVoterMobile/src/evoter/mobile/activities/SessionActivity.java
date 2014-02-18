@@ -87,7 +87,7 @@ public class SessionActivity extends ItemDataActivity {
 	}
 	
 	public void refreshData() {
-		EVoterRequestManager.getListSession(this,EVoterShareMemory.getCurrentSubject().getId());
+		EVoterRequestManager.getListSession(SessionActivity.this,EVoterShareMemory.getCurrentSubject().getId());
 		
 	}
 	

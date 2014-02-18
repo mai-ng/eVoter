@@ -27,7 +27,7 @@ xsi:schemaLocation=
         <property name="password" value="${jdbc.password}"/>
      </bean>
  
-    <context:property-placeholder location="jdbc_test.properties, connection_test.properties"/>
+    <context:property-placeholder location="jdbc_test.properties, connection.properties"/>
     
     <import resource="dataSource.xml" />
       

@@ -53,8 +53,8 @@ public class StudentFeedbackActivity extends EVoterActivity{
 	 * 
 	 */
 	protected void drawStatistic() {
-		EVoterRequestManager.updateStaticValue(this,CallBackMessage.EXCITED);
-		EVoterRequestManager.updateStaticValue(this,CallBackMessage.DIFFICULT);
+		EVoterRequestManager.updateStaticValue(this,CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC);
+		EVoterRequestManager.updateStaticValue(this,CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC);
 		
 	}
 	/* (non-Javadoc)
@@ -62,8 +62,8 @@ public class StudentFeedbackActivity extends EVoterActivity{
 	 */
 	@Override
 	public void updateRequestCallBack(String response) {
-		if(response.contains(CallBackMessage.EXCITED)){
-			response.replace(CallBackMessage.EXCITED, "");
+		if(response.contains(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC)){
+			response.replace(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC, "");
 			excitedLayout.removeAllViews();
 			ArrayList<String> textToView = EVoterMobileUtils.drawStatistic(response,EVoterShareMemory.getExictedQuestion());
 			for(int i=0;i<textToView.size();i++){
@@ -72,8 +72,8 @@ public class StudentFeedbackActivity extends EVoterActivity{
 				tvShow.setText(textToView.get(i));
 				excitedLayout.addView(tvShow);
 			}
-		}else if(response.contains(CallBackMessage.DIFFICULT)){
-			response.replace(CallBackMessage.DIFFICULT, "");
+		}else if(response.contains(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC)){
+			response.replace(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC, "");
 			difficultLayout.removeAllViews();
 			ArrayList<String> textToView = EVoterMobileUtils.drawStatistic(response,EVoterShareMemory.getDifficultQuestion());
 			for(int i=0;i<textToView.size();i++){

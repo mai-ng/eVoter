@@ -28,8 +28,6 @@ import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
-import evoter.share.dao.SessionDAO;
-import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
 import evoter.share.model.ItemData;
@@ -110,14 +108,22 @@ public class QuestionActivity extends ItemDataActivity {
 			public void onClick(View v) {
 				if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.STOP_SESSION)) {
 					mainMenu.getBtStartSession().setText(MainMenu.START_SESSION);
-					changeSessionStatus(false);
+					if (okChangeStatus(false)) {
+						EVoterRequestManager.changeSessionStatus(false, EVoterShareMemory.getCurrentSession().getId(), QuestionActivity.this);
+					} else {
+						EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "There is some question still waiting for answer, you cannot stop session");
+					}
 					mainMenu.dismiss();
 				} else if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.START_SESSION)) {
 					mainMenu.getBtStartSession().setText(MainMenu.STOP_SESSION);
-					changeSessionStatus(true);
+					if (okChangeStatus(true)) {
+						EVoterRequestManager.changeSessionStatus(true, EVoterShareMemory.getCurrentSession().getId(), QuestionActivity.this);
+					} else {
+						EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "There is some question still waiting for answer, you cannot stop session");
+					}
 					mainMenu.dismiss();
 				} else if (mainMenu.getBtStartSession().getText().toString().contains(MainMenu.ACCEPT_SESSION)) {
-					acceptSession();
+					EVoterRequestManager.acceptSession(EVoterShareMemory.getCurrentSession().getId(), QuestionActivity.this);
 					mainMenu.dismiss();
 				}
 				
@@ -126,39 +132,13 @@ public class QuestionActivity extends ItemDataActivity {
 		
 	}
 	
-	/**
-	 * 
-	 */
-	protected void acceptSession() {
-		RequestParams params = new RequestParams();
-		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(SessionUserDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-		
-		EVoterRequestManager.acceptSession(params, this);
-	}
 	
 	/**
-	 * 
-	 */
-	protected void changeSessionStatus(final boolean start) {
-		if (okChangeStatus(start)) {
-			RequestParams params = new RequestParams();
-			params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-			params.add(SessionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-			EVoterRequestManager.changeSessionStatus(start, params, this);
-		} else {
-			EVoterMobileUtils.showeVoterToast(this, "There is some question still waiting for answer, you cannot stop session");
-		}
-	}
-	
-	/**
+	 * @param start
 	 * @return
 	 */
 	private boolean okChangeStatus(boolean start) {
-		//		if(start) return true;
-		//		else{
-		//			refreshActivity();
-		//			for(int i=0;i<li)
+		//TODO: Check condition
 		return true;
 	}
 	
@@ -173,7 +153,7 @@ public class QuestionActivity extends ItemDataActivity {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				Toast.makeText(QuestionActivity.this, "Your excited value: " + progressValue, Toast.LENGTH_SHORT).show();
-				EVoterRequestManager.doVote(getstaticAnswerID(CallBackMessage.EXCITED), QuestionType.SLIDER, String.valueOf(progressValue) + CallBackMessage.ANSWER_SUBMIT, QuestionActivity.this);
+				EVoterRequestManager.doVote(getstaticAnswerID(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
 				
 			}
 			
@@ -194,7 +174,7 @@ public class QuestionActivity extends ItemDataActivity {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				Toast.makeText(QuestionActivity.this, "Your difficult level value: " + progressValue, Toast.LENGTH_SHORT).show();
-				EVoterRequestManager.doVote(getstaticAnswerID(CallBackMessage.DIFFICULT), QuestionType.SLIDER, String.valueOf(progressValue) + CallBackMessage.ANSWER_SUBMIT, QuestionActivity.this);
+				EVoterRequestManager.doVote(getstaticAnswerID(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
 			}
 			
 			@Override
@@ -214,7 +194,7 @@ public class QuestionActivity extends ItemDataActivity {
 	 * @return
 	 */
 	protected long getstaticAnswerID(String difficult2) {
-		if (difficult2.equals(CallBackMessage.EXCITED))
+		if (difficult2.equals(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC))
 			return getFirstAnswerID(EVoterShareMemory.getExictedQuestion());
 		else
 			return getFirstAnswerID(EVoterShareMemory.getDifficultQuestion());
@@ -236,12 +216,14 @@ public class QuestionActivity extends ItemDataActivity {
 	protected void submitStatisValue(long idExcitedBar2, final int progressValue) {
 		if (idExcitedBar2 != -1) {
 			Log.i("Send statitic value", "id: " + idExcitedBar2 + "\t statistic:" + progressValue);
-			RequestParams params = new RequestParams();
-			params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-			params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(QuestionType.SLIDER));
-			params.put(AnswerDAO.ID, String.valueOf(idExcitedBar2));
-			params.put(AnswerDAO.STATISTICS, String.valueOf(progressValue));
-			EVoterRequestManager.submitStatisticValue(params, this);
+			EVoterRequestManager.doVote(idExcitedBar2, QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
+//			
+//			RequestParams params = new RequestParams();
+//			params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+//			params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(QuestionType.SLIDER));
+//			params.put(AnswerDAO.ID, String.valueOf(idExcitedBar2));
+//			params.put(AnswerDAO.STATISTICS, String.valueOf(progressValue));
+//			EVoterRequestManager.submitStatisticValue(params, this);
 		} else {
 			EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "Cannot get the id of static slider bar!");
 		}
@@ -300,17 +282,18 @@ public class QuestionActivity extends ItemDataActivity {
 						"Cannot delete question: " + response);
 			}
 		}
-		else if (response.contains(CallBackMessage.SUBMIT_STATISTIC_MESSAGE)) {
-			Log.i("Static response: ", response);
-			if (response.contains("SUCCESS")) {
-				EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
-						"Sent static value successfully");
-			}
-			else {
-				EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
-						"Cannot send evaluate value: " + response);
-			}
-		} else if (response.contains(CallBackMessage.CHANGE_SESSION_STATUS)) {
+//		else if (response.contains(CallBackMessage.SUBMIT_STATISTIC_MESSAGE)) {
+//			Log.i("Static response: ", response);
+//			if (response.contains("SUCCESS")) {
+//				EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+//						"Sent static value successfully");
+//			}
+//			else {
+//				EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
+//						"Cannot send evaluate value: " + response);
+//			}
+//		}
+		else if (response.contains(CallBackMessage.EVOTER_REQUEST_CHANGE_SESSION_STATUS)) {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(
 						QuestionActivity.this,
@@ -324,7 +307,7 @@ public class QuestionActivity extends ItemDataActivity {
 						QuestionActivity.this,
 						"Request failure" + response);
 			}
-		} else if (response.contains(CallBackMessage.ACCEPT_SESSION)) {
+		} else if (response.contains(CallBackMessage.EVOTER_REQUEST_ACCEPT_SESSION)) {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(
 						QuestionActivity.this,
@@ -337,7 +320,7 @@ public class QuestionActivity extends ItemDataActivity {
 						response);
 			}
 		}
-		else if (response.contains(CallBackMessage.ANSWER_SUBMIT)) {
+		else if (response.contains(CallBackMessage.EVOTER_REQUEST_SUBMIT_ANSWER)) {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE))
 				EVoterMobileUtils.showeVoterToast(this, response);
 			else {
@@ -353,10 +336,10 @@ public class QuestionActivity extends ItemDataActivity {
 					
 					Question question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(i));
 					if (question != null) {
-						if (question.getTitle().equals(CallBackMessage.EXCITED) || question.getTitle().equals(CallBackMessage.DIFFICULT)) {
+						if (question.getTitle().equals(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC) || question.getTitle().equals(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC)) {
 							setStaticAnswerID(question);
 						}
-						if (!question.getTitle().contains(CallBackMessage.EXCITED) && !question.getTitle().contains(CallBackMessage.DIFFICULT)) {
+						if (!question.getTitle().contains(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC) && !question.getTitle().contains(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC)) {
 							//With student, only load the question which already sent or finished.
 							if (!(EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && question.getStatus() == 0))
 								listQuestion.add(question);
@@ -372,8 +355,8 @@ public class QuestionActivity extends ItemDataActivity {
 				if (EVoterShareMemory.getExictedQuestion() == null || EVoterShareMemory.getDifficultQuestion() == null) {
 					Log.i("STATIC SLIDER", "Cannot set id for static slider bar");
 				} else {
-					Log.i(CallBackMessage.EXCITED, String.valueOf(EVoterShareMemory.getExictedQuestion().getId()));
-					Log.i(CallBackMessage.DIFFICULT, String.valueOf(EVoterShareMemory.getDifficultQuestion().getId()));
+					Log.i(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC, String.valueOf(EVoterShareMemory.getExictedQuestion().getId()));
+					Log.i(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC, String.valueOf(EVoterShareMemory.getDifficultQuestion().getId()));
 				}
 				if (!EVoterShareMemory.hasStaticBar()) {
 					tbSessionValue.setVisibility(View.GONE);
@@ -409,11 +392,11 @@ public class QuestionActivity extends ItemDataActivity {
 	 */
 	private void setStaticAnswerID(Question question) {
 		ArrayList<Answer> listAnswers = EVoterMobileUtils.parserListAnswer(question.getAnswerColumn1(), question.getId());
-		if (question.getTitle().contains(CallBackMessage.EXCITED)) {
+		if (question.getTitle().contains(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC)) {
 			if (EVoterShareMemory.getExictedQuestion() == null || question.getId() != EVoterShareMemory.getExictedQuestion().getId())
 				EVoterShareMemory.setExictedQuestion(question);
 		}
-		if (question.getTitle().contains(CallBackMessage.DIFFICULT)) {
+		if (question.getTitle().contains(CallBackMessage.EVOTER_REQUEST_DIFFICULT_BAR_STATISTIC)) {
 			if (EVoterShareMemory.getDifficultQuestion() == null || question.getId() != EVoterShareMemory.getDifficultQuestion().getId())
 				EVoterShareMemory.setDifficultQuestion(question);
 		}

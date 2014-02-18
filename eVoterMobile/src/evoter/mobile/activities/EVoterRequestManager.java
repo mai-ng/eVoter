@@ -47,24 +47,24 @@ public class EVoterRequestManager {
 	 * @param context
 	 */
 	public static void doVote(long answerID, long questionTypeID, final String statistic, final EVoterActivity context) {
-		String valueToSend = null;
-		if (statistic != null) {
-			if (statistic.contains(CallBackMessage.ANSWER_SUBMIT))
-				valueToSend = statistic.replace(CallBackMessage.ANSWER_SUBMIT, "");
-			else
-				valueToSend = statistic;
-		}
+//		String valueToSend = null;
+//		if (statistic != null) {
+//			if (statistic.contains(CallBackMessage.EVOTER_REQUEST_SUBMIT_ANSWER))
+//				valueToSend = statistic.replace(CallBackMessage.EVOTER_REQUEST_SUBMIT_ANSWER, "");
+//			else
+//				valueToSend = statistic;
+//		}
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(questionTypeID));
 		params.put(AnswerDAO.ID, String.valueOf(answerID));
-		if (valueToSend != null)
-			params.put(AnswerDAO.STATISTICS, valueToSend);
+		if (statistic != null)
+			params.put(AnswerDAO.STATISTICS, statistic);
 		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + CallBackMessage.ANSWER_SUBMIT);
+				context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_SUBMIT_ANSWER);
 			}
 			
 			@Override
@@ -439,7 +439,7 @@ public class EVoterRequestManager {
 	public static void updateStaticValue(final StudentFeedbackActivity context, final String excited) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
-		if (excited.equals(CallBackMessage.EXCITED)) {
+		if (excited.equals(CallBackMessage.EVOTER_REQUEST_EXCITED_BAR_STATISTIC)) {
 			params.add(QuestionDAO.ID,
 					String.valueOf(EVoterShareMemory.getExictedQuestion().getId()));
 		} else {
@@ -660,14 +660,17 @@ public class EVoterRequestManager {
 	 * @param params
 	 * @param questionActivity
 	 */
-	public static void acceptSession(RequestParams params, final QuestionActivity context) {
+	public static void acceptSession(long sessionID, final QuestionActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(SessionUserDAO.SESSION_ID, String.valueOf(sessionID));
 		client.post(RequestConfig.getURL(URIRequest.ACCEPT_SESSION), params,
 				new AsyncHttpResponseHandler() {
 					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response + CallBackMessage.ACCEPT_SESSION);
+						context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_ACCEPT_SESSION);
 					}
 					
 					//Login fail
@@ -691,15 +694,18 @@ public class EVoterRequestManager {
 	 * @param url
 	 * @param questionActivity
 	 */
-	public static void changeSessionStatus(boolean start, RequestParams params, final QuestionActivity context) {
+	public static void changeSessionStatus(boolean start, long sessionID, final QuestionActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(SessionDAO.ID, String.valueOf(sessionID));
 		String url = start ? URIRequest.ACTIVE_SESSION : URIRequest.INACTIVE_SESSION;
 		client.post(RequestConfig.getURL(url), params,
 				new AsyncHttpResponseHandler() {
 					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response + CallBackMessage.CHANGE_SESSION_STATUS);
+						context.updateRequestCallBack(response + CallBackMessage.EVOTER_REQUEST_CHANGE_SESSION_STATUS);
 					}
 					
 					//Login fail
@@ -778,7 +784,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.STOP_SEND_QUESTION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + QuestionDetailActivity.STOP_RECEIVE_ANSWER);
+				context.updateRequestCallBack(response + CallBackMessage.STOP_RECEIVE_ANSWER);
 			}
 			
 			@Override
@@ -796,7 +802,7 @@ public class EVoterRequestManager {
 	 * @param id
 	 * @param questionDetailActivity
 	 */
-	public static void submitAnswer(long questionID, final QuestionDetailActivity context) {
+	public static void updateQuestionStatus(long questionID, final QuestionDetailActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
@@ -804,7 +810,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.VIEW_QUESTION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + QuestionDetailActivity.SUBMIT_ANSWER);
+				context.updateRequestCallBack(response + CallBackMessage.CHECK_QUESTION_STATUS);
 			}
 			
 			@Override
@@ -833,7 +839,7 @@ public class EVoterRequestManager {
 					
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response + QuestionDetailActivity.CHECK_SESSION_STATUS);
+						context.updateRequestCallBack(response + CallBackMessage.CHECK_SESSION_STATUS);
 					}
 					
 					@Override
@@ -859,7 +865,7 @@ public class EVoterRequestManager {
 		client.post(RequestConfig.getURL(URIRequest.SEND_QUESTION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response + QuestionDetailActivity.SEND_QUESTION_REQUEST);
+				context.updateRequestCallBack(response + CallBackMessage.SEND_QUESTION_REQUEST);
 			}
 			
 			@Override

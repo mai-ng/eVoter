@@ -27,6 +27,8 @@ public class EVoterShareMemory {
 	private static String USER_KEY;
 	
 	private static Question currentQuestion;
+	private static Question exictedQuestion;
+	private static Question difficultQuestion;
 	
 	private static Session currentSession;
 	
@@ -39,26 +41,54 @@ public class EVoterShareMemory {
 	private static ItemDataActivity previousContext;
 	
 	/**
+	 * @return the exictedQuestion
+	 */
+	public static Question getExictedQuestion() {
+		return exictedQuestion;
+	}
+	
+	/**
+	 * @param exictedQuestion the exictedQuestion to set
+	 */
+	public static void setExictedQuestion(Question exictedQuestion) {
+		EVoterShareMemory.exictedQuestion = exictedQuestion;
+	}
+	
+	/**
+	 * @return the difficultQuestion
+	 */
+	public static Question getDifficultQuestion() {
+		return difficultQuestion;
+	}
+	
+	/**
+	 * @param difficultQuestion the difficultQuestion to set
+	 */
+	public static void setDifficultQuestion(Question difficultQuestion) {
+		EVoterShareMemory.difficultQuestion = difficultQuestion;
+	}
+	
+	/**
 	 * @return the listAnsweredQuestion
 	 */
 	public static ArrayList<Long> getListIDAnsweredQuestion() {
 		return listIDAnsweredQuestion;
 	}
-
+	
 	/**
 	 * @param listAnsweredQuestion the listAnsweredQuestion to set
 	 */
 	public static void addAnsweredQuestion(long questionID) {
 		EVoterShareMemory.listIDAnsweredQuestion.add(questionID);
 	}
-
+	
 	/**
 	 * @return the offlineEVoterManager
 	 */
 	public static OfflineEVoterManager getOfflineEVoterManager() {
 		return offlineEVoterManager;
 	}
-
+	
 	/**
 	 * @param offlineEVoterManager the offlineEVoterManager to set
 	 */
@@ -213,6 +243,13 @@ public class EVoterShareMemory {
 		if (getUSER_KEY() == null || getUSER_KEY().equals("")) return 0;
 		String[] array = getUSER_KEY().split("_");
 		return Long.parseLong(array[array.length - 1]);
+	}
+	
+	/**
+	 * @return
+	 */
+	public static boolean hasStaticBar() {
+		return EVoterShareMemory.getExictedQuestion() != null && EVoterShareMemory.getDifficultQuestion() != null;
 	}
 	
 }

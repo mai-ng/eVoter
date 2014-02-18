@@ -102,51 +102,35 @@ public class SubjectUserActivity extends EVoterActivity {
 	}
 	
 	public void refreshData() {
-		RequestParams params = new RequestParams();
-		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		params.add(SubjectDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSubjectID()));
-		
-		client.post(RequestConfig.getURL(URIRequest.GET_ALL_USERS_OF_SUBJECT), params,
-				new AsyncHttpResponseHandler() {
-					// Request successfully - client receive a response
-					@Override
-					public void onSuccess(String response) {
-						Log.i("Request all user of subject", response);
-						try {
-							JSONArray array = new JSONArray(response);
-							for (int i = 0; i < array.length(); i++) {
-								JSONObject ob = array.getJSONObject(i);
-								Log.i("Object: " + i, "User type: " + String.valueOf(ob.getLong(UserDAO.USER_TYPE_ID)));
-								if (ob.getLong(UserDAO.USER_TYPE_ID) == UserType.TEACHER) {
-									listTeachers.add((listTeachers.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
-								} else if (ob.getLong(UserDAO.USER_TYPE_ID) == UserType.STUDENT) {
-									listStudents.add((listStudents.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
-								}
-							}
-							Log.i("Total teachers: ", String.valueOf(listTeachers.size()));
-							Log.i("Total students: ", String.valueOf(listStudents.size()));
-							studentAdapter.notifyDataSetChanged();
-							teacherAdapter.notifyDataSetChanged();
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-					}
-					
-					//Login fail
-					@Override
-					public void onFailure(Throwable error,
-							String content) {
-						EVoterMobileUtils.showeVoterToast(
-								SubjectUserActivity.this,
-								"Cannot request to server!");
-						Log.e("LoginTest", "onFailure error : "
-								+ error.toString() + "content : "
-								+ content);
-					}
-				});
+		EVoterRequestManager.getUserOfSubject(this,EVoterShareMemory.getCurrentSubject().getId());
 		
 	}
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#updateRequestCallBack(java.lang.String)
+	 */
+	@Override
+	public void updateRequestCallBack(String response) {
+		try {
+			JSONArray array = new JSONArray(response);
+			for (int i = 0; i < array.length(); i++) {
+				JSONObject ob = array.getJSONObject(i);
+				if (ob.getLong(UserDAO.USER_TYPE_ID) == UserType.TEACHER) {
+					listTeachers.add((listTeachers.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
+				} else if (ob.getLong(UserDAO.USER_TYPE_ID) == UserType.STUDENT) {
+					listStudents.add((listStudents.size() + 1) + ". " + ob.getString(UserDAO.FULL_NAME) + ": " + ob.getString(UserDAO.EMAIL));
+				}
+			}
+			Log.i("Total teachers: ", String.valueOf(listTeachers.size()));
+			Log.i("Total students: ", String.valueOf(listStudents.size()));
+			studentAdapter.notifyDataSetChanged();
+			teacherAdapter.notifyDataSetChanged();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	
 }

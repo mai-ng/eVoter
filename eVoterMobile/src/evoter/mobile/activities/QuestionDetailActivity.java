@@ -78,7 +78,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		setContentView(R.layout.question_view_detail);
 		this.tvTitleBarContent.setText(EVoterShareMemory.getCurrentSessionName());
 		mainMenu.setQuestionActivityMenu();
-		EVoterRequestManager.updateCurrentQuestion();
+		EVoterRequestManager.updateQuestion(EVoterShareMemory.getCurrentQuestion());
 		mainMenu.getBtStartSession().setVisibility(View.GONE);
 		Log.i("Current Question: ", EVoterShareMemory.getCurrentQuestion().getTitle());
 		tvQuestionText = (TextView) findViewById(R.id.tvQuestionText);
@@ -115,6 +115,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 			//			Log.i("Answer save", answer);
 			//			|| (answer != null)
 			if (EVoterShareMemory.getCurrentQuestion().getStatus() == 2 || EVoterShareMemory.getListIDAnsweredQuestion().contains(EVoterShareMemory.getCurrentQuestion().getId())) {
+				//			if (EVoterShareMemory.getCurrentQuestion().getStatus() == 2 || (answer != null)) {
 				btSend.setText(VIEW_STATISTIC);
 			}
 			else if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
@@ -320,7 +321,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 			EVoterMobileUtils.showeVoterToast(this,
 					"Successful!");
-//			offlineEVoterManager.addAnswerQuestion(EVoterShareMemory.getCurrentQuestion().getId(), array[array.length - 1]);
+			//			offlineEVoterManager.addAnswerQuestion(EVoterShareMemory.getCurrentQuestion().getId(), array[array.length - 1]);
 			EVoterShareMemory.addAnsweredQuestion(EVoterShareMemory.getCurrentQuestion().getId());
 			btSend.setText(VIEW_STATISTIC);
 		}

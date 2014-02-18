@@ -92,6 +92,7 @@ public class EVoterMobileUtils {
 	public static Question parserToQuestion(JSONObject s) {
 		String answerColumn1 = "null";
 		String answerColumn2 = "null";
+		Log.i("Question object", s.toString());
 		try {
 			if (s.toString().contains(Question.COL1)) {
 				answerColumn1 = s
@@ -210,10 +211,12 @@ public class EVoterMobileUtils {
 			listDataRow.add(question.getTitle() + "\n");
 			listDataRow.add("ANSWERS \n");
 			ArrayList<Answer> listAnswers = parserListAnswer(question.getAnswerColumn1(), question.getId());
+			Log.i("List answer", listAnswers.toString());
 			if (question.getQuestionTypeId() == QuestionType.INPUT_ANSWER) {
-				String[] array = listAnswers.get(0).getStatistics().split(":");
+				JSONObject statisticObject =arrayStatistic.getJSONObject(0);
+				String[] array = statisticObject.getString(AnswerDAO.STATISTICS).split(":");
 				for (int i = 1; i < array.length; i++) {
-					listDataRow.add(array[i] + "\n");
+					listDataRow.add(i+": "+array[i]);
 				}
 			} else if (question.getQuestionTypeId() == QuestionType.SLIDER) {
 				JSONObject statisticObject =arrayStatistic.getJSONObject(0);
@@ -221,10 +224,10 @@ public class EVoterMobileUtils {
 				String[] array = statisticObject.getString(AnswerDAO.STATISTICS).split(":");
 				ArrayList<AnswerData> listAnswerValue = new ArrayList<AnswerData>();
 				for (int i = 1; i < array.length; i++) {
-					int value = Integer.parseInt(array[0]);
+					int value = Integer.parseInt(array[i]);
 					int index = getIndex(value, listAnswerValue);
 					if (index == -1) {
-						listAnswerValue.add(new AnswerData(value, 0));
+						listAnswerValue.add(new AnswerData(value, 1));
 					} else {
 						listAnswerValue.get(index).setStatistic(listAnswerValue.get(index).getStatistic()+ 1);
 					}
@@ -236,9 +239,18 @@ public class EVoterMobileUtils {
 			} else {
 				for (int i = 0; i < arrayStatistic.length(); i++) {
 					JSONObject ans = arrayStatistic.getJSONObject(i);
+					Log.i("Statistic object", ans.toString());
 					long id = ans.getLong(AnswerDAO.ID);
-					int statistic = Integer.parseInt(ans.getString(AnswerDAO.STATISTICS));
-					listAnswerDatas.add(new AnswerData(id, statistic));
+					String statisticString = ans.getString(AnswerDAO.STATISTICS);
+					Log.i("Statistic String", statisticString);
+					if(statisticString==null||statisticString.equals("null"))
+						listAnswerDatas.add(new AnswerData(id, 0));
+					else
+					{
+						int statistic = Integer.parseInt(statisticString);
+						listAnswerDatas.add(new AnswerData(id, statistic));
+					}
+					
 				}
 				for (int i = 0; i < listAnswers.size(); i++) {
 					long id = listAnswers.get(i).getId();

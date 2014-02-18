@@ -20,7 +20,9 @@ import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
+import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.SessionDAO;
+import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Question;
 import evoter.share.model.Session;
@@ -41,17 +43,26 @@ public class EVoterRequestManager {
 	 * @param context
 	 */
 	public static void doVote(long answerID, long questionTypeID, final String statistic, final EVoterActivity context) {
+		String valueToSend = null;
+		if (statistic.contains(QuestionActivity.STATIC_SEND))
+			valueToSend = statistic.replace(QuestionActivity.STATIC_SEND, "");
+		else
+			valueToSend = statistic;
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(questionTypeID));
 		params.put(AnswerDAO.ID, String.valueOf(answerID));
-		if (statistic != null)
-			params.put(AnswerDAO.STATISTICS, statistic);
+		if (valueToSend != null)
+			params.put(AnswerDAO.STATISTICS, valueToSend);
 		client.post(RequestConfig.getURL(URIRequest.VOTE_ANSWER), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				context.updateRequestCallBack(response+":"+statistic);
+				if (statistic.contains(QuestionActivity.STATIC_SEND))
+					context.updateRequestCallBack(response + QuestionActivity.STATIC_SEND);
+				else {
+					context.updateRequestCallBack(response);
+				}
 			}
 			
 			@Override
@@ -146,11 +157,11 @@ public class EVoterRequestManager {
 			EVoterMobileUtils.showeVoterToast(context, "Error! Username and password is not correct. Please try again!");
 		}
 	}
-
+	
 	/**
 	 * @param i_email
 	 */
-	public static void resetPassword(final String i_email,final Context context) {
+	public static void resetPassword(final String i_email, final Context context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.put(UserDAO.EMAIL, i_email);
@@ -158,7 +169,7 @@ public class EVoterRequestManager {
 			
 			@Override
 			public void onSuccess(String response) {
-				Log.i("Reset password",response);
+				Log.i("Reset password", response);
 				if (response.contains(URIRequest.FAILURE_MESSAGE)) {
 					EVoterMobileUtils.showeVoterToast(context,
 							"Email not exists. Please try again or register new account!");
@@ -179,7 +190,7 @@ public class EVoterRequestManager {
 		});
 		
 	}
-
+	
 	/**
 	 * @param i_email
 	 * @param i_usrname
@@ -225,29 +236,18 @@ public class EVoterRequestManager {
 		
 	}
 	
-	public static void updateCurrentQuestion() {
+	public static void updateQuestion(final Question questionToUpdate) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(QuestionDAO.ID,
-				String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
+				String.valueOf(questionToUpdate.getId()));
 		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		client.post(RequestConfig.getURL(URIRequest.VIEW_QUESTION), params,
 				new AsyncHttpResponseHandler() {
 					
 					@Override
 					public void onSuccess(String response) {
-						try {
-							JSONArray array = new JSONArray(response);
-							Question question = null;
-							if (array != null)
-								question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(0));
-							if (question != null) {
-								EVoterShareMemory.getCurrentQuestion().setStatus(question.getStatus());
-							}
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						updateQuestionCallBack(questionToUpdate, response);
 					}
 					
 					@Override
@@ -258,31 +258,37 @@ public class EVoterRequestManager {
 				});
 	}
 	
+	/**
+	 * @param questionToUpdate
+	 */
+	protected static void updateQuestionCallBack(Question questionToUpdate, String response) {
+		try {
+			JSONArray array = new JSONArray(response);
+			Question question = null;
+			if (array != null)
+				question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(0));
+			if (question != null) {
+				questionToUpdate = question;
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
-	public static void updateCurrentSession() {
+	public static void updateSession(final Session session) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(SessionDAO.ID,
-				String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+				String.valueOf(session.getId()));
 		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 		client.post(RequestConfig.getURL(URIRequest.VIEW_SESSION), params,
 				new AsyncHttpResponseHandler() {
 					
 					@Override
 					public void onSuccess(String response) {
-						Log.i("View session", response);
-						JSONArray array;
-						try {
-							array = EVoterMobileUtils.getJSONArray(response);
-							Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
-							if (session != null) {
-								EVoterShareMemory.getCurrentSession().setActive(session.isActive());
-							}
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							Log.i("Update session", "Exception");
-						}
+						updateSessionCallBack(session, response);
 					}
 					
 					@Override
@@ -294,8 +300,28 @@ public class EVoterRequestManager {
 		
 	}
 	
+	/**
+	 * @param session
+	 * @param response
+	 */
+	protected static void updateSessionCallBack(Session sessionToUpdate, String response) {
+		Log.i("View session", response);
+		JSONArray array;
+		try {
+			array = EVoterMobileUtils.getJSONArray(response);
+			Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
+			if (session != null) {
+				sessionToUpdate = session;
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Log.i("Update session", "Exception");
+		}
+		
+	}
 	
-	public static void getStatistic(long questionID,final EVoterActivity context) {
+	public static void getStatistic(long questionID, final EVoterActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(QuestionDAO.ID,
@@ -317,10 +343,9 @@ public class EVoterRequestManager {
 					}
 				});
 	}
-
+	
 	/**
-	 * @param subjectActivity 
-	 * 
+	 * @param subjectActivity
 	 */
 	public static void getListSubject(final SubjectActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
@@ -342,11 +367,11 @@ public class EVoterRequestManager {
 				});
 		
 	}
-
+	
 	/**
 	 * @param sessionActivity
 	 */
-	public static void getListSession(final SessionActivity sessionActivity,long subjectID) {
+	public static void getListSession(final SessionActivity sessionActivity, long subjectID) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(SessionDAO.SUBJECT_ID,
@@ -370,4 +395,99 @@ public class EVoterRequestManager {
 				});
 		
 	}
+	
+	/**
+	 * @param subjectUserActivity
+	 * @param id
+	 */
+	public static void getUserOfSubject(final SubjectUserActivity subjectUserActivity, long id) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(SubjectDAO.ID, String.valueOf(EVoterShareMemory.getCurrentSubjectID()));
+		
+		client.post(RequestConfig.getURL(URIRequest.GET_ALL_USERS_OF_SUBJECT), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						Log.i("Request all user of subject", response);
+						subjectUserActivity.updateRequestCallBack(response);
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								subjectUserActivity,
+								"Cannot request to server!");
+						Log.e("Get users of subject", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
+		
+	}
+	
+	/**
+	 * @param studentFeedbackActivity
+	 * @param excited
+	 */
+	public static void updateStaticValue(final StudentFeedbackActivity context, final String excited) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		if (excited.equals(QuestionActivity.EXCITED)) {
+			params.add(QuestionDAO.ID,
+					String.valueOf(EVoterShareMemory.getExictedQuestion().getId()));
+		} else {
+			params.add(QuestionDAO.ID,
+					String.valueOf(EVoterShareMemory.getDifficultQuestion().getId()));
+		}
+		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		client.post(RequestConfig.getURL(URIRequest.GET_STATISTICS), params,
+				new AsyncHttpResponseHandler() {
+					
+					@Override
+					public void onSuccess(String response) {
+						Log.i("Statistic", response);
+						context.updateRequestCallBack(response + excited);
+					}
+					
+					@Override
+					public void onFailure(Throwable error, String content) {
+						Log.e("Get statistic value", "onFailure error : "
+								+ error.toString() + "content : " + content);
+					}
+				});
+		
+	}
+	
+	/**
+	 * @param questionActivity
+	 */
+	public static void getListQuestion(final QuestionActivity questionActivity) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(QuestionSessionDAO.SESSION_ID,
+				String.valueOf(EVoterShareMemory.getCurrentSessionID()));
+		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		
+		client.post(RequestConfig.getURL(URIRequest.GET_ALL_QUESTION), params,
+				new AsyncHttpResponseHandler() {
+					
+					@Override
+					public void onSuccess(String response) {
+						questionActivity.updateRequestCallBack(response);
+					}
+					
+					@Override
+					public void onFailure(Throwable error, String content) {
+						Log.e("Get All Session Test", "onFailure error : "
+								+ error.toString() + "content : " + content);
+					}
+				});
+		
+	}
+	
 }

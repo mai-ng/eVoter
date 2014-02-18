@@ -5,28 +5,15 @@ package evoter.mobile.activities;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
 import evoter.mobile.main.R;
 import evoter.mobile.objects.EVoterShareMemory;
-import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
-import evoter.share.dao.QuestionDAO;
-import evoter.share.dao.UserDAO;
-import evoter.share.utils.URIRequest;
 
 /**
  * @author luongnv89
@@ -54,7 +41,7 @@ public class QuestionStatisticActivity extends EVoterActivity {
 			
 			@Override
 			public void onClick(View v) {
-				EVoterRequestManager.updateCurrentQuestion();
+				EVoterRequestManager.updateQuestion(EVoterShareMemory.getCurrentQuestion());
 				drawStatistic();
 			}
 		});

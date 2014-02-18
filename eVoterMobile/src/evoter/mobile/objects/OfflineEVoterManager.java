@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
+import evoter.mobile.activities.ActivityManager;
 import evoter.mobile.activities.EVoterActivity;
 import evoter.mobile.activities.EVoterRequestManager;
 import evoter.mobile.activities.LoginActivity;
@@ -31,6 +32,8 @@ public class OfflineEVoterManager {
 	
 	private final String IS_LOGIN = "IsLoggedin";
 	
+	private final String QUESTION = "QUESTION_";
+	
 	@SuppressLint("CommitPrefEdits")
 	public OfflineEVoterManager(EVoterActivity contex) {
 		this.context = contex;
@@ -52,16 +55,6 @@ public class OfflineEVoterManager {
 		editor.commit();
 	}
 	
-	public void addAnswerQuestion(long questionID,String answer){
-		editor.putString(String.valueOf(questionID), answer);
-	}
-	
-	public String getAnswerForQuestion(long questionID){
-		HashMap<String, String> answer = new HashMap<String, String>();
-		answer.put(String.valueOf(questionID),
-				preferences.getString(String.valueOf(questionID), null));
-		return answer.get(String.valueOf(questionID));
-	}
 	/**
 	 * Get detail of saved user
 	 * 
@@ -83,10 +76,7 @@ public class OfflineEVoterManager {
 	 */
 	public void checkLogin() {
 		if (!isLoggedIn()) {
-			Intent i = new Intent(context, LoginActivity.class);
-			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(i);
+			ActivityManager.gotoLogin(context);
 		} else {
 			HashMap<String, String> user = getSavedUserDetail();
 			EVoterRequestManager.doLogin(user.get(UserDAO.USER_NAME), user.get(UserDAO.PASSWORD),context);

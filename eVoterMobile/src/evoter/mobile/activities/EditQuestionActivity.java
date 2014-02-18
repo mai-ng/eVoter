@@ -14,11 +14,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import evoter.mobile.objects.EVoterShareMemory;
-import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
@@ -44,12 +42,12 @@ public class EditQuestionActivity extends NewQuestionActivity {
 		etQuestionText.setText(EVoterShareMemory.getCurrentQuestion().getQuestionText());
 		int type = (int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId();
 		//Parser the answer of question
-		spQuestionType.setSelection(type-1);
+		spQuestionType.setSelection(type - 1);
 		spQuestionType.setEnabled(false);
 		buildAnswerArea(type, EVoterShareMemory.getCurrentQuestion());
 		setBtSaveAction();
 	}
-
+	
 	/**
 	 * @param type
 	 * @param column1
@@ -58,7 +56,7 @@ public class EditQuestionActivity extends NewQuestionActivity {
 		ArrayList<Answer> column1 = parserAnswer(question.getAnswerColumn1());
 		//		type = 1;
 		switch (type) {
-			
+		
 			case QuestionType.MULTI_RADIOBUTTON:
 				for (int i = 0; i < column1.size(); i++) {
 					listAnswser.add(column1.get(i).getAnswerText());
@@ -131,7 +129,7 @@ public class EditQuestionActivity extends NewQuestionActivity {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -140,47 +138,38 @@ public class EditQuestionActivity extends NewQuestionActivity {
 			EVoterMobileUtils.showeVoterToast(EditQuestionActivity.this, "Invalid parameter. Please input again!");
 		} else {
 			
-//			parameters.put(QuestionDAO.ID, questionId);
+			//			parameters.put(QuestionDAO.ID, questionId);
 			
 			RequestParams params = new RequestParams();
 			params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
 			params.put(QuestionDAO.ID, String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
 			params.put(QuestionDAO.QUESTION_TEXT, etQuestionText.getText().toString());
 			params.put(AnswerDAO.ANSWER_TEXT, listAnswser);
-			client.post(RequestConfig.getURL(URIRequest.UPDATE_QUESTION), params,
-					new AsyncHttpResponseHandler() {
-						// Request successfully - client receive a response
-						@Override
-						public void onSuccess(String response) {
-							Log.i("Response", response);
-							if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-								EVoterMobileUtils.showeVoterToast(
-										EditQuestionActivity.this,
-										"Updated successfully!");
-								EVoterShareMemory.getPreviousContext().refreshData();
-							} else {
-								EVoterMobileUtils.showeVoterToast(
-										EditQuestionActivity.this,
-										"Cannot update question");
-							}
-							finish();
-							
-						}
-						
-						//Login fail
-						@Override
-						public void onFailure(Throwable error,
-								String content) {
-							EVoterMobileUtils.showeVoterToast(
-									EditQuestionActivity.this,
-									"Cannot request to server!");
-							Log.e("edit question", "onFailure error : "
-									+ error.toString() + "content : "
-									+ content);
-							finish();
-						}
-					});
+			EVoterRequestManager.editQuestion(params,EditQuestionActivity.this);
+			
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * evoter.mobile.activities.NewQuestionActivity#updateRequestCallBack(java
+	 * .lang.String)
+	 */
+	@Override
+	public void updateRequestCallBack(String response) {
+		Log.i("Response", response);
+		if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+			EVoterMobileUtils.showeVoterToast(
+					EditQuestionActivity.this,
+					"Updated successfully!");
+			EVoterShareMemory.getPreviousContext().refreshData();
+		} else {
+			EVoterMobileUtils.showeVoterToast(
+					EditQuestionActivity.this,
+					"Cannot update question");
+		}
+		finish();
 	}
 	
 }

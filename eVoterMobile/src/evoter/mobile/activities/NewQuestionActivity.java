@@ -82,8 +82,7 @@ public class NewQuestionActivity extends EVoterActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parentView, View itemClicked, int position, long id) {
 				final String itemClick = (String) parentView.getItemAtPosition(position);
-				
-				clickAnswerAction(itemClick);
+				deleteAnswer(itemClick);
 			}
 		});
 		
@@ -91,17 +90,7 @@ public class NewQuestionActivity extends EVoterActivity {
 			
 			@Override
 			public void onClick(View v) {
-				if (etAnswer.getText().toString().equals("")) {
-					EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "The answer text is empty! Please input answer");
-				} else if (listAnswser.contains(etAnswer.getText().toString())) {
-					EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "The answer is already exist! Please input again");
-				}
-				else {
-					listAnswser.add(etAnswer.getText().toString());
-					adaterListView.notifyDataSetChanged();
-					etAnswer.setText("");
-				}
-				
+				addAnswerToList();
 			}
 		});
 		
@@ -224,6 +213,10 @@ public class NewQuestionActivity extends EVoterActivity {
 			listAnswser.add("Yes");
 			listAnswser.add("No");
 		}
+		if(typeID==QuestionType.MATCH){
+			EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "Match question has not implemented yet!");
+			return false;
+		}
 		return true;
 	}
 	
@@ -232,19 +225,19 @@ public class NewQuestionActivity extends EVoterActivity {
 	 * @return
 	 */
 	protected int getIDType(String selected) {
-		if (selected.equals(YES_NO)) return 1;
-		if (selected.equals(MULTI_RADIO)) return 2;
-		if (selected.equals(MULTI_CHECK)) return 3;
-		if (selected.equals(SLIDER)) return 4;
-		if (selected.equals(INPUT_ANSWER)) return 5;
-		if (selected.equals(MATCH)) return 6;
+		if (selected.equals(YES_NO)) return QuestionType.YES_NO;
+		if (selected.equals(MULTI_RADIO)) return QuestionType.MULTI_RADIOBUTTON;
+		if (selected.equals(MULTI_CHECK)) return QuestionType.MULTI_CHECKBOX;
+		if (selected.equals(SLIDER)) return QuestionType.SLIDER;
+		if (selected.equals(INPUT_ANSWER)) return QuestionType.INPUT_ANSWER;
+		if (selected.equals(MATCH)) return QuestionType.MATCH;
 		return -1;
 	}
 	
 	/**
 	 * @param itemClick
 	 */
-	private void clickAnswerAction(final String itemClick) {
+	private void deleteAnswer(final String itemClick) {
 		Dialog dialog = new AlertDialog.Builder(this)
 				.setTitle("Answer: " + itemClick)
 				.setIcon(android.R.drawable.ic_dialog_info)
@@ -266,33 +259,27 @@ public class NewQuestionActivity extends EVoterActivity {
 		switch (idItem) {
 			case 1:
 				laAnswer.setVisibility(View.GONE);
-				//						lvListAnswser.setVisibility(View.GONE);
 				laSlider.setVisibility(View.GONE);
 				break;
 			case 2:
 				laAnswer.setVisibility(View.VISIBLE);
-				//						lvListAnswser.setVisibility(View.VISIBLE);
 				laSlider.setVisibility(View.GONE);
 				break;
 			case 3:
 				laAnswer.setVisibility(View.VISIBLE);
-				//						lvListAnswser.setVisibility(View.VISIBLE);
 				laSlider.setVisibility(View.GONE);
 				break;
 			case 4:
 				laAnswer.setVisibility(View.GONE);
-				//						lvListAnswser.setVisibility(View.GONE);
 				laSlider.setVisibility(View.VISIBLE);
 				break;
 			case 5:
 				laSlider.setVisibility(View.GONE);
 				laAnswer.setVisibility(View.GONE);
-				//						lvListAnswser.setVisibility(View.GONE);
 				break;
 			case 6:
 				laSlider.setVisibility(View.GONE);
 				laAnswer.setVisibility(View.GONE);
-				//						lvListAnswser.setVisibility(View.GONE);
 				EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "Not implemented yet!");
 				break;
 			default:
@@ -318,40 +305,46 @@ public class NewQuestionActivity extends EVoterActivity {
 			params.add(QuestionSessionDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSessionID()));
 			params.put(AnswerDAO.ANSWER_TEXT, listAnswser);
 			Log.i("List Answer: ", listAnswser.get(0));
-			client.post(RequestConfig.getURL(URIRequest.CREATE_QUESTION), params,
-					new AsyncHttpResponseHandler() {
-						// Request successfully - client receive a response
-						@Override
-						public void onSuccess(String response) {
-							Log.i("Response", response);
-							if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-								EVoterMobileUtils.showeVoterToast(
-										NewQuestionActivity.this,
-										"A new question is created successfully!");
-								EVoterShareMemory.getPreviousContext().refreshData();
-							} else {
-								EVoterMobileUtils.showeVoterToast(
-										NewQuestionActivity.this,
-										"Cannot create new question");
-							}
-							finish();
-							
-						}
-						
-						//Login fail
-						@Override
-						public void onFailure(Throwable error,
-								String content) {
-							EVoterMobileUtils.showeVoterToast(
-									NewQuestionActivity.this,
-									"Cannot request to server!");
-							Log.e("create question", "onFailure error : "
-									+ error.toString() + "content : "
-									+ content);
-							finish();
-						}
-					});
+			EVoterRequestManager.createNewQuestion(params,NewQuestionActivity.this);
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void addAnswerToList() {
+		if (etAnswer.getText().toString().equals("")) {
+			EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "The answer text is empty! Please input answer");
+		} else if (listAnswser.contains(etAnswer.getText().toString())) {
+			EVoterMobileUtils.showeVoterToast(NewQuestionActivity.this, "The answer is already exist! Please input again");
+		}
+		else {
+			listAnswser.add(etAnswer.getText().toString());
+			adaterListView.notifyDataSetChanged();
+			etAnswer.setText("");
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * evoter.mobile.activities.EVoterActivity#updateRequestCallBack(java.lang
+	 * .String)
+	 */
+	@Override
+	public void updateRequestCallBack(String response) {
+		Log.i("Response", response);
+		if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+			EVoterMobileUtils.showeVoterToast(
+					NewQuestionActivity.this,
+					"A new question is created successfully!");
+			EVoterShareMemory.getPreviousContext().refreshData();
+		} else {
+			EVoterMobileUtils.showeVoterToast(
+					NewQuestionActivity.this,
+					"Cannot create new question");
+		}
+		finish();
 	}
 	
 }

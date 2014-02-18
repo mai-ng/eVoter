@@ -598,4 +598,62 @@ public class EVoterRequestManager {
 			
 		}
 	}
+	
+	/**
+	 * @param params
+	 * @param newQuestionActivity
+	 */
+	public static void createNewQuestion(RequestParams params, final NewQuestionActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.post(RequestConfig.getURL(URIRequest.CREATE_QUESTION), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						context.updateRequestCallBack(response);
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								context,
+								"Cannot request to server!");
+						Log.e("create question", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+						context.finish();
+					}
+				});
+		
+	}
+	
+	/**
+	 * @param params
+	 * @param editSessionActivity
+	 */
+	public static void editQuestion(RequestParams params, final EditQuestionActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.post(RequestConfig.getURL(URIRequest.UPDATE_QUESTION), params,
+				new AsyncHttpResponseHandler() {
+					@Override
+					public void onSuccess(String response) {
+						context.updateRequestCallBack(response);
+					}
+					
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								context,
+								"Cannot request to server!");
+						Log.e("edit question", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+						context.finish();
+					}
+				});
+		
+	}
 }

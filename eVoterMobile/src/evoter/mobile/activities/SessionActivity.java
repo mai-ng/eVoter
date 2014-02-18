@@ -111,29 +111,6 @@ public class SessionActivity extends ItemDataActivity {
 	}
 	
 	/**
-	 * @param selectedSession
-	 */
-	private void longClickSessionAction() {
-		Dialog dialog = new AlertDialog.Builder(this)
-				.setTitle("Session: " + EVoterShareMemory.getCurrentSessionName())
-				.setIcon(android.R.drawable.ic_dialog_info)
-				.setPositiveButton(R.string.edit_button, new DialogInterface.OnClickListener() {
-					
-					public void onClick(DialogInterface dialog, int whichButton) {
-						Intent editSession = new Intent(SessionActivity.this, EditSessionActivity.class);
-						EVoterShareMemory.setPreviousContext(SessionActivity.this);
-						startActivity(editSession);
-					}
-				})
-				.setNegativeButton(R.string.delete_button, new DialogInterface.OnClickListener() {
-					
-					public void onClick(DialogInterface dialog, int whichButton) {
-						deleteSessionRequest();
-					}
-				}).show();
-	}
-	
-	/**
 	 * @param response
 	 */
 	private void parserListSessionFromResponse(String response) {
@@ -163,6 +140,29 @@ public class SessionActivity extends ItemDataActivity {
 	/**
 	 * @param selectedSession
 	 */
+	private void longClickSessionAction() {
+		Dialog dialog = new AlertDialog.Builder(this)
+				.setTitle("Session: " + EVoterShareMemory.getCurrentSessionName())
+				.setIcon(android.R.drawable.ic_dialog_info)
+				.setPositiveButton(R.string.edit_button, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int whichButton) {
+						Intent editSession = new Intent(SessionActivity.this, EditSessionActivity.class);
+						EVoterShareMemory.setPreviousContext(SessionActivity.this);
+						startActivity(editSession);
+					}
+				})
+				.setNegativeButton(R.string.delete_button, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int whichButton) {
+						deleteSessionRequest();
+					}
+				}).show();
+	}
+	
+	/**
+	 * @param selectedSession
+	 */
 	private void deleteSessionRequest() {
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
@@ -170,7 +170,7 @@ public class SessionActivity extends ItemDataActivity {
 		client.post(RequestConfig.getURL(URIRequest.DELETE_SESSION), params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				if (response.contains("SUCCESS")) {
+				if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 					EVoterMobileUtils.showeVoterToast(SessionActivity.this,
 							"Deleted session: " + EVoterShareMemory.getCurrentSession().getTitle());
 					adapter.deleteItem(EVoterShareMemory.getCurrentSession().getId());

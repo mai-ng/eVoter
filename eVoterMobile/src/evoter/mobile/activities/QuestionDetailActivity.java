@@ -78,13 +78,13 @@ public class QuestionDetailActivity extends EVoterActivity {
 		setContentView(R.layout.question_view_detail);
 		this.tvTitleBarContent.setText(EVoterShareMemory.getCurrentSessionName());
 		mainMenu.setQuestionActivityMenu();
-		EVoterMobileUtils.updateCurrentQuestion();
+		EVoterRequestManager.updateCurrentQuestion();
 		mainMenu.getBtStartSession().setVisibility(View.GONE);
 		Log.i("Current Question: ", EVoterShareMemory.getCurrentQuestion().getTitle());
 		tvQuestionText = (TextView) findViewById(R.id.tvQuestionText);
 		answerArea = (LinearLayout) findViewById(R.id.loAnswerArea);
 		//Parser the answer of question
-		answers = EVoterMobileUtils.parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
+		answers = EVoterMobileUtils.parserListAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
 		
 		btSend = (Button) findViewById(R.id.btSendQuestion);
 		groups = new RadioGroup(this);

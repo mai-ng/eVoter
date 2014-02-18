@@ -13,27 +13,22 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 import android.view.Gravity;
+import android.view.WindowManager.LayoutParams;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
 import evoter.mobile.objects.EVoterShareMemory;
-import evoter.mobile.objects.RequestConfig;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
-import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
 import evoter.share.model.Question;
+import evoter.share.model.QuestionType;
 import evoter.share.model.Session;
 import evoter.share.model.UserType;
-import evoter.share.utils.URIRequest;
 
 /**
  * <br>
@@ -84,37 +79,6 @@ public class EVoterMobileUtils {
 		t.show();
 	}
 	
-	public static void updateCurrentQuestion() {
-		AsyncHttpClient client = new AsyncHttpClient();
-		RequestParams params = new RequestParams();
-		params.add(QuestionDAO.ID,
-				String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
-		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		client.post(RequestConfig.getURL(URIRequest.VIEW_QUESTION), params,
-				new AsyncHttpResponseHandler() {
-					
-					@Override
-					public void onSuccess(String response) {
-						try {
-							JSONArray array = new JSONArray(response);
-							Question question = null;
-							if (array != null)
-								question = parserToQuestion(array.getJSONObject(0));
-							if (question != null) EVoterShareMemory.setCurrentQuestion(question);
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					
-					@Override
-					public void onFailure(Throwable error, String content) {
-						Log.e("Get All Session Test", "onFailure error : "
-								+ error.toString() + "content : " + content);
-					}
-				});
-	}
-	
 	/**
 	 * @param response
 	 */
@@ -161,36 +125,35 @@ public class EVoterMobileUtils {
 		
 	}
 	
-	public static void updateCurrentSession() {
-		AsyncHttpClient client = new AsyncHttpClient();
-		RequestParams params = new RequestParams();
-		params.add(SessionDAO.ID,
-				String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
-		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		client.post(RequestConfig.getURL(URIRequest.VIEW_SESSION), params,
-				new AsyncHttpResponseHandler() {
-					
-					@Override
-					public void onSuccess(String response) {
-						Log.i("View session", response);
-						JSONArray array;
-						try {
-							array = EVoterMobileUtils.getJSONArray(response);
-							Session session = parserSession(array.getJSONObject(0));
-							if (session != null) EVoterShareMemory.setCurrentSession(session);
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					
-					@Override
-					public void onFailure(Throwable error, String content) {
-						Log.e("View session", "onFailure error : "
-								+ error.toString() + "content : " + content);
-					}
-				});
-		
+	/**
+	 * @param answerColumn1
+	 * @return
+	 */
+	public static ArrayList<Answer> parserListAnswer(String answerColumn1) {
+		ArrayList<Answer> listAnswers = new ArrayList<Answer>();
+		try {
+			JSONArray listAnswer1 = new JSONArray(answerColumn1);
+			for (int i = 0; i < listAnswer1.length(); i++) {
+				Answer answer = parserJSONObjectToAnswer(listAnswer1.getJSONObject(i));
+				if (answer != null) listAnswers.add(answer);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return listAnswers;
+	}
+	
+	/**
+	 * @param jsonObject
+	 * @return
+	 */
+	public static Answer parserJSONObjectToAnswer(JSONObject jsonObject) {
+		try {
+			return new Answer(jsonObject.getLong(AnswerDAO.ID), jsonObject.getLong(AnswerDAO.QUESTION_ID), jsonObject.getString(AnswerDAO.ANSWER_TEXT));
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	/**
@@ -231,34 +194,66 @@ public class EVoterMobileUtils {
 		return null;
 	}
 	
-	/**
-	 * @param answerColumn1
-	 * @return
-	 */
-	public static ArrayList<Answer> parserAnswer(String answerColumn1) {
-		ArrayList<Answer> listAnswers = new ArrayList<Answer>();
-		try {
-			JSONArray listAnswer1 = new JSONArray(answerColumn1);
-			for (int i = 0; i < listAnswer1.length(); i++) {
-				Answer answer = parserJSONObjectToAnswer(listAnswer1.getJSONObject(i));
-				if (answer != null) listAnswers.add(answer);
+	public static void drawStatistic(Question question, LinearLayout layout, Context context) {
+		TextView qq = createTextView("QUESTION", context);
+		layout.addView(qq);
+		TextView questionText = createTextView(question.getTitle(), context);
+		layout.addView(questionText);
+		
+		TextView answerArea = createTextView("ANSWERS", context);
+		layout.addView(answerArea);
+		ArrayList<Answer> listAnswers = parserListAnswer(question.getAnswerColumn1());
+		if (question.getQuestionTypeId() == QuestionType.INPUT_ANSWER) {
+			String[] array = listAnswers.get(0).getStatistics().split(":");
+			for (int i = 1; i < array.length; i++) {
+				TextView ans = createTextView(array[i], context);
+				layout.addView(ans);
 			}
-		} catch (JSONException e) {
-			e.printStackTrace();
+		} else if (question.getQuestionTypeId() == QuestionType.SLIDER) {
+			String[] array = listAnswers.get(0).getStatistics().split(":");
+			ArrayList<AnswerData> listAnswerValue = new ArrayList<AnswerData>();
+			for (int i = 1; i < array.length; i++) {
+				int value = Integer.parseInt(array[0]);
+				int index = getIndex(value, listAnswerValue);
+				if (index == -1) {
+					listAnswerValue.add(new AnswerData(value, 0));
+				} else {
+					listAnswerValue.get(index).setValue(listAnswerValue.get(index).getValue() + 1);
+				}
+			}
+			
+			for(int i=0;i<listAnswerValue.size();i++){
+				TextView ans = createTextView(listAnswerValue.get(i).getValue() + ": " + listAnswerValue.get(i).getStatistic(), context);
+				layout.addView(ans);
+			}
+		} else {
+			for (int i = 0; i < listAnswers.size(); i++) {
+				TextView ans = createTextView(listAnswers.get(i).getAnswerText() + ": " + listAnswers.get(i).getStatistics(), context);
+				layout.addView(ans);
+			}
 		}
-		return listAnswers;
 	}
 	
 	/**
-	 * @param jsonObject
+	 * @param value
+	 * @param listAnswerValue
 	 * @return
 	 */
-	public static Answer parserJSONObjectToAnswer(JSONObject jsonObject) {
-		try {
-			return new Answer(jsonObject.getLong(AnswerDAO.ID), jsonObject.getLong(AnswerDAO.QUESTION_ID), jsonObject.getString(AnswerDAO.ANSWER_TEXT));
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
+	private static int getIndex(int value, ArrayList<AnswerData> listAnswerValue) {
+		for (int i = 0; i < listAnswerValue.size(); i++) {
+			if (listAnswerValue.get(i).getValue() == value) return i;
 		}
+		return -1;
+	}
+	
+	/**
+	 * @param title
+	 * @return
+	 */
+	private static TextView createTextView(String title, Context context) {
+		TextView tv = new TextView(context);
+		tv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		tv.setText(title);
+		return null;
 	}
 }

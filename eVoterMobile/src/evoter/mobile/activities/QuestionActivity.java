@@ -62,7 +62,7 @@ public class QuestionActivity extends ItemDataActivity {
 		//Set titlebar of current activity is the name of current session
 		this.tvTitleBarContent.setText(EVoterShareMemory
 				.getCurrentSessionName());
-		EVoterMobileUtils.updateCurrentSession();
+		EVoterRequestManager.updateCurrentSession();
 		mainMenu.setQuestionActivityMenu();
 		
 		adapter = new QuestionAdapter(QuestionActivity.this);
@@ -76,7 +76,6 @@ public class QuestionActivity extends ItemDataActivity {
 						.getItemAtPosition(position);
 				EVoterShareMemory.setCurrentQuestion(selectQuestion);
 				EVoterShareMemory.setPreviousContext(QuestionActivity.this);
-				Log.i("Detail of question: ", selectQuestion.getTitle());
 				Intent detailQuestion = new Intent(QuestionActivity.this, QuestionDetailActivity.class);
 				startActivity(detailQuestion);
 			}
@@ -95,6 +94,14 @@ public class QuestionActivity extends ItemDataActivity {
 				}
 			});
 		}
+		setupMainMenuAction();
+		
+	}
+
+	/**
+	 * 
+	 */
+	private void setupMainMenuAction() {
 		mainMenu.getBtNewQuestion().setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -146,7 +153,6 @@ public class QuestionActivity extends ItemDataActivity {
 				showStudentFeedback();
 			}
 		});
-		
 	}
 	
 	/**
@@ -337,7 +343,7 @@ public class QuestionActivity extends ItemDataActivity {
 	}
 	
 	public void refreshData() {
-		EVoterMobileUtils.updateCurrentSession();
+		EVoterRequestManager.updateCurrentSession();
 		if (userAcceptSession()) mainMenu.getBtStartSession().setVisibility(View.GONE);
 		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && EVoterShareMemory.currentSessionIsActive()) {
 			//Setup seekbar
@@ -471,7 +477,7 @@ public class QuestionActivity extends ItemDataActivity {
 	 * @param question
 	 */
 	private void setStaticAnswerID(Question question) {
-		ArrayList<Answer> listAnswers = EVoterMobileUtils.parserAnswer(question.getAnswerColumn1());
+		ArrayList<Answer> listAnswers = EVoterMobileUtils.parserListAnswer(question.getAnswerColumn1());
 		if (question.getTitle().contains(EXCITED)) {
 			excitedAnswerID = listAnswers.get(0).getId();
 		}

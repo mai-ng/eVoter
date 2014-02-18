@@ -3,6 +3,7 @@
  */
 package evoter.mobile.activities;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,7 +20,10 @@ import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
+import evoter.share.dao.SessionDAO;
 import evoter.share.dao.UserDAO;
+import evoter.share.model.Question;
+import evoter.share.model.Session;
 import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
@@ -226,6 +230,70 @@ public class EVoterRequestManager {
 						+ error.toString() + "content : " + content);
 			}
 		});
+		
+	}
+	
+	public static void updateCurrentQuestion() {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(QuestionDAO.ID,
+				String.valueOf(EVoterShareMemory.getCurrentQuestion().getId()));
+		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		client.post(RequestConfig.getURL(URIRequest.VIEW_QUESTION), params,
+				new AsyncHttpResponseHandler() {
+					
+					@Override
+					public void onSuccess(String response) {
+						try {
+							JSONArray array = new JSONArray(response);
+							Question question = null;
+							if (array != null)
+								question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(0));
+							if (question != null) EVoterShareMemory.setCurrentQuestion(question);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
+					@Override
+					public void onFailure(Throwable error, String content) {
+						Log.e("Get All Session Test", "onFailure error : "
+								+ error.toString() + "content : " + content);
+					}
+				});
+	}
+	
+	
+	public static void updateCurrentSession() {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(SessionDAO.ID,
+				String.valueOf(EVoterShareMemory.getCurrentSession().getId()));
+		params.put(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		client.post(RequestConfig.getURL(URIRequest.VIEW_SESSION), params,
+				new AsyncHttpResponseHandler() {
+					
+					@Override
+					public void onSuccess(String response) {
+						Log.i("View session", response);
+						JSONArray array;
+						try {
+							array = EVoterMobileUtils.getJSONArray(response);
+							Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
+							if (session != null) EVoterShareMemory.setCurrentSession(session);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
+					@Override
+					public void onFailure(Throwable error, String content) {
+						Log.e("View session", "onFailure error : "
+								+ error.toString() + "content : " + content);
+					}
+				});
 		
 	}
 	

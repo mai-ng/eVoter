@@ -20,7 +20,6 @@ echo %CD%
 
 call "%M2_HOME%"\bin\mvn clean install test exec:java
 
-echo press any key to stop server
 
 pause
 

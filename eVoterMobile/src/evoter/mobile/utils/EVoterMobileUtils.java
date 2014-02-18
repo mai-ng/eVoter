@@ -207,9 +207,9 @@ public class EVoterMobileUtils {
 		try {
 			JSONArray arrayStatistic = new JSONArray(response);
 			ArrayList<String> listDataRow = new ArrayList<String>();
-			listDataRow.add("QUESTION \n");
+			listDataRow.add("QUESTION: ");
 			listDataRow.add(question.getTitle() + "\n");
-			listDataRow.add("ANSWERS \n");
+			listDataRow.add("ANSWERS: \n");
 			ArrayList<Answer> listAnswers = parserListAnswer(question.getAnswerColumn1(), question.getId());
 			Log.i("List answer", listAnswers.toString());
 			if (question.getQuestionTypeId() == QuestionType.INPUT_ANSWER) {

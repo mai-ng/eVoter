@@ -24,6 +24,7 @@ import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Answer;
+import evoter.share.model.Question;
 import evoter.share.model.QuestionType;
 import evoter.share.utils.URIRequest;
 
@@ -43,9 +44,18 @@ public class EditQuestionActivity extends NewQuestionActivity {
 		etQuestionText.setText(EVoterShareMemory.getCurrentQuestion().getQuestionText());
 		int type = (int) EVoterShareMemory.getCurrentQuestion().getQuestionTypeId();
 		//Parser the answer of question
-		ArrayList<Answer> column1 = parserAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1());
 		spQuestionType.setSelection(type-1);
 		spQuestionType.setEnabled(false);
+		buildAnswerArea(type, EVoterShareMemory.getCurrentQuestion());
+		setBtSaveAction();
+	}
+
+	/**
+	 * @param type
+	 * @param column1
+	 */
+	private void buildAnswerArea(int type, Question question) {
+		ArrayList<Answer> column1 = parserAnswer(question.getAnswerColumn1());
 		//		type = 1;
 		switch (type) {
 			
@@ -71,8 +81,6 @@ public class EditQuestionActivity extends NewQuestionActivity {
 			default:
 				break;
 		}
-		
-		setBtSaveAction();
 	}
 	
 	/**

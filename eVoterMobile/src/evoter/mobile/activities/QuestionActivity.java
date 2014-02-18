@@ -170,6 +170,7 @@ public class QuestionActivity extends ItemDataActivity {
 		} else {
 			Intent feedback = new Intent(QuestionActivity.this, StudentFeedbackActivity.class);
 			startActivity(feedback);
+			mainMenu.dismiss();
 		}
 	}
 	

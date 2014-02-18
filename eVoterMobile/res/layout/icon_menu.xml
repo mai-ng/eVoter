@@ -48,7 +48,7 @@
             android:id="@+id/btAcceptedUser"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Accepted User" />
+            android:text="Student joined" />
 
         <Button
             android:id="@+id/btStatitisticBar"

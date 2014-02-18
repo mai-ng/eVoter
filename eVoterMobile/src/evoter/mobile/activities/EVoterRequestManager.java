@@ -3,6 +3,8 @@
  */
 package evoter.mobile.activities;
 
+import java.sql.Timestamp;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +24,7 @@ import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
 import evoter.share.dao.SessionDAO;
+import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.SubjectDAO;
 import evoter.share.dao.UserDAO;
 import evoter.share.model.Question;
@@ -490,4 +493,109 @@ public class EVoterRequestManager {
 		
 	}
 	
+	/**
+	 * @param acceptedStudents
+	 */
+	public static void getListAcceptedSutdent(final AcceptedStudents context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		params.add(SessionUserDAO.SESSION_ID, String.valueOf(EVoterShareMemory.getCurrentSessionID()));
+		params.add(SessionUserDAO.ACCEPT_SESSION, String.valueOf(true));
+		
+		client.post(RequestConfig.getURL(URIRequest.GET_ALL_STUDENT), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						context.updateRequestCallBack(response);
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								context,
+								"Cannot request to server!");
+						Log.e("Accepted user request", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
+		
+	}
+	
+	/**
+	 * 
+	 */
+	public static void createSessionRequest(String sessionTitle, long subjectID, final NewSessionActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
+		params.add(SessionDAO.CREATION_DATE, EVoterMobileUtils.convertToString(timeStamp));
+		params.add(SessionDAO.IS_ACTIVE, String.valueOf(false));
+		params.add(SessionDAO.NAME, sessionTitle);
+		params.add(SessionDAO.SUBJECT_ID, String.valueOf(subjectID));
+		
+		client.post(RequestConfig.getURL(URIRequest.CREATE_SESSION), params,
+				new AsyncHttpResponseHandler() {
+					// Request successfully - client receive a response
+					@Override
+					public void onSuccess(String response) {
+						context.updateRequestCallBack(response);
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								context,
+								"Cannot request to server!");
+						Log.e("Create new session", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
+	}
+	
+	/**
+	 * 
+	 */
+	public static void editSession(String newTitle, long sessionID, final EditSessionActivity context) {
+		if (newTitle.equals("")) {
+			EVoterMobileUtils.showeVoterToast(context, "Session title cannot be empty!");
+		}
+		else {
+			AsyncHttpClient client = new AsyncHttpClient();
+			RequestParams params = new RequestParams();
+			params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+			params.add(SessionDAO.NAME, newTitle);
+			params.add(SessionDAO.ID, String.valueOf(sessionID));
+			
+			client.post(RequestConfig.getURL(URIRequest.UPDATE_SESSION), params,
+					new AsyncHttpResponseHandler() {
+						// Request successfully - client receive a response
+						@Override
+						public void onSuccess(String response) {
+							context.updateRequestCallBack(response);
+						}
+						
+						//Login fail
+						@Override
+						public void onFailure(Throwable error,
+								String content) {
+							EVoterMobileUtils.showeVoterToast(
+									context,
+									"Cannot request to server!");
+							Log.e("Create new session", "onFailure error : "
+									+ error.toString() + "content : "
+									+ content);
+						}
+					});
+			
+		}
+	}
 }

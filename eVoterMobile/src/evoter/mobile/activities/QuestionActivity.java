@@ -65,7 +65,7 @@ public class QuestionActivity extends ItemDataActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && !EVoterShareMemory.getListAcceptedSessions().contains(EVoterShareMemory.getCurrentSession().getId())) {
+				if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && !userAcceptSession()) {
 					EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "You have to accept joining session before go to detail question!");
 				} else {
 					Question selectQuestion = (Question) parent
@@ -214,13 +214,6 @@ public class QuestionActivity extends ItemDataActivity {
 		if (idExcitedBar2 != -1) {
 			Log.i("Send statitic value", "id: " + idExcitedBar2 + "\t statistic:" + progressValue);
 			EVoterRequestManager.doVote(idExcitedBar2, QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
-			//			
-			//			RequestParams params = new RequestParams();
-			//			params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-			//			params.add(QuestionDAO.QUESTION_TYPE_ID, String.valueOf(QuestionType.SLIDER));
-			//			params.put(AnswerDAO.ID, String.valueOf(idExcitedBar2));
-			//			params.put(AnswerDAO.STATISTICS, String.valueOf(progressValue));
-			//			EVoterRequestManager.submitStatisticValue(params, this);
 		} else {
 			EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "Cannot get the id of static slider bar!");
 		}
@@ -228,7 +221,7 @@ public class QuestionActivity extends ItemDataActivity {
 	
 	public void refreshData() {
 		if (userAcceptSession()) mainMenu.getBtStartSession().setVisibility(View.GONE);
-		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && EVoterShareMemory.currentSessionIsActive()) {
+		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && userAcceptSession()) {
 			//Setup seekbar
 			buildStaticSlider();
 		}
@@ -279,17 +272,6 @@ public class QuestionActivity extends ItemDataActivity {
 						"Cannot delete question: " + response);
 			}
 		}
-		//		else if (response.contains(CallBackMessage.SUBMIT_STATISTIC_MESSAGE)) {
-		//			Log.i("Static response: ", response);
-		//			if (response.contains("SUCCESS")) {
-		//				EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
-		//						"Sent static value successfully");
-		//			}
-		//			else {
-		//				EVoterMobileUtils.showeVoterToast(QuestionActivity.this,
-		//						"Cannot send evaluate value: " + response);
-		//			}
-		//		}
 		else if (response.contains(CallBackMessage.EVOTER_REQUEST_CHANGE_SESSION_STATUS)) {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(
@@ -310,6 +292,7 @@ public class QuestionActivity extends ItemDataActivity {
 						QuestionActivity.this,
 						"You joined to session");
 				mainMenu.getBtStartSession().setVisibility(View.GONE);
+				if (EVoterShareMemory.getCurrentSession().isActive()) buildStaticSlider();
 				EVoterShareMemory.addToListAcceptedSessions(EVoterShareMemory.getCurrentSession().getId());
 			} else {
 				EVoterMobileUtils.showeVoterToast(

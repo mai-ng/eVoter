@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import org.json.simple.JSONArray;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +34,7 @@ import evoter.share.model.Question;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContextTest.xml"})
 public class TestQuestionService {
-
+	//request parameter map
 	Map<String, Object> parameters;
 	@Before
 	public void setUp(){
@@ -44,11 +44,20 @@ public class TestQuestionService {
 	public void tearDown(){
 		parameters = null;
 	}
+	/**
+	 * Create an instance of {@link IQuestionService}
+	 */
 	@Autowired
 	IQuestionService questionService;
 	/**
+	 * Create an instance of {@link QuestionDAO}
+	 */
+	@Autowired
+	QuestionDAO questionDAO;
+	/**
 	 * Test for {@link IQuestionService#doGetAll(java.util.Map)} </br>
-	 * Expect returning a {@link JSONArray} </br>
+	 * Select all questions and their answers of session having sessionID=4
+	 * Expect returning an array of {@link Question#toJSON()} and {@link Answer#toJSON()} </br>
 	 */
 
 	@Test
@@ -76,8 +85,8 @@ public class TestQuestionService {
 	
 	/**
 	 * Test for {@link IQuestionService#doView(Map)} </br>
-	 * Expect returning {@link Question} </br>
-	 * @see Question#toJSON() </br>
+	 * Select question information having sessionID=1 </br>
+	 * Expect returning {@link Question#toJSON()} array</br>
 	 */
 	@Test
 	@Transactional
@@ -93,28 +102,12 @@ public class TestQuestionService {
 		Object response = questionService.doView(parameters);
 		assertEquals(response.toString(), expected_response);
 	}
-	/**
-	 * Test for {@link IQuestionService#getAnswersOfQuestion(long)} </br>
-	 */
-/*	@Test
-	@Transactional
-	@Rollback(false)
-	public void test_getAnswersOfQuestion(){
-		
-		String expected_response = ""+
-		"[{\"ANSWER_TEXT\":\"1\",\"ID\":1,\"QUESTION_ID\":3},{\"ANSWER_TEXT\":\"2\",\"ID\":2,\"QUESTION_ID\":3}," +
-		"{\"ANSWER_TEXT\":\"0\",\"ID\":3,\"QUESTION_ID\":3},{\"ANSWER_TEXT\":\"unlimited\",\"ID\":4,\"QUESTION_ID\":3}]";
-		long questionId = 3;
-		Object response = questionService.getAnswersOfQuestion(questionId);
-		assertEquals(response.toString(), expected_response);
-		
-		//return an empty array
-		response = questionService.getAnswersOfQuestion(1);
-		assertEquals(response.toString(), "[]");
-	}*/
+
 	/**
 	 * Test for {@link IQuestionService#doCreate(Map)} </br>
-	 * Expect returning a SUCCESS message </br>
+	 * Creating a question with its properties such as question test, question type </br>
+	 * creation date, creator user, sessionID and anwers </br>
+	 * Expect returning a SUCCESS message without an exception </br>
 	 */
 	@Test
 	@Transactional
@@ -136,30 +129,45 @@ public class TestQuestionService {
 	}
 	/**
 	 * Test for {@link IQuestionService#doDelete(Map)} </br>
-	 * Expect returning a SUCCESS message </br>
+	 * Delete question having question ID =1 and expect returning a SUCCESS message</br>
+	 * After finishing the transaction, expect searching a question having questionID=1 returning empty array</br> 
 	 */
 	@Test
 	@Transactional
 	@Rollback(true)
 	public void test_doDelete(){
 		
-		parameters.put(QuestionDAO.ID, "1");
+		long questionId = 1;
+		
+		parameters.put(QuestionDAO.ID, String.valueOf(questionId));
 		Object response = questionService.doDelete(parameters);
 		assertEquals(response.toString(), "SUCCESS");
+		
+		List<Question> questionList = questionDAO.findById(questionId);
+		assertTrue(questionList.isEmpty());
+		
+		
 	}
 	/**
 	 * Test for {@link IQuestionService#doSend(Map)} </br>
-	 * Expect returning a SUCCESS message </br>
+	 * Sending a question having questionID=1 </br>
+	 * Expect returning a SUCCESS message and question status will changed to 1 </br>
 	 */
 	@Test
 	@Transactional
 	@Rollback(true)
 	public void test_doSend(){
 		
-		parameters.put(QuestionDAO.ID, "1");
-		parameters.put(QuestionSessionDAO.SESSION_ID, "1");
+		long questionId = 1;
+		long sessionId = 1;
+		
+		parameters.put(QuestionDAO.ID, String.valueOf(questionId));
+		parameters.put(QuestionSessionDAO.SESSION_ID, String.valueOf(sessionId));
 		Object response = questionService.doSend(parameters);
 		assertEquals(response.toString(), "SUCCESS");
+		
+		Question question = questionDAO.findById(questionId).get(0);
+		assertEquals("question status is 1", question.getStatus(), 1);
 	}
 	/**
 	 * Test for {@link IQuestionService#doGetLatest(Map)} </br>
@@ -172,6 +180,7 @@ public class TestQuestionService {
 		
 		long sessionId = 1;
 		long questionId = 1;
+		
 		Question question = new Question(1, 1, 
 				"Interface can implement an interface?"
 				, Timestamp.valueOf("2014-01-09 10:31:17"), 0);
@@ -189,12 +198,11 @@ public class TestQuestionService {
 		Object response = questionService.doGetLatest(parameters);
 		assertEquals("doGetLatest", response.toString(), expected_response);
 		
-		//System.out.println(response);
-		
 	}
 	
 	/**
 	 * Test for {@link IQuestionService#doGetLatest(Map)} </br>
+	 * Get a sending status of a question of sessionID=2. This session has no sending status question </br> 
 	 * Expect returning an empty array </br>
 	 */
 	@Test
@@ -212,7 +220,8 @@ public class TestQuestionService {
 	}
 	/**
 	 * Test for {@link IQuestionService#doStopSend(Map)} </br>
-	 * Expect returning a SUCCESS message </br>
+	 * Stop sending question of sessionId=1 </br>
+	 * Expect returning a SUCCESS message and question status of sessionId=1 is changed to 2 </br>
 	 * 
 	 */
 	@Test
@@ -233,12 +242,15 @@ public class TestQuestionService {
 				response.toString(), "SUCCESS");
 		assertFalse("canSendQuestion returns false",
 				questionService.canSendQuestion(sessionId));
+		
+		assertEquals("question status will be changed to 2", question.getStatus(), 2);
 
 	}
 	
 	/**
 	 * Test for {@link IQuestionService#doEdit(Map)} </br>
-	 * Expect returning a SUCCESS message </br>
+	 * Edit question text, answer text of question id=3 </br>
+	 * Expect returning a SUCCESS message  and the changes are updated after getting back</br>
 	 * 
 	 */
 	@Test
@@ -246,16 +258,18 @@ public class TestQuestionService {
 	@Rollback(true)
 	public void test_doEdit(){
 		
-		String questionId = "3";
+		long questionId = 3;
 		String question_text = "the tested data";
-		parameters.put(QuestionDAO.ID, questionId);
+		parameters.put(QuestionDAO.ID, String.valueOf(questionId));
 		parameters.put(QuestionDAO.QUESTION_TEXT, question_text);
 		parameters.put(AnswerDAO.ANSWER_TEXT, new String[]{"answer 1", "answer 2"});
 		
 		Object response = questionService.doEdit(parameters);
 		assertEquals("doEdit() returns SUCCESS message", 
 				response.toString(), "SUCCESS");
-
+		
+		Question question = questionDAO.findById(questionId).get(0);
+		assertEquals("question text is changed", question.getQuestionText(), question_text);
 	}
 
 }

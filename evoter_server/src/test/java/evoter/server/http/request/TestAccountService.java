@@ -41,11 +41,15 @@ public class TestAccountService {
 	public void tearDown(){
 		parameters = null;
 	}
+	/**
+	 * Create a {@link IAccountService} instance
+	 */
 	@Autowired
 	IAccountService accountService;
 	/**
 	 * Test for {@link IAccountService#doLogin(Map)} </br>
-	 * Expect returning a not null response </br>
+	 * Call login request with a valid username and password 
+	 * and expect returning a not null response </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -61,7 +65,8 @@ public class TestAccountService {
 	}
 	/**
 	 * Test for {@link IAccountService#doLogin(Map)} </br>
-	 * Expect returning "USER DOES NOT EXIST" message
+	 * Call login request with a username that does not exist in the system and
+	 * expect returning "USER DOES NOT EXIST" message
 	 */
 	@Test
 	@Rollback(false)
@@ -76,10 +81,16 @@ public class TestAccountService {
 	}
 	/**
 	 * Test for {@link IAccountService#hasUserKey(String)} </br>
+	 * Create a userKey and add it by calling {@link IAccountService#addUserKey(String)} 
+	 * and expect it exist in the system</br>
+	 * 
+	 * Create an userkey without adding it to the system and expect it does not exist </br>
+	 * 
 	 */
 	@Test
 	@Rollback(false)
 	public void test_hasUserKey(){
+		
 		String userKey = "1923242434_3_3";
 		accountService.addUserKey(userKey);
 		assertTrue("test_hasUserKey() returns true", 
@@ -91,7 +102,8 @@ public class TestAccountService {
 	}
 	/**
 	 * Test for {@link IAccountService#doLogout(Map)} </br>
-	 * Expect returning a success message and userkey has been removed </br>
+	 * Create a userKey and add it by calling {@link IAccountService#addUserKey(String)} 
+	 * Expect returning a success message and userkey is removed after logging out the system</br> 
 	 */
 	@Test
 	@Rollback(false)
@@ -109,7 +121,8 @@ public class TestAccountService {
 	}
 	/**
 	 * Test for {@link IAccountService#doLogout(Map)} </br>
-	 * Expect returning a failure message </br>
+	 * Create a userkey and its userid gets from userkey does not exist in the system </br>
+	 * Expect returning a USER DOES NOT EXIST message </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -120,7 +133,7 @@ public class TestAccountService {
 		
 		assertFalse("userkey does not exist ", accountService.hasUserKey(userKey));
 		Object response = accountService.doLogout(parameters);
-		assertEquals("doLogout() returns failure message", response,"USER DOES NOT EXIST");
+		assertEquals("doLogout() returns USER DOES NOT EXIST message", response,"USER DOES NOT EXIST");
 
 	}
 	/**
@@ -135,7 +148,7 @@ public class TestAccountService {
 		parameters.put(UserDAO.EMAIL, email);
 		
 		Object response = accountService.doResetPassword(parameters);
-		assertTrue("doResetPassword() returns a EMAIL EXISTS message", 
+		assertTrue("doResetPassword() returns an EMAIL EXISTS message", 
 				response.equals("EMAIL EXISTS"));
 		
 	}
@@ -158,6 +171,7 @@ public class TestAccountService {
 	}	
 	/**
 	 * Test for {@link IAccountService#doRegister(Map)} </br>
+	 * Create a user that has username existing in the system </br>
 	 * Expect returning a "USER EXISTS ALREADY" message </br>
 	 */
 	@Test
@@ -178,6 +192,7 @@ public class TestAccountService {
 	}
 	/**
 	 * Test for {@link IAccountService#doRegister(Map)} </br>
+	 * Create an user that has email address existing in the system </br>
 	 * Expect returning a "EMAIL EXISTS" message </br>
 	 */
 	@Test
@@ -198,6 +213,7 @@ public class TestAccountService {
 	}
 	/**
 	 * Test for {@link IAccountService#doRegister(Map)} </br>
+	 * Create a user that has username and email not existing in the system </br>
 	 * Expect returning a "SUCCESS" message </br>
 	 */
 	@Test

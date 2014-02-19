@@ -3,6 +3,7 @@ package evoter.server.http.request;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -32,12 +33,32 @@ import evoter.share.model.QuestionType;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContextTest.xml"})
 public class TestAnswerService {
-
+	//username is used to create login case
+	String username = "paul_gibson";
+	//password is used to create login case
+	String password = "12345678";
+	
+	/**
+	 * Create a {@link IAnswerService} instance
+	 */
 	@Autowired
 	private IAnswerService answerService;
+	/**
+	 * Create a {@link IAccountService} instance
+	 */
 	@Autowired
 	private IAccountService accountService;
-
+	/**
+	 * Create an instance of {@link QuestionDAO} </br>
+	 */
+	@Autowired
+	private QuestionDAO questionDAO;
+	/**
+	 * Create an instance of {@link AnswerDAO}
+	 */
+	@Autowired
+	private AnswerDAO answerDAO;
+	//request parameter map
 	private Map<String, Object> parameters;
 
 	@Before
@@ -52,7 +73,8 @@ public class TestAnswerService {
 
 	/**
 	 * Test for {@link IAnswerService#doCreate(long, String[])} </br>
-	 * Expect returning SUCCESS message </br>
+	 * Create 2 answers for question having id=1 </br>
+	 * Expect returning SUCCESS message and returning 2 answers when searching questionId=1</br>
 	 * @throws Exception 
 	 */
 	@Test
@@ -66,7 +88,15 @@ public class TestAnswerService {
 		Object response = answerService.doCreate(questionId, answerTexts);
 		assertEquals("doCreate", response.toString(), "SUCCESS");
 		
+		List<Answer> answers = answerDAO.findByQuestionId(questionId);
+		assertEquals("question has 4 answers (2 old + 2 new)", answers.size(), 4);
+		
 	}
+	/**
+	 * Test for {@link IAnswerService#doEdit(long, String[], String[])} </br>
+	 * Expect returning SUCCESS message and the answers are updated </br>
+	 * @throws Exception </br>
+	 */
 	@Test
 	@Transactional
 	@Rollback(true)
@@ -78,13 +108,20 @@ public class TestAnswerService {
 		
 		Object response = answerService.doEdit(questionId, answerIds, answerTexts);
 		assertEquals("doEdit", response.toString(), "SUCCESS");
+		
+		Answer answer_id_1 = answerDAO.findById(1).get(0);
+		assertEquals(answer_id_1.getAnswerText(), "answer 1");
+		
+		Answer answer_id_2 = answerDAO.findById(2).get(0);
+		assertEquals(answer_id_2.getAnswerText(), "answer 2");
 
 	}
 	/**
 	 * Test for {@link IAnswerService#doGetAllAnswer(long)} </br>
-	 * Expect returning an {@link Answer#toJSON()} array or an empty array if question has no answer </br>
+	 * Select all answers of question id=1 and expect returning a {@link Answer#toJSON()} array </br>
+	 * Select all answers of question id=3 and expect returning an  or an empty array</br>
 	 * 
-	 * @throws Exception
+	 * @throws Exception </br>
 	 */
 	@Test
 	@Transactional
@@ -110,8 +147,9 @@ public class TestAnswerService {
 	}
 	/**
 	 * Test for {@link IAnswerService#doDelete(long)} </br>
-	 * Expect returning a SUCCESS message 
-	 * @throws Exception
+	 * Delete all answers of question id=3 and expect returning a SUCCESS message </br>
+	 * Select all answers of question id=3 after deleting and expect returning an empty </br> 
+	 * @throws Exception </br>
 	 */
 	@Test
 	@Transactional
@@ -121,9 +159,14 @@ public class TestAnswerService {
 		long questionId = 3;
 		Object response = answerService.doDelete(questionId);
 		assertEquals("doDelete", response.toString(), "SUCCESS");
+		
+		List<Answer> answers = answerDAO.findByQuestionId(questionId);
+		assertTrue(answers.isEmpty());
 	}
 	/**
 	 * Test for {@link IAnswerService#doGetStatistics(java.util.Map)} </br>
+	 * Create a login case to generate userkey. This userkey is verify when 
+	 * calling {@link IAnswerService#doGetStatistics(Map)} </br>
 	 * Expect returning an {@link Answer#toJSON()} array </br>
 	 */
 	@Test
@@ -134,13 +177,11 @@ public class TestAnswerService {
 		String expected_response=""+
 		"[{\"ID\":139,\"STATISTICS\":\"10\"}," +
 		"{\"ID\":140,\"STATISTICS\":\"30\"}]";
-		
-		String username = "paul_gibson";
-		String password = "12345678";
 
 		parameters.put(UserDAO.USER_NAME, username);
 		parameters.put(UserDAO.PASSWORD, password);
 		JSONObject userKey = (JSONObject)accountService.doLogin(parameters);
+		
 		//remove login username and password out of the request parameter 
 		parameters.remove(UserDAO.USER_NAME);
 		parameters.remove(UserDAO.PASSWORD);
@@ -153,15 +194,15 @@ public class TestAnswerService {
 	}
 	/**
 	 * Test for {@link IAnswerService#doVote(Map)} </br>
+	 * Create a login case to generate userkey. This userkey is verify when </br>
+     * calling {@link IAnswerService#doVote(Map)} </br>
 	 * Expect returning SUCCESS message </br>
 	 */
 	@Test
 	@Transactional
 	@Rollback(true)
 	public void test_doVote(){
-		String username = "paul_gibson";
-		String password = "12345678";
-
+	
 		parameters.put(UserDAO.USER_NAME, username);
 		parameters.put(UserDAO.PASSWORD, password);
 		JSONObject userKey = (JSONObject)accountService.doLogin(parameters);

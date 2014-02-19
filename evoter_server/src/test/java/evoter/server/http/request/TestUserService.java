@@ -1,8 +1,11 @@
 package evoter.server.http.request;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -24,6 +27,10 @@ import evoter.share.model.UserType;
 /**
  * 
  * Create test cases for {@link IUserService} and {@link UserService} </br>
+ * For all test cases , there is always a login test cases created to generate userkey </br>
+ * Userkey is verified when a request is coming except login, register account or reset password </br> 
+ * Also, userkey is used to get user id in some test cases </br> 
+ *  
  * @author btdiem </br>
  *
  */
@@ -32,12 +39,27 @@ import evoter.share.model.UserType;
 @Transactional
 @TransactionConfiguration(defaultRollback=true)
 public class TestUserService {
-
+	//request parameter map
 	Map<String, Object> parameters;
+	//username is used to create a login case
+	String username = "paul_gibson";
+	//password is used to create a login case
+	String password = "12345678";
+	/**
+	 * Create an instance of {@link IAccountService} 
+	 */
 	@Autowired
 	IAccountService accountService;
+	/**
+	 * Create an instance of {@link IUserService}
+	 */
 	@Autowired
 	IUserService userService;
+	/**
+	 * Create an instance of {@link UserDAO} </br>
+	 */
+	@Autowired
+	UserDAO userDAO;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -57,9 +79,6 @@ public class TestUserService {
 	@Test
 	public void test_doGetAll() {
 		
-		String username = "paul_gibson";
-		String password = "12345678";
-		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(UserDAO.USER_NAME, username);
 		map.put(UserDAO.PASSWORD, password);
@@ -77,18 +96,16 @@ public class TestUserService {
 		"\"full_name\":\"Jean Luc\",\"email_address\":\"jean.luc@telecom-sudparis.eu\"}," +
 		"{\"user_type_id\":2,\"id\":22,\"passwd\":\"123456789\",\"approved\":false,\"username\":" +
 		"\"tuan\",\"full_name\":\"Tuan\",\"email_address\":\"tuan@yahoo.com\"}]";		
-		//System.out.println("response: " + response);
 		
 		assertEquals("doGetAll", response.toString(), expected_response);
 	}
 	/**
 	 * Test for {@link IUserService#doCreate(Map)} </br>
+	 * Create an {@link User} with username, password, fullname, email and user type as input parameters
 	 * Expect returning SUCCESS message </br>
 	 */
 	@Test
 	public void test_doCreate_1(){
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(UserDAO.USER_NAME, username);
@@ -114,12 +131,11 @@ public class TestUserService {
 	
 	/**
 	 * Test for {@link IUserService#doCreate(Map)} </br>
+	 * Create a {@link User} that has no an email in the input parameters </br>
 	 * Expect returning FAILURE message </br>
 	 */
 	@Test
 	public void test_doCreate_2(){
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(UserDAO.USER_NAME, username);
@@ -142,13 +158,11 @@ public class TestUserService {
 	}
 	/**
 	 * Test for {@link IUserService#doDelete(Map)} </br>
-	 * Expect returning SUCCESS message </br>
+	 * Delete an user ID=1 and expect returning SUCCESS message </br>
+	 * Search user ID=1 and expect returning an empty array </br>
 	 */
 	@Test
 	public void test_doDelete_1(){
-		
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(UserDAO.USER_NAME, username);
@@ -161,15 +175,17 @@ public class TestUserService {
 		Object response = userService.doDelete(parameters);
 		assertEquals("doDelete() returns SUCCESS message", 
 				response.toString(), "SUCCESS");
+		
+		List<User> users = userDAO.findById(1);
+		assertTrue(users.isEmpty());
 	}
 	/**
 	 * Test for {@link IUserService#doDelete(Map)} </br>
+	 * Delete a user ID=-1 that does not exist in the system </br>
 	 * Expect returning USER DOES NOT EXIST message </br>
 	 */
 	@Test
 	public void test_doDelete_2(){
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(UserDAO.USER_NAME, username);
@@ -186,13 +202,11 @@ public class TestUserService {
 	}
 	/**
 	 * Test for {@link IUserService#doDelete(Map)} </br>
+	 * Send a delete_user request without valid input parameter </br>
 	 * Expect returning FAILURE message </br>
 	 */
 	@Test
 	public void test_doDelete_3(){
-		
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(UserDAO.USER_NAME, username);
@@ -208,13 +222,11 @@ public class TestUserService {
 	}
 	/**
 	 * Test for {@link IUserService#doChangeApprove(Map)} </br>
-	 * Expect returning SUCCESS message </br>
+	 * Change approved status of user ID=1 to false and expect returning SUCCESS message </br>
+	 * Search user ID=1 again and expect its approved status is false </br>
 	 */
 	@Test
 	public void test_doChangeApprove_1(){
-		
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(UserDAO.USER_NAME, username);
@@ -226,18 +238,20 @@ public class TestUserService {
 		parameters.put(UserDAO.IS_APPROVED,"0");
 		
 		Object response = userService.doChangeApprove(parameters);
-		System.out.println("response :" + response);
+//		System.out.println("response :" + response);
 		assertEquals("doChangeApprove() returns SUCCESS", response.toString(), "SUCCESS");
+		
+		User user = userDAO.findById(1).get(0);
+		assertFalse(user.isApproved());
+		
 	}
 	/**
 	 * Test for {@link IUserService#doChangeApprove(Map)} </br>
+	 * Change approved status of user ID=-1 to false. This user does not exist in the system </br>
 	 * Expect returning USER DOES NOT EXIST message </br>
 	 */
 	@Test
 	public void test_doChangeApprove_2(){
-		
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(UserDAO.USER_NAME, username);
@@ -254,13 +268,11 @@ public class TestUserService {
 	}
 	/**
 	 * Test for {@link IUserService#doChangeApprove(Map)} </br>
+	 * Send a change_approved request with an invalid input parameter in the system </br>
 	 * Expect returning FAILURE message </br>
 	 */
 	@Test
 	public void test_doChangeApprove_3(){
-		
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(UserDAO.USER_NAME, username);
@@ -275,19 +287,18 @@ public class TestUserService {
 
 	/**
 	 * Test for {@link IUserService#doEdit(Map)} </br>
-	 * Expect returning SUCCESS message </br>
+	 * Change approved status and full name of user ID=1 and expect returning SUCCESS message </br>
+	 * Search user ID=1 again and expect the changes are updated </br>
 	 */
 	@Test
 	public void test_doEdit_1(){
-		
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(UserDAO.USER_NAME, username);
 		map.put(UserDAO.PASSWORD, password);
 		
 		JSONObject userKey = (JSONObject)accountService.doLogin(map);
+		
 		parameters.put("userkey", userKey.get("userkey"));
 		parameters.put(UserDAO.ID, "1");
 		parameters.put(UserDAO.IS_APPROVED,"0");
@@ -296,16 +307,18 @@ public class TestUserService {
 		Object response = userService.doEdit(parameters);
 		assertEquals("doEdit() returns SUCCESS", response.toString(), "SUCCESS");
 		
+		User user = userDAO.findById(1).get(0);
+		assertFalse(user.isApproved());
+		assertEquals(user.getFullName(), "full name");
+		
 	}
 	/**
 	 * Test for {@link IUserService#doEdit(Map)} </br>
+	 * Change the information of user ID=-1 that does not exist </br>
 	 * Expect returning USER DOES NOT EXIST message </br>
 	 */
 	@Test
 	public void test_doEdit_2(){
-		
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(UserDAO.USER_NAME, username);
@@ -321,14 +334,12 @@ public class TestUserService {
 	}
 	/**
 	 * Test for {@link IUserService#doEdit(Map)} </br>
+	 * Send edit_user request with an invalid input parameter </br>
 	 * Expect returning FAILURE message </br>
 	 */
 	@Test
 	public void test_doEdit_3(){
-		
-		String username = "paul_gibson";
-		String password = "12345678";
-		
+				
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(UserDAO.USER_NAME, username);
 		map.put(UserDAO.PASSWORD, password);

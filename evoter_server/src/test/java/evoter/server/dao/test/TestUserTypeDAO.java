@@ -119,7 +119,9 @@ public class TestUserTypeDAO{
 		List<UserType> userTypes = userTypeDAO.findByUserTypeValue(userTypeValue);
 		assertTrue("test_deleteByUserTypeValue", userTypes.size() == 0);		
 	}
-	
+	/**
+	 * Test for {@link UserTypeDAO#insert(UserType)} </br>
+	 */
 	@Test
 	public void test_insert(){
 		

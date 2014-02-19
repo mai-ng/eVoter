@@ -21,6 +21,8 @@ import evoter.server.http.request.interfaces.ISessionService;
 import evoter.share.dao.SessionDAO;
 import evoter.share.dao.SessionUserDAO;
 import evoter.share.dao.UserDAO;
+import evoter.share.model.Session;
+import evoter.share.model.User;
 /**
  * 
  * Test for {@link ISessionService} and {@link SessionService} </br>
@@ -33,12 +35,31 @@ import evoter.share.dao.UserDAO;
 @TransactionConfiguration(defaultRollback=true)
 public class TestSessionService {
 
-	Map<String, Object> parameters;
+	//username is used to create a teacher login case
+	String teacher_username = "paul_gibson";
+	//password is used to create a teacher login case
+	String teacher_password = "12345678";
+	//username is used to create a student login case	
+	String student_username = "nvluong";
+	//password is used to create a student login case
+	String student_password = "12345678";
 	
+	Map<String, Object> parameters;
+	/**
+	 * Create an instance of {@link ISessionService} bean
+	 */
 	@Autowired
 	ISessionService sessionService;
+	/**
+	 * Create an instance of {@link IAccountService} bean
+	 */
 	@Autowired
 	IAccountService accountService;
+	/**
+	 * Create an instance of {@link SessionDAO} </br>
+	 */
+	@Autowired
+	SessionDAO sessionDAO;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -52,20 +73,19 @@ public class TestSessionService {
 
 	/**
 	 * Test for {@link ISessionService#doGetAll(Map)} </br>
-	 * Select all sessions by a teacher </br>
+	 * Select all sessions of subjectID=1 by a teacher user</br>
+	 * Expect returning an {@link Session#toJSON()} array </br>
 	 */
 	@Test
 	public void test_doGetAll_1(){
 		
 		long subjectId = 1;
-		//user type is teacher
-		String username = "paul_gibson";
-		String password = "12345678";
-		
-		parameters.put(UserDAO.USER_NAME, username);
-		parameters.put(UserDAO.PASSWORD, password);
+
+		parameters.put(UserDAO.USER_NAME, teacher_username);
+		parameters.put(UserDAO.PASSWORD, teacher_password);
 		
 		JSONObject userKey = (JSONObject)accountService.doLogin(parameters);
+
 		parameters.put("userkey", userKey.get("userkey"));
 		parameters.put(SessionDAO.SUBJECT_ID, String.valueOf(subjectId));
 		
@@ -80,21 +100,21 @@ public class TestSessionService {
 
 	/**
 	 * Test for {@link ISessionService#doGetAll(Map)} </br>
-	 * Select all sessions by a student </br>
+	 * Select all sessions of subjectID=1 by a student user</br>
+	 * Expect returning an {@link Session#toJSON()} </br>
 	 */
 	@Test
 	public void test_doGetAll_2(){
 		
-		String username = "nvluong";
-		String password = "12345678";
-		
-		parameters.put(UserDAO.USER_NAME, username);
-		parameters.put(UserDAO.PASSWORD, password);
+
+		long subjectId = 1;
+		parameters.put(UserDAO.USER_NAME, student_username);
+		parameters.put(UserDAO.PASSWORD, student_password);
 		
 		JSONObject userKey = (JSONObject)accountService.doLogin(parameters);
 		parameters.put("userkey", userKey.get("userkey"));
 		
-		long subjectId = 1;
+
 		parameters.put(SessionDAO.SUBJECT_ID, String.valueOf(subjectId));
 		
 		String expected_response = ""+
@@ -109,15 +129,13 @@ public class TestSessionService {
 	
 	/**
 	 * Test for {@link ISessionService#doView(Map)} </br>
+	 * Select the information of sessionID=1 and expect return {@link Session#toJSON()} </br>
 	 */
 	@Test
 	public void test_doView(){
 		
-		String username = "nvluong";
-		String password = "12345678";
-		
-		parameters.put(UserDAO.USER_NAME, username);
-		parameters.put(UserDAO.PASSWORD, password);
+		parameters.put(UserDAO.USER_NAME, student_username);
+		parameters.put(UserDAO.PASSWORD, student_password);
 		
 		JSONObject userKey = (JSONObject)accountService.doLogin(parameters);
 		parameters.remove(UserDAO.USER_NAME);
@@ -135,7 +153,9 @@ public class TestSessionService {
 	}
 	/**
 	 * Test for {@link ISessionService#doActive(Map)} </br>
-	 * Expect returning SUCCESS message </br>
+	 * Active a sessionID=2 and expect returning SUCCESS message and
+	 * active value of this session is changed to true after getting back </br>
+	 * 
 	 */
 	@Test
 	public void test_doActive(){
@@ -144,10 +164,14 @@ public class TestSessionService {
 		parameters.put(SessionDAO.ID, String.valueOf(sessionId));
 		Object response = sessionService.doActive(parameters);
 		assertEquals("doActive", response.toString(), "SUCCESS");
+		
+		Session session = sessionDAO.findById(sessionId).get(0);
+		assertTrue(session.isActive());
 	}
 	/**
 	 * Test for {@link ISessionService#doInActive(Map)} </br>
-	 * Expect returning SUCCESS message </br>
+	 * Active a sessionID=2 and expect returning SUCCESS message and
+	 * active value of this session is changed to false after getting back </br>
 	 */
 	@Test
 	public void test_doInActive(){
@@ -156,10 +180,14 @@ public class TestSessionService {
 		parameters.put(SessionDAO.ID, String.valueOf(sessionId));
 		Object response = sessionService.doInActive(parameters);
 		assertEquals("doInActive", response.toString(), "SUCCESS");
+		
+		Session session = sessionDAO.findById(sessionId).get(0);
+		assertFalse(session.isActive());
 	}
 	/**
 	 * Test for {@link ISessionService#doUpdate(Map)} </br>
-	 * Expect returning SUCCESS message </br>
+	 * Change session name of sessionID=2 </br>
+	 * Expect returning SUCCESS message and session name is changed after getting back </br>
 	 */
 	@Test
 	public void test_doUpdate(){
@@ -169,17 +197,23 @@ public class TestSessionService {
 		parameters.put(SessionDAO.ID, String.valueOf(sessionId));
 		parameters.put(SessionDAO.NAME, name);
 		Object response = sessionService.doUpdate(parameters);
-		assertEquals("doActive", response.toString(), "SUCCESS");
+		assertEquals("doUpdate", response.toString(), "SUCCESS");
+		
+		Session session = sessionDAO.findById(sessionId).get(0);
+		assertEquals("session name is changed", session.getName(), name);
+		
 	}	
 	/**
 	 * Test for {@link ISessionService#doGetStudentsOfSession(Map)} </br>
-	 * Get all student users that accepted </br>
+	 * Get all accepted student users of sessionID=1   </br>
+	 * Expect returning a {@link User#toJSON()} array </br>
 	 */
 	@Test
 	public void test_doGetStudentsOfSession_1(){
 		
 		long sessionId = 1;
 		boolean isAccepted = true;
+		
 		parameters.put(SessionUserDAO.SESSION_ID, String.valueOf(sessionId));
 		parameters.put(SessionUserDAO.ACCEPT_SESSION, String.valueOf(isAccepted));
 		String expected_response = ""+
@@ -195,13 +229,15 @@ public class TestSessionService {
 	
 	/**
 	 * Test for {@link ISessionService#doGetStudentsOfSession(Map)} </br>
-	 * Get all student users that  are not accepted yet</br>
+	 * Get all student users of sessionID=1 that  are not accepted yet</br>
+	 * Expect returning a array of {@link User#toJSON()} </br>
 	 */
 	@Test
 	public void test_doGetStudentsOfSession_2(){
 		
 		long sessionId = 1;
 		boolean isAccepted = false;
+		
 		parameters.put(SessionUserDAO.SESSION_ID, String.valueOf(sessionId));
 		parameters.put(SessionUserDAO.ACCEPT_SESSION, String.valueOf(isAccepted));
 		String expected_response = ""+

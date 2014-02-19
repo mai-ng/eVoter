@@ -13,6 +13,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+
+import evoter.server.dao.impl.AnswerDAOImpl;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.model.Answer;
 /**
@@ -25,7 +27,9 @@ import evoter.share.model.Answer;
 @Transactional
 @TransactionConfiguration(defaultRollback=true)
 public class TestAnswerDAO {
-	
+	/**
+	 * Create a {@link AnswerDAOImpl} instance
+	 */
 	@Autowired
 	AnswerDAO answerDAO;
 	
@@ -120,7 +124,9 @@ public class TestAnswerDAO {
 		List<Answer> answers = answerDAO.findByAnswerText(answerText);
 		assertTrue("test_deleteByAnswerText", 0 == answers.size());		
 	}
-	
+	/**
+	 * Test for {@link AnswerDAO#insert(Answer)} </br>
+	 */
 	@Test
 	public void test_insert(){
 

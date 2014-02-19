@@ -47,7 +47,6 @@ public interface IAccountService {
 	 * @see URIRequest#EMAIL_NOT_EXIST_MESSAGE </br>
 	 * @see URIRequest#FAILURE_MESSAGE </br>
 
-	 * @param httpExchange {@link HttpExchange} communicates between client and server </br>
 	 * @param parameters contains {@link UserDAO#EMAIL} </br>
 	 */
 	public Object doResetPassword(Map<String, Object> parameters) ;
@@ -58,7 +57,6 @@ public interface IAccountService {
 	 * @return {@link URIRequest#EMAIL_EXIST_MESSAGE} if email is found </br>
 	 * @return {@link URIRequest#FAILURE_MESSAGE} if there is an exception </br>
 	 * 
-	 * @param httpExchange {@link HttpExchange} communicates between clients and server </br>
 	 * @param parameters contains: </br>
 	 * 		</li> {@link UserDAO#USER_NAME} </br>
 	 * 		</li> {@link UserDAO#EMAIL} </br>

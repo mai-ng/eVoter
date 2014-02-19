@@ -1,8 +1,10 @@
 package evoter.server.http.request;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -24,6 +26,11 @@ import evoter.share.model.Subject;
 import evoter.share.model.User;
 /**
  * Test for {@link ISubjectService} and {@link SubjectService} </br>
+ * 
+ * For all test cases , there is always a login test cases created to generate userkey </br>
+ * Userkey is verified when a request is coming except login, register account or reset password </br> 
+ * Also, userkey is used to get user id in some test cases </br> 
+ * 
  * @author btdiem </br>
  *
  */
@@ -33,11 +40,27 @@ import evoter.share.model.User;
 @TransactionConfiguration(defaultRollback=true)
 public class TestSubjectService {
 
+	//username is used to create a login case
+	String username = "paul_gibson";
+	//password is used to create a login case
+	String password = "12345678";
+	//request parameter map
 	Map<String, Object> parameters;
+	/**
+	 * Create an instance of {@link ISubjectService} bean
+	 */
 	@Autowired
 	ISubjectService subjectService;
+	/**
+	 * Create an instance of {@link IAccountService} bean
+	 */
 	@Autowired
 	IAccountService accountService;
+	/**
+	 * Create an instance of {@link SubjectDAO} </br>
+	 */
+	@Autowired
+	SubjectDAO subjectDAO;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -50,6 +73,7 @@ public class TestSubjectService {
 	}
 	/**
 	 * Test for {@link ISubjectService#doView(Map)} </br>
+	 * Select the information of subjectID=1 of an  user that has user ID getting from userkey </br>
 	 * Expect returning {@link Subject#toJSON()} </br>
 	 */
 	@Test
@@ -60,9 +84,6 @@ public class TestSubjectService {
 		"\"TITLE\":\"Object Oriented Programming\"}";
 		
 		long subjectId = 1;
-		String username = "paul_gibson";
-		String password = "12345678";
-		
 		parameters.put(UserDAO.USER_NAME, username);
 		parameters.put(UserDAO.PASSWORD, password);
 		
@@ -76,14 +97,13 @@ public class TestSubjectService {
 	}
 	/**
 	 * Test for {@link ISubjectService#doView(Map)} </br>
+	 * Select the information of subjectID=10000 that is not created yet </br>
 	 * Expect returning "SUBJECT DOES NOT EXIST" message</br>
 	 */
 	@Test
 	public void test_doView_2(){
 		
 		long subjectId = 10000;
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		parameters.put(UserDAO.USER_NAME, username);
 		parameters.put(UserDAO.PASSWORD, password);
@@ -98,14 +118,11 @@ public class TestSubjectService {
 	}
 	/**
 	 * Test for {@link ISubjectService#doGetAll(Map)} </br>
-	 * Select all {@link Subject} created by user </br>
+	 * Select all subjects of an user that has user ID getting from userkey </br>
 	 * Expecting returning a array of {@link Subject#toJSON()} </br>
 	 */
 	@Test
 	public void test_doGetAll(){
-		
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		parameters.put(UserDAO.USER_NAME, username);
 		parameters.put(UserDAO.PASSWORD, password);
@@ -124,14 +141,13 @@ public class TestSubjectService {
 
 	/**
 	 * Test for {@link ISubjectService#doDelete(Map)} </br>
-	 * Expect returning SUCCESS message </br>
+	 * Delete a subject ID=1 and expect returning SUCCESS message</br>
+	 * Search subject ID=1 and expect returning an empty list</br>
 	 */
 	@Test
 	public void test_doDelete_1(){
 		
 		long subjectId = 1;
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		parameters.put(UserDAO.USER_NAME, username);
 		parameters.put(UserDAO.PASSWORD, password);
@@ -143,17 +159,20 @@ public class TestSubjectService {
 		Object response = subjectService.doDelete(parameters);
 		
 		assertEquals("doDelete", response.toString(), "SUCCESS");
+		
+		List<Subject> subjects = subjectDAO.findById(subjectId);
+		assertTrue(subjects.isEmpty());
+		
 	}
 	/**
 	 * Test for {@link ISubjectService#doDelete(Map)} </br>
+	 * Delete a subject ID=10000 that is not created yet </br>
 	 * Expect returning SUBJECT DOES NOT EXIST message </br>
 	 */
 	@Test
 	public void test_doDelete_2(){
 		
 		long subjectId = 10000;
-		String username = "paul_gibson";
-		String password = "12345678";
 		
 		parameters.put(UserDAO.USER_NAME, username);
 		parameters.put(UserDAO.PASSWORD, password);
@@ -168,13 +187,11 @@ public class TestSubjectService {
 	}
 	/**
 	 * Test for {@link ISubjectService#doSearch(Map)} </br>
-	 * Expect returning a Array of {@link Subject#toJSON()} </br>
+	 * Search subjects with creation date condition </br>
+	 * Expect returning a array of {@link Subject#toJSON()} </br>
 	 */
 	@Test
 	public void test_doSearch(){
-
-		String username = "paul_gibson";
-		String password = "12345678";
 
 		parameters.put(UserDAO.USER_NAME, username);
 		parameters.put(UserDAO.PASSWORD, password);
@@ -191,7 +208,6 @@ public class TestSubjectService {
 		"{\"ID\":2,\"CREATION_DATE\":\"2013-12-28 12:50:24.0\",\"TITLE\":\"Testing Metrics\"}," +
 		"{\"ID\":3,\"CREATION_DATE\":\"2013-12-28 12:50:24.0\",\"TITLE\":\"Software Engineering\"}]";
 		
-
 		Object response = subjectService.doSearch(parameters);
 		
 		assertEquals("doSearch", response.toString(), expected_response);
@@ -199,15 +215,13 @@ public class TestSubjectService {
 	}
 	/**
 	 * Test for {@link ISubjectService#doGetUsersOfSubject(Map)} </br>
+	 * Select all users of subject ID=3 </br>
 	 * Expect returning an array of {@link User#toJSON()} </br>
 	 * 
 	 */
 	@Test
 	public void do_doGetUsersOfSubject(){
 		
-		String username = "paul_gibson";
-		String password = "12345678";
-
 		parameters.put(UserDAO.USER_NAME, username);
 		parameters.put(UserDAO.PASSWORD, password);
 		JSONObject userKey = (JSONObject)accountService.doLogin(parameters);

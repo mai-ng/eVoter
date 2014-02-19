@@ -30,11 +30,11 @@ public class AccountService implements IAccountService{
 	
 	 List<String> userKeys = new ArrayList<String>();
 	 //It is used for testing requests that have not yet implemented
-	 String userKeyemp = "temp";
+//	 String userKeyemp = "temp";
 	 private AccountService(){
-		 userKeys.add(userKeyemp);
-		 userKeys.add("1333_1_2");
-		 userKeys.add("1333_3_3");
+//		 userKeys.add(userKeyemp);
+//		 userKeys.add("1333_1_2");
+//		 userKeys.add("1333_3_3");
 	 }
 	
 	 /**

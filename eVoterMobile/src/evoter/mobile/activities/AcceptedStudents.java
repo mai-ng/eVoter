@@ -63,7 +63,7 @@ public class AcceptedStudents extends EVoterActivity {
 	 * 
 	 */
 	public void refreshData() {
-		EVoterRequestManager.getListAcceptedSutdent(this);
+		EVoterRequestManager.getUsersOfSession(this);
 	}
 	
 	/*
@@ -74,7 +74,7 @@ public class AcceptedStudents extends EVoterActivity {
 	 */
 	@Override
 	public void updateRequestCallBack(String response, String callBackMessage) {
-		if (callBackMessage.equals(CallBackMessage.ACCEPT_SESSION_EVOTER_REQUEST)) {
+		if (callBackMessage.equals(CallBackMessage.GET_LIST_ACCEPTED_STUDENT_EVOTER_REQUEST)) {
 			Log.i("Get accepted users:", response);
 			try {
 				JSONArray array = new JSONArray(response);

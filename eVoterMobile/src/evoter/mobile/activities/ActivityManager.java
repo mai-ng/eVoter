@@ -13,15 +13,6 @@ import evoter.share.model.Question;
  */
 public class ActivityManager {
 	
-	/**
-	 * @param question question to show statistic of
-	 * @param context The context where call the function
-	 */
-	public static void viewQuestionStatistic(Question question, Context context) {
-		EVoterShareMemory.setCurrentQuestion(question);
-		Intent statisticActivity = new Intent(context, QuestionStatisticActivity.class);
-		context.startActivity(statisticActivity);
-	}
 	
 	/**
 	 * @param resetPasswordActivity

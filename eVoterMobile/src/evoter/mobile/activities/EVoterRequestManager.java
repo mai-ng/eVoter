@@ -363,7 +363,7 @@ public class EVoterRequestManager {
 	/**
 	 * @param acceptedStudents
 	 */
-	public static void getListAcceptedSutdent(final AcceptedStudents context) {
+	public static void getUsersOfSession(final AcceptedStudents context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());

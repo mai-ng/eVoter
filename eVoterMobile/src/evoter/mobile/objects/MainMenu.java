@@ -95,6 +95,7 @@ public class MainMenu extends Dialog {
 		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
 			btStartSession.setText(ACCEPT_SESSION);
 		}
+		if(EVoterShareMemory.getCurrentSession().isActive()) btStartSession.setVisibility(View.GONE);
 	}
 	
 	/**

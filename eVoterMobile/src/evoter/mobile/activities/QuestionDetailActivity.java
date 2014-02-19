@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -50,14 +51,14 @@ import evoter.share.utils.URIRequest;
  */
 public class QuestionDetailActivity extends EVoterActivity {
 	
-	private final String STOP = "Stop receive answer";
+	private final String STOP = "Stop receiving answer";
 	private final String SEND = "Send";
 	private final String SUBMIT = "Submit";
-	private final String VIEW_STATISTIC = "View statistic";
 	
 	TextView tvQuestionText;
 	LinearLayout answerArea;
 	Button btSend;
+	Button btViewStatistic;
 	RadioGroup groups;
 	ArrayList<Answer> answers;
 	ArrayList<CheckBox> listCheckBox;
@@ -86,12 +87,22 @@ public class QuestionDetailActivity extends EVoterActivity {
 		answerArea = (LinearLayout) findViewById(R.id.loAnswerArea);
 		btSend = (Button) findViewById(R.id.btSendQuestion);
 		btSend.setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				setupSendButtonAction();
 			}
 		});
+		
+		btViewStatistic = (Button) findViewById(R.id.btViewStatistic);
+		btViewStatistic.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent statisticActivity = new Intent(QuestionDetailActivity.this, QuestionStatisticActivity.class);
+				startActivity(statisticActivity);
+			}
+		});
+		
+		if(!EVoterShareMemory.getCurrentSession().isActive()) mainMenu.getBtStartSession().setVisibility(View.GONE);
 		groups = new RadioGroup(this);
 		groups.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		listCheckBox = new ArrayList<CheckBox>();
@@ -110,35 +121,23 @@ public class QuestionDetailActivity extends EVoterActivity {
 		answerArea.removeAllViews();
 		listCheckBox.clear();
 		groups.removeAllViews();
-		setButtonLabel();
-		buidAnswerArea();
-	}
-	
-	/**
-	 * 
-	 */
-	private void setButtonLabel() {
 		if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
 			if (EVoterShareMemory.getCurrentQuestion().getStatus() == 0) {
 				btSend.setText(SEND);
 			} else if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
 				btSend.setText(STOP);
 			} else if (EVoterShareMemory.getCurrentQuestion().getStatus() == 2) {
-				btSend.setText(VIEW_STATISTIC);
+				btSend.setVisibility(View.GONE);
 			}
 		} else if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
-			if (EVoterShareMemory.getCurrentQuestion().getStatus() == 2 || EVoterShareMemory.getListIDAnsweredQuestion().contains(EVoterShareMemory.getCurrentQuestion().getId())) {
-				btSend.setText(VIEW_STATISTIC);
-			}
-			else if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
-				btSend.setText(SUBMIT);
+			btSend.setText(SUBMIT);
+			if (EVoterShareMemory.getCurrentQuestion().getStatus() != 1 || EVoterShareMemory.getListIDAnsweredQuestion().contains(EVoterShareMemory.getCurrentQuestion().getId())) {
+				btSend.setVisibility(View.GONE);
 			}
 		}
 		
-		if (!EVoterShareMemory.getCurrentSession().isActive()) {
-			if (!btSend.getText().equals(VIEW_STATISTIC)) btSend.setEnabled(false);
-		}
-		
+		if (!EVoterShareMemory.getCurrentSession().isActive()) btSend.setEnabled(false);
+		buidAnswerArea();
 	}
 	
 	/**
@@ -216,12 +215,11 @@ public class QuestionDetailActivity extends EVoterActivity {
 				int status = ob.getInt(QuestionDAO.STATUS);
 				Log.i("Get question status", String.valueOf(status));
 				EVoterShareMemory.getCurrentQuestion().setStatus(status);
-				setButtonLabel();
 				if (EVoterShareMemory.getCurrentQuestion().getStatus() == 1) {
 					EVoterRequestManager.checkSessionStatus(EVoterShareMemory.getCurrentSession().getId(), QuestionDetailActivity.this);
 				} else {
 					EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Time out! Your will not be count in the statistic of question!");
-					btSend.setText(VIEW_STATISTIC);
+					btSend.setVisibility(View.GONE);
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -254,7 +252,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Success!");
 				EVoterShareMemory.addAnsweredQuestion(EVoterShareMemory.getCurrentQuestion().getId());
-				btSend.setText(VIEW_STATISTIC);
+				btSend.setVisibility(View.GONE);
 			} else {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Cannot send answer : " + response.replace(CallBackMessage.SUBMIT_ANSWER_EVOTER_REQUEST, ""));
 			}
@@ -263,7 +261,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 						response);
-				btSend.setText(VIEW_STATISTIC);
+				btSend.setVisibility(View.GONE);
 			}
 			else {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
@@ -274,7 +272,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				EVoterMobileUtils.showeVoterToast(this,
 						"Successful!");
 				EVoterShareMemory.addAnsweredQuestion(EVoterShareMemory.getCurrentQuestion().getId());
-				btSend.setText(VIEW_STATISTIC);
+				btSend.setVisibility(View.GONE);
 			}
 			else {
 				EVoterMobileUtils.showeVoterToast(this,
@@ -419,8 +417,6 @@ public class QuestionDetailActivity extends EVoterActivity {
 			EVoterRequestManager.updateQuestionStatus(EVoterShareMemory.getCurrentQuestion().getId(), QuestionDetailActivity.this);
 		} else if (btSend.getText().toString().equals(STOP)) {
 			EVoterRequestManager.stopReceiveAnswer(EVoterShareMemory.getCurrentSession().getId(), QuestionDetailActivity.this);
-		} else if (btSend.getText().toString().equals(VIEW_STATISTIC)) {
-			ActivityManager.viewQuestionStatistic(EVoterShareMemory.getCurrentQuestion(), QuestionDetailActivity.this);
 		}
 	}
 	

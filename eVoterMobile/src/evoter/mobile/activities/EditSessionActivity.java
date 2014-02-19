@@ -20,6 +20,8 @@ import evoter.share.utils.URIRequest;
  * Update by @author luongnv89 on 12-Feb-2014:<br>
  * <li>Completed send edit session request to server <br>
  * Created by @author luongnv89
+ * <br>Edit the title of current session
+ * <br>Teacher can delete, add new question when go into session detail {@link QuestionActivity}.
  */
 public class EditSessionActivity extends NewSessionActivity {
 	

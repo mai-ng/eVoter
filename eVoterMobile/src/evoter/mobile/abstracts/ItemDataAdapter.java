@@ -1,10 +1,13 @@
 /**
  * 
  */
-package evoter.mobile.adapters;
+package evoter.mobile.abstracts;
 
 import java.util.ArrayList;
 
+import evoter.mobile.adapters.QuestionAdapter;
+import evoter.mobile.adapters.SessionAdapter;
+import evoter.mobile.adapters.SubjectAdapter;
 import evoter.share.model.ItemData;
 
 import android.content.Context;
@@ -16,12 +19,19 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 /**
+ * {@link ItemDataAdapter} is abstract adapter of {@link SubjectAdapter}, {@link SessionAdapter} and {@link QuestionAdapter}
  * @author luongnv89
  * 
  */
 public abstract class ItemDataAdapter extends BaseAdapter implements Filterable {
 
+	/**
+	 * List data will show on application
+	 */
 	protected ArrayList<ItemData> listItemDataToPublic = new ArrayList<ItemData>();
+	/**
+	 * List data to filter
+	 */
 	protected ArrayList<ItemData> listItemDataForFiltering = new ArrayList<ItemData>();
 	protected LayoutInflater inflater;
 	protected Context context;
@@ -129,16 +139,20 @@ public abstract class ItemDataAdapter extends BaseAdapter implements Filterable 
 		}
 	}
 
-	public void deleteItem(long subjectID) {
+	/**
+	 * Detete an ItemData has input ID
+	 * @param itemID
+	 */
+	public void deleteItem(long itemID) {
 		for (int i = 0; i < listItemDataToPublic.size(); i++) {
-			if (listItemDataToPublic.get(i).getId() == subjectID) {
+			if (listItemDataToPublic.get(i).getId() == itemID) {
 				listItemDataToPublic.remove(i);
 				break;
 			}
 		}
 
 		for (int i = 0; i < listItemDataForFiltering.size(); i++) {
-			if (listItemDataForFiltering.get(i).getId() == subjectID) {
+			if (listItemDataForFiltering.get(i).getId() == itemID) {
 				listItemDataForFiltering.remove(i);
 				break;
 			}
@@ -146,6 +160,10 @@ public abstract class ItemDataAdapter extends BaseAdapter implements Filterable 
 		notifyDataSetChanged();
 	}
 
+	/**
+	 * Update list data
+	 * @param list
+	 */
 	public void updateList(ArrayList<ItemData> list) {
 		listItemDataToPublic = list;
 		listItemDataForFiltering = list;

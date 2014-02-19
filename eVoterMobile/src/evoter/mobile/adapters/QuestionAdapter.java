@@ -8,10 +8,13 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filterable;
+import evoter.mobile.abstracts.ItemDataAdapter;
+import evoter.mobile.abstracts.ItemDataViewHolder;
 import evoter.mobile.main.R;
 import evoter.share.model.Question;
 
 /**
+ * {@link QuestionAdapter} extend from {@link ItemDataAdapter} is adapter of list view of {@link Question}
  * @author luongnv89
  */
 public class QuestionAdapter extends ItemDataAdapter implements Filterable {

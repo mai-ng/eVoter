@@ -18,6 +18,7 @@ import evoter.mobile.main.R;
  */
 public class EVoterMainMenu extends Dialog {
 	
+	//MENU LABEL
 	public static final String MN_STOP_SESSION = "Stop Session";
 	public static final String MN_START_SESSION = "Start Session";
 	public static final String MN_EXIT = "Exit";

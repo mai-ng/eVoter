@@ -39,6 +39,7 @@ import evoter.share.model.QuestionType;
 import evoter.share.utils.URIRequest;
 
 /**
+ * Create new question in current session
  * @author luongnv89
  */
 public class NewQuestionActivity extends EVoterActivity {
@@ -82,7 +83,7 @@ public class NewQuestionActivity extends EVoterActivity {
 	}
 	
 	/**
-	 * 
+	 * init components of {@link NewQuestionActivity}
 	 */
 	private void initialComponent() {
 		setContentView(R.layout.new_question);
@@ -155,7 +156,7 @@ public class NewQuestionActivity extends EVoterActivity {
 	}
 	
 	/**
-	 * 
+	 * Create question type label
 	 */
 	private void createQuestionType() {
 		typeArray.add(YES_NO);
@@ -167,7 +168,7 @@ public class NewQuestionActivity extends EVoterActivity {
 	}
 	
 	/**
-	 * 
+	 * Set action for Save Button
 	 */
 	protected void setBtSaveAction() {
 		btSave.setOnClickListener(new OnClickListener() {
@@ -182,6 +183,7 @@ public class NewQuestionActivity extends EVoterActivity {
 	}
 	
 	/**
+	 * Check data before send create question
 	 * @return
 	 */
 	protected boolean readyToCreate() {
@@ -217,6 +219,7 @@ public class NewQuestionActivity extends EVoterActivity {
 	}
 	
 	/**
+	 * get id of question type from list type of question
 	 * @param selected
 	 * @return
 	 */
@@ -231,6 +234,7 @@ public class NewQuestionActivity extends EVoterActivity {
 	}
 	
 	/**
+	 * Show dialog confirm to delete an answer of multi answer question
 	 * @param itemClick
 	 */
 	private void deleteAnswer(final String itemClick) {
@@ -249,6 +253,7 @@ public class NewQuestionActivity extends EVoterActivity {
 	}
 	
 	/**
+	 * Buil answer area depend on id of question type
 	 * @param idItem
 	 */
 	private void buildAnswerArea(int idItem) {
@@ -284,7 +289,7 @@ public class NewQuestionActivity extends EVoterActivity {
 	}
 	
 	/**
-	 * 
+	 * Submit request create new question
 	 */
 	private void createQuestionRequest() {
 		if (!readyToCreate()) {
@@ -306,7 +311,7 @@ public class NewQuestionActivity extends EVoterActivity {
 	}
 	
 	/**
-	 * 
+	 * Add new answer into list answer of a multi-answer question
 	 */
 	private void addAnswerToList() {
 		if (etAnswer.getText().toString().equals("")) {

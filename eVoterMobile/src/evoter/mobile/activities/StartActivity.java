@@ -9,6 +9,11 @@ import evoter.mobile.abstracts.EVoterActivity;
 import evoter.mobile.main.R;
 import evoter.mobile.utils.EVoterMobileUtils;
 
+/**
+ * Starting point of application
+ * @author luongnv89
+ *
+ */
 public class StartActivity extends EVoterActivity {
 	
 	/**

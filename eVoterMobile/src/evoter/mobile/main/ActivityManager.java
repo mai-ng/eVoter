@@ -22,6 +22,7 @@ import evoter.mobile.utils.EVoterMobileUtils;
 import android.content.Intent;
 
 /**
+ * Manage starting activity of application
  * @author luongnv89
  */
 public class ActivityManager {

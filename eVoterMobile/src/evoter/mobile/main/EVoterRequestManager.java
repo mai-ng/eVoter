@@ -37,12 +37,13 @@ import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
+ * Manage all request of application to server
  * @author luongnv89
  */
 public class EVoterRequestManager {
 	
 	/**
-	 * submit a value of an answer
+	 * answer a question
 	 * 
 	 * @param answerID
 	 * @param questionTypeID
@@ -75,6 +76,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Do login to system
 	 * @param i_Usrname
 	 * @param i_Password
 	 */
@@ -104,6 +106,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Reset password
 	 * @param i_email
 	 */
 	public static void resetPassword(final String i_email, final ResetPasswordActivity context) {
@@ -127,6 +130,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Create new student user
 	 * @param i_email
 	 * @param i_usrname
 	 * @param i_password
@@ -157,6 +161,10 @@ public class EVoterRequestManager {
 		
 	}
 	
+	/**
+	 * Update current question
+	 * @param context
+	 */
 	public static void updateQuestion(final EVoterActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
@@ -179,6 +187,10 @@ public class EVoterRequestManager {
 				});
 	}
 	
+	/**
+	 * Update current session
+	 * @param context
+	 */
 	public static void updateSession(final EVoterActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
@@ -202,6 +214,11 @@ public class EVoterRequestManager {
 		
 	}
 	
+	/**
+	 * Get statistic of a question
+	 * @param questionID
+	 * @param context
+	 */
 	public static void getStatistic(long questionID, final EVoterActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
@@ -225,6 +242,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Get list subject of current user
 	 * @param subjectActivity
 	 */
 	public static void getListSubject(final SubjectActivity context) {
@@ -249,6 +267,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Get list session of current subject
 	 * @param sessionActivity
 	 */
 	public static void getAllSession(final SessionActivity sessionActivity, long subjectID) {
@@ -277,6 +296,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Get list user who involve in current subject
 	 * @param subjectUserActivity
 	 * @param id
 	 */
@@ -311,6 +331,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Update statistic of feedback in {@link StudentFeedbackActivity}
 	 * @param studentFeedbackActivity
 	 * @param excited
 	 */
@@ -344,6 +365,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Get all question of current session
 	 * @param questionActivity
 	 */
 	public static void getListQuestion(final QuestionActivity questionActivity) {
@@ -371,6 +393,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Get all student who has accepted to join current session
 	 * @param acceptedStudents
 	 */
 	public static void getUsersOfSession(final AcceptedStudentsActivity context) {
@@ -404,7 +427,10 @@ public class EVoterRequestManager {
 	}
 	
 	/**
-	 * 
+	 * Create new session
+	 * @param sessionTitle
+	 * @param subjectID
+	 * @param context
 	 */
 	public static void createSessionRequest(String sessionTitle, long subjectID, final NewSessionActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
@@ -440,6 +466,10 @@ public class EVoterRequestManager {
 	
 	/**
 	 * 
+	 * Edit a session
+	 * @param newTitle
+	 * @param sessionID
+	 * @param context
 	 */
 	public static void editSession(String newTitle, long sessionID, final EditSessionActivity context) {
 		if (newTitle.equals("")) {
@@ -477,6 +507,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Create new question
 	 * @param params
 	 * @param newQuestionActivity
 	 */
@@ -506,6 +537,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Edit a question
 	 * @param params
 	 * @param editSessionActivity
 	 */
@@ -533,6 +565,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Student accept to join a session
 	 * @param params
 	 * @param questionActivity
 	 */
@@ -565,6 +598,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Teacher change status of a session
 	 * @param start
 	 * @param params
 	 * @param url
@@ -600,6 +634,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Student send feedback about current session
 	 * @param params
 	 * @param questionActivity
 	 */
@@ -623,6 +658,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * User delete a question
 	 * @param id
 	 * @param questionActivity
 	 */
@@ -649,6 +685,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Teacher stop receive answer for a question
 	 * @param id
 	 * @param questionDetailActivity
 	 */
@@ -675,6 +712,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Update status of a question
 	 * @param id
 	 * @param questionDetailActivity
 	 */
@@ -701,6 +739,7 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Update status of current session
 	 * @param id
 	 * @param questionDetailActivity
 	 */
@@ -728,6 +767,8 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * Teacher send a question to student
+	 * <br>Teacher cannot send two question at the same time
 	 * @param id
 	 * @param id2
 	 * @param questionDetailActivity
@@ -756,6 +797,8 @@ public class EVoterRequestManager {
 	}
 	
 	/**
+	 * User delete a session
+	 * <br> Session will be deleted on account of user, in other account still have session
 	 * @param id
 	 * @param sessionActivity
 	 */
@@ -782,6 +825,7 @@ public class EVoterRequestManager {
 	}
 
 	/**
+	 * User logout
 	 * @param eVoterActivity
 	 */
 	public static void logout(final EVoterActivity context) {

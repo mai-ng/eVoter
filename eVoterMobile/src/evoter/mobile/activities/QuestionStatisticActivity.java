@@ -17,6 +17,7 @@ import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 
 /**
+ * Show statistic of a question<br>
  * @author luongnv89
  */
 public class QuestionStatisticActivity extends EVoterActivity {

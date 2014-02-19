@@ -4,11 +4,14 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filterable;
+import evoter.mobile.abstracts.ItemDataAdapter;
+import evoter.mobile.abstracts.ItemDataViewHolder;
 import evoter.mobile.main.R;
 import evoter.share.model.Subject;
 import evoter.mobile.utils.EVoterMobileUtils;
 
 /**
+ * {@link SubjectAdapter} extend from {@link ItemDataAdapter} is adapter for ListView of {@link Subject}
  * Created by luongnv89 on 06/12/13.
  */
 public class SubjectAdapter extends ItemDataAdapter implements Filterable {

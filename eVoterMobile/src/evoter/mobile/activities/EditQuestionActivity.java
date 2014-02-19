@@ -5,10 +5,6 @@ package evoter.mobile.activities;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +23,8 @@ import evoter.share.model.QuestionType;
 import evoter.share.utils.URIRequest;
 
 /**
+ * Edit current question
+ * <br> Cannot edit type of question
  * @author luongnv89
  */
 public class EditQuestionActivity extends NewQuestionActivity {
@@ -47,6 +45,7 @@ public class EditQuestionActivity extends NewQuestionActivity {
 	}
 	
 	/**
+	 * Build answer area base on current question
 	 * @param type
 	 * @param column1
 	 */
@@ -80,7 +79,7 @@ public class EditQuestionActivity extends NewQuestionActivity {
 	}
 	
 	/**
-	 * 
+	 * Set action for Save button
 	 */
 	protected void setActionListeners() {
 		btSave.setOnClickListener(new OnClickListener() {

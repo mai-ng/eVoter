@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TableLayout;
-import evoter.mobile.adapters.ItemDataAdapter;
 import evoter.mobile.main.R;
 
 /**

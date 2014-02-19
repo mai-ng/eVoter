@@ -38,7 +38,7 @@ public class OfflineEVoterManager {
 	}
 	
 	/**
-	 * Save current user to next session
+	 * Save current user to next session, when user exit application then start application again, the application will remember password and user and login automatically
 	 * 
 	 * @param name
 	 * @param password

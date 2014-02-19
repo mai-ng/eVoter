@@ -411,12 +411,29 @@ public class QuestionDetailActivity extends EVoterActivity {
 	 */
 	private void setupSendButtonAction() {
 		if (btSend.getText().toString().equals(SEND)) {
-			EVoterRequestManager.sendQuestion(EVoterShareMemory.getCurrentQuestion().getId(), EVoterShareMemory.getCurrentSession().getId(), QuestionDetailActivity.this);
+			if (readyToSend())
+				EVoterRequestManager.sendQuestion(EVoterShareMemory.getCurrentQuestion().getId(), EVoterShareMemory.getCurrentSession().getId(), QuestionDetailActivity.this);
 		} else if (btSend.getText().toString().equals(SUBMIT)) {
 			EVoterRequestManager.updateQuestionStatus(EVoterShareMemory.getCurrentQuestion().getId(), QuestionDetailActivity.this);
 		} else if (btSend.getText().toString().equals(STOP)) {
 			EVoterRequestManager.stopReceiveAnswer(EVoterShareMemory.getCurrentSession().getId(), QuestionDetailActivity.this);
 		}
+	}
+	
+	/**
+	 * Check if there is any question is waiting for answer, teacher cannot send
+	 * 2 question at the same time
+	 * 
+	 * @return
+	 */
+	private boolean readyToSend() {
+		for (int i = 0; i < EVoterShareMemory.getListQuestions().size(); i++) {
+			if (EVoterShareMemory.getListQuestions().get(i).getStatus() == 1) {
+				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Question: " + EVoterShareMemory.getListQuestions().get(i).getTitle() + " is waiting for answer. You have to finish it before send other question");
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/*

@@ -11,39 +11,80 @@ import evoter.share.model.Session;
 import evoter.share.model.Subject;
 
 /**
- * {@link EVoterShareMemory} manage the parameters of eVoter application
+ * {@link EVoterShareMemory} manage the running data of application
  * 
  * @author luongnv89
  */
 public class EVoterShareMemory {
 	
+	/**
+	 * List ID of question which student has submit answer
+	 */
 	private static ArrayList<Long> listIDAnsweredQuestion = new ArrayList<Long>();
 	
+	/**
+	 * {@link OfflineEVoterManager}
+	 */
 	private static OfflineEVoterManager offlineEVoterManager;
 	
 	/**
-	 * User_key of user
+	 * User_key of user to authenticate all request from user to server.
+	 * <br> It is diffirent string for each login time
 	 */
 	private static String USER_KEY;
 	
+	/**
+	 * Current question 
+	 */
 	private static Question currentQuestion;
+	/**
+	 * excited question of current session
+	 */
 	private static Question exictedQuestion;
+	/**
+	 * difficult question of current session
+	 */
 	private static Question difficultQuestion;
 	
+	/**
+	 * Current session
+	 */
 	private static Session currentSession;
 	
+	/**
+	 * Current subject
+	 */
 	private static Subject currentSubject;
 	
+	/**
+	 * Current username
+	 */
 	private static String currentUserName;
 	
+	/**
+	 * List all session which student has accepted to join
+	 */
 	private static ArrayList<Long> listAcceptedSessions = new ArrayList<Long>();
 	
+	/**
+	 * List all session which is running
+	 */
 	private static ArrayList<Long> listActiveSessions = new ArrayList<Long>(); 
 	
+	/**
+	 * Previous context of current activity
+	 */
 	private static EVoterActivity previousContext;
 	
+	/**
+	 * List all question of session
+	 */
 	private static ArrayList<Question> listQuestions = new ArrayList<Question>();
 	
+	/**
+	 * Add a question to list question
+	 * @param question
+	 */
 	public static void addQuestionToList(Question question) {
 		listQuestions.add(question);
 	}
@@ -277,7 +318,7 @@ public class EVoterShareMemory {
 	}
 	
 	/**
-	 * Extract userkey to get user type
+	 * Extract user type from user_key
 	 * 
 	 * @return the currentUserType
 	 */
@@ -288,6 +329,7 @@ public class EVoterShareMemory {
 	}
 	
 	/**
+	 * Check if there is static bar (excited and difficult bar)
 	 * @return
 	 */
 	public static boolean hasStaticBar() {
@@ -295,6 +337,7 @@ public class EVoterShareMemory {
 	}
 	
 	/**
+	 * Check the current user is joined in current session
 	 * @return
 	 */
 	public static boolean userJoinedSession() {

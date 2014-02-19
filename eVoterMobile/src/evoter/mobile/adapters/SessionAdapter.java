@@ -8,12 +8,15 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Filterable;
 import android.widget.TextView;
+import evoter.mobile.abstracts.ItemDataAdapter;
+import evoter.mobile.abstracts.ItemDataViewHolder;
 import evoter.mobile.main.EVoterShareMemory;
 import evoter.mobile.main.R;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.model.Session;
 
 /**
+ * {@link SessionAdapter} extends from {@link ItemDataAdapter} is the adapter for show {@link Session}
  * Created by luongnv89 on 06/12/13.
  */
 public class SessionAdapter extends ItemDataAdapter implements Filterable {

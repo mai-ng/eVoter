@@ -238,6 +238,7 @@ public class QuestionActivity extends ItemDataActivity {
 	}
 	
 	/**
+	 * Setup action when user has long click on an item of list view
 	 * @param selectQuestion
 	 */
 	private void longClickQuestionAction() {

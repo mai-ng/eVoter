@@ -17,7 +17,7 @@ import evoter.mobile.main.R;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 
-/**
+/**Show feedback of student about current session
  * @author luongnv89
  */
 public class StudentFeedbackActivity extends EVoterActivity {

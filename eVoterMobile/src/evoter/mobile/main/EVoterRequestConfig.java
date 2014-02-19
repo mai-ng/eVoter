@@ -13,9 +13,21 @@ package evoter.mobile.main;
  * Manage network configuration 
  */
 public class EVoterRequestConfig {
+	/**
+	 * IP address of server
+	 */
 	private static String IPAddress = "192.168.0.12";
+	/**
+	 * Port number of server
+	 */
 	private static int portNumber = 1000;
+	/**
+	 * Context of eVoter 
+	 */
 	private static String context = "/evoter";
+	/**
+	 * Time out for request
+	 */
 	public static int TIME_OUT = 1000;
 	
 	/**

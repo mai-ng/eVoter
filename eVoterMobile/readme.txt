@@ -1,1 +1,1 @@
-This is the folder for Teacher Mobile app version
+#Link download install file for android: https://bitbucket.org/luongnv89/evoter/downloads/eVoterMobile.apk

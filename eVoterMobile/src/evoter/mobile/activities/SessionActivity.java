@@ -18,6 +18,7 @@ import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.model.ItemData;
 import evoter.share.model.Session;
+import evoter.share.model.UserType;
 import evoter.share.utils.URIRequest;
 
 /**
@@ -73,7 +74,7 @@ public class SessionActivity extends ItemDataActivity {
 		// TODO Auto-generated method stub
 		super.setupContentMainMenu();
 		mainMenu.getBtUserOfSubject().setVisibility(View.VISIBLE);
-		mainMenu.getBtNewSession().setVisibility(View.VISIBLE);
+		if(EVoterShareMemory.getCurrentUserType()==UserType.TEACHER) mainMenu.getBtNewSession().setVisibility(View.VISIBLE);
 		
 	}
 

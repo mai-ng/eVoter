@@ -283,6 +283,7 @@ public class EVoterRequestManager {
 					
 					@Override
 					public void onSuccess(String response) {
+						Log.i("Get all Session: ", response);
 						sessionActivity.updateRequestCallBack(response, CallBackMessage.GET_ALL_SESSION_EVOTER_REQUEST);
 					}
 					
@@ -604,7 +605,7 @@ public class EVoterRequestManager {
 	 * @param url
 	 * @param questionActivity
 	 */
-	public static void changeSessionStatus(final boolean start, long sessionID, final QuestionActivity context) {
+	public static void changeSessionStatus(final boolean start, long sessionID, final EVoterActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());

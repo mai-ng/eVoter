@@ -6,9 +6,12 @@ package evoter.mobile.main;
 import java.util.ArrayList;
 
 import evoter.mobile.abstracts.EVoterActivity;
+import evoter.mobile.activities.QuestionActivity;
+import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.model.Question;
 import evoter.share.model.Session;
 import evoter.share.model.Subject;
+import evoter.share.model.UserType;
 
 /**
  * {@link EVoterShareMemory} manage the running data of application
@@ -342,6 +345,45 @@ public class EVoterShareMemory {
 	 */
 	public static boolean userJoinedSession() {
 		return getListAcceptedSessions().contains(EVoterShareMemory.getCurrentSession().getId());
+	}
+
+	/**
+	 * Check if student has not answered current question then don't show his view statistic button
+	 * @return <br> false if current user is teacher
+	 * 
+	 */
+	public static boolean notAnsweredYet() {
+		if(EVoterShareMemory.getCurrentUserType()==UserType.TEACHER) return false;
+		else
+		return !getListIDAnsweredQuestion().contains(EVoterShareMemory.getCurrentQuestion().getId());
+	}
+	
+	/**
+	 * Check condition before change the status of session
+	 * 
+	 * @param start <br>
+	 * <br>
+	 *            start = true -> change current session to active <br>
+	 *            else -> change current session to inactive
+	 * @return false if there is some question which is not stop receive answer. <br>
+	 *         otherwiser return true;
+	 */
+	public static boolean okChangeStatus(boolean start,EVoterActivity context) {
+		if (!start) {
+			for (int i = 0; i < EVoterShareMemory.getListQuestions().size(); i++) {
+				if (EVoterShareMemory.getListQuestions().get(i).getStatus() == 1) {
+					EVoterMobileUtils.showeVoterToast(context, "Question : " + EVoterShareMemory.getListQuestions().get(i).getTitle() + " is waiting for answer!");
+					return false;
+				}
+			}
+			return true;
+		} else {
+			if (!EVoterShareMemory.getListActiveSessions().isEmpty()) {
+				EVoterMobileUtils.showeVoterToast(context, "There is some session is running! You cannot start more than 1 session at the same time");
+				return false;
+			} else
+				return true;
+		}
 	}
 	
 }

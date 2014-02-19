@@ -11,6 +11,7 @@ import evoter.mobile.main.EVoterShareMemory;
 import evoter.mobile.main.R;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
+import evoter.share.utils.URIRequest;
 import evoter.share.utils.UserValidation;
 
 /**
@@ -103,19 +104,21 @@ public class RegisterActivity extends EVoterActivity {
 	@Override
 	public void updateRequestCallBack(String response, String callBackMessage) {
 		if (callBackMessage.equals(CallBackMessage.CREATE_USER_EVOTER_REQUEST)) {
-			if (response.contains("USER EXISTS ALREADY")) {
+			if (response.contains(URIRequest.USER_EXIST_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 						"Username already used by other user. Please choose another username");
 			}
-			else if (response.contains("EMAIL EXISTS ALREADY")) {
+			else if (response.contains(URIRequest.EMAIL_EXIST_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 						"Email already registered in system. Please register by another email or use reset password!");
 			}
-			else {
+			else if(response.contains(URIRequest.SUCCESS_MESSAGE)){
 				EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 						"You will receive an email to confirm your register!");
 				EVoterShareMemory.setCurrentUserName(etUsrname.getText().toString());
 				ActivityManager.startLoginActivity(RegisterActivity.this);
+			}else{
+				EVoterMobileUtils.showeVoterToast(RegisterActivity.this,"Cannot register account: "+ response);
 			}
 		}else{
 			super.updateRequestCallBack(response, callBackMessage);

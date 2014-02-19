@@ -136,6 +136,9 @@ public class QuestionDetailActivity extends EVoterActivity {
 		listCheckBox.clear();
 		groups.removeAllViews();
 		Log.i("Question to build: ", EVoterShareMemory.getCurrentQuestion().toString());
+		if(EVoterShareMemory.notAnsweredYet()) {
+			btViewStatistic.setEnabled(false);
+		}
 		answers = EVoterMobileUtils.parserAnswerArray(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1(), EVoterShareMemory.getCurrentQuestion().getId());
 		if (answers.isEmpty()) {
 			EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Cannot get answer of question!");
@@ -265,6 +268,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Success!");
 				EVoterShareMemory.addAnsweredQuestion(EVoterShareMemory.getCurrentQuestion().getId());
 				btSend.setVisibility(View.GONE);
+				if(EVoterShareMemory.getCurrentUserType()==UserType.STUDENT) btViewStatistic.setEnabled(true);
 			} else {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Cannot send answer : " + response.replace(CallBackMessage.SUBMIT_ANSWER_EVOTER_REQUEST, ""));
 			}
@@ -279,18 +283,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 				EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this,
 						"Fail: " + response);
 			}
-		} else if (callBackMessage.equals(CallBackMessage.SUBMIT_ANSWER_EVOTER_REQUEST)) {
-			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-				EVoterMobileUtils.showeVoterToast(this,
-						"Successful!");
-				EVoterShareMemory.addAnsweredQuestion(EVoterShareMemory.getCurrentQuestion().getId());
-				btSend.setVisibility(View.GONE);
-			}
-			else {
-				EVoterMobileUtils.showeVoterToast(this,
-						"Fail: " + response);
-			}
-		} else {
+		}  else {
 			super.updateRequestCallBack(response, callBackMessage);
 		}
 		

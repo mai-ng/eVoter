@@ -95,26 +95,6 @@ public class QuestionActivity extends ItemDataActivity {
 	protected void setupMainMenu() {
 		// TODO Auto-generated method stub
 		super.setupMainMenu();
-		mainMenu.getBtChangeSessionStatus().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if (mainMenu.getBtChangeSessionStatus().getText().toString().contains(EVoterMainMenu.MN_STOP_SESSION)) {
-					if (okChangeStatus(false)) {
-						EVoterRequestManager.changeSessionStatus(false, EVoterShareMemory.getCurrentSession().getId(), QuestionActivity.this);
-					} else {
-						EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "There is some question still waiting for answer, you cannot stop session");
-					}
-					mainMenu.dismiss();
-				} else if (mainMenu.getBtChangeSessionStatus().getText().toString().contains(EVoterMainMenu.MN_START_SESSION)) {
-					if (okChangeStatus(true)) {
-						EVoterRequestManager.changeSessionStatus(true, EVoterShareMemory.getCurrentSession().getId(), QuestionActivity.this);
-					}
-					mainMenu.dismiss();
-				}
-				
-			}
-		});
 		
 		mainMenu.getBtJoin().setOnClickListener(new OnClickListener() {
 			
@@ -150,33 +130,6 @@ public class QuestionActivity extends ItemDataActivity {
 				.getCurrentSessionName());
 	}
 	
-	/**
-	 * Check condition before change the status of session
-	 * 
-	 * @param start <br>
-	 * <br>
-	 *            start = true -> change current session to active <br>
-	 *            else -> change current session to inactive
-	 * @return false if there is some question which is not stop receive answer. <br>
-	 *         otherwiser return true;
-	 */
-	private boolean okChangeStatus(boolean start) {
-		if (!start) {
-			for (int i = 0; i < EVoterShareMemory.getListQuestions().size(); i++) {
-				if (EVoterShareMemory.getListQuestions().get(i).getStatus() == 1) {
-					EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "Question : " + EVoterShareMemory.getListQuestions().get(i).getTitle() + " is waiting for answer!");
-					return false;
-				}
-			}
-			return true;
-		} else {
-			if (!EVoterShareMemory.getListActiveSessions().isEmpty()) {
-				EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "There is some session is running! You cannot start more than 1 session at the same time");
-				return false;
-			} else
-				return true;
-		}
-	}
 	
 	/**
 	 * Build static seekbar of current session <br>
@@ -200,7 +153,8 @@ public class QuestionActivity extends ItemDataActivity {
 				
 				@Override
 				public void onStopTrackingTouch(SeekBar seekBar) {
-					EVoterRequestManager.doVote(EVoterMobileUtils.getstaticAnswerID(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
+					if(EVoterMobileUtils.getstaticAnswerID(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST)!=-1)
+						EVoterRequestManager.doVote(EVoterMobileUtils.getstaticAnswerID(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
 				}
 				
 				@Override
@@ -219,7 +173,8 @@ public class QuestionActivity extends ItemDataActivity {
 				
 				@Override
 				public void onStopTrackingTouch(SeekBar seekBar) {
-					EVoterRequestManager.doVote(EVoterMobileUtils.getstaticAnswerID(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
+					if(EVoterMobileUtils.getstaticAnswerID(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST)!=-1)
+						EVoterRequestManager.doVote(EVoterMobileUtils.getstaticAnswerID(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST), QuestionType.SLIDER, String.valueOf(progressValue), QuestionActivity.this);
 				}
 				
 				@Override
@@ -290,9 +245,11 @@ public class QuestionActivity extends ItemDataActivity {
 				if (response.contains(EVoterMainMenu.MN_STOP_SESSION)) {
 					mainMenu.getBtChangeSessionStatus().setText(EVoterMainMenu.MN_STOP_SESSION);
 					EVoterShareMemory.getCurrentSession().setActive(true);
+					EVoterShareMemory.addToListActiveSessions(EVoterShareMemory.getCurrentSession().getId());
 				} else if (response.contains(EVoterMainMenu.MN_START_SESSION)) {
 					mainMenu.getBtChangeSessionStatus().setText(EVoterMainMenu.MN_START_SESSION);
 					EVoterShareMemory.getCurrentSession().setActive(false);
+					EVoterShareMemory.getListActiveSessions().remove(EVoterShareMemory.getCurrentSession().getId());
 				}
 			} else {
 				EVoterMobileUtils.showeVoterToast(

@@ -290,6 +290,27 @@ public abstract class EVoterActivity extends Activity {
 			}
 		});
 		
+mainMenu.getBtChangeSessionStatus().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if (mainMenu.getBtChangeSessionStatus().getText().toString().contains(EVoterMainMenu.MN_STOP_SESSION)) {
+					if (EVoterShareMemory.okChangeStatus(false,EVoterActivity.this)) {
+						EVoterRequestManager.changeSessionStatus(false, EVoterShareMemory.getCurrentSession().getId(), EVoterActivity.this);
+					} else {
+						EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "There is some question still waiting for answer, you cannot stop session");
+					}
+					mainMenu.dismiss();
+				} else if (mainMenu.getBtChangeSessionStatus().getText().toString().contains(EVoterMainMenu.MN_START_SESSION)) {
+					if (EVoterShareMemory.okChangeStatus(true,EVoterActivity.this)) {
+						EVoterRequestManager.changeSessionStatus(true, EVoterShareMemory.getCurrentSession().getId(), EVoterActivity.this);
+					}
+					mainMenu.dismiss();
+				}
+				
+			}
+		});
+		
 		
 	}
 	

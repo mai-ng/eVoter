@@ -355,8 +355,8 @@ public class SessionService implements ISessionService{
 				sessionUserDAO.insert(sessionUser);
 			}
 			
-			//create 2 slider questions “EXCITED” and “DIFFICULT” with the status is “1”
-			
+			//create 2 slider questions EXCITED and DIFFICULT with the status is 1
+
 			createQuestion("EXCITED", sessionId, userId);
 			
 			createQuestion("DIFFICULT", sessionId, userId);

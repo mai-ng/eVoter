@@ -1,0 +1,52 @@
+Skipping currently created advisor 'org.springframework.transaction.config.internalTransactionAdvisor'
+Finished creating instance of bean 'org.springframework.transaction.annotation.AnnotationTransactionAttributeSource#0'
+Finished creating instance of bean 'org.springframework.transaction.config.internalTransactionAdvisor'
+Finished creating instance of bean 'dataSource'
+Returning cached instance of singleton bean 'org.springframework.beans.factory.config.PropertyPlaceholderConfigurer#0'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+Creating shared instance of singleton bean 'serverHandler'
+Creating instance of bean 'serverHandler'
+Eagerly caching bean 'serverHandler' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.transaction.config.internalTransactionAdvisor'
+Finished creating instance of bean 'serverHandler'
+Creating shared instance of singleton bean 'txManager'
+Creating instance of bean 'txManager'
+Eagerly caching bean 'txManager' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'dataSource'
+Invoking afterPropertiesSet() on bean with name 'txManager'
+Returning cached instance of singleton bean 'org.springframework.transaction.config.internalTransactionAdvisor'
+Finished creating instance of bean 'txManager'
+Returning cached instance of singleton bean 'org.springframework.aop.config.internalAutoProxyCreator'
+Returning cached instance of singleton bean 'org.springframework.transaction.annotation.AnnotationTransactionAttributeSource#0'
+Creating shared instance of singleton bean 'org.springframework.transaction.interceptor.TransactionInterceptor#0'
+Creating instance of bean 'org.springframework.transaction.interceptor.TransactionInterceptor#0'
+Eagerly caching bean 'org.springframework.transaction.interceptor.TransactionInterceptor#0' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.transaction.annotation.AnnotationTransactionAttributeSource#0'
+Invoking afterPropertiesSet() on bean with name 'org.springframework.transaction.interceptor.TransactionInterceptor#0'
+Finished creating instance of bean 'org.springframework.transaction.interceptor.TransactionInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.transaction.config.internalTransactionAdvisor'
+Creating shared instance of singleton bean 'transactionManager'
+Creating instance of bean 'transactionManager'
+Eagerly caching bean 'transactionManager' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'dataSource'
+Invoking afterPropertiesSet() on bean with name 'transactionManager'
+Returning cached instance of singleton bean 'org.springframework.transaction.config.internalTransactionAdvisor'
+Finished creating instance of bean 'transactionManager'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor'
+Unable to locate LifecycleProcessor with name 'lifecycleProcessor': using default [org.springframework.context.support.DefaultLifecycleProcessor@69a448]
+Returning cached instance of singleton bean 'lifecycleProcessor'
+Searching for key 'spring.liveBeansView.mbeanDomain' in [systemProperties]
+Searching for key 'spring.liveBeansView.mbeanDomain' in [systemEnvironment]
+Could not find key 'spring.liveBeansView.mbeanDomain' in any property source. Returning [null]
+Creating shared instance of singleton bean 'httpConnection'
+Creating instance of bean 'httpConnection'
+Eagerly caching bean 'httpConnection' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.transaction.config.internalTransactionAdvisor'
+Finished creating instance of bean 'httpConnection'
+Listening for connections...
+/evoter
+/157.159.42.152:1000

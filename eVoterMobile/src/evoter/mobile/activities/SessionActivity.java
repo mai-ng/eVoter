@@ -2,16 +2,11 @@ package evoter.mobile.activities;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import evoter.mobile.adapters.SessionAdapter;
 import evoter.mobile.main.R;
@@ -30,22 +25,17 @@ import evoter.share.utils.URIRequest;
  */
 public class SessionActivity extends ItemDataActivity {
 	
-	public static final CharSequence DELETE_SESSION_REQUEST = "DELETE_SESSION_REQUEST";
-	
 	public void onCreate(Bundle savedInstanceState) {
-		
 		super.onCreate(savedInstanceState);
-		// Set title bar content is the subject of session
-		this.tvTitleBarContent.setText(EVoterShareMemory
-				.getCurrentSubjectName());
-		this.ivTitleBarRefresh.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				refreshData();
-			}
-		});
-		mainMenu.setSessionActivityMenu();
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.ItemDataActivity#initComponent()
+	 */
+	@Override
+	public void initComponent() {
+		super.initComponent();
 		adapter = new SessionAdapter(SessionActivity.this);
 		listView.setAdapter(adapter);
 		
@@ -56,40 +46,47 @@ public class SessionActivity extends ItemDataActivity {
 				Session selectedSession = (Session) parent
 						.getItemAtPosition(position);
 				EVoterShareMemory.setCurrentSession(selectedSession);
-				EVoterShareMemory.setPreviousContext(SessionActivity.this);
-				Intent questionActivity = new Intent(SessionActivity.this, QuestionActivity.class);
-				startActivity(questionActivity);
+				ActivityManager.startQuestionActivity(SessionActivity.this);
 			}
 		});
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				final Session selectedSession = (Session) parent
+				Session selectedSession = (Session) parent
 						.getItemAtPosition(position);
 				EVoterShareMemory.setCurrentSession(selectedSession);
 				longClickSessionAction(selectedSession.getId());
 				return true;
 			}
 		});
-		
-		mainMenu.getBtNewSession().setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent newSessionIntent = new Intent(SessionActivity.this, NewSessionActivity.class);
-				EVoterShareMemory.setPreviousContext(SessionActivity.this);
-				startActivity(newSessionIntent);
-				mainMenu.dismiss();
-			}
-		});
+	}
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#setupContentMainMenu()
+	 */
+	@Override
+	protected void setupContentMainMenu() {
+		// TODO Auto-generated method stub
+		super.setupContentMainMenu();
+		mainMenu.getBtUserOfSubject().setVisibility(View.VISIBLE);
 		
 	}
-	
-	public void refreshData() {
-		EVoterRequestManager.getAllSession(SessionActivity.this, EVoterShareMemory.getCurrentSubject().getId());
+
+
+
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#setupTitleBar()
+	 */
+	@Override
+	protected void setupTitleBar() {
+		// TODO Auto-generated method stub
+		super.setupTitleBar();
+		tvTitleBarContent.setText(EVoterShareMemory.getCurrentSubject().getTitle());
 	}
-	
+
+
 	/**
 	 * @param response
 	 */
@@ -100,34 +97,22 @@ public class SessionActivity extends ItemDataActivity {
 						"Deleted session: " + EVoterShareMemory.getCurrentSession().getTitle());
 				adapter.deleteItem(EVoterShareMemory.getCurrentSession().getId());
 				adapter.notifyDataSetChanged();
-				//					loadListItemData();
 			}
 			else {
 				EVoterMobileUtils.showeVoterToast(SessionActivity.this,
 						"Cannot delete session: " + response);
 			}
 		} else if (callBackMessage.equals(CallBackMessage.GET_ALL_SESSION_EVOTER_REQUEST)) {
-			try {
-				EVoterShareMemory.resetListAcceptedSessions();
-				ArrayList<ItemData> listSession = new ArrayList<ItemData>();
-				JSONArray array = EVoterMobileUtils.getJSONArray(response);
-				for (int i = 0; i < array.length(); i++) {
-					Session session = EVoterMobileUtils.parserSession(array.getJSONObject(i));
-					if (session != null)
-						listSession.add(session);
-				}
+				
+				ArrayList<ItemData> listSession = EVoterMobileUtils.parserToSessionArray(response);
 				if (listSession.isEmpty()) {
 					EVoterMobileUtils.showeVoterToast(SessionActivity.this,
 							"There isn't any session!");
+				}else{
+					EVoterShareMemory.resetListAcceptedSessions();
+					adapter.updateList(listSession);
 				}
-				adapter.updateList(listSession);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 		} else {
 			super.updateRequestCallBack(response, callBackMessage);
 		}
@@ -143,9 +128,7 @@ public class SessionActivity extends ItemDataActivity {
 				.setPositiveButton(R.string.edit_button, new DialogInterface.OnClickListener() {
 					
 					public void onClick(DialogInterface dialog, int whichButton) {
-						Intent editSession = new Intent(SessionActivity.this, EditSessionActivity.class);
-						EVoterShareMemory.setPreviousContext(SessionActivity.this);
-						startActivity(editSession);
+						ActivityManager.startEditSessionActivity(SessionActivity.this);
 					}
 				})
 				.setNegativeButton(R.string.delete_button, new DialogInterface.OnClickListener() {
@@ -154,6 +137,14 @@ public class SessionActivity extends ItemDataActivity {
 						EVoterRequestManager.deleteSession(sessionID, SessionActivity.this);
 					}
 				}).show();
+	}
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#loadData()
+	 */
+	@Override
+	public void loadData() {
+		EVoterRequestManager.getAllSession(SessionActivity.this, EVoterShareMemory.getCurrentSubject().getId());
 	}
 	
 }

@@ -6,91 +6,64 @@
     android:orientation="vertical"
     android:padding="10dp" >
 
-    <LinearLayout
-        android:id="@+id/subjectMenuLayout"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btNewSession"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:text="New session" />
 
-        <Button
-            android:id="@+id/btNewSession"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="New session" />
-
-        <Button
-            android:id="@+id/btSubjectUser"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="List Users" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/sessionMenuLayout"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btSubjectUser"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:text="Subject users" />
 
-        <Button
-            android:id="@+id/btStartSession"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Start" />
-
-        <Button
-            android:id="@+id/btNewQuestion"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="New Question" />
-
-        <Button
-            android:id="@+id/btAcceptedUser"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Student joined" />
-
-        <Button
-            android:id="@+id/btStatitisticBar"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="View student feedback" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/questionMenuLayout"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btStartSession"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:text="Start" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/questionDetailMenuLayout"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btAcceptJoin"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:text="Join" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/mainMenuLayout"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btNewQuestion"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:text="New Question" />
 
-        <Button
-            android:id="@+id/btLogout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Logout" />
+    <Button
+        android:id="@+id/btAcceptedUser"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Student joined" />
 
-        <Button
-            android:id="@+id/btExit"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Exit" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/btStatitisticBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Student feedback" />
+
+    <Button
+        android:id="@+id/btLogout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Logout" />
+
+    <Button
+        android:id="@+id/btExit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Exit" />
+
+    <Button
+        android:id="@+id/btMenuCancel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel" />
 
 </LinearLayout>

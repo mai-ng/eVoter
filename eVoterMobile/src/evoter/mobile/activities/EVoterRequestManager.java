@@ -11,8 +11,8 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import evoter.mobile.objects.EVoterMainMenu;
 import evoter.mobile.objects.EVoterShareMemory;
-import evoter.mobile.objects.MainMenu;
 import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
@@ -363,7 +363,7 @@ public class EVoterRequestManager {
 	/**
 	 * @param acceptedStudents
 	 */
-	public static void getUsersOfSession(final AcceptedStudents context) {
+	public static void getUsersOfSession(final AcceptedStudentsActivity context) {
 		AsyncHttpClient client = new AsyncHttpClient();
 		RequestParams params = new RequestParams();
 		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
@@ -571,7 +571,7 @@ public class EVoterRequestManager {
 					// Request successfully - client receive a response
 					@Override
 					public void onSuccess(String response) {
-						context.updateRequestCallBack(response + (start ? MainMenu.STOP_SESSION : MainMenu.START_SESSION), CallBackMessage.CHANGE_SESSION_STATUS_EVOTER_REQUEST);
+						context.updateRequestCallBack(response + (start ? EVoterMainMenu.MN_STOP_SESSION : EVoterMainMenu.MN_START_SESSION), CallBackMessage.CHANGE_SESSION_STATUS_EVOTER_REQUEST);
 					}
 					
 					//Login fail
@@ -768,6 +768,40 @@ public class EVoterRequestManager {
 				Log.e("FAILURE", "onFailure error : " + error.toString() + "content : " + content);
 			}
 		});
+		
+	}
+
+	/**
+	 * @param eVoterActivity
+	 */
+	public static void logout(final EVoterActivity context) {
+		AsyncHttpClient client = new AsyncHttpClient();
+		RequestParams params = new RequestParams();
+		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
+		client.post(RequestConfig.getURL(URIRequest.LOGOUT), params,
+				new AsyncHttpResponseHandler() {
+					@Override
+					public void onSuccess(String response) {
+						Log.i("Response", response);
+						if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
+							EVoterMobileUtils.showeVoterToast(context, "Goodbye...!");
+						} else {
+							EVoterMobileUtils.showeVoterToast(context, "You are not logged out from system!");
+						}
+					}
+					
+					//Login fail
+					@Override
+					public void onFailure(Throwable error,
+							String content) {
+						EVoterMobileUtils.showeVoterToast(
+								context,
+								"Cannot request logout from server!");
+						Log.e("Logout", "onFailure error : "
+								+ error.toString() + "content : "
+								+ content);
+					}
+				});
 		
 	}
 }

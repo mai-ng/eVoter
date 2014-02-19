@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,32 +32,45 @@ public class StudentFeedbackActivity extends EVoterActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.student_feeback);
-		mainMenu.setQuestionActivityMenu();
-		tvTitleBarContent.setText("STUDENT FEEDBACK");
 		excitedLayout = (LinearLayout) findViewById(R.id.la_excitedStatistic);
 		difficultLayout = (LinearLayout) findViewById(R.id.la_difficultStatistic);
-		ivTitleBarRefresh.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				EVoterRequestManager.updateQuestion(StudentFeedbackActivity.this);
-				EVoterRequestManager.updateQuestion(StudentFeedbackActivity.this);
-				drawStatistic();
-			}
-		});
-		ivTitleBarRefresh.setVisibility(View.VISIBLE);
-		drawStatistic();
 	}
 	
-	/**
-	 * 
+	
+	
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#setupContentMainMenu()
 	 */
-	protected void drawStatistic() {
+	@Override
+	protected void setupContentMainMenu() {
+		// TODO Auto-generated method stub
+		super.setupContentMainMenu();
+		setQuestionActivityMenu();
+		mainMenu.getBtViewFeedback().setVisibility(View.GONE);
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#setupTitleBar()
+	 */
+	@Override
+	protected void setupTitleBar() {
+		// TODO Auto-generated method stub
+		super.setupTitleBar();
+		tvTitleBarContent.setText("STUDENT FEEDBACK");
+	}
+
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#loadData()
+	 */
+	@Override
+	public void loadData() {
 		EVoterRequestManager.updateStaticValue(StudentFeedbackActivity.this, CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST);
 		EVoterRequestManager.updateStaticValue(StudentFeedbackActivity.this, CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST);
-		
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see

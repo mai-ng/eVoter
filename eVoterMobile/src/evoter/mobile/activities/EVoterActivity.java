@@ -5,7 +5,6 @@ package evoter.mobile.activities;
 
 import java.util.HashMap;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,29 +21,21 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
 import evoter.mobile.main.R;
+import evoter.mobile.objects.EVoterMainMenu;
 import evoter.mobile.objects.EVoterShareMemory;
-import evoter.mobile.objects.MainMenu;
 import evoter.mobile.objects.OfflineEVoterManager;
-import evoter.mobile.objects.RequestConfig;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.UserDAO;
-import evoter.share.model.Question;
-import evoter.share.model.Session;
-import evoter.share.utils.URIRequest;
+import evoter.share.model.UserType;
 
 /**
  * <br>
  * Update by @author luongnv89 on 12-Feb-2014: <br>
  * <li>add logout request to server <br>
  * Update by @author luongnv89 on 09-Feb-2014: <br> <li>Change the name of
- * {@link MainMenu} variable to mainMenu <br>
+ * {@link EVoterMainMenu} variable to mainMenu <br>
  * <br>
  * Update by @author luongnv89 on Thu 30-Jan-2014: <br> <li>Add constructor for
  * {@link OfflineEVoterManager} <br>
@@ -56,7 +47,7 @@ import evoter.share.utils.URIRequest;
  * application <br>
  * Created by @author luongnv89
  */
-public class EVoterActivity extends Activity {
+public abstract class EVoterActivity extends Activity {
 	/**
 	 * Image which is the title bar icon (on the left-top) of eVoterMobile. The
 	 * same for all activities.
@@ -96,9 +87,7 @@ public class EVoterActivity extends Activity {
 	 */
 	protected OfflineEVoterManager offlineEVoterManager;
 	
-	protected AsyncHttpClient client;
-	
-	protected MainMenu mainMenu;
+	protected EVoterMainMenu mainMenu;
 	
 	/*
 	 * (non-Javadoc)
@@ -108,18 +97,82 @@ public class EVoterActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		
+		offlineEVoterManager = new OfflineEVoterManager(this);
+		EVoterShareMemory.setOfflineEVoterManager(offlineEVoterManager);
+		mainMenu = new EVoterMainMenu(this);
+		
+		setupTitleBar();
+		setupContentMainMenu();
+		setupMainMenu();
+		
+		loadData();
+	}
+	
+	/**
+	 * Setup the content of menu depend on current activity <li>Global menu:
+	 * Show for all activity <br>
+	 * {@link EVoterMainMenu#MN_EXIT} exit application <br>
+	 * {@link EVoterMainMenu#MN_LOGOUT} logout of system <br>
+	 * {@link EVoterMainMenu#MN_CANCEL}cancel menu option <li>Subject menu: Show
+	 * the option in a subject. {@link SessionActivity} and lower level <br>
+	 * {@link EVoterMainMenu#MN_USER_OF_SUBJECT} show user of subject <br>
+	 * {@link EVoterMainMenu#MN_NEW_SESSION} create new session in current
+	 * subject <li>Session menu: Show the option in a session. For
+	 * {@link QuestionActivity} and lower level <br>
+	 * {@link EVoterMainMenu#MN_START_SESSION} active current session <br>
+	 * {@link EVoterMainMenu#MN_STOP_SESSION} inactive current session <br>
+	 * {@link EVoterMainMenu#MN_NEW_QUESTION} create new question in current
+	 * session <br>
+	 * {@link EVoterMainMenu#MN_ACCEPT_STUDENT} show student who has accepted to
+	 * join session <br>
+	 * {@link EVoterMainMenu#MN_JOIN} Student join session <li>Question
+	 */
+	protected void setupContentMainMenu() {
+		if (EVoterShareMemory.getCurrentSession() != null) {
+			if (EVoterShareMemory.getCurrentSession().isActive()) {
+				mainMenu.getBtChangeSessionStatus().setText(EVoterMainMenu.MN_STOP_SESSION);
+			} else {
+				mainMenu.getBtChangeSessionStatus().setText(EVoterMainMenu.MN_START_SESSION);
+			}
+		}
+	}
+	
+	/**
+	 * Set title bar of activity <li>When user click on
+	 * {@link EVoterActivity#ivTitleBarIcon}, show the main menu option of
+	 * current activity <li>When user click on
+	 * {@link EVoterActivity#ivTitleBarRefresh}, refresh content (data +
+	 * interface) of current activity <li>The content of title bar depend on
+	 * activity: <br>
+	 * In {@link StartActivity}, {@link LoginActivity}, {@link RegisterActivity}, {@link ResetPasswordActivity} show app name <br>
+	 * In {@link SubjectActivity} show username <br>
+	 * In {@link SubjectUserActivity}, {@link SessionActivity},
+	 * {@link NewSessionActivity}, show current subject title <br>
+	 * In {@link QuestionActivity}, {@link EditSessionActivity},
+	 * {@link AcceptedStudentsActivity}, {@link StudentFeedbackActivity} show current
+	 * session title <br>
+	 * In {@link QuestionDetailActivity}, {@link QuestionStatisticActivity},
+	 * {@link EditQuestionActivity} show current question
+	 */
+	protected void setupTitleBar() {
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.start);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
 				R.layout.evoter_title_bar);
-		ivTitleBarIcon = (ImageView) findViewById(R.id.ivIconTitleBar);
-		ivTitleBarRefresh = (ImageView) findViewById(R.id.ivRefreshTitleBar);
 		tvTitleBarContent = (TextView) findViewById(R.id.tvTitleBar);
-		ivTitleBarRefresh.setVisibility(View.GONE);
-		client = new AsyncHttpClient(RequestConfig.TIME_OUT);
-		offlineEVoterManager = new OfflineEVoterManager(this);
-		EVoterShareMemory.setOfflineEVoterManager(offlineEVoterManager);
-		setupMainMenu();
+		tvTitleBarContent.setText(R.string.content_title_bar);
+		
+		ivTitleBarRefresh = (ImageView) findViewById(R.id.ivRefreshTitleBar);
+		ivTitleBarRefresh.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				refeshContent();
+			}
+		});
+		
+		ivTitleBarIcon = (ImageView) findViewById(R.id.ivIconTitleBar);
 		ivTitleBarIcon.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -127,15 +180,25 @@ public class EVoterActivity extends Activity {
 				mainMenu.show();
 			}
 		});
-		
 	}
 	
 	/**
-	 * 
+	 * Reload data and re-build component of activity <br>
+	 * Request to server to reload data <br>
+	 * If request data return successful, re-build component of activity base on
+	 * new data <br>
+	 * otherwise, keep current content
 	 */
-	private void setupMainMenu() {
-		mainMenu = new MainMenu(this);
+	protected void refeshContent() {
+		loadData();
+	}
+	
+	/**
+	 * Setup main menu action
+	 */
+	protected void setupMainMenu() {
 		
+		//GLOBAL MENU OPTION
 		mainMenu.getBtExit().setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -152,28 +215,43 @@ public class EVoterActivity extends Activity {
 			}
 		});
 		
-		mainMenu.getBtListUsers().setOnClickListener(new OnClickListener() {
+		mainMenu.getBtCancel().setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Log.i("Main menu", "Request all user of a subject");
 				mainMenu.dismiss();
-				Intent subjectUserActivity = new Intent(EVoterActivity.this, SubjectUserActivity.class);
-				startActivity(subjectUserActivity);
 			}
 		});
 		
-		mainMenu.getBtStatistic().setOnClickListener(new OnClickListener() {
+		
+		//SUBJECT MENU
+		mainMenu.getBtUserOfSubject().setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				if (EVoterShareMemory.getExictedQuestion() == null || EVoterShareMemory.getDifficultQuestion() == null) {
-					EVoterMobileUtils.showeVoterToast(EVoterActivity.this, EVoterShareMemory.getCurrentSession().getTitle() + " does not have feedback");
-				} else {
-					Intent feedback = new Intent(EVoterActivity.this, StudentFeedbackActivity.class);
-					startActivity(feedback);
-					mainMenu.dismiss();
-				}
+				mainMenu.dismiss();
+				ActivityManager.startSubjectUserActivity(EVoterActivity.this);
+			}
+		});
+		
+		mainMenu.getBtNewSession().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mainMenu.dismiss();
+				ActivityManager.startNewSessionActivity(EVoterActivity.this);
+				
+			}
+		});
+		
+		
+		//SESSION MENU
+		mainMenu.getBtViewFeedback().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				ActivityManager.startStudentFeedBackActivity(EVoterActivity.this);
+				mainMenu.dismiss();
 			}
 		});
 		
@@ -181,24 +259,20 @@ public class EVoterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Log.i("Main menu", "Create new question");
+				ActivityManager.startNewQuestionActivity(EVoterActivity.this);
 				mainMenu.dismiss();
-				EVoterShareMemory.setPreviousContext(EVoterActivity.this);
-				Intent newQuestion = new Intent(EVoterActivity.this, NewQuestionActivity.class);
-				startActivity(newQuestion);
 				
 			}
 		});
-		mainMenu.getBtAcceptUsers().setOnClickListener(new OnClickListener() {
+		mainMenu.getBtAcceptedStudent().setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Log.i("Main menu", "Request accepted user of a session");
 				mainMenu.dismiss();
-				Intent acceptedStudents = new Intent(EVoterActivity.this, AcceptedStudents.class);
-				startActivity(acceptedStudents);
+				ActivityManager.startAcceptedStudent(EVoterActivity.this);
 			}
 		});
+		
 		
 	}
 	
@@ -207,6 +281,7 @@ public class EVoterActivity extends Activity {
 	 * Show a dialog to confirm exiting application
 	 */
 	public void exit() {
+		mainMenu.dismiss();
 		Dialog dialog = new AlertDialog.Builder(this)
 				.setTitle("Exit application?")
 				.setIcon(android.R.drawable.ic_dialog_alert)
@@ -239,158 +314,81 @@ public class EVoterActivity extends Activity {
 	/**
 	 * 
 	 */
-	private void logout() {
+	protected void logout() {
 		offlineEVoterManager.logoutUser();
-		RequestParams params = new RequestParams();
-		params.add(UserDAO.USER_KEY, EVoterShareMemory.getUSER_KEY());
-		
-		client.post(RequestConfig.getURL(URIRequest.LOGOUT), params,
-				new AsyncHttpResponseHandler() {
-					// Request successfully - client receive a response
-					@Override
-					public void onSuccess(String response) {
-						Log.i("Response", response);
-						if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
-							EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Goodbye...!");
-						} else {
-							EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "You are not logged out from system!");
-						}
-					}
-					
-					//Login fail
-					@Override
-					public void onFailure(Throwable error,
-							String content) {
-						EVoterMobileUtils.showeVoterToast(
-								EVoterActivity.this,
-								"Cannot request logout from server!");
-						Log.e("Logout", "onFailure error : "
-								+ error.toString() + "content : "
-								+ content);
-					}
-				});
+		EVoterRequestManager.logout(EVoterActivity.this);
 	}
 	
-	public void refreshData() {
-		
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see android.app.Activity#onResume()
-	 */
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		if (!EVoterMobileUtils.hasInternetConnection(this)) {
-			errorConnection();
-		} else {
-			refreshData();
-		}
-	};
 	
 	/**
+	 * Callback function.
+	 * <br> According to {@link CallBackMessage} to process data
 	 * 
+	 * @param response response which eVoterMobile receive from server
+	 * @param callBackMessage value at {@link CallBackMessage}
 	 */
-	protected void errorConnection() {
-		Dialog dialog = new AlertDialog.Builder(this)
-				.setTitle("Internet connection")
-				.setMessage("Cannot connect to internet. Check your mobile internet connection an try again!")
-				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setPositiveButton(R.string.exit_button, new DialogInterface.OnClickListener() {
-					
-					public void onClick(DialogInterface dialog, int whichButton) {
-						exitApplication();
-					}
-				})
-				.setNegativeButton(R.string.retry_button, new DialogInterface.OnClickListener() {
-					
-					public void onClick(DialogInterface dialog, int whichButton) {
-						Intent exitIntent = new Intent(EVoterActivity.this,
-								StartActivity.class);
-						exitIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-						exitIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						startActivity(exitIntent);
-					}
-				}).show();
-	}
-	
 	public void updateRequestCallBack(String response, String callBackMessage) {
 		if (callBackMessage.equals(CallBackMessage.LOGIN_EVOTER_REQUEST)) {
-			String userKey = null;
 			try {
+				JSONObject object = new JSONObject(response);
+				String userKey = object.getString(UserDAO.USER_KEY);
 				
-				JSONObject object = new JSONObject(
-						response);
-				userKey = object
-						.getString(UserDAO.USER_KEY);
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
-				EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Error! Cannot get user information");
-			}
-			
-			//Got the userkey
-			if (userKey != null && userKey != "null") {
-				Log.i("USER_KEY", userKey);
-				HashMap<String, String> user = offlineEVoterManager.getSavedUserDetail();
-				EVoterShareMemory
-						.setUSER_KEY(userKey);
-				EVoterShareMemory
-						.setCurrentUserName(user.get(UserDAO.USER_NAME));
-				EVoterMobileUtils.showeVoterToast(
-						EVoterActivity.this,
-						"Welcome "
-								+ EVoterShareMemory
-										.getCurrentUserName()
-								+ " to eVoter!");
-				
-				Intent subjectIntent = new Intent(
-						EVoterActivity.this,
-						SubjectActivity.class);
-				subjectIntent
-						.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				subjectIntent
-						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(subjectIntent);
-				
-			}
-			else {
-				EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Error! Username and password is not correct. Please try again!");
-			}
-		}else if (callBackMessage.equals(CallBackMessage.UPDATE_QUESTION_EVOTER_REQUEST)) {
-			try {
-				JSONArray array = new JSONArray(response);
-				Question question = null;
-				if (array != null)
-					question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(0));
-				if (question != null) {
-					EVoterShareMemory.setCurrentQuestion(question);
+				if (userKey != null) {
+					Log.i("USER_KEY", userKey);
+					HashMap<String, String> user = offlineEVoterManager.getSavedUserDetail();
+					EVoterShareMemory.setUSER_KEY(userKey);
+					EVoterShareMemory.setCurrentUserName(user.get(UserDAO.USER_NAME));
+					EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Welcome " + EVoterShareMemory.getCurrentUserName() + " to eVoter!");
+					ActivityManager.startSubjectActivity(EVoterActivity.this);
+				} else {
+					EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Cannot login: " + response);
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
-			}
-			
-		} else if (callBackMessage.equals(CallBackMessage.UPDATE_SESSION_EVOTER_REQUEST)) {
-			try {
-				JSONArray array = EVoterMobileUtils.getJSONArray(response);
-				Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
-				if (session != null) {
-					EVoterShareMemory.setCurrentSession(session);
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-				Log.i("Update session", "Exception");
+				shutdownByException();
 			}
 			
 		}
-		
 	}
 	
+	/**
+	 * Shutdown application when there is some exception
+	 */
 	public void shutdownByException() {
 		EVoterMobileUtils.showeVoterToast(EVoterActivity.this, "Exception! Restart eVoter and try again!");
 		exitApplication();
 	}
 	
+	/**
+	 * Reload data for content
+	 */
+	public abstract void loadData();
+	
+	public void setQuestionActivityMenu(){
+		mainMenu.getBtAcceptedStudent().setVisibility(View.VISIBLE);
+		if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER) {
+			mainMenu.getBtNewSession().setVisibility(View.VISIBLE);
+			mainMenu.getBtNewQuestion().setVisibility(View.VISIBLE);
+			mainMenu.getBtChangeSessionStatus().setVisibility(View.VISIBLE);
+			mainMenu.getBtViewFeedback().setVisibility(View.VISIBLE);
+			mainMenu.getBtJoin().setVisibility(View.GONE);
+		} else if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT) {
+			mainMenu.getBtViewFeedback().setVisibility(View.GONE);
+			mainMenu.getBtNewQuestion().setVisibility(View.GONE);
+			mainMenu.getBtNewSession().setVisibility(View.GONE);
+			mainMenu.getBtChangeSessionStatus().setVisibility(View.GONE);
+			mainMenu.getBtJoin().setVisibility(View.VISIBLE);
+			if (EVoterShareMemory.userJoinedSession()) mainMenu.getBtJoin().setVisibility(View.GONE);
+		}
+	}
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		if(EVoterShareMemory.getPreviousContext()!=null)
+		EVoterShareMemory.getPreviousContext().refeshContent();
+	}
 }

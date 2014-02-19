@@ -1,22 +1,16 @@
 package evoter.mobile.activities;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import evoter.mobile.adapters.SubjectAdapter;
 import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
-import evoter.share.dao.SubjectDAO;
 import evoter.share.model.ItemData;
 import evoter.share.model.Subject;
 
@@ -39,10 +33,16 @@ public class SubjectActivity extends ItemDataActivity {
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Set content for title bar is the username
-		this.tvTitleBarContent.setText(EVoterShareMemory
-				.getCurrentUserName());
-		EVoterShareMemory.setPreviousContext(this);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.mobile.activities.ItemDataActivity#initComponent()
+	 */
+	@Override
+	public void initComponent() {
+		// TODO Auto-generated method stub
+		super.initComponent();
 		adapter = new SubjectAdapter(SubjectActivity.this);
 		listView.setAdapter(adapter);
 		
@@ -50,19 +50,22 @@ public class SubjectActivity extends ItemDataActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Subject currentSubject = ((Subject) parent
-						.getItemAtPosition(position));
+				Subject currentSubject = ((Subject) parent.getItemAtPosition(position));
 				EVoterShareMemory.setCurrentSubject(currentSubject);
-				Intent subject = new Intent(SubjectActivity.this,
-						SessionActivity.class);
-				startActivity(subject);
+				ActivityManager.startSessionActivity(SubjectActivity.this);
 			}
 		});
-		
 	}
 	
-	public void refreshData() {
-		EVoterRequestManager.getListSubject(this);
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#setupTitleBar()
+	 */
+	@Override
+	protected void setupTitleBar() {
+		// TODO Auto-generated method stub
+		super.setupTitleBar();
+		tvTitleBarContent.setText(EVoterShareMemory.getCurrentUserName());
 	}
 	
 	/**
@@ -84,38 +87,25 @@ public class SubjectActivity extends ItemDataActivity {
 	@Override
 	public void updateRequestCallBack(String response, String callBackMessage) {
 		if (callBackMessage.equals(CallBackMessage.GET_ALL_SUBJECT_EVOTER_REQUEST)) {
-			try {
-				ArrayList<ItemData> newList = new ArrayList<ItemData>();
-				JSONArray array = new JSONArray(response);
-				
-				for (int i = 0; i < array.length(); i++) {
-					JSONObject item = array.getJSONObject(i);
-					Subject subject = new Subject(
-							Long.parseLong(item
-									.getString(SubjectDAO.ID)),
-							item.getString(SubjectDAO.TITLE),
-							EVoterMobileUtils.convertToDate(item
-									.getString(SubjectDAO.CREATION_DATE)));
-					
-					newList.add(subject);
-				}
-				if (newList.isEmpty()) {
-					EVoterMobileUtils.showeVoterToast(SubjectActivity.this,
-							"There isn't any subject!");
-				}
-				adapter.updateList(newList);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			ArrayList<ItemData> listSubjects = EVoterMobileUtils.parserToSubjectArray(response);
+			
+			if (listSubjects.isEmpty()) {
+				EVoterMobileUtils.showeVoterToast(SubjectActivity.this, "There isn't any subject!");
+			} else {
+				adapter.updateList(listSubjects);
 			}
 		} else {
 			super.updateRequestCallBack(response, callBackMessage);
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#loadData()
+	 */
+	@Override
+	public void loadData() {
+		EVoterRequestManager.getListSubject(this);
 	}
 	
 }

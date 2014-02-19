@@ -74,7 +74,7 @@ public class OfflineEVoterManager {
 	 */
 	public void checkLogin() {
 		if (!isLoggedIn()) {
-			ActivityManager.gotoLogin(context);
+			ActivityManager.startLoginActivity(context);
 		} else {
 			HashMap<String, String> user = getSavedUserDetail();
 			EVoterRequestManager.doLogin(user.get(UserDAO.USER_NAME), user.get(UserDAO.PASSWORD),context);

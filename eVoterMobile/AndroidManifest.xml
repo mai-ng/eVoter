@@ -128,7 +128,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="evoter.mobile.activities.AcceptedStudents"
+            android:name="evoter.mobile.activities.AcceptedStudentsActivity"
             android:label="Edit Session"
             android:screenOrientation="portrait" >
             <intent-filter>

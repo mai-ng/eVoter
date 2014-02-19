@@ -42,7 +42,7 @@ public class EditQuestionActivity extends NewQuestionActivity {
 		spQuestionType.setSelection(type - 1);
 		spQuestionType.setEnabled(false);
 		buildAnswerArea(type);
-		setBtSaveAction();
+		setActionListeners();
 	}
 	
 	/**
@@ -81,8 +81,7 @@ public class EditQuestionActivity extends NewQuestionActivity {
 	/**
 	 * 
 	 */
-	@Override
-	protected void setBtSaveAction() {
+	protected void setActionListeners() {
 		btSave.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -116,7 +115,7 @@ public class EditQuestionActivity extends NewQuestionActivity {
 				EVoterMobileUtils.showeVoterToast(
 						EditQuestionActivity.this,
 						"Updated successfully!");
-				EVoterShareMemory.getPreviousContext().refreshData();
+				finish();
 			} else {
 				EVoterMobileUtils.showeVoterToast(
 						EditQuestionActivity.this,

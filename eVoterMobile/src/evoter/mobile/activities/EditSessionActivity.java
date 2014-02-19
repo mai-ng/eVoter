@@ -31,10 +31,13 @@ public class EditSessionActivity extends NewSessionActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		this.tvTitleBarContent.setText(EVoterShareMemory
-				.getCurrentSessionName());
-		mainMenu.setSessionActivityMenu();
-		
+		initComponent();
+	}
+
+	/**
+	 * Init components of {@link EditSessionActivity}
+	 */
+	private void initComponent() {
 		etTitle = (EditText) findViewById(R.id.etNewSessionName);
 		etTitle.setText(EVoterShareMemory.getCurrentSessionName());
 		btSave = (Button) findViewById(R.id.btNewSessionSave);
@@ -43,7 +46,6 @@ public class EditSessionActivity extends NewSessionActivity {
 			@Override
 			public void onClick(View v) {
 				EVoterRequestManager.editSession(etTitle.getText().toString(), EVoterShareMemory.getCurrentSession().getId(), EditSessionActivity.this);
-				finish();
 			}
 		});
 		btCancel = (Button) findViewById(R.id.btNewSessionCancel);
@@ -67,10 +69,9 @@ public class EditSessionActivity extends NewSessionActivity {
 		if (callBackMessage.equals(CallBackMessage.EDIT_SESSION_EVOTER_REQUEST)) {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Session is updated!");
-				EVoterShareMemory.getPreviousContext().refreshData();
 				finish();
 			} else {
-				EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Cannot update session!");
+				EVoterMobileUtils.showeVoterToast(EditSessionActivity.this, "Cannot update session: " + response);
 			}
 		} else {
 			super.updateRequestCallBack(response, callBackMessage);

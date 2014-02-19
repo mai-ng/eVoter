@@ -75,7 +75,40 @@ public class NewQuestionActivity extends EVoterActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		initialComponent();
+		setBtSaveAction();
 		
+	}
+	
+	/**
+	 * 
+	 */
+	private void initialComponent() {
+		setContentView(R.layout.new_question);
+		
+		etQuestionText = (EditText) findViewById(R.id.etNewQuestionContent);
+		
+		//Layout answer for multi checkbox and multi radio button
+		adaterListView = new ArrayAdapter<String>(NewQuestionActivity.this, R.layout.user_item, listAnswser);
+		lvListAnswser = (ListView) findViewById(R.id.lvCreaetQuestionListAnswser);
+		lvListAnswser.setAdapter(adaterListView);
+		etAnswer = (EditText) findViewById(R.id.etCreateQuestionAnswer);
+		laAnswer = (LinearLayout) findViewById(R.id.la_answerArea);
+		btAddAnswer = (Button) findViewById(R.id.btCreateQuestionAddAnswer);
+		laAnswer.setVisibility(View.GONE);
+		//		lvListAnswser.setVisibility(View.GONE);
+		
+		//Layout answer for slider question
+		laSlider = (LinearLayout) findViewById(R.id.la_slider);
+		//		etMin = (EditText) findViewById(R.id.etCreateQMin);
+		etMax = (EditText) findViewById(R.id.etCreateQMax);
+		laSlider.setVisibility(View.VISIBLE);
+		
+		btCancel = (Button) findViewById(R.id.btCancelNewQuestion);
+		createQuestionType();
+		spQuestionType = (Spinner) findViewById(R.id.spQuestionType);
+		ArrayAdapter<String> adaterSpinner = new ArrayAdapter<String>(NewQuestionActivity.this, R.layout.answer_item, typeArray);
+		spQuestionType.setAdapter(adaterSpinner);
+		btSave = (Button) findViewById(R.id.btSaveNewQuestion);
 		lvListAnswser.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parentView, View itemClicked, int position, long id) {
@@ -117,43 +150,6 @@ public class NewQuestionActivity extends EVoterActivity {
 				
 			}
 		});
-		
-		setBtSaveAction();
-		
-	}
-	
-	/**
-	 * 
-	 */
-	private void initialComponent() {
-		setContentView(R.layout.new_question);
-		mainMenu.setQuestionActivityMenu();
-		mainMenu.getBtNewQuestion().setVisibility(View.GONE);
-		
-		etQuestionText = (EditText) findViewById(R.id.etNewQuestionContent);
-		
-		//Layout answer for multi checkbox and multi radio button
-		adaterListView = new ArrayAdapter<String>(NewQuestionActivity.this, R.layout.user_item, listAnswser);
-		lvListAnswser = (ListView) findViewById(R.id.lvCreaetQuestionListAnswser);
-		lvListAnswser.setAdapter(adaterListView);
-		etAnswer = (EditText) findViewById(R.id.etCreateQuestionAnswer);
-		laAnswer = (LinearLayout) findViewById(R.id.la_answerArea);
-		btAddAnswer = (Button) findViewById(R.id.btCreateQuestionAddAnswer);
-		laAnswer.setVisibility(View.GONE);
-		//		lvListAnswser.setVisibility(View.GONE);
-		
-		//Layout answer for slider question
-		laSlider = (LinearLayout) findViewById(R.id.la_slider);
-		//		etMin = (EditText) findViewById(R.id.etCreateQMin);
-		etMax = (EditText) findViewById(R.id.etCreateQMax);
-		laSlider.setVisibility(View.VISIBLE);
-		
-		btCancel = (Button) findViewById(R.id.btCancelNewQuestion);
-		createQuestionType();
-		spQuestionType = (Spinner) findViewById(R.id.spQuestionType);
-		ArrayAdapter<String> adaterSpinner = new ArrayAdapter<String>(NewQuestionActivity.this, R.layout.answer_item, typeArray);
-		spQuestionType.setAdapter(adaterSpinner);
-		btSave = (Button) findViewById(R.id.btSaveNewQuestion);
 	}
 	
 	/**
@@ -337,7 +333,7 @@ public class NewQuestionActivity extends EVoterActivity {
 				EVoterMobileUtils.showeVoterToast(
 						NewQuestionActivity.this,
 						"A new question is created successfully!");
-				EVoterShareMemory.getPreviousContext().refreshData();
+				
 			} else {
 				EVoterMobileUtils.showeVoterToast(
 						NewQuestionActivity.this,
@@ -349,5 +345,38 @@ public class NewQuestionActivity extends EVoterActivity {
 			super.updateRequestCallBack(response, callBackMessage);
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#loadData()
+	 */
+	@Override
+	public void loadData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#finish()
+	 */
+	@Override
+	public void finish() {
+		// TODO Auto-generated method stub
+		super.finish();
+		EVoterShareMemory.getPreviousContext().refeshContent();
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		EVoterShareMemory.getPreviousContext().refeshContent();
+	}
+	
+	
+	
+	
 	
 }

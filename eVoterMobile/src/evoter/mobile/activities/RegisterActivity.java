@@ -78,6 +78,19 @@ public class RegisterActivity extends EVoterActivity {
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#setupTitleBar()
+	 */
+	@Override
+	protected void setupTitleBar() {
+		// TODO Auto-generated method stub
+		super.setupTitleBar();
+		ivTitleBarIcon.setEnabled(false);
+		ivTitleBarRefresh.setEnabled(false);
+	}
+
+
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -99,11 +112,20 @@ public class RegisterActivity extends EVoterActivity {
 				EVoterMobileUtils.showeVoterToast(RegisterActivity.this,
 						"You will receive an email to confirm your register!");
 				EVoterShareMemory.setCurrentUserName(etUsrname.getText().toString());
-				ActivityManager.gotoLogin(RegisterActivity.this);
+				ActivityManager.startLoginActivity(RegisterActivity.this);
 			}
 		}else{
 			super.updateRequestCallBack(response, callBackMessage);
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#loadData()
+	 */
+	@Override
+	public void loadData() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

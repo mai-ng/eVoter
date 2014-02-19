@@ -1,7 +1,6 @@
 package evoter.mobile.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,11 +63,33 @@ public class ResetPasswordActivity extends EVoterActivity {
 				// TODO: Send request to sever: email to change the password
 				EVoterMobileUtils.showeVoterToast(ResetPasswordActivity.this,
 						"You will receive an email confirm to reset your password! Email send to address: " + etEmail.getText().toString());
-				ActivityManager.gotoLogin(ResetPasswordActivity.this);
+				ActivityManager.startLoginActivity(ResetPasswordActivity.this);
 			}
 		}else{
 			super.updateRequestCallBack(response, callBackMessage);
 		}
+	}
+
+	
+	
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#setupTitleBar()
+	 */
+	@Override
+	protected void setupTitleBar() {
+		// TODO Auto-generated method stub
+		super.setupTitleBar();
+		ivTitleBarIcon.setEnabled(false);
+		ivTitleBarRefresh.setEnabled(false);
+	}
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#loadData()
+	 */
+	@Override
+	public void loadData() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

@@ -4,7 +4,6 @@
 package evoter.mobile.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -42,11 +41,14 @@ public class NewSessionActivity extends EVoterActivity {
 		
 		setContentView(R.layout.new_session);
 		
-		this.tvTitleBarContent.setText(EVoterShareMemory
-				.getCurrentSubjectName());
-		mainMenu.setSessionActivityMenu();
-		mainMenu.getBtNewSession().setVisibility(View.GONE);
-		
+		initComponents();
+	}
+
+
+	/**
+	 * Init components of {@link NewSessionActivity}
+	 */
+	private void initComponents() {
 		etTitle = (EditText) findViewById(R.id.etNewSessionName);
 		btSave = (Button) findViewById(R.id.btNewSessionSave);
 		btSave.setOnClickListener(new OnClickListener() {
@@ -58,9 +60,7 @@ public class NewSessionActivity extends EVoterActivity {
 					EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "Session title cannot be empty!");
 				}
 				else {
-					
 					EVoterRequestManager.createSessionRequest(etTitle.getText().toString(), EVoterShareMemory.getCurrentSubject().getId(), NewSessionActivity.this);
-					finish();
 				}
 			}
 		});
@@ -74,6 +74,39 @@ public class NewSessionActivity extends EVoterActivity {
 		});
 	}
 	
+	
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#setupContentMainMenu()
+	 */
+	@Override
+	protected void setupContentMainMenu() {
+		// TODO Auto-generated method stub
+		super.setupContentMainMenu();
+	}
+
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#setupTitleBar()
+	 */
+	@Override
+	protected void setupTitleBar() {
+		// TODO Auto-generated method stub
+		super.setupTitleBar();
+		tvTitleBarContent.setText(EVoterShareMemory.getCurrentSubjectName());
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#setupMainMenu()
+	 */
+	@Override
+	protected void setupMainMenu() {
+		// TODO Auto-generated method stub
+		super.setupMainMenu();
+	}
+
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -85,14 +118,33 @@ public class NewSessionActivity extends EVoterActivity {
 		if (callBackMessage.equals(CallBackMessage.CREATE_SESSION_EVOTER_REQUEST)) {
 			if (response.contains(URIRequest.SUCCESS_MESSAGE)) {
 				EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "A new session is created!");
-				EVoterShareMemory.getPreviousContext().refreshData();
 				finish();
 			} else {
-				EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "Cannot create new session!");
+				EVoterMobileUtils.showeVoterToast(NewSessionActivity.this, "Cannot create new session: " + response);
 			}
 		} else {
 			super.updateRequestCallBack(response, callBackMessage);
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#loadData()
+	 */
+	@Override
+	public void loadData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#finish()
+	 */
+	@Override
+	public void finish() {
+		// TODO Auto-generated method stub
+		super.finish();
+		EVoterShareMemory.getPreviousContext().refeshContent();
+	}
+	
 	
 }

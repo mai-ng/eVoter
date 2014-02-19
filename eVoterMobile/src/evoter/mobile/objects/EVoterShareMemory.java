@@ -42,7 +42,7 @@ public class EVoterShareMemory {
 	
 	private static ArrayList<Question> listQuestions = new ArrayList<Question>();
 	
-	public static void addQuestionToList(Question question){
+	public static void addQuestionToList(Question question) {
 		listQuestions.add(question);
 	}
 	
@@ -52,14 +52,14 @@ public class EVoterShareMemory {
 	public static ArrayList<Question> getListQuestions() {
 		return listQuestions;
 	}
-
+	
 	/**
 	 * @param listQuestions the listQuestions to set
 	 */
 	public static void setListQuestions(ArrayList<Question> listQuestions) {
 		EVoterShareMemory.listQuestions = listQuestions;
 	}
-
+	
 	/**
 	 * @return the exictedQuestion
 	 */
@@ -270,6 +270,13 @@ public class EVoterShareMemory {
 	 */
 	public static boolean hasStaticBar() {
 		return EVoterShareMemory.getExictedQuestion() != null && EVoterShareMemory.getDifficultQuestion() != null;
+	}
+	
+	/**
+	 * @return
+	 */
+	public static boolean userJoinedSession() {
+		return getListAcceptedSessions().contains(EVoterShareMemory.getCurrentSession().getId());
 	}
 	
 }

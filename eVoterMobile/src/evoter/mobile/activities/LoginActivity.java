@@ -3,7 +3,6 @@ package evoter.mobile.activities;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,114 +41,105 @@ public class LoginActivity extends EVoterActivity {
 	
 	EditText etUsrName;
 	EditText etPassword;
-	
 	Button btLogin;
-	
 	TextView tvRegister;
 	TextView tvResetPassword;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.login);
-		
-		this.tvTitleBarContent.setText("Login");
-		
-		this.ivTitleBarIcon.setEnabled(false);
-		
-		createLoginGUI();
-		
+		initComponent();
 	}
 	
 	/**
-	 * Create login interface
+	 * Init components of {@link LoginActivity}
 	 */
-	private void createLoginGUI() {
+	private void initComponent() {
 		etUsrName = (EditText) findViewById(R.id.usrname);
+		etPassword = (EditText) findViewById(R.id.password);
+		btLogin = (Button) findViewById(R.id.btLogin);
+		tvRegister = (TextView) findViewById(R.id.tvSignUp);
+		tvResetPassword = (TextView) findViewById(R.id.tvForgotPassword);
+		
 		if (EVoterShareMemory.getCurrentUserName() != null) {
 			etUsrName.setText(EVoterShareMemory.getCurrentUserName());
 		}
-		etPassword = (EditText) findViewById(R.id.password);
 		
-		btLogin = (Button) findViewById(R.id.btLogin);
-		
-		//Login button click
 		btLogin.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				loginButtonAction();
+				String i_Usrname = etUsrName.getText().toString();
+				String i_Password = etPassword.getText().toString();
+				if(validInput()){
+					EVoterRequestManager.doLogin(i_Usrname, i_Password, LoginActivity.this);
+				}
 			}
 		});
 		
-		tvRegister = (TextView) findViewById(R.id.tvSignUp);
-		tvRegister.setPaintFlags(tvRegister.getPaintFlags()
-				| Paint.UNDERLINE_TEXT_FLAG);
-		//Register textview click
+		tvRegister.setPaintFlags(tvRegister.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 		tvRegister.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Intent registerIntent = new Intent(LoginActivity.this,
-						RegisterActivity.class);
-				startActivity(registerIntent);
+				ActivityManager.startRegisterActivity(LoginActivity.this);
 			}
 		});
 		
-		tvResetPassword = (TextView) findViewById(R.id.tvForgotPassword);
-		tvResetPassword.setPaintFlags(tvResetPassword.getPaintFlags()
-				| Paint.UNDERLINE_TEXT_FLAG);
+		tvResetPassword.setPaintFlags(tvResetPassword.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
 		
-		//Reset password text view click
 		tvResetPassword.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent registerIntent = new Intent(LoginActivity.this,
-						ResetPasswordActivity.class);
-				startActivity(registerIntent);
+				ActivityManager.startResetPasswordActivity(LoginActivity.this);
 			}
 		});
 	}
-	
-	/**
-	 * Called when the activity has detected the user's press of the back key.
-	 * The default implementation simply finishes the current activity, but you
-	 * can override this to do whatever you want.
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#setupTitleBar()
 	 */
 	@Override
-	public void onBackPressed() {
-		exit();
+	protected void setupTitleBar() {
+		super.setupTitleBar();
+		ivTitleBarIcon.setEnabled(false);
 	}
-	
+
 	/**
+	 * Check valid input before send login request.
 	 * 
+	 * @return false in cases:
+	 * <br> {@link LoginActivity#etUsrName} is empty
+	 * <br> {@link LoginActivity#etUsrName} is invalid user name
+	 * <br> {@link LoginActivity#etPassword} is empty
+	 * <br> {@link LoginActivity#etPassword} is invalid password
+	 * 
+	 * <br>
+	 * <br>otherwise return true;
 	 */
-	private void loginButtonAction() {
-		// GetData getData = new GetData();
-		final String i_Usrname = etUsrName.getText().toString();
-		EVoterShareMemory
-				.setCurrentUserName(i_Usrname);
-		final String i_Password = etPassword.getText().toString();
-		
-		//Pre-check validation of input username and password
+	protected boolean validInput() {
+		String i_Usrname = etUsrName.getText().toString();
+		String i_Password = etPassword.getText().toString();
 		if (i_Usrname.equals("")) {
 			EVoterMobileUtils.showeVoterToast(LoginActivity.this,
 					"Please input your username");
+			return false;
 		} else if (i_Password.equals("")) {
 			EVoterMobileUtils.showeVoterToast(LoginActivity.this,
 					"Please input your password");
+			return false;
 		} else if (!UserValidation.isValidUserName(i_Usrname)) {
 			EVoterMobileUtils.showeVoterToast(LoginActivity.this,
 					"Input username is not valid");
+			return false;
 		} else if (!UserValidation.isValidPassword(i_Password)) {
 			EVoterMobileUtils.showeVoterToast(LoginActivity.this,
 					"Input password is not valid");
-		} else
-		
-		{
-			EVoterRequestManager.doLogin(i_Usrname, i_Password, LoginActivity.this);
+			return false;
 		}
+		
+		return true;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -189,14 +179,7 @@ public class LoginActivity extends EVoterActivity {
 										.getCurrentUserName()
 								+ " to eVoter!");
 				
-				Intent subjectIntent = new Intent(
-						LoginActivity.this,
-						SubjectActivity.class);
-				subjectIntent
-						.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				subjectIntent
-						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(subjectIntent);
+				ActivityManager.startSubjectActivity(LoginActivity.this);
 				
 			}
 			else {
@@ -205,6 +188,25 @@ public class LoginActivity extends EVoterActivity {
 		}else{
 			super.updateRequestCallBack(response, callBackMessage);
 		}
+	}
+	
+	/**
+	 * Called when the activity has detected the user's press of the back key.
+	 * The default implementation simply finishes the current activity, but you
+	 * can override this to do whatever you want.
+	 */
+	@Override
+	public void onBackPressed() {
+		exit();
+	}
+
+	/* (non-Javadoc)
+	 * @see evoter.mobile.activities.EVoterActivity#loadData()
+	 */
+	@Override
+	public void loadData() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

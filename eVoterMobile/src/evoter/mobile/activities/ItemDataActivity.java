@@ -6,16 +6,13 @@ package evoter.mobile.activities;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TableLayout;
 import evoter.mobile.adapters.ItemDataAdapter;
 import evoter.mobile.main.R;
-import evoter.mobile.objects.EVoterShareMemory;
 
 /**
  * {@link ItemDataActivity} is the abstract class of all the item activity of
@@ -39,45 +36,40 @@ public abstract class ItemDataActivity extends EVoterActivity {
 	 */
 	protected EditText etSearch;
 	
+	/**
+	 * Seekbar for student vote the difficult level of session
+	 */
 	protected SeekBar sbDifficult;
 	
-	protected SeekBar sbBored;
+	/**
+	 * Seekbar for student vote the excited level of session
+	 */
+	protected SeekBar sbExcited;
 	
+	/**
+	 * TableLayout content {@link ItemDataActivity#sbDifficult} and {@link ItemDataActivity#sbExcited}
+	 */
 	protected TableLayout tbSessionValue;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list_item_data_view);
-		this.ivTitleBarRefresh.setVisibility(View.VISIBLE);
-		
-		// When the refresh icon is click, the data of listview will be reloaded
-		this.ivTitleBarRefresh.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Log.i("Refresh Icon click", "yeah");
-				refreshData();
-			}
-		});
-		
+		initComponent();
+	}
+	
+	/**
+	 * Init component for an {@link ItemDataActivity}
+	 */
+	public void initComponent() {
 		tbSessionValue=(TableLayout)findViewById(R.id.tbSessionValue);
-		sbBored = (SeekBar) findViewById(R.id.sbBored);
+		sbExcited = (SeekBar) findViewById(R.id.sbBored);
 		sbDifficult = (SeekBar) findViewById(R.id.sbDifficult);
-		tbSessionValue.setVisibility(View.GONE);
-//		offlineEVoterManager = new OfflineEVoterManager(this);
-		
 		listView = (ListView) findViewById(R.id.lvItemData);
-		// listView.setEmptyView(progressBar);
 		etSearch = (EditText) findViewById(R.id.etSearch);
 		etSearch.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				
-			}
 			
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(CharSequence s, int start, int before,int count) {
 				ItemDataActivity.this.adapter.getFilter().filter(s);
 			}
 			
@@ -85,17 +77,13 @@ public abstract class ItemDataActivity extends EVoterActivity {
 			public void afterTextChanged(Editable s) {
 				
 			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+				
+			}
 		});
-		refreshData();
-	}
-	
-	/* (non-Javadoc)
-	 * @see evoter.mobile.activities.EVoterActivity#onBackPressed()
-	 */
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-		EVoterShareMemory.getPreviousContext().refreshData();
+		tbSessionValue.setVisibility(View.GONE);
 	}
 	
 }

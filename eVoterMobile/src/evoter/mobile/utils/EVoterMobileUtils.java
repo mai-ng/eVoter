@@ -262,7 +262,6 @@ public class EVoterMobileUtils {
 			}
 			
 			boolean isActive = Boolean.parseBoolean(s.getString(SessionDAO.IS_ACTIVE));
-			if(isActive) EVoterShareMemory.addToListActiveSessions(sessionID);
 			Session session = new Session(sessionID, Long.parseLong(s
 					.getString(SessionDAO.SUBJECT_ID)), s
 					.getString(SessionDAO.NAME), EVoterMobileUtils
@@ -523,6 +522,7 @@ public class EVoterMobileUtils {
 	 */
 	public static long getFirstAnswerID(Question exictedQuestion) {
 		ArrayList<Answer> listAnswers = EVoterMobileUtils.parserAnswerArray(exictedQuestion.getAnswerColumn1(), exictedQuestion.getId());
-		return listAnswers.get(0).getId();
+		if(listAnswers.isEmpty()) return -1;
+		else return listAnswers.get(0).getId();
 	}
 }

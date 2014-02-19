@@ -67,6 +67,9 @@ public class ResetPasswordActivity extends EVoterActivity {
 				EVoterMobileUtils.showeVoterToast(ResetPasswordActivity.this,
 						"You will receive an email confirm to reset your password! Email send to address: " + etEmail.getText().toString());
 				ActivityManager.startLoginActivity(ResetPasswordActivity.this);
+			}else{
+				EVoterMobileUtils.showeVoterToast(ResetPasswordActivity.this,
+						"Cannot reset password: " + response);
 			}
 		}else{
 			super.updateRequestCallBack(response, callBackMessage);

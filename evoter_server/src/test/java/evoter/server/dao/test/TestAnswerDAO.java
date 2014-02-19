@@ -29,7 +29,9 @@ public class TestAnswerDAO {
 	@Autowired
 	AnswerDAO answerDAO;
 	
-	
+	/**
+	 * Test for {@link AnswerDAO#findAll()} </br>
+	 */
 	@Test
 	@Rollback(false)
 	public void test_findAll(){
@@ -62,6 +64,9 @@ public class TestAnswerDAO {
 		assertTrue("test_findByQuestionId", answers.size() > 0);
 	}
 
+	/**
+	 * Test for {@link AnswerDAO#findByAnswerText(String)} </br>
+	 */
 	@Test
 	@Transactional
 	public void test_findByAnswerText(){

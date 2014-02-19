@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import evoter.server.dao.impl.UserTypeDAOImpl;
 import evoter.share.dao.UserTypeDAO;
+import evoter.share.model.UserSubject;
 import evoter.share.model.UserType;
 
 /**
@@ -36,6 +37,8 @@ public class TestUserTypeDAO{
 	UserTypeDAO userTypeDAO;
 	/**
 	 * Test for {@link UserTypeDAO#findAll()} </br>
+	 * Select all {@link UserType} in user_type table </br>
+	 * Expect returning a list of {@link UserType} </br>
 	 */
 	@Test
 	public void test_findAll(){
@@ -45,8 +48,7 @@ public class TestUserTypeDAO{
 
 	/**
 	 * Test {@link UserTypeDAO#findById(long)} </br>
-	 * Search {@link UserType} by {@link UserTypeDAO#ID} </br>
-	 * Expect returning a not null value </br>
+	 * Search all {@link UserType} by id=2 in user_type table and expect returning an list of {@link UserType} </br>
 	 * 
 	 */
 	@Test
@@ -57,6 +59,8 @@ public class TestUserTypeDAO{
 	}
 	/**
 	 * Test for {@link UserTypeDAO#findByUserTypeValue(String)} </br>
+	 * Search all {@link UserType} by value="Teacher" in user_type </br>
+	 * Expect returning a list of {@link UserType} </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -66,8 +70,8 @@ public class TestUserTypeDAO{
 	}
 	/**
 	 * Test {@link UserTypeDAO#findByProperty(String[], Object[])} </br>
-	 * Search {@link UserType} by {@link UserTypeDAO#ID} and {@link UserTypeDAO#USER_TYPE_VALUE} </br>
-	 * Expect returning a not null value </br>
+	 * Search {@link UserType} by id=2 and value=Teacher in user_type table </br>
+	 * Expect returning a list of {@link UserType} </br>
 	 * 
 	 */
 	@Test
@@ -81,6 +85,8 @@ public class TestUserTypeDAO{
 	}
 	/**
 	 * Test {@link UserTypeDAO#deleteByProperty(String[], Object[])} </br>
+	 * Delete all {@link UserType} by id=2 and value=Teacher in user_type table </br>
+	 * Search all records by these conditons and expect returning an empty list </br>
 	 * 
 	 */
 	@Test
@@ -98,6 +104,8 @@ public class TestUserTypeDAO{
 	}	
 	/**
 	 * Test {@link UserTypeDAO#deleteById(long)} </br>
+	 * Delete all {@link UserType} by id=1 in user_type table </br>
+	 * Search all {@link UserType} by id=1 and expect returning an empty list </br>
 	 */
 	@Test
 	public void test_deleteById(){
@@ -109,6 +117,8 @@ public class TestUserTypeDAO{
 
 	/**
 	 * Test {@link UserTypeDAO#deleteByUserTypeValue(String)} </br>
+	 * Delete all {@link UserType} by value = teacher in user_type table </br>
+	 * Search All {@link UserType} by value=teacher and expect returning an empty array </br>
 	 */
 	@Test
 	public void test_deleteByUserTypeValue(){
@@ -121,6 +131,7 @@ public class TestUserTypeDAO{
 	}
 	/**
 	 * Test for {@link UserTypeDAO#insert(UserType)} </br>
+	 * Insert a new {@link UserSubject} to user_type table </br>
 	 */
 	@Test
 	public void test_insert(){

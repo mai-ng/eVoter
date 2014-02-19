@@ -36,6 +36,7 @@ public class TestSubjectDAO {
 	SubjectDAO subjectDAO;
 	/**
 	 * Test for {@link SubjectDAO#findAll()} </br>
+	 * Select all {@link Subject} in subject table and expect returning a list of {@link Subject} </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -46,8 +47,8 @@ public class TestSubjectDAO {
 
 	/**
 	 * Test {@link SubjectDAO#findById(long)} </br>
-	 * Search {@link Subject} by {@link subjectDAO#ID} </br>
-	 * Expect returning a not null value </br>
+	 * Search all {@link Subject} with id=1 in subject table  </br>
+	 * Expect returning one record </br>
 	 * 
 	 */
 	@Test
@@ -58,6 +59,8 @@ public class TestSubjectDAO {
 	}
 	/**
 	 * Test for {@link subjectDAO#findByTitle(String)} </br>
+	 * Select all {@link Subject} with title="Object Oriented Programming" in subject table </br>
+	 * Expect returing a list of Subject </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -67,6 +70,8 @@ public class TestSubjectDAO {
 	}
 	/**
 	 * Test for {@link SubjectDAO#findByCreationDate(Timestamp)} </br>
+	 * Select all {@link Subject} with creation date="2013-12-28 12:50:24" in subject table </br>
+	 * Expect returning a list of Subject </br>
 	 */
 	@Test
 	public void test_findByCreationDate(){
@@ -77,8 +82,8 @@ public class TestSubjectDAO {
 	}
 	/**
 	 * Test {@link SubjectDAO#findByProperty(String[], Object[])} </br>
-	 * Search {@link Subject} by {@link SubjectDAO#ID} and {@link SubjectDAO#TITLE} </br>
-	 * Expect returning a not null value </br>
+	 * Select all {@link Subject} with id=1 and title="Object Oriented Programming" in subject table </br>
+	 * Expect returning a list of Subject </br>
 	 * 
 	 */
 	@Test
@@ -92,6 +97,8 @@ public class TestSubjectDAO {
 	}
 	/**
 	 * Test {@link SubjectDAO#deleteByProperty(String[], Object[])} </br>
+	 * Delete all subjects with subject id=2 and title="Testing Metrics" </br>
+	 * Search all Subjects by these conditions and expect returing an empty list </br>
 	 * 
 	 */
 	@Test
@@ -109,6 +116,8 @@ public class TestSubjectDAO {
 	}	
 	/**
 	 * Test {@link SubjectDAO#deleteById(long)} </br>
+	 * Delete all subjects with id=1 in subject table</be>
+	 * Search all subjects with id=1 and expect returning nothing </br>
 	 */
 	@Test
 	public void test_deleteById(){
@@ -119,6 +128,8 @@ public class TestSubjectDAO {
 	}
 	/**
 	 * Test {@link SubjectDAO#deleteByTitle(String)} </br>
+	 * Delete all subjects with title="Testing Metrics" in subject table </br>
+	 * Search all subjects with title ="Testing Metrics" and expect returing an empty list </br>
 	 */
 	@Test
 	public void test_deleteByTitle(){
@@ -129,6 +140,8 @@ public class TestSubjectDAO {
 	}	
 	/**
 	 * Test {@link SubjectDAO#deleteByCreationDate(Timestamp)} </br>
+	 * Delete all subjects with creation date="2013-12-28 12:50:24" in subject table </br>
+	 * Search all these subjects and expect returning an empty array </br>
 	 */
 	@Test
 	public void test_deleteByCreationDate(){

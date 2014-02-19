@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.List;
 
 import org.junit.Test;
@@ -40,7 +39,7 @@ public class TestQuestionDAO {
 	QuestionDAO questionDAO;
 	/**
 	 * Test {@link QuestionDAO#findAll()} </br>
-	 * Expect returning a list of {@link Question} </br>
+	 * Select all records in question table and expect returning a list of {@link Question} </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -50,6 +49,7 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test {@link QuestionDAO#findByProperty(String[], Object[])} </br>
+	 * Search all questions having question ID=2 and question type ID=1 </br>
 	 * Expect returning a list of {@link Question} </br>
 	 */
 	@Test
@@ -62,8 +62,8 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test {@link QuestionDAO#findById(long)} </br>
-	 * Case 1: Expect returning 1 {@link Question} object </br>
-	 * Case 2: Expect returning a empty list </br>
+	 * Search question having id=1 and expect returning returning 1 {@link Question} record </br>
+	 * Search question having id=1000 and expect returning a empty list </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -75,8 +75,8 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test {@link QuestionDAO#findByUserId(long)} </br>
-	 * Case 1: Expect returning 1 List of {@link Question} object </br>
-	 * Case 2: Expect returning a empty list </br>
+	 * Search all questions having user ID=1 and expect returning 1 List of {@link Question} object </br>
+	 * Search all questions having user ID=89 and expect returning a empty list </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -89,8 +89,8 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test {@link QuestionDAO#findByQuestionTypeId(long)} </br>
-	 * Case 1: Expect returning 1 List of {@link Question} object </br>
-	 * Case 2: Expect returning a empty list </br>
+	 * Search all questions having question type ID=6 and expect returning 1 List of {@link Question} object </br>
+	 * Search all questions having question type ID=89 and expect returning a empty list </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -103,13 +103,12 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test {@link QuestionDAO#findByCreationDate(Timestamp)} </br>
-	 * Case 1: Expect returning 1 List of {@link Question} object </br>
-	 * Case 2: Expect returning a empty list </br>
-	 * @throws ParseException 
+	 * Search all questions having creation date="2014-01-09 22:39:24" and expect returning 1 List of {@link Question} object </br>
+	 * Search all questions having creation date="2014-10-09 22:39:24" and expect returning a empty list </br>
 	 */
 	@Test
 	@Rollback(false)
-	public void test_findByCreationDate() throws ParseException{
+	public void test_findByCreationDate(){
 		
 		List<Question> questions = questionDAO.
 				findByCreationDate(Timestamp.valueOf("2014-01-09 22:39:24"));
@@ -121,8 +120,8 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test {@link QuestionDAO#findByParentId(long)} </br>
-	 * Case 1: Expect returning 1 List of {@link Question} object </br>
-	 * Case 2: Expect returning a empty list </br>
+	 * Search all questions having parent ID=0 and expect returning 1 List of {@link Question} object </br>
+	 * Search all questions having parent ID=3 and expect returning a empty list </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -149,7 +148,8 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test for {@link QuestionDAO#insert(Question)} </br>
-	 * Expect the number of records of QUESTION table inscreasing 1 </br>
+	 * insert a new records returning a generated id </br>
+	 * 
 	 */
 	@Test
 	public void test_insert(){
@@ -160,6 +160,8 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test for {@link QuestionDAO#deleteByProperty(String[], Object[])} </br>
+	 * Delete all questions that have question id=5 and question type id=6 </br>
+	 * Expect returning an empty array when searching all questions with these conditons </br>
 	 */
 	@Test
 	public void test_deleteByProperty(){
@@ -173,9 +175,12 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test for {@link QuestionDAO#findById(long)} </br>
+	 * Delete all questions that have id=1 </br>
+	 * Expect returning an empty array when searching all questions having id=1 </br>
 	 */
 	@Test
 	public void test_deleteById(){
+		
 		Question question = new Question(2, 1, "question test", 
 				new Timestamp(System.currentTimeMillis()), 0);
 		long id = questionDAO.insert(question);
@@ -188,7 +193,10 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test for {@link QuestionDAO#deleteByUserId(long)} </br>
+	 * Delete all questions that have user id=2 </br>
+	 * Expect returning an empty array when searching all questions having user id=2 </br>
 	 */
+ 
 	@Test
 	public void test_deleteByUserId(){
 		questionDAO.deleteByUserId(2);
@@ -197,10 +205,11 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test for {@link QuestionDAO#deleteByCreationDate(Timestamp)} </br>
-	 * @throws ParseException 
+	 * Delete all questions that have creation date=2014-01-09 22:39:24 </br>
+	 * Expect returning an empty array when searching all questions having creation date=2014-01-09 22:39:24 </br>
 	 */
 	@Test
-	public void test_deleteByCreationDate() throws ParseException{
+	public void test_deleteByCreationDate(){
 		
 		Timestamp sqlDate = Timestamp.valueOf("2014-01-09 22:39:24");
 		
@@ -213,6 +222,8 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test for {@link QuestionDAO#deleteByQuestionText(String)} </br>
+	 * Delete all questions that have question text=Interface can implement an interface? </br>
+	 * Expect returning an empty array when searching all questions having question text=Interface can implement an interface?
 	 * 
 	 */
 	@Test
@@ -227,6 +238,8 @@ public class TestQuestionDAO {
 	}
 	/**
 	 * Test for {@link QuestionDAO#deleteByQuestionTypeId(long)} </br>
+	 * Delete all questions that have question type ID=6 </br>
+	 * Expect returning an empty array when searching all questions having question type ID=6
 	 */
 	@Test
 	public void test_deleteByQuestionTypeId(){
@@ -240,6 +253,8 @@ public class TestQuestionDAO {
 	}	
 	/**
 	 * Test for {@link QuestionDAO#deleteByParentId(long)} </br>
+	 * Delete all questions that have parent ID=0 </br>
+	 * Expect returning an empty array when searching all questions having parent ID=0
 	 */
 	@Test
 	public void test_deleteByParentId(){
@@ -248,11 +263,14 @@ public class TestQuestionDAO {
 		List<Question> questions = questionDAO.findByParentId(parentId);
 		assertTrue(questions.size() > 0);
 		questionDAO.deleteByQuestionTypeId(parentId);
+		
 		questions = questionDAO.findByQuestionTypeId(parentId);
 		assertTrue(questions.size() == 0);
 	}
 	/**
 	 * Test for {@link QuestionDAO#update(Question)}
+	 * Change parent question ID, question text, creation date, status of question ID=1 </br>
+	 * Expect the changes are updated when searching question ID=2 again </br>
 	 */
 	@Test
 	public void test_update(){
@@ -264,8 +282,9 @@ public class TestQuestionDAO {
 		question.setCreationDate(Timestamp.valueOf("2000-01-09 22:39:24"));
 		question.setQuestionTypeId(3);
 		question.setStatus(2);
-		
 		questionDAO.update(question);
+		
+		question = questionDAO.findById(questionId).get(0);
 		assertEquals("update() changes parent id", question.getParentId(), 4);
 		assertEquals("update() changes question text", question.getQuestionText(), "new question text");
 		assertEquals("update() changes creation date", question.getCreationDate(), 

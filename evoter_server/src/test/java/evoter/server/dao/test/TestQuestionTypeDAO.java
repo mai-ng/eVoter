@@ -1,6 +1,7 @@
 package evoter.server.dao.test;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -20,7 +21,7 @@ import evoter.share.model.QuestionType;
 
 /**
  * Make test cases for {@link QuestionTypeDAO} and {@link QuestionTypeDAOImpl} </br>
- * @author btdiem
+ * @author btdiem </br>
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,6 +38,7 @@ public class TestQuestionTypeDAO {
 	
 	/**
 	 * Test for {@link QuestionTypeDAO#findAll()} </br>
+	 * Select all records in question_type table and expect returning a list {@link QuestionType} </br?
 	 */
 	@Test
 	@Rollback(false)
@@ -46,6 +48,7 @@ public class TestQuestionTypeDAO {
 	}
 	/**
 	 * Test for {@link QuestionTypeDAO#findById(long)} </br>
+	 * Select question type record having id=3 and expect returing 1 record </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -56,6 +59,8 @@ public class TestQuestionTypeDAO {
 	}
 	/**
 	 * Test for {@link QuestionTypeDAO#findByQuestionTypeValue(String)} </br>
+	 * Search {@link QuestionType} having value="Multi Radio Button" </br>
+	 * Expect returning one record</br>
 	 */
 	@Test
 	@Rollback(false)
@@ -66,6 +71,8 @@ public class TestQuestionTypeDAO {
 	}
 	/**
 	 * Test for {@link QuestionTypeDAO#findByProperty(String[],Object[])} </br>
+	 * Search all {@link QuestionType} having question id=2 and value="Multi Radio Button" </br>
+	 * Expect returning one record </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -79,6 +86,8 @@ public class TestQuestionTypeDAO {
 	
 	/**
 	 * Test for {@link QuestionTypeDAO#deleteByProperty(String[], Object[])} </br>
+	 * Delete all {@link QuestionType} having id=2 and value="Multi Radio Button" </br>
+	 * Search records with these conditions and expect returning an empty list </br>
 	 */
 	@Test
 	public void test_deleteByByProperty(){
@@ -95,6 +104,8 @@ public class TestQuestionTypeDAO {
 	}
 	/**
 	 * Test for {@link QuestionTypeDAO#deleteById(long id)} </br>
+	 * Delete all {@link QuestionType} having id=2 in question_type table</br>
+	 * Search records with id=2 and expect returning an empty list </br> 
 	 */
 	@Test
 	public void test_deleteById(){
@@ -105,6 +116,8 @@ public class TestQuestionTypeDAO {
 	}	
 	/**
 	 * Test for {@link QuestionTypeDAO#deleteByQuestionTypeValue(String)} </br>
+	 * Delete all {@link QuestionType} having value="Multi Radio Button" in question_type table </br>
+	 * Search records with these conditions and expect returning an empty list </br> 
 	 */
 	@Test
 	public void test_deleteByQuestionTypeValue(){
@@ -116,6 +129,8 @@ public class TestQuestionTypeDAO {
 	}		
 	/**
 	 * Test for {@link QuestionTypeDAO#insert()} </br>
+	 * Insert a {@link QuestionType} record to question_type table and returning a generated id </br>
+	 * Select a record with the generated id and expect its properties are the same with created one </br>
 	 */
 	@Test
 	public void test_insert(){
@@ -124,6 +139,7 @@ public class TestQuestionTypeDAO {
 		long id = questionTypeDAO.insert(questionType);
 		List<QuestionType> types = questionTypeDAO.findById(id); 
 		assertTrue(types.size() == 1);
+		assertEquals(types.get(0).getQuestionTypeValue(), "question type for test");
 	}	
 	
 

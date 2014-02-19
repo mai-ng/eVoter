@@ -37,6 +37,7 @@ public class TestSessionDAO {
 	
 	/**
 	 * Test for {@link SessionDAO#findAll()} </br>
+	 * Select all records in session table </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -46,6 +47,7 @@ public class TestSessionDAO {
 	}
 	/**
 	 * Test for {@link SessionDAO#findById(long)} </br>
+	 * Select session having id=1 and expect returning one record </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -56,6 +58,7 @@ public class TestSessionDAO {
 	}
 	/**
 	 * Test for {@link SessionDAO#findBySubjectId(long)} </br>
+	 * Select session having subject id=1 and expect returning a list of {@link Session} </br> 
 	 */
 	@Test
 	@Rollback(false)
@@ -66,6 +69,7 @@ public class TestSessionDAO {
 	}
 	/**
 	 * Test for {@link SessionDAO#findById(long)} </br>
+	 * Search sessions having session name = "subject_1_session_1" and expect returning a list of {@link Session} </br> 
 	 */
 	@Test
 	@Rollback(false)
@@ -76,9 +80,8 @@ public class TestSessionDAO {
 	}
 	/**
 	 * Test {@link SessionDAO#findByCreationDate(Timestamp)} </br>
-	 * Case 1: Expect returning 1 List of {@link Session} object </br>
-	 * Case 2: Expect returning a empty list </br>
-	 * @throws ParseException 
+	 * Search sessions having creation date = "2013-12-28 12:50:24" and expect returning a list of {@link Session} </br> 
+	 * Search sessions having creation date = "2014-10-09 22:39:24" and expect returing nothing </br> 
 	 */
 	@Test
 	@Rollback(false)
@@ -94,6 +97,9 @@ public class TestSessionDAO {
 	}	
 	/**
 	 * Test {@link SessionDAO#deleteByCreationDate(Timestamp)} </br>
+	 * Delete sessions having creation date = "2013-12-28 12:50:24" 
+	 * Search all sessions with this condition and expect returning an empty list</br> 
+ 
 	 */
 	@Test
 	public void test_deleteByCreationDate() throws ParseException{
@@ -107,6 +113,9 @@ public class TestSessionDAO {
 	}		
 	/**
 	 * Test {@link SessionDAO#findBySessionIsActive(Boolean)} </br>
+	 * Search active sessions expect returning a list of {@link Session} </br> 
+	 * Search inactive sessions and expect returning nothing </br> 
+ 
 	 */
 	@Test
 	@Rollback(false)
@@ -123,6 +132,9 @@ public class TestSessionDAO {
 	
 	/**
 	 * Test {@link SessionDAO#deleteBySessionIsActive(Boolean)} </br>
+	 * Delete all active sessions
+	 * Search active sessions and expect returning an empty list </br> 
+	 * 
 	 */
 	@Test
 	public void test_deleteBySessionIsActive(){
@@ -134,6 +146,9 @@ public class TestSessionDAO {
 	}
 	/**
 	 * Test for {@link SessionDAO#deleteByProperty(String[], Object[])} </br>
+	 * Delete active sessions having session name = "2013-12-28 12:50:24" and expect returning a list of {@link Session} </br> 
+	 * Search these active sessions and expect returning nothing </br> 
+ 
 	 */
 	@Test
 	public void test_deleteByProperty(){
@@ -150,6 +165,7 @@ public class TestSessionDAO {
 	}
 	/**
 	 * Test {@link SessionDAO#findBySessionUserId(Long)} </br>
+	 * Search sessions having creator id = 1 and expect returning a list of {@link Session} </br> 
 	 */
 	@Test
 	@Rollback(false)
@@ -160,6 +176,9 @@ public class TestSessionDAO {
 	}
 	/**
 	 * Test {@link SessionDAO#deleteByUserId(Long)} </br>
+	 * Delete sessions having user id=1</br> 
+	 * Search these sessions and expect returning nothing </br> 
+ 
 	 */
 	@Test
 	public void test_deleteByUserId(){
@@ -172,7 +191,8 @@ public class TestSessionDAO {
 
 	/**
 	 * Test for {@link SessionDAO#findByProperty(String[],Object[])} </br>
-	 */
+	 * Search active sessions having session id=1 and expect returning a list of {@link Session} </br> 
+ 	 */
 	@Test
 	@Rollback(false)
 	public void test_findByByProperty(){
@@ -185,6 +205,9 @@ public class TestSessionDAO {
 	
 	/**
 	 * Test for {@link SessionDAO#deleteById(long id)} </br>
+	 * Delete sessions having id=2 </br> 
+	 * Search these sessions and expect returning nothing </br> 
+ 
 	 */
 	@Test
 	public void test_deleteById(){
@@ -195,6 +218,9 @@ public class TestSessionDAO {
 	}	
 	/**
 	 * Test for {@link SessionDAO#deleteBySubjectId(long)} </br>
+	 * Delete sessions having subject id=2</br> 
+	 * Search these sessions and expect returning nothing </br> 
+ 
 	 */
 	@Test
 	public void test_deleteBySubjectId(){
@@ -205,7 +231,9 @@ public class TestSessionDAO {
 	}
 	/**
 	 * Test for {@link SessionDAO#deleteByName(String)} </br>
-	 */
+	 * Delete  sessions having session name = "subject_2_session_4"</br> 
+	 * Search these sessions and expect returning nothing </br> 
+ 	 */
 	@Test
 	public void test_deleteByName(){
 		

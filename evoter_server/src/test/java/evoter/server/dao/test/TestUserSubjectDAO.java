@@ -35,6 +35,8 @@ public class TestUserSubjectDAO {
 	UserSubjectDAO userSubjectDAO;
 	/**
 	 * Test for {@link UserSubjectDAO#findAll()} </br>
+	 * Select all {@link UserSubject} in user_suject table </br>
+	 * Expect returning a list of {@link UserSubject} </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -44,6 +46,7 @@ public class TestUserSubjectDAO {
 	}
 	/**
 	 * Test for {@link UserSubjectDAO#insert(UserSubject)} </br>
+	 * Insert a {@link UserSubject} to user_subject table </br>
 	 */
 	@Test
 	public void test_insert(){
@@ -61,7 +64,8 @@ public class TestUserSubjectDAO {
 
 	/**
 	 * Test for {@link UserSubjectDAO#findByUserId(long)} </br>
-	 * 
+	 * Select all {@link UserSubject} by user id=2 in user_subject table</br>
+	 * Expect returning a list of {@link UserSubject} </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -71,6 +75,8 @@ public class TestUserSubjectDAO {
 	}
 	/**
 	 * Test for {@link UserSubjectDAO#findBySubjectId(Long)} </br>
+	 * Search all {@link UserSubject} by subject ID=2 in user_subject table </br>
+	 * Expect returning a list of {@link UserSubject} </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -81,6 +87,8 @@ public class TestUserSubjectDAO {
 	
 	/**
 	 * Test {@link UserSubjectDAO#findByProperty(String[], Object[])} </br>
+	 * Search all {@link UserSubject} by user ID=1 and subject ID=3 in user_subject table </br>
+	 * Expect returning a list of {@link UserSubject} </br>
 	 * 
 	 */
 	@Test
@@ -94,6 +102,8 @@ public class TestUserSubjectDAO {
 	}
 	/**
 	 * Test {@link UserSubjectDAO#deleteByProperty(String[], Object[])} </br>
+	 * Delete all {@link UserSubject} by user id=1 and subject id=3 </br>
+	 * Search all {@link UserSubject} by these conditions and expect returning an empty list </br>
 	 * 
 	 */
 	@Test
@@ -111,6 +121,8 @@ public class TestUserSubjectDAO {
 	}	
 	/**
 	 * Test {@link UserSubjectDAO#deleteByUserId(long)} </br>
+	 * Delete all {@link UserSubject} by user id=1 in user_subject table </br>
+	 * Select all {@link UserSubject} by user id=1 and expect returning an empty list </br>
 	 */
 	@Test
 	public void test_deleteByUserId(){
@@ -121,9 +133,11 @@ public class TestUserSubjectDAO {
 	}
 	/**
 	 * Test {@link UserSubjectDAO#deleteBySubjectId(long)} </br>
+	 * Delete all {@link UserSubject} by subject id=2 in user_subject table </br>
+	 * Search all {@link UserSubject} by this condition and expect returning an empty array </br>
 	 */
 	@Test
-	public void test_deleteSubjectId(){
+	public void test_deleteBySubjectId(){
 		
 		userSubjectDAO.deleteBySubjectId(2);
 		List<UserSubject> userSubjects = userSubjectDAO.findBySubjectId(2);

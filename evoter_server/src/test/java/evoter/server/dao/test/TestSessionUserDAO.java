@@ -35,6 +35,7 @@ public class TestSessionUserDAO {
 	
 	/**
 	 * Test for {@link SessionUserDAO#findAll()} </br>
+	 * Select all records in session_user table </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -44,6 +45,8 @@ public class TestSessionUserDAO {
 	}
 	/**
 	 * Test for {@link SessionUserDAO#deleteByProperty(String[], Object[])} </br>
+	 * Delete all {@link SessionUser} having user ID=3 and session ID=1 </br>
+	 * Search all {@link SessionUser} with these conditions and expect returning an empty list </br> 
 	 */
 	@Test
 	@Rollback(true)
@@ -61,6 +64,8 @@ public class TestSessionUserDAO {
 	}
 	/**
 	 * Test {@link SessionUserDAO#findByUserId(Long)} </br>
+	 * Select all {@link SessionUser} having user ID=1 </br>
+	 * Expect returing a list of {@link SessionUser} </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -71,6 +76,8 @@ public class TestSessionUserDAO {
 	}
 	/**
 	 * Test {@link SessionUserDAO#findBySessionId(Long)} </br>
+	 * Select all {@link SessionUser} having session id=1 </br>
+	 * Expect returing a list of {@link SessionUser}
 	 */
 	@Test
 	@Rollback(false)
@@ -81,6 +88,8 @@ public class TestSessionUserDAO {
 	}
 	/**
 	 * Test {@link SessionUserDAO#findByDeleteIndicator(Boolean)} </br>
+	 * Select all {@link SessionUser} having delete indication=true </br>
+	 * expect returing a list of {@link SessionUser} </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -91,6 +100,8 @@ public class TestSessionUserDAO {
 	}
 	/**
 	 * Test {@link SessionUserDAO#deleteByDeleteIndicator(Boolean)} </br>
+	 * Delete all {@link SessionUser} having delete indication=true </br>
+	 * Search all {@link SessionUser} with this condition and expect returning an empty list </br>
 	 */
 	@Test
 	public void test_deleteByDeleteIndicator(){
@@ -101,6 +112,8 @@ public class TestSessionUserDAO {
 	}	
 	/**
 	 * Test {@link SessionUserDAO#findByAcceptSession(Boolean)} </br>
+	 * Search all {@link SessionUser} having accepted value = true </br>
+	 * Expect returing a list of {@link SessionUser} </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -111,6 +124,8 @@ public class TestSessionUserDAO {
 	}
 	/**
 	 * Test {@link SessionUserDAO#deleteByAcceptSession(Boolean)} </br>
+	 * Delete all {@link SessionUser} having delete indicator=true in session_user table </br>
+	 * Search {@link SessionUser} records with this condition and expect returing true </br>
 	 */
 	@Test
 	public void test_deleteByAcceptSession(){
@@ -121,6 +136,8 @@ public class TestSessionUserDAO {
 	}	
 	/**
 	 * Test {@link SessionUserDAO#deleteByUserId(Long)} </br>
+	 * Delete all {@link SessionUser} having user ID=1 in session_user table </br>
+	 * Search all {@link SessionUser} with this condition and expect returning an empty list </br> 
 	 */
 	@Test
 	public void test_deleteByUserId(){
@@ -131,6 +148,8 @@ public class TestSessionUserDAO {
 	}	
 	/**
 	 * Test {@link SessionUserDAO#findBySessionId(Long)} </br>
+	 * Delete all {@link SessionUser} having session id=1 in session_user table </br>
+	 * Search {@link SessionUser} with this condition and expect returning an empty array </br>
 	 */
 	@Test
 	public void test_deleteBySessionId(){
@@ -142,6 +161,8 @@ public class TestSessionUserDAO {
 
 	/**
 	 * Test for {@link SessionUserDAO#findByProperty(String[],Object[])} </br>
+	 * Select all {@link SessionUser} having user ID=3 and session Id=1 in session_user table</br>
+	 * Expect returning a list of {@link SessionUser} </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -154,6 +175,8 @@ public class TestSessionUserDAO {
 	}
 	/**
 	 * Test for {@link SessionUserDAO#update(SessionUser)} </br>
+	 * Change accepted value to true of {@link SessionUser} having user ID=3 and session ID=1 </br>
+	 * 
 	 */
 	@Test
 	public void test_update(){

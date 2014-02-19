@@ -35,6 +35,8 @@ public class TestAnswerDAO {
 	
 	/**
 	 * Test for {@link AnswerDAO#findAll()} </br>
+	 * Select all {@link Answer} in answer table </br>
+	 * Expect returning a list of {@link Answer} </br>
 	 */
 	@Test
 	@Rollback(false)
@@ -44,9 +46,9 @@ public class TestAnswerDAO {
 	}
 
 	/**
-	 * Test {@link AnswerDAO#deleteById(long)} </br>
-	 * Search {@link Answer} by {@link AnswerDAO#ID} </br>
-	 * Expect returning a not null value </br>
+	 * Test {@link AnswerDAO#findById(long)} </br>
+	 * Search all {@link Answer} by id=4 in answer table </br>
+	 * Expect returning a list of {@link Answer} </br>
 	 * 
 	 */
 	@Test
@@ -56,9 +58,9 @@ public class TestAnswerDAO {
 		assertTrue("test_findById", answers.size() > 0);
 	}
 	/**
-	 * Test {@link AnswerDAO#deleteById(long)} </br>
-	 * Search {@link Answer} by {@link AnswerDAO#ID} </br>
-	 * Expect returning a not null value </br>
+	 * Test {@link AnswerDAO#findByQuestionId(long)} </br>
+	 * Search {@link Answer} by question id=4 in answer table </br>
+	 * Expect returning a list of {@link Answer} </br>
 	 * 
 	 */
 	@Test
@@ -70,6 +72,8 @@ public class TestAnswerDAO {
 
 	/**
 	 * Test for {@link AnswerDAO#findByAnswerText(String)} </br>
+	 * Search answers with answer text condition="Two hours." and expect returning not empty list </br>
+	 * Search answers with answer text condition="anything else" and expect returning an empty list </br>
 	 */
 	@Test
 	@Transactional
@@ -81,7 +85,7 @@ public class TestAnswerDAO {
 	}
 	/**
 	 * Test {@link AnswerDAO#findByProperty(String[], Object[])} </br>
-	 * Search {@link Answer} by {@link AnswerDAO#ID} and {@link AnswerDAO#QUESTION_ID} </br>
+	 * Search answers answer ID=4 and question ID=3 in answer table</br>
 	 * Expect returning a not null value </br>
 	 * 
 	 */
@@ -95,6 +99,7 @@ public class TestAnswerDAO {
 	}
 	/**
 	 * Test {@link AnswerDAO#deleteById(long)} </br>
+	 * Delete an answer ID=8 in answer table and expect returning an empty list when searching answer ID=8 again </br>
 	 */
 	@Test
 	public void test_deleteById(){
@@ -105,6 +110,7 @@ public class TestAnswerDAO {
 	}
 	/**
 	 * Test {@link AnswerDAO#deleteByQuestionId(long)} </br>
+	 * Delete answers of question ID=4 in answer table and expect returning an empty list when searching all answers of question ID=4 </br>
 	 */
 	@Test
 	public void test_deleteByQuestionId(){
@@ -115,6 +121,8 @@ public class TestAnswerDAO {
 	}
 	/**
 	 * Test {@link AnswerDAO#deleteByAnswerText(String)} </br>
+	 * Delete answers having answer text="My brother" in answer table and 
+	 * expect returning an empty array when searching all answers with answer text="My brother" </br>
 	 */
 	@Test
 	public void test_deleteByAnswerText(){
@@ -126,6 +134,9 @@ public class TestAnswerDAO {
 	}
 	/**
 	 * Test for {@link AnswerDAO#insert(Answer)} </br>
+	 * Create a new {@link Answer} and insert it to answer table </br>
+	 * {@link AnswerDAO#insert(Answer)} will return a generated answer ID. 
+	 * Expect returning a answer object when search answer with the generated id </br>
 	 */
 	@Test
 	public void test_insert(){
@@ -137,6 +148,8 @@ public class TestAnswerDAO {
 	}
 	/**
 	 * Test for {@link AnswerDAO#update(Answer)} </br>
+	 * Change {@link Answer} by answer text of answer ID=2 </br>
+	 * Expect the change are updated when searching answer ID=2;
 	 */
 	@Test
 	public void test_update(){
@@ -146,6 +159,8 @@ public class TestAnswerDAO {
 		answer.setStatistics("1");
 		
 		answerDAO.update(answer);
+		
+		answer = answerDAO.findById(answerId).get(0);
 		assertEquals("update() changes answer text", 
 				answer.getAnswerText(), "new answer text");
 		assertEquals("update() changes statistics value", 

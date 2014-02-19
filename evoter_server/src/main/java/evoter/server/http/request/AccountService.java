@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -17,13 +18,15 @@ import evoter.share.utils.URIRequest;
 /**
  * Process all user account requests sent by client applications </br>
  * This class is an implementation of {@link IAccountService} </br>
- * @author btdiem
+ * @author btdiem</br>
  *
  */
 @Service
 @Transactional
 @TransactionConfiguration(defaultRollback=true)
 public class AccountService implements IAccountService{
+	
+	static Logger log = Logger.getLogger(AccountService.class);
 	
 	 List<String> userKeys = new ArrayList<String>();
 	 //It is used for testing requests that have not yet implemented
@@ -84,7 +87,7 @@ public class AccountService implements IAccountService{
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			
 			return URIRequest.FAILURE_MESSAGE;
 			//URIUtils.writeFailureResponse(exchange);
@@ -118,7 +121,7 @@ public class AccountService implements IAccountService{
 			return URIRequest.USER_NOT_EXIST_MESSAGE;
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
@@ -188,7 +191,7 @@ public class AccountService implements IAccountService{
 				
 		}catch(Exception e){
 
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 			
 		}

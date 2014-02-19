@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -50,7 +51,8 @@ import evoter.share.utils.UserValidation;
 @Transactional
 @TransactionConfiguration(defaultRollback=true)
 public class SessionService implements ISessionService{
-
+	
+	static Logger log = Logger.getLogger(SessionService.class);
 	public static final String CREATOR = "CREATOR";
 	
 	/**
@@ -191,7 +193,7 @@ public class SessionService implements ISessionService{
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
@@ -227,7 +229,7 @@ public class SessionService implements ISessionService{
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
@@ -272,7 +274,7 @@ public class SessionService implements ISessionService{
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 			
 		}
@@ -309,7 +311,7 @@ public class SessionService implements ISessionService{
 			return URIRequest.FAILURE_MESSAGE;
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
@@ -360,7 +362,7 @@ public class SessionService implements ISessionService{
 			createQuestion("DIFFICULT", sessionId, userId);
 			
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
@@ -429,7 +431,7 @@ public class SessionService implements ISessionService{
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 			
 		}
@@ -495,7 +497,7 @@ public class SessionService implements ISessionService{
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 

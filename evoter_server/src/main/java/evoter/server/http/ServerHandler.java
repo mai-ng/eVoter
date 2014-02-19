@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,8 @@ import evoter.share.dao.UserDAO;
  */
 @Service
 public class ServerHandler implements HttpHandler {
+	
+	static Logger log = Logger.getLogger(ServerHandler.class);
 	/**
 	 * All coming requests will handled by this method </br>
 	 * Each request is processed by a thread {@link ThreadHandler} </br>
@@ -36,13 +39,13 @@ public class ServerHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange httpExchange) throws IOException {
 		
-		System.out.println("Request is comming..." + httpExchange.getRequestURI());
+		log.info("Request is comming..." + httpExchange.getRequestURI());
 		new Thread(new ThreadHandler(httpExchange)).start();
 		
 	}
 	/**
 	 * This class will get parameter map from {@link HttpExchange} </br>
-	 * and request uri and forward this request to service </br>
+	 * and request uri and then forward this request to services </br>
 	 * All requests has been checked {@link UserDAO#USER_KEY} to guarantee the security </br>
 	 * except login, logout, reset password and register account requests </br>
 	 * @author btdiem</br>
@@ -60,7 +63,7 @@ public class ServerHandler implements HttpHandler {
 		
 			String uri = httpExchange.getRequestURI().toString();
 			Map<String,Object> parameters = URIUtils.getParameters(httpExchange);			
-			System.out.println("parameters: " + parameters);
+			log.debug("parameters: " + parameters);
 			Object response = null;
 			
 			IAccountService accountService = (IAccountService)BeanDAOFactory.getBean(IAccountService.BEAN_NAME);
@@ -93,7 +96,7 @@ public class ServerHandler implements HttpHandler {
 				if (accountService.hasUserKey(
 						(String)parameters.get(UserDAO.USER_KEY))){
 					
-					System.out.println("has userKey" + parameters.get(UserDAO.USER_KEY) );
+					log.debug("has userKey" + parameters.get(UserDAO.USER_KEY) );
 					/**
 					 * ISubjectService will work with all requests 
 					 * that involves subject management part
@@ -196,6 +199,7 @@ public class ServerHandler implements HttpHandler {
 
 				
 			}//else if
+			log.debug("response:" + response);
 			if (response != null){
 				URIUtils.writeResponse(response, httpExchange);
 			}

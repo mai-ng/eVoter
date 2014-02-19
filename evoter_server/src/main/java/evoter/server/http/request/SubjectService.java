@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
@@ -37,6 +38,7 @@ import evoter.share.utils.UserValidation;
 @TransactionConfiguration(defaultRollback=true)
 public class SubjectService implements ISubjectService{
 	
+	static Logger log = Logger.getLogger(SubjectService.class);
 	/**
 	 * Define getter/setter for {@link QuestionSessionDAOImpl} bean
 	 */
@@ -210,7 +212,7 @@ public class SubjectService implements ISubjectService{
 			return URIRequest.SUBJECT_NOT_EXIST_MESSAGE;
 				
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
@@ -267,7 +269,7 @@ public class SubjectService implements ISubjectService{
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
@@ -324,7 +326,7 @@ public class SubjectService implements ISubjectService{
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
@@ -371,7 +373,7 @@ public class SubjectService implements ISubjectService{
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 	}

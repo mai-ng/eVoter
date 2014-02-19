@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ import evoter.share.utils.UserValidation;
 @TransactionConfiguration(defaultRollback=true)
 public class QuestionService implements IQuestionService{
 	
+	static Logger log = Logger.getLogger(QuestionService.class);
 	/**
 	 * Define getter/setter of {@link AnswerDAOImpl} bean
 	 */
@@ -166,7 +168,7 @@ public class QuestionService implements IQuestionService{
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
@@ -290,7 +292,7 @@ public class QuestionService implements IQuestionService{
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			//URIUtils.writeFailureResponse(httpExchange);
 			return URIRequest.FAILURE_MESSAGE;
 		}
@@ -314,7 +316,7 @@ public class QuestionService implements IQuestionService{
 			return URIRequest.SUCCESS_MESSAGE;
 			
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
@@ -348,7 +350,7 @@ public class QuestionService implements IQuestionService{
 
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 	}
@@ -407,7 +409,7 @@ public class QuestionService implements IQuestionService{
 
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 	}
@@ -448,7 +450,7 @@ public class QuestionService implements IQuestionService{
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		

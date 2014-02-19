@@ -6,6 +6,7 @@ package evoter.server.http.request;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -28,7 +29,8 @@ import evoter.share.utils.URIRequest;
 @Transactional
 @TransactionConfiguration(defaultRollback=true)
 public class UserService implements IUserService {
-
+	
+	static Logger log = Logger.getLogger(UserService.class);
 	/**
 	 * Define getter/setter for {@link UserDAOImpl} bean
 	 */
@@ -69,7 +71,7 @@ public class UserService implements IUserService {
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
@@ -110,7 +112,7 @@ public class UserService implements IUserService {
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
@@ -159,7 +161,7 @@ public class UserService implements IUserService {
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
@@ -184,7 +186,7 @@ public class UserService implements IUserService {
 			return URIRequest.USER_NOT_EXIST_MESSAGE;
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		
@@ -215,7 +217,7 @@ public class UserService implements IUserService {
 			
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 

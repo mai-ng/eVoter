@@ -6,6 +6,7 @@ package evoter.server.http.request;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import evoter.share.utils.URIRequest;
 @TransactionConfiguration(defaultRollback=true)
 public class AnswerService implements IAnswerService {
 
+	static Logger log = Logger.getLogger(AnswerService.class);
 	/**
 	 * Call {@link AnswerDAOImpl} bean 
 	 */
@@ -142,7 +144,7 @@ public class AnswerService implements IAnswerService {
 			return URIRequest.ANSWER_NOT_EXIST;
 			
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 
@@ -174,7 +176,7 @@ public class AnswerService implements IAnswerService {
 			return response;
 		}catch(Exception e){
 			
-			e.printStackTrace();
+			log.error(e);
 			return URIRequest.FAILURE_MESSAGE;
 		}
 		

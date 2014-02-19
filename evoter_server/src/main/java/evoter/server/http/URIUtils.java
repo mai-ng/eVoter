@@ -33,11 +33,8 @@ import evoter.share.utils.URIRequest;
 public class URIUtils {
 	//context type key of response header
 	public final static String CONTENT_TYPE = "Content-Type";
-	//
-//	public final static String CONTENT_ENCODING = "Content-Encoding";
 	//content type value of response header
 	public final static String APPLICATION_JSON = "application/json; charset=ISO-8859-1";
-//	public final static String APPLICATION_TEXT = "application/text";
 	
 
 	/**
@@ -467,7 +464,7 @@ public class URIUtils {
 			&& URIString.endsWith(URIRequest.CHANGE_APPROVE_USER); 
 	}	
 	/**
-	 * Read and parse the string value from the request body into pairs and put them to {@link Map}.</br>
+	 * Read and parse the string value from the request body into pairs value and put them to {@link Map}.</br>
 
 	 * If client put a list or an array to request body like String[] colors = { "blue", "yellow" } </br>
 	 * , server will receive an url parameter like : "colors[]=blue;colors[]=yellow" </br>
@@ -501,7 +498,7 @@ public class URIUtils {
 				 tokenValue= fixedEncodeValueParameter(tokenValue);
 				 
 				 if (parameters.containsKey(tokenKey)){
-					 //from the second time
+					 //from the second time to have a duplicated value
 					 String[] temp;
 					 if (parameters.get(tokenKey) instanceof String[]){
 						 temp = (String[])parameters.get(tokenKey);

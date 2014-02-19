@@ -25,8 +25,10 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import evoter.mobile.abstracts.EVoterActivity;
+import evoter.mobile.main.EVoterRequestManager;
+import evoter.mobile.main.EVoterShareMemory;
 import evoter.mobile.main.R;
-import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.QuestionDAO;
@@ -134,7 +136,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		listCheckBox.clear();
 		groups.removeAllViews();
 		Log.i("Question to build: ", EVoterShareMemory.getCurrentQuestion().toString());
-		answers = EVoterMobileUtils.parserListAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1(), EVoterShareMemory.getCurrentQuestion().getId());
+		answers = EVoterMobileUtils.parserAnswerArray(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1(), EVoterShareMemory.getCurrentQuestion().getId());
 		if (answers.isEmpty()) {
 			EVoterMobileUtils.showeVoterToast(QuestionDetailActivity.this, "Cannot get answer of question!");
 		} else {
@@ -251,7 +253,7 @@ public class QuestionDetailActivity extends EVoterActivity {
 		} else if (callBackMessage.equals(CallBackMessage.CHECK_SESSION_STATUS_EVOTER_REQUEST)) {
 			try {
 				JSONArray array = new JSONArray(response);
-				Session session = EVoterMobileUtils.parserSession(array.getJSONObject(0));
+				Session session = EVoterMobileUtils.parserToSession(array.getJSONObject(0));
 				if (session != null) EVoterShareMemory.setCurrentSession(session);
 				submitAnswerToServer();
 			} catch (JSONException e) {

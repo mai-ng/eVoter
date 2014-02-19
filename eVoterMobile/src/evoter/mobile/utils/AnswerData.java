@@ -4,10 +4,17 @@
 package evoter.mobile.utils;
 
 /**
+ * Present the statistic of an answer
  * @author  luongnv89
  */
 public class AnswerData {
+	/**
+	 * id of answer
+	 */
 	long id;
+	/**
+	 * Statistic of answer
+	 */
 	int statistic;
 	
 	/**
@@ -20,7 +27,6 @@ public class AnswerData {
 		this.statistic = statistic;
 	}
 
-	
 
 	/**
 	 * @return the id
@@ -37,8 +43,6 @@ public class AnswerData {
 	public void setId(long id) {
 		this.id = id;
 	}
-
-
 
 	/**
 	 * @return the statistic

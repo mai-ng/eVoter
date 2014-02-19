@@ -15,8 +15,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import evoter.mobile.abstracts.EVoterActivity;
+import evoter.mobile.main.EVoterRequestManager;
+import evoter.mobile.main.EVoterShareMemory;
 import evoter.mobile.main.R;
-import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 

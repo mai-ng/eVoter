@@ -16,7 +16,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
-import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.main.EVoterShareMemory;
 import evoter.share.dao.AnswerDAO;
 import evoter.share.dao.QuestionDAO;
 import evoter.share.dao.QuestionSessionDAO;
@@ -42,15 +42,22 @@ public class EVoterMobileUtils {
 	@SuppressLint("SimpleDateFormat")
 	static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	
-	public static JSONArray getJSONArray(String response) throws JSONException {
-		return new JSONArray(response);
-	}
-	
+	/**
+	 * Convert a string which present a date to {@link Timestamp}
+	 * @param date
+	 * @return
+	 * @throws ParseException
+	 */
 	public static Timestamp convertToDate(String date) throws ParseException {
 		java.util.Date utilDate = dateFormat.parse(date);
 		return new Timestamp(utilDate.getTime());
 	}
 	
+	/**
+	 * Convert a {@link Timestamp} to a {@link String}
+	 * @param creationDate
+	 * @return
+	 */
 	public static String convertToString(Timestamp creationDate) {
 		return dateFormat.format(creationDate);
 	}
@@ -70,7 +77,7 @@ public class EVoterMobileUtils {
 	}
 	
 	/**
-	 * Show a message
+	 * Show a message on activity
 	 * 
 	 * @param context
 	 * @param message
@@ -82,7 +89,52 @@ public class EVoterMobileUtils {
 	}
 	
 	/**
+	 * Parser a String to list of {@link Question}
 	 * @param response
+	 * @return empty list if there is any exception
+	 * <br> an {@link ArrayList} of {@link Question}
+	 */
+	public static ArrayList<ItemData> parserQuestionArray(String response) {
+		ArrayList<ItemData> listQuestion = new ArrayList<ItemData>();
+		try {
+			JSONArray array = new JSONArray(response);
+			for (int i = 0; i < array.length(); i++) {
+				Question question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(i), EVoterShareMemory.getCurrentSession().getId());
+				if (question != null) {
+					if (question.getTitle().equals(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST) || question.getTitle().equals(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST)) {
+						setStaticAnswerID(question);
+					} else {
+						//With student, only load the question which already sent or finished.
+						if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER)
+						{
+							listQuestion.add(question);
+							EVoterShareMemory.addQuestionToList(question);
+						} else {
+							if (question.getStatus() != 0) {
+								listQuestion.add(question);
+							}
+						}
+						
+					}
+				}
+			}
+			return listQuestion;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return listQuestion;
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return listQuestion;
+		}
+	}
+	
+	/**
+	 * Parser a {@link JSONObject} to a {@link Question} in session has sessionID
+	 * @param s
+	 * @param sessionID
+	 * @return null if there is any exception
+	 * <br> a {@link Question}
 	 */
 	public static Question parserToQuestion(JSONObject s, long sessionID) {
 		String answerColumn1 = "null";
@@ -129,11 +181,33 @@ public class EVoterMobileUtils {
 		
 	}
 	
+	
 	/**
-	 * @param answerColumn1
-	 * @return
+	 * Parser a {@link JSONObject} to an {@link Answer} of question questionID
+	 * @param jsonObject
+	 * @param questionID
+	 * @return null if there is any exception
+	 * <br> an {@link Answer}
 	 */
-	public static ArrayList<Answer> parserListAnswer(String answerColumn1, long questionID) {
+	public static Answer parserToAnswer(JSONObject jsonObject, long questionID) {
+		try {
+			return new Answer(jsonObject.getLong(AnswerDAO.ID), questionID, jsonObject.getString(AnswerDAO.ANSWER_TEXT));
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+	/**
+	 * Parser a {@link String} to {@link ArrayList} of {@link Answer} of questionID
+	 * @param answerColumn1
+	 * @param questionID
+	 * @return empty list if there is any exception 
+	 * <br> an {@link ArrayList} of {@link Answer}
+	 * 
+	 */
+	public static ArrayList<Answer> parserAnswerArray(String answerColumn1, long questionID) {
 		Log.i("AnswerColumn", answerColumn1);
 		ArrayList<Answer> listAnswers = new ArrayList<Answer>();
 		
@@ -156,7 +230,7 @@ public class EVoterMobileUtils {
 					ob = null;
 				}
 				if (ob != null) {
-					Answer answer = parserJSONObjectToAnswer(ob, questionID);
+					Answer answer = parserToAnswer(ob, questionID);
 					if (answer != null) listAnswers.add(answer);
 				}
 			}
@@ -165,23 +239,15 @@ public class EVoterMobileUtils {
 		return listAnswers;
 	}
 	
-	/**
-	 * @param jsonObject
-	 * @return
-	 */
-	public static Answer parserJSONObjectToAnswer(JSONObject jsonObject, long questionID) {
-		try {
-			return new Answer(jsonObject.getLong(AnswerDAO.ID), questionID, jsonObject.getString(AnswerDAO.ANSWER_TEXT));
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+
 	
 	/**
-	 * @param response
+	 * Parser a {@link JSONObject} to a {@link Session}
+	 * @param s
+	 * @return null if there is any exception
+	 * <br> a {@link Session}
 	 */
-	public static Session parserSession(JSONObject s) {
+	public static Session parserToSession(JSONObject s) {
 		try {
 			
 			long sessionID = Long.parseLong(s
@@ -194,15 +260,63 @@ public class EVoterMobileUtils {
 				boolean isAccepted = s.getBoolean(SessionUserDAO.ACCEPT_SESSION);
 				if (isAccepted) EVoterShareMemory.addToListAcceptedSessions(sessionID);
 			}
+			
+			boolean isActive = Boolean.parseBoolean(s.getString(SessionDAO.IS_ACTIVE));
+			if(isActive) EVoterShareMemory.addToListActiveSessions(sessionID);
 			Session session = new Session(sessionID, Long.parseLong(s
 					.getString(SessionDAO.SUBJECT_ID)), s
 					.getString(SessionDAO.NAME), EVoterMobileUtils
 					.convertToDate(s
 							.getString(SessionDAO.CREATION_DATE)),
-					Boolean.parseBoolean(s
-							.getString(SessionDAO.IS_ACTIVE)), Long.parseLong(s.getString(SessionDAO.USER_ID)), creator);
+							isActive, Long.parseLong(s.getString(SessionDAO.USER_ID)), creator);
 			return session;
 			
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return null;
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Parser a {@link String} to {@link ArrayList} of {@link Session}
+	 * @param response
+	 * @return empty list if there is any exception
+	 * <br> an {@link ArrayList} of {@link Session}
+	 */
+	public static ArrayList<ItemData> parserSessionArray(String response) {
+		
+		ArrayList<ItemData> listItems = new ArrayList<ItemData>();
+		try {
+			JSONArray array = new JSONArray(response);
+			for (int i = 0; i < array.length(); i++) {
+				Session session = EVoterMobileUtils.parserToSession(array.getJSONObject(i));
+				if (session != null)
+					listItems.add(session);
+			}
+			return listItems;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return listItems;
+		}
+	}
+	
+	/**
+	 * Parser a {@link JSONObject} to a {@link Subject}
+	 * @param item
+	 * @return null if there is any exception
+	 * <br> a {@link Subject}
+	 */
+	public static Subject parserToSubject(JSONObject item) {
+		try {
+			Subject s = new Subject(Long.parseLong(item.getString(SubjectDAO.ID)), item.getString(SubjectDAO.TITLE),
+					EVoterMobileUtils.convertToDate(item.getString(SubjectDAO.CREATION_DATE)));
+			return s;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -218,15 +332,72 @@ public class EVoterMobileUtils {
 		}
 	}
 	
+	/**
+	 * 
+	 * Parser a {@link String} to {@link ArrayList} of {@link Subject}
+	 * @param response
+	 * @return empty list if there is any exception
+	 * <br> an {@link ArrayList} of {@link Subject}
+	 */
+	public static ArrayList<ItemData> parserSubjectArray(String response) {
+		ArrayList<ItemData> listItems = new ArrayList<ItemData>();
+		try {
+			JSONArray array = new JSONArray(response);
+			for (int i = 0; i < array.length(); i++) {
+				JSONObject item = array.getJSONObject(i);
+				Subject subject = parserToSubject(item);
+				if (subject != null)
+					listItems.add(subject);
+			}
+			return listItems;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return listItems;
+			
+		}
+		
+	}
+	
+	/**
+	 * Parser a JSONObject to a string which present the information of an user
+	 * 
+	 * @param ob
+	 * @return null if there is some exception or user type not
+	 *         {@link UserType#TEACHER} or {@link UserType#STUDENT}
+	 */
+	public static String parserJSONToUser(JSONObject ob) {
+		try {
+			long userTypeID = ob.getLong(UserDAO.USER_TYPE_ID);
+			String fullName = ob.getString(UserDAO.FULL_NAME);
+			String email = ob.getString(UserDAO.EMAIL);
+			if (userTypeID == UserType.STUDENT)
+				return "STUDENT_" + fullName + ": " + email;
+			else if (userTypeID == UserType.TEACHER)
+				return "TEACHER_" + fullName + ": " + email;
+			else
+				return null;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Draw statistic of an answer by a {@link String}
+	 * @param response response receive from server when request to get statistic
+	 * @param question question to draw statistic
+	 * @return a {@link String} present the statistic, content of a question.
+	 * <br> an empty list if there is any exception
+	 */
 	public static ArrayList<String> drawStatistic(String response, Question question) {
+		ArrayList<String> listDataRow = new ArrayList<String>();
 		ArrayList<AnswerData> listAnswerDatas = new ArrayList<AnswerData>();
 		try {
 			JSONArray arrayStatistic = new JSONArray(response);
-			ArrayList<String> listDataRow = new ArrayList<String>();
 			listDataRow.add("QUESTION: ");
 			listDataRow.add(question.getTitle() + "\n");
 			listDataRow.add("ANSWERS: \n");
-			ArrayList<Answer> listAnswers = parserListAnswer(question.getAnswerColumn1(), question.getId());
+			ArrayList<Answer> listAnswers = parserAnswerArray(question.getAnswerColumn1(), question.getId());
 			Log.i("List answer", listAnswers.toString());
 			if (question.getQuestionTypeId() == QuestionType.INPUT_ANSWER) {
 				JSONObject statisticObject = arrayStatistic.getJSONObject(0);
@@ -278,13 +449,14 @@ public class EVoterMobileUtils {
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return listDataRow;
 		}
-		return null;
 	}
 	
 	/**
+	 * Find statistic of an answer in statistic response from server
 	 * @param listAnswerDatas
-	 * @return
+	 * @return 0 if there is not any statistic for answer which has id
 	 */
 	private static int findStatistic(long id, ArrayList<AnswerData> listAnswerDatas) {
 		for (int i = 0; i < listAnswerDatas.size(); i++) {
@@ -294,9 +466,10 @@ public class EVoterMobileUtils {
 	}
 	
 	/**
+	 * Get Index of an {@link AnswerData#id} in an {@link ArrayList} of {@link AnswerData}
 	 * @param value
 	 * @param listAnswerValue
-	 * @return
+	 * @return -1 if there is not any {@link AnswerData} has id = value
 	 */
 	private static int getIndex(int value, ArrayList<AnswerData> listAnswerValue) {
 		for (int i = 0; i < listAnswerValue.size(); i++) {
@@ -305,175 +478,6 @@ public class EVoterMobileUtils {
 		return -1;
 	}
 	
-	/**
-	 * @param response
-	 * @return
-	 */
-	public static ArrayList<ItemData> parserToSubjectArray(String response) {
-		ArrayList<ItemData> listItems = new ArrayList<ItemData>();
-		try {
-			JSONArray array = new JSONArray(response);
-			for (int i = 0; i < array.length(); i++) {
-				JSONObject item = array.getJSONObject(i);
-				Subject subject = parserrJSONObjectToSubject(item);
-				if (subject != null)
-					listItems.add(subject);
-			}
-			return listItems;
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return listItems;
-			
-		}
-		
-	}
-	
-	/**
-	 * @param item
-	 * @return
-	 */
-	public static Subject parserrJSONObjectToSubject(JSONObject item) {
-		try {
-			Subject s = new Subject(Long.parseLong(item.getString(SubjectDAO.ID)), item.getString(SubjectDAO.TITLE),
-					EVoterMobileUtils.convertToDate(item.getString(SubjectDAO.CREATION_DATE)));
-			return s;
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	/**
-	 * Parser a JSONObject to a string which present the information of an user
-	 * 
-	 * @param ob
-	 * @return null if there is some exception or user type not
-	 *         {@link UserType#TEACHER} or {@link UserType#STUDENT}
-	 */
-	public static String parserJSONToUser(JSONObject ob) {
-		try {
-			long userTypeID = ob.getLong(UserDAO.USER_TYPE_ID);
-			String fullName = ob.getString(UserDAO.FULL_NAME);
-			String email = ob.getString(UserDAO.EMAIL);
-			if (userTypeID == UserType.STUDENT)
-				return "STUDENT_" + fullName + ": " + email;
-			else if (userTypeID == UserType.TEACHER)
-				return "TEACHER_" + fullName + ": " + email;
-			else
-				return null;
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	/**
-	 * @param response
-	 * @return
-	 */
-	public static ArrayList<ItemData> parserToSessionArray(String response) {
-		
-		ArrayList<ItemData> listItems = new ArrayList<ItemData>();
-		try {
-			JSONArray array = new JSONArray(response);
-			for (int i = 0; i < array.length(); i++) {
-				Session session = EVoterMobileUtils.parserSession(array.getJSONObject(i));
-				if (session != null)
-					listItems.add(session);
-			}
-			return listItems;
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return listItems;
-		}
-	}
-	
-	/**
-	 * @param response
-	 * @return
-	 */
-	public static ArrayList<ItemData> parserToQuestionArray(String response) {
-		ArrayList<ItemData> listQuestion = new ArrayList<ItemData>();
-		try {
-			JSONArray array = new JSONArray(response);
-			for (int i = 0; i < array.length(); i++) {
-				Question question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(i), EVoterShareMemory.getCurrentSession().getId());
-				if (question != null) {
-					if (question.getTitle().equals(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST) || question.getTitle().equals(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST)) {
-						setStaticAnswerID(question);
-					} else {
-						//With student, only load the question which already sent or finished.
-						if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER)
-						{
-							listQuestion.add(question);
-							EVoterShareMemory.addQuestionToList(question);
-						} else {
-							if (question.getStatus() != 0) {
-								listQuestion.add(question);
-							}
-						}
-						
-					}
-				}
-			}
-			return listQuestion;
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return listQuestion;
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			return listQuestion;
-		}
-	}
-	
-	/**
-	 * @param response
-	 * @return
-	 */
-	public static ArrayList<Question> parserToQuestion2Array(String response) {
-		ArrayList<Question> listQuestion = new ArrayList<Question>();
-		try {
-			JSONArray array = new JSONArray(response);
-			for (int i = 0; i < array.length(); i++) {
-				Question question = EVoterMobileUtils.parserToQuestion(array.getJSONObject(i), EVoterShareMemory.getCurrentSession().getId());
-				if (question != null) {
-					if (question.getTitle().equals(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST) || question.getTitle().equals(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST)) {
-						setStaticAnswerID(question);
-					} else {
-						//With student, only load the question which already sent or finished.
-						if (EVoterShareMemory.getCurrentUserType() == UserType.TEACHER)
-						{
-							listQuestion.add(question);
-							EVoterShareMemory.addQuestionToList(question);
-						} else {
-							if (question.getStatus() != 0) {
-								listQuestion.add(question);
-							}
-						}
-						
-					}
-				}
-			}
-			return listQuestion;
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return listQuestion;
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			return listQuestion;
-		}
-	}
 	
 	/**
 	 * Set staticAnswer ID for excited and difficult bar
@@ -518,7 +522,7 @@ public class EVoterMobileUtils {
 	 * @return the id of the first answer of question
 	 */
 	public static long getFirstAnswerID(Question exictedQuestion) {
-		ArrayList<Answer> listAnswers = EVoterMobileUtils.parserListAnswer(exictedQuestion.getAnswerColumn1(), exictedQuestion.getId());
+		ArrayList<Answer> listAnswers = EVoterMobileUtils.parserAnswerArray(exictedQuestion.getAnswerColumn1(), exictedQuestion.getId());
 		return listAnswers.get(0).getId();
 	}
 }

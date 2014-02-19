@@ -8,9 +8,12 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import evoter.mobile.abstracts.ItemDataActivity;
 import evoter.mobile.adapters.SessionAdapter;
+import evoter.mobile.main.ActivityManager;
+import evoter.mobile.main.EVoterRequestManager;
+import evoter.mobile.main.EVoterShareMemory;
 import evoter.mobile.main.R;
-import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.model.ItemData;
@@ -70,6 +73,7 @@ public class SessionActivity extends ItemDataActivity {
 		// TODO Auto-generated method stub
 		super.setupContentMainMenu();
 		mainMenu.getBtUserOfSubject().setVisibility(View.VISIBLE);
+		mainMenu.getBtNewSession().setVisibility(View.VISIBLE);
 		
 	}
 
@@ -104,7 +108,7 @@ public class SessionActivity extends ItemDataActivity {
 			}
 		} else if (callBackMessage.equals(CallBackMessage.GET_ALL_SESSION_EVOTER_REQUEST)) {
 				
-				ArrayList<ItemData> listSession = EVoterMobileUtils.parserToSessionArray(response);
+				ArrayList<ItemData> listSession = EVoterMobileUtils.parserSessionArray(response);
 				if (listSession.isEmpty()) {
 					EVoterMobileUtils.showeVoterToast(SessionActivity.this,
 							"There isn't any session!");

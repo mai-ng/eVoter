@@ -25,8 +25,10 @@ import android.widget.Spinner;
 
 import com.loopj.android.http.RequestParams;
 
+import evoter.mobile.abstracts.EVoterActivity;
+import evoter.mobile.main.EVoterRequestManager;
+import evoter.mobile.main.EVoterShareMemory;
 import evoter.mobile.main.R;
-import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;

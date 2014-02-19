@@ -8,8 +8,8 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Filterable;
 import android.widget.TextView;
+import evoter.mobile.main.EVoterShareMemory;
 import evoter.mobile.main.R;
-import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.model.Session;
 

@@ -15,7 +15,8 @@ import android.view.View.OnClickListener;
 
 import com.loopj.android.http.RequestParams;
 
-import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.main.EVoterRequestManager;
+import evoter.mobile.main.EVoterShareMemory;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.dao.AnswerDAO;
@@ -50,7 +51,7 @@ public class EditQuestionActivity extends NewQuestionActivity {
 	 * @param column1
 	 */
 	private void buildAnswerArea(int type) {
-		ArrayList<Answer> column1 = EVoterMobileUtils.parserListAnswer(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1(), EVoterShareMemory.getCurrentQuestion().getId());
+		ArrayList<Answer> column1 = EVoterMobileUtils.parserAnswerArray(EVoterShareMemory.getCurrentQuestion().getAnswerColumn1(), EVoterShareMemory.getCurrentQuestion().getId());
 		//		type = 1;
 		switch (type) {
 		

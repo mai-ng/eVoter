@@ -14,10 +14,13 @@ import android.widget.AdapterView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
+import evoter.mobile.abstracts.ItemDataActivity;
 import evoter.mobile.adapters.QuestionAdapter;
+import evoter.mobile.main.ActivityManager;
+import evoter.mobile.main.EVoterMainMenu;
+import evoter.mobile.main.EVoterRequestManager;
+import evoter.mobile.main.EVoterShareMemory;
 import evoter.mobile.main.R;
-import evoter.mobile.objects.EVoterMainMenu;
-import evoter.mobile.objects.EVoterShareMemory;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.model.ItemData;
@@ -147,14 +150,15 @@ public class QuestionActivity extends ItemDataActivity {
 				.getCurrentSessionName());
 	}
 	
-	
 	/**
 	 * Check condition before change the status of session
+	 * 
 	 * @param start <br>
-	 * <br> start = true -> change current session to active
-	 * <br> else -> change current session to inactive
-	 * @return false if there is some question which is not stop receive answer.
-	 * <br> otherwiser return true;
+	 * <br>
+	 *            start = true -> change current session to active <br>
+	 *            else -> change current session to inactive
+	 * @return false if there is some question which is not stop receive answer. <br>
+	 *         otherwiser return true;
 	 */
 	private boolean okChangeStatus(boolean start) {
 		if (!start) {
@@ -164,21 +168,30 @@ public class QuestionActivity extends ItemDataActivity {
 					return false;
 				}
 			}
+			return true;
+		} else {
+			if (!EVoterShareMemory.getListActiveSessions().isEmpty()) {
+				EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "There is some session is running! You cannot start more than 1 session at the same time");
+				return false;
+			} else
+				return true;
 		}
-		return true;
 	}
 	
 	/**
-	 * Build static seekbar of current session
-	 * <br> Only show with condition: 
-	 * <br> - student user
-	 * <br> - user has accepted to join session
-	 * <br> - session is active status
-	 * <br> Each time user change the value on seekbar the value will automatically send to server
-	 * <br> To see the votes of student about session, teacher can open {@link StudentFeedbackActivity} 
+	 * Build static seekbar of current session <br>
+	 * Only show with condition: <br>
+	 * - student user <br>
+	 * - user has accepted to join session <br>
+	 * - session is active status <br>
+	 * Each time user change the value on seekbar the value will automatically
+	 * send to server <br>
+	 * To see the votes of student about session, teacher can open
+	 * {@link StudentFeedbackActivity}
 	 */
 	private void buildStaticSlider() {
-		if(EVoterShareMemory.userJoinedSession()&&EVoterShareMemory.getCurrentUserType()==UserType.STUDENT) mainMenu.getBtJoin().setVisibility(View.GONE);
+		if (EVoterShareMemory.userJoinedSession() && EVoterShareMemory.getCurrentUserType() == UserType.STUDENT)
+			mainMenu.getBtJoin().setVisibility(View.GONE);
 		Log.i("User accepted?", String.valueOf(EVoterShareMemory.userJoinedSession()));
 		if (EVoterShareMemory.getCurrentUserType() == UserType.STUDENT && EVoterShareMemory.userJoinedSession() && EVoterShareMemory.getCurrentSession().isActive()) {
 			tbSessionValue.setVisibility(View.VISIBLE);
@@ -304,42 +317,44 @@ public class QuestionActivity extends ItemDataActivity {
 				EVoterMobileUtils.showeVoterToast(this, "Cannot send static value: " + response);
 		}
 		else if (callBackMessage.equals(CallBackMessage.GET_ALL_QUESTION_EVOTER_REQUEST)) {
-				ArrayList<ItemData> listQuestion = EVoterMobileUtils.parserToQuestionArray(response);
-				if (listQuestion.isEmpty()) {
-					EVoterMobileUtils.showeVoterToast(QuestionActivity.this,"There isn't any question!");
+			ArrayList<ItemData> listQuestion = EVoterMobileUtils.parserQuestionArray(response);
+			if (listQuestion.isEmpty()) {
+				EVoterMobileUtils.showeVoterToast(QuestionActivity.this, "There isn't any question!");
+			}
+			else {
+				EVoterShareMemory.getListQuestions().clear();
+				for(int i=0;i<listQuestion.size();i++){
+					EVoterShareMemory.addQuestionToList((Question)listQuestion.get(i));
 				}
-				else{
-					EVoterShareMemory.getListQuestions().clear();
-					buildStaticSlider();
-					adapter.updateList(listQuestion);
-				}
-				
-				if (EVoterShareMemory.getExictedQuestion() == null || EVoterShareMemory.getDifficultQuestion() == null) {
-					Log.i("STATIC SLIDER", "Cannot set id for static slider bar");
-				} else {
-					Log.i(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST, String.valueOf(EVoterShareMemory.getExictedQuestion().getId()));
-					Log.i(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST, String.valueOf(EVoterShareMemory.getDifficultQuestion().getId()));
-				}
-				
+				buildStaticSlider();
+				adapter.updateList(listQuestion);
+			}
+			
+			if (EVoterShareMemory.getExictedQuestion() == null || EVoterShareMemory.getDifficultQuestion() == null) {
+				Log.i("STATIC SLIDER", "Cannot set id for static slider bar");
+			} else {
+				Log.i(CallBackMessage.EXCITED_BAR_STATISTIC_EVOTER_REQUEST, String.valueOf(EVoterShareMemory.getExictedQuestion().getId()));
+				Log.i(CallBackMessage.DIFFICULT_BAR_STATISTIC_EVOTER_REQUEST, String.valueOf(EVoterShareMemory.getDifficultQuestion().getId()));
+			}
 			
 		} else if (callBackMessage.equals(CallBackMessage.UPDATE_SESSION_EVOTER_REQUEST)) {
-				ArrayList<ItemData> listSessions = EVoterMobileUtils.parserToSessionArray(response); 
-				if(!listSessions.isEmpty()){
-					Session session = (Session) listSessions.get(0);
-					Log.i("New session: ", session.toString());
-					Log.i("Session before update: ", EVoterShareMemory.getCurrentSession().toString());
-					if (session != null) {
-						EVoterShareMemory.setCurrentSession(session);
-						buildStaticSlider();
-					}
-					Log.i("Session after update: ", EVoterShareMemory.getCurrentSession().toString());
+			ArrayList<ItemData> listSessions = EVoterMobileUtils.parserSessionArray(response);
+			if (!listSessions.isEmpty()) {
+				Session session = (Session) listSessions.get(0);
+				Log.i("New session: ", session.toString());
+				Log.i("Session before update: ", EVoterShareMemory.getCurrentSession().toString());
+				if (session != null) {
+					EVoterShareMemory.setCurrentSession(session);
+					buildStaticSlider();
 				}
+				Log.i("Session after update: ", EVoterShareMemory.getCurrentSession().toString());
+			}
 			
 		} else {
 			super.updateRequestCallBack(response, callBackMessage);
 		}
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see evoter.mobile.activities.EVoterActivity#loadData()

@@ -7,8 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import evoter.mobile.abstracts.EVoterActivity;
+import evoter.mobile.abstracts.ItemDataActivity;
 import evoter.mobile.adapters.SubjectAdapter;
-import evoter.mobile.objects.EVoterShareMemory;
+import evoter.mobile.main.ActivityManager;
+import evoter.mobile.main.EVoterRequestManager;
+import evoter.mobile.main.EVoterShareMemory;
 import evoter.mobile.utils.CallBackMessage;
 import evoter.mobile.utils.EVoterMobileUtils;
 import evoter.share.model.ItemData;
@@ -87,7 +91,7 @@ public class SubjectActivity extends ItemDataActivity {
 	@Override
 	public void updateRequestCallBack(String response, String callBackMessage) {
 		if (callBackMessage.equals(CallBackMessage.GET_ALL_SUBJECT_EVOTER_REQUEST)) {
-			ArrayList<ItemData> listSubjects = EVoterMobileUtils.parserToSubjectArray(response);
+			ArrayList<ItemData> listSubjects = EVoterMobileUtils.parserSubjectArray(response);
 			
 			if (listSubjects.isEmpty()) {
 				EVoterMobileUtils.showeVoterToast(SubjectActivity.this, "There isn't any subject!");

@@ -133,6 +133,9 @@ public class SessionActivity extends ItemDataActivity {
 				.setPositiveButton(R.string.edit_button, new DialogInterface.OnClickListener() {
 					
 					public void onClick(DialogInterface dialog, int whichButton) {
+						if(EVoterShareMemory.getCurrentUserType()==UserType.STUDENT){
+							EVoterMobileUtils.showeVoterToast(SessionActivity.this, "Only teacher can edit session!");
+						}else
 						ActivityManager.startEditSessionActivity(SessionActivity.this);
 					}
 				})

@@ -198,14 +198,12 @@ public class QuestionActivity extends ItemDataActivity {
 	 */
 	private void longClickQuestionAction() {
 		Dialog dialog = new AlertDialog.Builder(this)
-				.setTitle("Session: " + EVoterShareMemory.getCurrentQuestion().getQuestionText())
+				.setTitle("Question: " + EVoterShareMemory.getCurrentQuestion().getQuestionText())
 				.setIcon(android.R.drawable.ic_dialog_info)
 				.setPositiveButton(R.string.edit_button, new DialogInterface.OnClickListener() {
 					
 					public void onClick(DialogInterface dialog, int whichButton) {
-						Intent editQuestion = new Intent(QuestionActivity.this, EditQuestionActivity.class);
-						EVoterShareMemory.setPreviousContext(QuestionActivity.this);
-						startActivity(editQuestion);
+						ActivityManager.startEditQuestionActivity(QuestionActivity.this);
 					}
 				})
 				.setNegativeButton(R.string.delete_button, new DialogInterface.OnClickListener() {

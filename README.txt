@@ -1,3 +1,14 @@
+The eVoter system is designed to facilitate the process of sending questions and collecting information in real time,
+is composed of two main components:
+- a client-side application (for teacher and student) which will run on Android handsets and browser, 
+- a server-side application which will support and interact with various client-side features.
+
+Participants in the project:
+- eVoterWeb: Nguyen Thi Mai
+- eVoterMobile: Nguyen Van Luong
+- evoterServer: Bui Thi Diem
+
+The role of each component in the project:
 - Documents/bug_report/bug_report.xls: display bugs found when doing integration test and their solutions.
 
 - Documents/design/* : contains high level design (package level), use cases and database diagram
